@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  
+            http://www.springframework.org/schema/context  
+            http://www.springframework.org/schema/context/spring-context-3.1.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+
+
+	<context:component-scan base-package="com.zeekie.stock.service">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+
+	<!-- 应用属性配置文件 -->
+	<context:property-placeholder location="classpath:spring.properties" />
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>${datasource.driverClassName}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${datasource.url}</value>
+		</property>
+		<property name="user">
+			<value>${datasource.username}</value>
+		</property>
+		<property name="password">
+			<value>${datasource.password}</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>${c3p0.acquireIncrement}</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>${c3p0.idleConnectionTestPeriod}</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>${c3p0.checkoutTimeout}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${c3p0.maxPoolSize}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>${c3p0.minPoolSize}</value>
+		</property>
+		<property name="maxStatements">
+			<value>${c3p0.maxStatements}</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>${c3p0.initialPoolSize}</value>
+		</property>
+
+		<!--<property name="properties"> <props> <prop key="user">${datasource.username}</prop> 
+			<prop key="password">${datasource.password}</prop> <prop key="clientEncoding">ISO8859_1</prop> 
+			<prop key="serverEncoding">GBK</prop> </props> </property> -->
+	</bean>
+
+	<!-- MyBatis配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<property name="typeHandlersPackage" value="com.zeekie.stock.mybatis" />
+
+		<!-- <property name="typeHandlers"> <array> <bean class="com.zeekie.stock.mybatis.EncodingTransformStringTypeHandler"> 
+			<property name="charsetTransformer" ref="charsetTransformer" /> </bean> <bean 
+			class="com.zeekie.stock.mybatis.EncodingTransformNStringTypeHandler"> <property 
+			name="charsetTransformer" ref="charsetTransformer" /> </bean> <bean class="com.zeekie.stock.mybatis.EncodingTransformClobTypeHandler"> 
+			<property name="charsetTransformer" ref="charsetTransformer" /> </bean> </array> 
+			</property> -->
+		<property name="configLocation" value="classpath:sqlmap-config.xml" />
+		<!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+		<property name="typeAliasesPackage" value="com.zeekie.stock.entity" />
+		<!-- 显式指定Mapper文件位置 -->
+		<property name="mapperLocations" value="classpath:/mybatis/*.xml" />
+	</bean>
+	
+
+	<bean id="charsetTransformer" class="com.zeekie.stock.mybatis.CharsetTransformer">
+		<constructor-arg index="0">
+			<value>${datasource.charset.clientEncoding}</value> <!--客户端编码 -->
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>${datasource.charset.serverEncoding}</value><!--服务端编码 -->
+		</constructor-arg>
+	</bean>
+	
+	<!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.zeekie.stock.respository" />
+		<property name="annotationClass" value="com.zeekie.stock.mybatis.MyBatisRepository" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	<bean class="sitong.thinker.common.util.mybatis.BatchMapper" id="batchMapper">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- all methods starting with 'get' are read-only -->
+			<tx:method name="indentify" read-only="true" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="*get*" read-only="true" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="*update*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="*query*" read-only="true" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<!-- other methods use the default transaction settings (see below) -->
+			<tx:method name="*save*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="load*" read-only="true" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="record*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="insert*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="deduct*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="deductFee" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="caculate*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="modify*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="set*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="store*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="move*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="bind*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="withdraw" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="add*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="register*" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="currentOperationOver" read-only="false"
+				propagation="REQUIRED" rollback-for="Exception,RuntimeException" />
+			<tx:method name="endStock" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="operationIsEnded" read-only="false"
+				propagation="REQUIRED" rollback-for="Exception,RuntimeException" />
+			<tx:method name="recharge" read-only="false" propagation="REQUIRED"
+				rollback-for="Exception,RuntimeException" />
+			<tx:method name="caculateRefereeIncome" read-only="false"
+				propagation="REQUIRED" rollback-for="Exception,RuntimeException" />
+			<tx:method name="batchInsert" read-only="false"
+				propagation="REQUIRED" rollback-for="Exception,RuntimeException" />
+			<tx:method name="doInTransaction" read-only="true"
+				propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="executor" class="java.util.concurrent.ThreadPoolExecutor">
+		<constructor-arg value="${thread.pool.corePoolSize}" />
+		<constructor-arg value="${thread.pool.maximumPoolSize}" />
+		<constructor-arg value="${thread.pool.keepAliveTime}" />
+		<constructor-arg value="SECONDS" />
+		<constructor-arg ref="blockingQueue" />
+	</bean>
+
+	<bean id="scheduledExecutor" class="java.util.concurrent.ScheduledThreadPoolExecutor">
+		<constructor-arg value="1" />
+	</bean>
+
+	<bean id="blockingQueue" class="java.util.concurrent.LinkedBlockingQueue" />
+
+	<bean id="sensitivewordFilter" class="com.zeekie.stock.service.sensitive.SensitivewordFilter"></bean> 
+
+<bean id="sensitiveword" class="com.zeekie.stock.service.sensitive.SensitiveWordInit"></bean>
+	<!-- 定时任务A=扣除管理费 -->
+	<bean id="deductManageFeeJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.DeductManageFeeTimer" />
+		</property>
+		<property name="targetMethod" value="deductFee" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+
+	<bean id="deductManageFeeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="deductManageFeeJob" />
+		<!-- 每天8:00运行一次 -->
+		<property name="cronExpression" value="0 11 19 * * ?" />
+	</bean>
+	<!-- 定时任务A 结束 -->
+
+
+	<!-- 定时任务B=更新盈亏金额 -->
+	<bean id="caculateFundJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.CaculateFundTimer" />
+		</property>
+		<property name="targetMethod" value="caculate" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+
+	<bean id="caculateFundTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="caculateFundJob" />
+		<property name="startDelay" value="10000" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
+		<property name="repeatInterval" value="300000" /><!-- 每10秒调度一次 -->
+	</bean>
+	<!-- 定时任务B 结束 -->
+
+	<!--开始调度 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- 
+			 	<ref bean="deductManageFeeTrigger" />
+				<ref bean="caculateFundTrigger"/>
+				 -->
+			</list>
+		</property>
+	</bean>
+
+	<aop:config>
+		<aop:pointcut id="businessOperation"
+			expression="execution(* com.zeekie.stock.service.impl.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="businessOperation" />
+	</aop:config>
+
+</beans>
+

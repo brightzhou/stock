@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+	<!-- 对cn.com.servyou.pacific包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+
+	<context:property-placeholder location="classpath:spring.properties"/>
+
+	<context:component-scan base-package="com.zeekie">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <ref bean="stringHttpMessageConverter" />
+            <ref bean="mappingJacksonHttpMessageConverter" />
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+	<mvc:resources mapping="/scripts/**" location="/scripts/" />
+    <mvc:resources mapping="/pages/**" location="/pages/" />
+    <mvc:resources mapping="/styles/**" location="/styles/" />
+    <mvc:resources mapping="/icons/**" location="/icons/"/>
+    <mvc:resources mapping="/files/**" location="/files/"/>
+	
+	<!-- enable autowire -->
+	<context:annotation-config />
+
+<!--     <context:property-placeholder
+            location="classpath*:spring.properties" /> -->
+
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+
+
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<!-- 设置为false开启对Accept Header的支持 -->
+		<property name="ignoreAcceptHeader" value="false" />
+		<!-- 在没有扩展名时的默认形式 -->
+		<property name="defaultContentType" value="application/json" />
+
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+				<entry key="jsp" value="text/html" />
+				<entry key="do" value="text/html" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="viewClass"
+						value="org.springframework.web.servlet.view.InternalResourceView" />
+					<property name="prefix" value="/pages/" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<!-- for application/xml -->
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<property name="marshaller">
+						<ref bean="castorMarshaller" />
+					</property>
+				</bean>
+				<!-- for application/json -->
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+			</list>
+		</property>
+	</bean>
+
+	<bean name="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</util:list>
+		</property>
+	</bean>
+
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        <property name="objectMapper" ref="objectMapper"/>
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json; charset=UTF-8</value>
+                <value>text/plain; charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+        <constructor-arg value="utf-8" />
+    </bean>
+
+    <bean id="objectMapper" class="sitong.thinker.common.util.JsonUtils"
+          factory-method="getObjectMapper"/>
+
+</beans>

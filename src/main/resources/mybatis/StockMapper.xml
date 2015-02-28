@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zeekie.stock.respository.StockMapper">
+
+
+	<resultMap type="com.zeekie.stock.entity.CurrentOperationDO" id="resultCurrentOperation">
+		<result column="CURRENT_ASSET" property="currentAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ACTUAL_CASH" property="actualFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PROFIT_LOSS_CASH" property="profitAndLossCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PROFIT_LOSS_RADIO" property="profitAndLossRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PROGRESSBAR" property="progressBar" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.LoginDO" id="resultLogin">
+		<result column="id" property="userId" jdbcType="VARCHAR"/>
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="FIGURE_PWD" property="figurePwd" jdbcType="VARCHAR"/>
+		<result column="TRADE_ACCOUNT" property="tradeAccount" jdbcType="VARCHAR"/>
+		<result column="DEPOSIT_PWD" property="depositPwd" jdbcType="VARCHAR"/>
+		<result column="TELEPHONE" property="telephone" jdbcType="VARCHAR"/>
+		<result column="ID_CARD" property="identification" jdbcType="VARCHAR"/>
+		<result column="card_number" property="bankCard" jdbcType="VARCHAR"/>
+		<result column="ASSIGN_CASH" property="assignCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="DEBT" property="debt" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+
+	<!-- user register -->
+	<insert id="register" parameterType="com.zeekie.stock.entity.form.RegisterForm">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_USER.Nextval from dual
+		</selectKey>
+		Insert Into stock_user
+		(Id,
+		nickname,
+		password,
+		<!-- telephone, -->
+		<!-- figure_pwd, -->
+		REFEREE_ID,
+		registerDate)
+		Values
+		(#{id},
+		#{nickname},
+		#{password},
+		<!-- #{telephone}, -->
+		<!-- #{figurePwd,jdbcType=VARCHAR}, -->
+		#{refereeId,jdbcType=VARCHAR},
+		Sysdate)
+	</insert>
+
+	<!-- user login -->
+	<select id="login" resultMap="resultLogin" parameterType="String">
+		SELECT s.id,S.NICKNAME,
+		       S.FIGURE_PWD,
+		       (SELECT A.TRADE_ACOUNT
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE A.NICKNAME = S.NICKNAME
+		           AND A.IS_CURRENT = '1') TRADE_ACCOUNT,
+ 			  (SELECT C.DEPOSIT_PWD FROM STOCK_ID_CARD C WHERE C.USER_ID = S.ID) DEPOSIT_PWD,
+   			  S.TELEPHONE,
+       	 	  (SELECT C.ID_CARD FROM STOCK_ID_CARD C WHERE C.USER_ID = S.ID) ID_CARD,
+       	 	  (SELECT b.card_number FROM stock_bank_info b WHERE b.USER_ID = S.ID) card_number,
+       	 	  (SELECT ASSIGN_CASH FROM stock_fund_assign_radio a WHERE s.nickname = a.nickname) ASSIGN_CASH,
+       	 	  (SELECT debt FROM STOCK_USER_WALLET a WHERE s.nickname = a.nickname) debt
+		  FROM STOCK_USER S
+		 WHERE (S.NICKNAME = #{nickname} OR S.TELEPHONE = #{nickname})
+		   AND S.PASSWORD = #{password}
+	</select>
+
+	<select id="figureLogin" resultMap="resultLogin" parameterType="String">
+		SELECT s.id,S.NICKNAME,
+		       S.FIGURE_PWD,
+		       (SELECT A.TRADE_ACOUNT
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE A.NICKNAME = S.NICKNAME
+		           AND A.IS_CURRENT = '1') TRADE_ACCOUNT,
+ 			  (SELECT C.DEPOSIT_PWD FROM STOCK_ID_CARD C WHERE C.USER_ID = S.ID) DEPOSIT_PWD,
+   			  S.TELEPHONE,
+       	 	  (SELECT C.ID_CARD FROM STOCK_ID_CARD C WHERE C.USER_ID = S.ID) ID_CARD,
+       	 	  (SELECT b.card_number FROM stock_bank_info b WHERE b.USER_ID = S.ID) card_number,
+       	 	  (SELECT ASSIGN_CASH FROM stock_fund_assign_radio a WHERE s.nickname = a.nickname) ASSIGN_CASH,
+       	 	  (SELECT debt FROM STOCK_USER_WALLET a WHERE s.nickname = a.nickname) debt
+		  FROM STOCK_USER S
+		 WHERE S.NICKNAME = #{nickname} and s.figure_pwd = #{figurePwd}
+	</select>
+
+	<select id="isExists" resultType="String">
+		Select s.Nickname From stock_user s Where s.Nickname = #{nickname} <!-- or s.telephone = #{telephone}  -->
+	</select>
+
+	<select id="genVerifyCode">
+		Insert Into Dm_Verifycode
+		  (Telephone, verifyCode, source, Gendate)
+		Values
+		  (#{telephone}, #{verifyCode}, #{source}, Sysdate)
+	</select>
+
+	<select id="checkVerifyCode" resultType="String" parameterType="string">
+		Select Verifycode
+		  From Dm_Verifycode
+		 Where Telephone = #{telephone}
+		   And Verifycode = #{verifyCode}
+		   And expires = '1'
+		   And source = #{source}
+		   And Ceil((Sysdate - gendate) * 24 * 60 * 60) &lt;=#{interval}
+	</select>
+	
+	<update id="setVerifyCodeExpired">
+		Update Dm_Verifycode s Set s.expires = '0' Where s.telephone=#{telephone}
+	</update>
+	
+	<update id="updatePwd">
+		Update stock_user set password = #{newPassward} 
+		where nickname = #{nickname} <!-- and telephone = #{telephone} --> 
+	</update>
+	
+	<update id="updatePwdUserIsNull">
+		Update stock_user set password = #{newPassward} 
+		where telephone = #{telephone} 
+	</update>
+	
+	<select id="isvalidPassword" resultType="String">
+		Select password
+		  From stock_user
+		 Where nickname = #{nickname}
+		   And password = #{oldPassward}
+		   <!-- And telephone = #{telephone} -->
+	</select>
+	
+	
+	
+	<update id="updateProfitAndLoss" parameterType="string">
+	  Update Stock_User_Operate_Maininfo s
+       Set s.Profit_Loss_Cash = (((To_Number(#{currentCash}) + To_Number(#{marketValue})) -
+                                s.Guarantee_Cash *
+                                (Select r.Assign_Radio
+                                     From Stock_Fund_Assign_Radio r
+                                    Where r.Nickname = s.Nickname)))
+     Where s.Nickname = #{nickname}
+       And s.Is_Current = '1'
+	</update>
+	
+	<update id="updateOperateMainInfo" parameterType="string">
+		UPDATE STOCK_USER_OPERATE_MAININFO S
+		   SET S.PROFIT_LOSS_RADIO = (S.PROFIT_LOSS_CASH / S.GUARANTEE_CASH),
+		       S.CURRENT_ASSET     = (S.PROFIT_LOSS_CASH + S.GUARANTEE_CASH),
+		       S.ACTUAL_CASH       = (TO_NUMBER(#{currentCash}) + TO_NUMBER(#{marketValue})),
+		       S.MARKET_CASH       = TO_NUMBER(#{marketValue}),
+		       S.CURRENT_CASH      = TO_NUMBER(#{currentCash})
+		 WHERE S.NICKNAME = #{nickname}	
+		 and s.IS_CURRENT = '1'
+	</update>
+	
+	<select id="getCurrentOperation" resultMap="resultCurrentOperation" parameterType="string">
+		SELECT <!-- O.CURRENT_ASSET,
+		       O.ACTUAL_CASH, -->
+		       O.GUARANTEE_CASH CURRENT_ASSET,
+		       O.trade_fund ACTUAL_CASH,
+		       O.PROFIT_LOSS_CASH,
+		       O.PROFIT_LOSS_RADIO,
+		       (1 + O.PROFIT_LOSS_CASH / O.GUARANTEE_CASH) PROGRESSBAR
+		  FROM STOCK_USER_OPERATE_MAININFO O
+		 WHERE O.NICKNAME = #{nickname} and o.IS_CURRENT = '1'
+	</select>
+	
+	<insert id="setBlankWallet" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select seq_stock_user_wallet_id.Nextval from dual
+		</selectKey>
+		Insert Into Stock_User_Wallet(Id,Nickname,Balance)
+		Values(#{id},#{nickname},0)
+	</insert>
+	
+	<select id="queryLoginStatus" parameterType="string" resultType="string">
+		select id from stock_user u where u.nickname = #{nickname} and status='1'
+	</select>
+	
+	<update id="updateLoginStatus" parameterType="string">
+		UPDATE STOCK_USER S
+		   SET S.STATUS = '1'
+		 WHERE S.ID = #{userId}
+	</update>
+</mapper>

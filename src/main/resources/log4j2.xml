@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+    <properties>
+        <property name="filename">${log4j.filename}</property>
+        <property name="filePattern">${log4j.filePattern}</property>
+    </properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout charset="GBK" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n%xEx"/>
+        </Console>
+        <RollingFile name="rolling" fileName="${filename}" filePattern="${filePattern}">
+            <PatternLayout charset="GBK" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %t %-5p %c{2} - %msg%n%xEx"/>
+            <SizeBasedTriggeringPolicy size="10M" />
+            <DefaultRolloverStrategy max="100" min="1" />
+        </RollingFile>
+        
+	    <appender name="A1" class="org.apache.log4j.RollingFileAppender">
+	        <param name="Encoding" value="UTF-8" />
+	        <param name="File" value="d://works//log//stock.log" />
+		</appender>
+    </appenders>
+    
+    
+    <loggers>
+<!-- 	   <logger name="com.zeekie.stock" level="debug">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="rolling"/>
+        </logger> -->
+        <root level="debug">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="rolling"/>
+        </root>
+    </loggers>
+</configuration>

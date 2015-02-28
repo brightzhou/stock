@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zeekie.stock.respository.TradeMapper">
+
+	<resultMap type="com.zeekie.stock.entity.RuleDO" id="resultRule">
+		<result column="USE_RULE" property="use_rule" jdbcType="VARCHAR"/>
+		<result column="SECURET_RULE" property="securet_rule" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.DeductDO" id="resultFee">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="ADD_MANAGEMENT_FEE" property="fee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="DRAW_FEE" property="drawFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+
+
+	<resultMap type="com.zeekie.stock.entity.AddGuaranteePageDO" id="enterAddGuaranteeResult">
+		<result column="GUARANTEE_CASH" property="guaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CURRENT_GUARANTEE_CASH" property="currentGuaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ORGIN_OPERATE_LIMIT" property="orginOperateLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CURRENT_OPERATE_LIMIT" property="currentOperateLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PROFIT_LOSS_CASH" property="profitAndLossCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ASSIGN_RADIO" property="assignRadio" jdbcType="VARCHAR"/>
+		<result column="WARN_CASH" property="warnCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="STOP_CASH" property="stopCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="stop_radio" property="stopRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="warn_radio" property="warnRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FUND_ACCOUNT" property="warnRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+
+
+	<resultMap type="com.zeekie.stock.entity.AutoAddGuaranteeCashDO" id="resultAutoWantCash">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="NEEDWANTCASH" property="needWantCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+
+	<resultMap type="com.zeekie.stock.entity.HistoryOperationDO" id="resultHistoryOperation">
+		<result column="CURRENT_ASSET" property="currentAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ACTUAL_CASH" property="actualFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PROFIT_LOSS_CASH" property="profitAndLossCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander" />
+		<result column="PROFIT_LOSS_RADIO" property="profitAndLossRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="LOAN_RULE" property="loanRule" jdbcType="VARCHAR"/>
+		<result column="startDate" property="startDate" jdbcType="VARCHAR"/>
+		<result column="endDate" property="endDate" jdbcType="VARCHAR"/>
+		<result column="MANAGEMENT_FEE" property="managementFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander" />
+		<result column="ASSET_ID" property="assetId" jdbcType="VARCHAR"/>
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="GUARANTEE_CASH" property="guaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.EveningEndDO" id="resultEveningResult">
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="CURRENT_CASH" property="capital" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ASSET_ID" property="assetId" jdbcType="VARCHAR"/>
+		<result column="STOP_RADIO" property="stopPercent" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.WarnLineDO" id="resultWarnLineUser">
+		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="ACTUAL_CASH" property="actualAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="WARN_CASH" property="warnFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+<!-- 	<resultMap type="com.zeekie.stock.entity.WarnLineDO" id="resultSwingUser">
+		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
+	</resultMap> -->
+	
+<!-- 	<resultMap type="com.zeekie.stock.entity.DayDO" id="resultInitFeeDays">
+		<result column="Year_Month" property="yearMonth" jdbcType="VARCHAR"/>
+		<result column="DAY" property="day" jdbcType="VARCHAR"/>
+	</resultMap> -->
+
+	<select id="getSeqId" parameterType="string" resultType="LONG" statementType="STATEMENT">
+		select ${seq} from dual
+	</select>
+	
+	<insert id="storeOperatorAcountInfo" parameterType="com.zeekie.stock.entity.TradeDO">
+		<!-- <selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select Seq_User_Operate_Acount_Id.Nextval from dual
+		</selectKey> -->
+		INSERT INTO STOCK_USER_OPERATE_ACOUNT
+		  (ID,
+		   NICKNAME,
+		   TRADE_ACOUNT,
+		   TRADE_PASSWORD,
+		   ASSET_ID,
+		   FUND_ACCOUNT,
+		   COMBINE_NAME,
+		   CLIENT_NAME,
+		   ASSETUNIT_NAME,
+		   COMBIE_ID)
+		VALUES
+		  (#{id},
+		   #{nickname,jdbcType=VARCHAR},
+		   #{operatorNo,jdbcType=VARCHAR},
+		   #{operatorPwd,jdbcType=VARCHAR},
+		   #{assetId,jdbcType=VARCHAR},
+		   #{fundAccount,jdbcType=VARCHAR},
+		   #{combineName,jdbcType=VARCHAR},
+		   #{clientName,jdbcType=VARCHAR},
+		   #{assetunitName,jdbcType=VARCHAR},
+		   #{combineId,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="getRule" resultMap="resultRule" >
+		SELECT * FROM STOCK_RULE
+	</select>
+	
+	
+	<update id="deductGuaranteeCash" parameterType="string">
+		UPDATE STOCK_USER_WALLET W
+		   SET W.BALANCE = W.BALANCE - to_number(#{guaranteeCash}) 
+		 WHERE W.NICKNAME = #{nickname}
+	</update>
+	
+	<update id="deductTradeFund" parameterType="Float">
+		UPDATE STOCK_TOTAL_FUND
+		   SET TOTAL_FUND = TOTAL_FUND - #{tradeFund},
+		       MODIFY_CASH  = '-' || #{tradeFund},
+		       HAPPEND_TIME = SYSDATE
+		WHERE IS_CURRENT = 'Y'       
+	</update>
+	
+	<insert id="recordFundflow" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_FUND_FLOW_ID.Nextval from dual
+		</selectKey>
+		INSERT INTO STOCK_FUND_FLOW
+		  (ID, NICKNAME,TRANSACTION_TYPE, FUND, TRANSACTION_TIME, DECRIPTION)
+		VALUES
+		  (#{id},#{nickname} ,#{transactionType}, #{fund}, SYSDATE, #{desc})
+	</insert>
+	
+<!-- 	<select id="recordFundflowbatch" parameterType="long">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_FUND_FLOW_ID.Nextval from dual
+		</selectKey>
+	</select> -->
+	
+	<update id="updateManageFeeBatch">
+<!-- 	        UPDATE STOCK_USER_OPERATE_MAININFO W
+			   SET W.MANAGEMENT_FEE     = W.MANAGEMENT_FEE +
+			                              (SELECT R.FEE_RADIO * W.TRADE_FUND
+			                                 FROM STOCK_FUND_ASSIGN_RADIO R
+			                                WHERE R.NICKNAME = W.NICKNAME),
+			       W.ADD_MANAGEMENT_FEE =
+			       (SELECT R.FEE_RADIO * W.TRADE_FUND
+			          FROM STOCK_FUND_ASSIGN_RADIO R
+			         WHERE R.NICKNAME = W.NICKNAME)
+			 WHERE W.IS_CURRENT = '1' -->
+			UPDATE STOCK_USER_OPERATE_MAININFO W
+			   SET W.MANAGEMENT_FEE     = W.MANAGEMENT_FEE +
+			                              (SELECT R.FEE_RADIO * W.TRADE_FUND
+			                                 FROM STOCK_FUND_ASSIGN_RADIO R
+			                                WHERE R.NICKNAME = W.NICKNAME),
+			       W.ADD_MANAGEMENT_FEE =
+			       (SELECT R.FEE_RADIO * W.TRADE_FUND
+			          FROM STOCK_FUND_ASSIGN_RADIO R
+			         WHERE R.NICKNAME = W.NICKNAME),
+			       W.DRAW_FEE        =
+			       (SELECT R.FEE_RADIO * W.TRADE_FUND * R.UP_LINE_PERCENT
+			          FROM STOCK_FUND_ASSIGN_RADIO R
+			         WHERE R.NICKNAME = W.NICKNAME
+			           AND EXISTS (SELECT 1
+			                  FROM STOCK_USER U
+			                 WHERE R.USER_ID = U.ID
+			                   AND U.REFEREE_ID IS NOT NULL))
+			 WHERE W.IS_CURRENT = '1'
+	</update>
+	
+	<update id="updateManageFeeByUser" parameterType="string">
+	        UPDATE STOCK_USER_OPERATE_MAININFO W
+			   SET W.MANAGEMENT_FEE     = W.MANAGEMENT_FEE +
+			                              (SELECT R.FEE_RADIO * W.TRADE_FUND
+			                                 FROM STOCK_FUND_ASSIGN_RADIO R
+			                                WHERE R.NICKNAME = W.NICKNAME),
+			       W.ADD_MANAGEMENT_FEE =
+			       (SELECT R.FEE_RADIO * W.TRADE_FUND
+			          FROM STOCK_FUND_ASSIGN_RADIO R
+			         WHERE R.NICKNAME = W.NICKNAME),
+ 					W.DRAW_FEE =
+			       (SELECT R.FEE_RADIO * W.TRADE_FUND * R.UP_LINE_PERCENT
+			          FROM STOCK_FUND_ASSIGN_RADIO R
+			         WHERE R.NICKNAME = W.NICKNAME
+			           AND EXISTS (SELECT 1
+			                  FROM STOCK_USER U
+			                 WHERE R.USER_ID = U.ID
+			                   AND U.REFEREE_ID IS NOT NULL))
+			 WHERE W.IS_CURRENT = '1'
+			   And W.nickname = #{nickname}
+	</update>
+	
+	<select id="queryCurrentStocker" resultMap="resultFee">
+		SELECT S.NICKNAME,S.ADD_MANAGEMENT_FEE,S.DRAW_FEE
+		  FROM STOCK_USER_OPERATE_MAININFO S
+		 WHERE S.IS_CURRENT = '1'
+	</select>
+	
+	<select id="queryNewStocker" resultMap="resultFee">
+		SELECT S.NICKNAME,S.ADD_MANAGEMENT_FEE,S.DRAW_FEE
+		  FROM STOCK_USER_OPERATE_MAININFO S
+		 WHERE S.IS_CURRENT = '1'
+		 And s.nickname = #{nickname}
+	</select>
+	
+	<!-- 扣去服务费 -->
+	<update id="deductManageFeeBatch" parameterType="com.zeekie.stock.entity.DeductDO">
+	        UPDATE STOCK_USER_WALLET W set
+        		   W.BALANCE = (W.BALANCE - #{fee,jdbcType=FLOAT})
+		 	WHERE  W.NICKNAME = #{nickname,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 批量记录扣去服务费流水 -->
+	<insert id="addFlowFundBatch" parameterType="com.zeekie.stock.entity.FundFlowDO">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_FUND_FLOW_ID.Nextval from dual
+		</selectKey>
+		INSERT INTO STOCK_FUND_FLOW
+		  (ID, NICKNAME,TRANSACTION_TYPE, FUND, TRANSACTION_TIME, DECRIPTION)
+		VALUES
+		  (#{id},#{nickname} ,#{transactionType}, #{fund}, SYSDATE, #{desc})
+	</insert>
+	
+	
+	<!-- 批量给推广人加服务提成费用 -->
+	<update id="addDrawFeeBatch" parameterType="com.zeekie.stock.entity.FundFlowDO">
+         UPDATE STOCK_USER_WALLET W
+         SET W.BALANCE =
+             (W.BALANCE + #{fund,jdbcType=FLOAT})
+       WHERE W.NICKNAME = #{nickname,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="deductManageFee" parameterType="com.zeekie.stock.entity.DeductDO">
+	        UPDATE STOCK_USER_WALLET W set
+        		   W.BALANCE = (W.BALANCE - #{fee,jdbcType=FLOAT})
+		 	WHERE  W.NICKNAME = #{nickname,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<select id="enterAddGuaranteePage" resultMap="enterAddGuaranteeResult">
+		SELECT 
+			(O.GUARANTEE_CASH + #{addGuranteeCash}) GUARANTEE_CASH,
+	       (CASE
+	         WHEN O.PROFIT_LOSS_CASH &lt; 0 AND (#{addGuranteeCash}+O.PROFIT_LOSS_CASH)>0 THEN
+	          (O.GUARANTEE_CASH + #{addGuranteeCash}+O.PROFIT_LOSS_CASH)
+	         WHEN O.PROFIT_LOSS_CASH &lt; 0 AND (#{addGuranteeCash}+O.PROFIT_LOSS_CASH) &lt;= 0 THEN
+	           O.GUARANTEE_CASH <!-- + O.PROFIT_LOSS_CASH -->
+	         WHEN O.PROFIT_LOSS_CASH >= 0 THEN O.GUARANTEE_CASH + #{addGuranteeCash}
+	       END) CURRENT_GUARANTEE_CASH,
+	       
+	       (
+	       	 (O.GUARANTEE_CASH + #{addGuranteeCash}) *(SELECT R.ASSIGN_RADIO FROM STOCK_FUND_ASSIGN_RADIO R WHERE O.NICKNAME = R.NICKNAME)
+	       ) ORGIN_OPERATE_LIMIT,
+	       
+	       (CASE
+	         WHEN O.PROFIT_LOSS_CASH &lt; 0 AND (#{addGuranteeCash}+O.PROFIT_LOSS_CASH)>0 THEN
+	          (O.GUARANTEE_CASH + #{addGuranteeCash}+O.PROFIT_LOSS_CASH) *(SELECT R.ASSIGN_RADIO
+	           FROM STOCK_FUND_ASSIGN_RADIO R
+	          WHERE O.NICKNAME = R.NICKNAME)
+	         WHEN O.PROFIT_LOSS_CASH &lt; 0 AND (#{addGuranteeCash}+O.PROFIT_LOSS_CASH) &lt;= 0 THEN
+	           O.TRADE_FUND
+	         WHEN O.PROFIT_LOSS_CASH >= 0 THEN (O.GUARANTEE_CASH + #{addGuranteeCash})*(SELECT R.ASSIGN_RADIO
+	           FROM STOCK_FUND_ASSIGN_RADIO R
+	          WHERE O.NICKNAME = R.NICKNAME)
+	       END)  CURRENT_OPERATE_LIMIT ,
+	       O.PROFIT_LOSS_CASH,
+	       (select r.ASSIGN_RADIO from STOCK_FUND_ASSIGN_RADIO r where r.NICKNAME = O.NICKNAME)ASSIGN_RADIO,
+	       O.STOP_CASH,
+	       O.WARN_CASH,
+	       (Select r.stop_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) stop_radio, 
+		   (Select r.warn_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) warn_radio,
+		   (SELECT A.FUND_ACCOUNT
+			  FROM STOCK_USER_OPERATE_ACOUNT A
+			 WHERE A.IS_CURRENT = '1'
+			   AND A.ID = O.OPERATE_ACCOUNT_ID) FUND_ACCOUNT
+	  FROM STOCK_USER_OPERATE_MAININFO O
+	 WHERE O.NICKNAME = #{nickname} and o.IS_CURRENT = '1'
+	</select>
+	
+	
+	<update id="modifyFund" parameterType="com.zeekie.stock.entity.form.AddCuaranteeForm">
+		UPDATE STOCK_USER_OPERATE_MAININFO M
+		   SET TRADE_FUND       = to_number(#{currentOperateLimit}),
+		       GUARANTEE_CASH   = to_number(#{currentGuaranteeCash}),
+		       PROFIT_LOSS_CASH = to_number(#{profitAndLossCash}),
+		       STOP_CASH = to_number(#{currentOperateLimit})*(select radio.STOP_RADIO from STOCK_FUND_ASSIGN_RADIO radio where radio.nickname = m.nickname),
+		       WARN_CASH = to_number(#{currentOperateLimit})*(select radio.WARN_RADIO from STOCK_FUND_ASSIGN_RADIO radio where radio.nickname = m.nickname),
+		       PROFIT_LOSS_RADIO = to_number(#{profitAndLossCash})/to_number(#{currentGuaranteeCash}),
+		       CURRENT_ASSET = to_number(#{currentGuaranteeCash})+to_number(#{profitAndLossCash}),
+		       ACTUAL_CASH = ACTUAL_CASH + to_number(#{addedAssginCapital})
+		 WHERE NICKNAME = #{nickname} and IS_CURRENT = '1'
+	</update>
+	
+	<select id="getNeedAutoAddGuaranteeCashClient" resultMap="resultAutoWantCash">
+			SELECT (M.TRADE_FUND - M.ACTUAL_CASH) NEEDWANTCASH, NICKNAME
+			  FROM STOCK_USER_OPERATE_MAININFO M
+			 WHERE M.ACTUAL_CASH = M.WARN_CASH
+			   AND M.IS_CURRENT = '1'
+			   AND M.AUTO_ADD_GUARANTEE_CASH = 'Y'
+	</select>
+	
+	<select id="queryOrginTradeFund" resultType="string">
+		SELECT TRADE_FUND
+		  FROM STOCK_USER_OPERATE_MAININFO
+		 WHERE NICKNAME = #{nickname} and IS_CURRENT = '1'
+	</select>
+	
+	<update id="setAutoAddCuaranteeCash"  >
+		update STOCK_USER_OPERATE_MAININFO set AUTO_ADD_GUARANTEE_CASH ='Y'  WHERE NICKNAME = #{nickname} and IS_CURRENT = '1'
+	</update>
+	
+	<select id="isEnoughCashForClient" resultType="string">
+		select 1 from STOCK_USER_WALLET w where w.nickname = #{nickname} and w.BALANCE > to_number(#{addGuaranteeCash})
+	</select>
+	
+	<update id="currentOperationOver" parameterType="string">
+		update STOCK_USER_OPERATE_MAININFO set IS_CURRENT = '0',END_DATE = sysdate
+		where nickname = #{nickname} and IS_CURRENT = '1' 
+	</update>
+	
+	<update id="updateCurrentAccountMayUse" parameterType="string">
+	    Update Stock_User_Acount_Assigned a
+		   Set a.Flag = '0'
+		 Where Exists (Select 1
+		          From Stock_User_Operate_Acount o
+		         Where o.Trade_Acount = a.Operator_Acount
+		           And o.Nickname = #{nickname}
+		           And o.Is_Current = '1')
+		   And a.Flag = '1'
+    </update>
+	
+	<update id="setCurrentOpertionAccountIsHistory" parameterType="string">
+		update stock_user_operate_acount set IS_CURRENT = '0' 
+		where nickname = #{nickname} and IS_CURRENT = '1' 
+	</update>
+	
+	<update id="recharge" parameterType="string">
+		Update Stock_User_Wallet w
+		   Set w.Balance = w.Balance + to_number(#{fund})
+		 Where w.Nickname = #{nickname}
+	</update>
+	
+	<update id="caculateRefereeIncome" parameterType="string">
+		Update Stock_User_Operate_Maininfo o
+		   Set o.Assign_Referee_Cash =
+		       (Select (nvl(Trunc(To_Date(To_Char(m.End_Date, 'YYYY-MM-DD'),
+		                               'YYYY-MM-DD') -
+		                       To_Date(To_Char(m.Start_Date, 'YYYY-MM-DD'),
+		                               'YYYY-MM-DD')),0) *
+		               (Select p.Assign_Referee_Draw_Percent
+		                   From Stock_Fund_Assign_Radio p
+		                  Where p.Nickname = m.Nickname)) Income
+		          From Stock_User_Operate_Maininfo m
+		         Where m.Is_Current = '1'
+		           And Exists (Select 1
+		                  From Stock_User u
+		                 Where u.Nickname = m.Nickname
+		                   And u.Referee_Id Is Not Null)
+		           And m.Nickname = o.Nickname)
+		   where o.nickname = #{nickname}
+	</update>
+	
+	<select id="getHistoryOperation" resultMap="resultHistoryOperation" parameterType="string">
+			SELECT S.ID,
+			       S.CURRENT_ASSET,
+			       S.ACTUAL_CASH,
+			       S.PROFIT_LOSS_CASH,
+			       S.PROFIT_LOSS_RADIO,
+			       S.MANAGEMENT_FEE,
+			       S.GUARANTEE_CASH,
+			       'HB000' || S.ID ASSET_ID,
+			       TO_CHAR(START_DATE, 'yyyy-mm-dd') STARTDATE,
+			       TO_CHAR(END_DATE, 'yyyy-mm-dd') ENDDATE,
+			       (SELECT R.LOAN_RULE FROM STOCK_RULE R) LOAN_RULE
+			  FROM (SELECT ROW_NUMBER() OVER(ORDER BY T.END_DATE desc) AS NUM, T.*
+			          FROM STOCK_USER_OPERATE_MAININFO T
+			         WHERE T.NICKNAME = #{nickname}
+			           AND T.IS_CURRENT = '0') S
+			 WHERE NUM &gt; = #{offset} + 1
+			   AND NUM &lt;= #{offset} + 20
+ 		<!-- SELECT S.*,to_char(START_DATE,'yyyy-mm-dd') startDate,to_char(END_DATE,'yyyy-mm-dd') endDate,
+             (SELECT A.ASSET_ID
+                FROM STOCK_USER_OPERATE_ACOUNT A
+               WHERE A.NICKNAME = S.NICKNAME
+                 AND A.IS_CURRENT = '0') ASSET_ID,
+             (SELECT R.LOAN_RULE FROM STOCK_RULE R) LOAN_RULE
+        FROM (SELECT ROWNUM RN, T.*
+                FROM STOCK_USER_OPERATE_MAININFO T
+               WHERE T.NICKNAME = #{nickname} And t.Is_Current = '0'
+                 AND ROWNUM &lt;= #{offset} + 20) S
+       WHERE RN &gt;= #{offset} + 1
+       ORDER BY END_DATE DESC -->
+    </select>
+    
+    <insert id="insertRecord" parameterType="string">
+    	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_DEPOSIT_RECORD_ID.Nextval from dual
+		</selectKey>
+		INSERT INTO DEPOSIT_RECORD
+		  (ID, NICKNAME,PAY_ACCOUNT, FUND, PAY_DATE)
+		VALUES
+		  (#{id},#{nickname} ,#{payAccount}, #{fund}, SYSDATE)
+    </insert>
+    
+    <select id="getEveningFlag" parameterType="string" resultMap="resultEveningResult">
+    	SELECT M.ID,
+		       M.CURRENT_CASH,
+		       <!-- (SELECT A.ASSET_ID
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE A.NICKNAME = M.NICKNAME
+		           AND M.OPERATE_ACCOUNT_ID = A.ID) --> 
+		       'HB000'||M.ID ASSET_ID,
+		       (SELECT R.STOP_RADIO * 100 || '%'
+		          FROM STOCK_FUND_ASSIGN_RADIO R
+		         WHERE R.NICKNAME = M.NICKNAME) STOP_RADIO
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.NICKNAME = #{nickname}
+		   AND M.UNACTIVE_END = '1'
+		   AND M.IS_CURRENT = '1'
+		   AND ROWNUM = 1
+		 ORDER BY M.END_DATE DESC
+    </select>
+    
+    
+    <update id="setFeeCalendarBatch"  parameterType="com.zeekie.stock.entity.DayDO">
+		MERGE INTO STOCK_FEE_CALENDAR P
+		USING (SELECT #{feeDate} FEE_DATE,
+		              #{yearMonth} YEAR_MONTH,
+		              #{day} DAY
+		         FROM DUAL) T
+		ON (trim(P.FEE_DATE) = trim(T.FEE_DATE))
+		WHEN MATCHED THEN
+		  UPDATE SET P.FLAG = '1'
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (P.FEE_DATE, P.YEAR_MONTH, P.DAY)
+		  VALUES
+		    (T.FEE_DATE, T.YEAR_MONTH, T.DAY)
+	</update>
+
+
+    <select id="initFeeDays" parameterType="string" resultType="String">
+    	Select trim(m.Day)
+		  From Stock_Fee_Calendar m
+		 Where M.Year_Month = #{month} AND m.Flag = '1'
+		 Order By m.Fee_Date
+    </select>
+    
+     <select id="selectFeeDay" parameterType="string" resultType="String" >
+    	Select 1
+		  From Stock_Fee_Calendar m
+		 Where trim(M.Fee_Date) = #{feeDate}
+    </select>
+    
+    <select id="queryNeedNoticeUser" resultMap="resultWarnLineUser">
+    	SELECT M.ID,
+		       M.NICKNAME,
+		       M.ACTUAL_CASH,
+		       M.WARN_CASH,
+		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = M.NICKNAME) PHONE
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.IS_CURRENT = '1'
+		   AND M.ACTUAL_CASH &lt;= M.WARN_CASH
+		   AND M.WARN_FLAG = '0'
+    </select>
+    
+    <update id="updateWarnFlagToOne" parameterType="com.zeekie.stock.entity.WarnLineDO">
+    	update STOCK_USER_OPERATE_MAININFO set WARN_FLAG = '1' where id = #{operateId,jdbcType=VARCHAR}
+    </update>
+    
+<!--     <select id="querySwingUser" parameterType="string" resultMap="resultSwingUser">
+	    SELECT M.ID
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.IS_CURRENT = '1'
+		   AND (SELECT (1 - R.WARN_RADIO) * #{swingPercent} + M.WARN_CASH
+		          FROM STOCK_FUND_ASSIGN_RADIO R
+		         WHERE R.NICKNAME = M.NICKNAME) &lt; M.ACTUAL_CASH
+		   AND M.WARN_FLAG = '1'
+    </select> -->
+    
+    <update id="updateWarnFlagToZero" parameterType="com.zeekie.stock.entity.WarnLineDO">
+    	UPDATE STOCK_USER_OPERATE_MAININFO M
+		   SET M.WARN_FLAG = '0'
+		 WHERE M.ID IN
+		       (SELECT M.ID
+		          FROM STOCK_USER_OPERATE_MAININFO M
+		         WHERE M.IS_CURRENT = '1'
+		           AND (SELECT (1 - R.WARN_RADIO) * #{swingPercent} + M.WARN_CASH
+		                  FROM STOCK_FUND_ASSIGN_RADIO R
+		                 WHERE R.NICKNAME = M.NICKNAME) &lt; M.ACTUAL_CASH
+		           AND M.WARN_FLAG = '1') 
+    </update>
+</mapper>

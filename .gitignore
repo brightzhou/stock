@@ -1,0 +1,17 @@
+*.class
+*.bak
+*/classes/*
+.settings
+.myeclipse
+.mymetadata
+.classpath
+.project
+deploy
+.idea
+*.iml
+weblogic.jar
+/bin
+artifacts
+pom.xml
+/target
+/.settings

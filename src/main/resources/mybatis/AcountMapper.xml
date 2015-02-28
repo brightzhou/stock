@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zeekie.stock.respository.AcountMapper">
+
+	<resultMap type="com.zeekie.stock.entity.StockRadioDO" id="resultRadio">
+		<result column="ASSIGN_RADIO" property="assignRadio" jdbcType="NUMERIC"/>
+		<result column="STOP_RADIO" property="stopRadio" jdbcType="NUMERIC"/>
+		<result column="WARN_RADIO" property="warnRadio" jdbcType="NUMERIC"/>
+		<result column="FEE_RADIO" property="manageFeeRadio" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+	<resultMap type="com.zeekie.stock.entity.TradeDO" id="resultCurrOperateAcount">
+		<result column="TRADE_ACOUNT" property="operatorNo" jdbcType="VARCHAR"/>
+		<result column="TRADE_PASSWORD" property="operatorPwd" jdbcType="VARCHAR"/>
+		<result column="ASSET_ID" property="assetId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.ManagerDO" id="resultManager">
+		<result column="OPERATOR_NO" property="operatorNo" jdbcType="VARCHAR"/>
+		<result column="OPERATOR_PWD" property="operatorPwd" jdbcType="VARCHAR"/>
+		<result column="COMBINE_ID" property="combineId" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+		
+	<resultMap type="com.zeekie.stock.entity.TradeDO" id="resultInitClientAcount">
+		<result column="OPERATOR_ACOUNT" property="operatorNo" jdbcType="VARCHAR"/>
+		<result column="OPERATOR_PWD" property="operatorPwd" jdbcType="VARCHAR"/>
+		<result column="Combine_Id" property="combineId" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<resultMap type="com.zeekie.stock.entity.TradeDO" id="resultSonAccount">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="COMBIE_ID" property="combineId" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="TRADE_ACOUNT" property="operatorNo" jdbcType="VARCHAR"/>
+		<result column="TRADE_PASSWORD" property="operatorPwd" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.InsufficientBalanceRemindDO" id="resultBalanceIsNotEnoughUser">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="telephone" property="telephone" jdbcType="VARCHAR"/>
+		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.FundFlowDO" id="resultFlowFund">
+		<result column="Transaction_type" property="transactionType" jdbcType="VARCHAR"/>
+		<result column="Transaction_time" property="transactionTime" jdbcType="VARCHAR"/>
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="DECRIPTION" property="desc" jdbcType="VARCHAR"/>
+		<result column="FUND" property="fund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+
+	<resultMap type="com.zeekie.stock.entity.CurrentAccountDO" id="resultCurrentAccount">
+		<result column="GUARANTEE_CASH" property="guaranteeCash" jdbcType="FLOAT"/>
+		<result column="ACTUAL_CASH" property="stockCapital" jdbcType="FLOAT"/>
+		<result column="BALANCE" property="balance" jdbcType="FLOAT"/>
+		<result column="FREEZE_CASH" property="freezeCash" jdbcType="FLOAT"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.WithdrawlDO" id="resultDeposit">
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="truename" property="truename" jdbcType="VARCHAR"/>
+		<result column="Id_Card" property="idCard" jdbcType="VARCHAR"/>
+		<result column="Bank" property="bank" jdbcType="VARCHAR"/>
+		<result column="Card_Number" property="bankNO" jdbcType="VARCHAR"/>
+		<result column="Withdrawl_Cash" property="cash" jdbcType="VARCHAR"/>
+		<result column="Time" property="time" jdbcType="VARCHAR"/>
+		<result column="Status" property="status" jdbcType="VARCHAR"/>
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.TotalFundDO" id="resultTotalFundList">
+		<result column="TOTAL_FUND" property="totalFund" jdbcType="VARCHAR"/>
+		<result column="MODIFY_CASH" property="modifyFund" jdbcType="VARCHAR"/>
+		<result column="HAPPEND_TIME" property="storeTime" jdbcType="VARCHAR"/>
+		<result column="IS_CURRENT" property="current" jdbcType="VARCHAR"/>
+		<result column="fundAccountName" property="fundAccountName" jdbcType="VARCHAR"/>
+		
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.EndStockCashDO" id="resultEndStockUserCash">
+		<result column="USERCASH" property="userCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ASSIGNCASH" property="assginCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.RedPacketDO" id="resultRedPacket">
+		<result column="ASSIGN_REFEREE_RED_PACKET" property="assignRefereeRedPacket" jdbcType="VARCHAR"/>
+		<result column="ASSIGN_REGISTER_RED_PACKET" property="assignRegisterRedPacket" jdbcType="VARCHAR"/>
+		<result column="ASSIGN_REFEREE_DRAW_PERCENT" property="assignRefereeDrawPercent" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ID" property="userId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.MovecashToRefereeDO" id="resultMoveCashToReferee">
+		<result column="COMBIE_ID" property="assetId" jdbcType="VARCHAR"/>
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="REFEREE" property="referee" jdbcType="VARCHAR"/>
+		<result column="BALANCE" property="balance" jdbcType="VARCHAR"/>
+		<result column="ASSIGN_REFEREE_CASH" property="cash" jdbcType="VARCHAR"/>
+		<result column="SHARE_BONUS" property="status" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.WithdrawPageDO" id="resultWithdrawPageEnter">
+		<result column="Bank" property="bank" jdbcType="VARCHAR"/>
+		<result column="Card_Number" property="number" jdbcType="VARCHAR"/>
+		<result column="Use_Rule" property="rule" jdbcType="VARCHAR"/>
+		<result column="Securet_Rule" property="privateRule" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.PayDO" id="resultPayList">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="PAY_ACCOUNT" property="payAccount" jdbcType="VARCHAR"/>
+		<result column="FUND" property="fund" jdbcType="VARCHAR"/>
+		<result column="PAY_DATE" property="payDate" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.CashDO" id="resultMoney">
+		<result column="residue" property="residueCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="BALANCE" property="orginCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.DebtDO" id="restultWallet">
+		<result column="BALANCE" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="guarantee_cash" property="guaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.CurrentOperationWebDO" id="resultCurrentOperation">
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="STOP_LINE" property="stopLine" jdbcType="FLOAT"/>
+		<result column="WARN_LINE" property="warnLine" jdbcType="FLOAT"/>
+		<result column="ACTUAL_CASH" property="actualCash" jdbcType="FLOAT"/>
+		<result column="TRADE_ACOUNT" property="tradeAccount" jdbcType="FLOAT"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.AccountDO" id="resultGetAccount">
+		<result column="COMBIE_ID" property="combineId" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="trade_acount" property="tradeAcount" jdbcType="VARCHAR"/>
+		<result column="MANAGER_COMBINE_ID" property="managerCombineId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.TradeDO" id="resultAllClientAcount">
+		<result column="OPERATOR_ACOUNT" property="operatorNo" jdbcType="VARCHAR"/>
+		<result column="OPERATOR_PWD" property="operatorPwd" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="COMBINE_ID" property="combineId" jdbcType="VARCHAR"/>
+		<result column="MANAGER_COMBINE_ID" property="managerCombineId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<resultMap type="com.zeekie.stock.entity.ClientPercentDO" id="resultClient">
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="USER_RANGE" property="range" jdbcType="VARCHAR"/>
+		<result column="STOP_RADIO" property="stopLine" jdbcType="FLOAT"/>
+		<result column="WARN_RADIO" property="warnLine" jdbcType="FLOAT"/>
+		<result column="ASSIGN_RADIO" property="assignPercent" jdbcType="FLOAT"/>
+		<result column="ASSIGN_REFEREE_RED_PACKET" property="toRefereePacket" jdbcType="FLOAT"/>
+		<result column="ASSIGN_REGISTER_RED_PACKET" property="registerPacket" jdbcType="FLOAT"/>
+		<result column="FEE_RADIO" property="managementFeePercent" jdbcType="FLOAT"/>
+		<result column="ASSIGN_CASH" property="assignCash" jdbcType="FLOAT"/>
+		<result column="UP_LINE_PERCENT" property="upLinePercent" jdbcType="FLOAT"/>
+		<result column="DOWN_LINE_PERCENT" property="downLinePercent" jdbcType="FLOAT"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.FundAccountDO" id="resultFundAccount">
+		<result column="FUND_ACCOUNT" property="id" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT_NAME" property="text" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.OwingFeeDO" id="resultOwingFee">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="BALANCE" property="oweFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+		<result column="TRADE_ACOUNT" property="operationAccount" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- user indentification -->
+	<insert id="insertIdentify" >
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_ID_CARD.Nextval from dual
+		</selectKey>
+		INSERT INTO STOCK_ID_CARD
+		  (ID, USER_ID, TRUENAME, ID_CARD, IDENTIFY_DATE)
+		VALUES
+		  (#{id},
+		   (SELECT U.ID
+		      FROM STOCK_USER U
+		     WHERE U.NICKNAME = #{nickname}
+		       AND ROWNUM = 1),
+		   #{truename},
+		   #{idCard},
+		   SYSDATE)
+	</insert>
+	
+	<insert id="bindPercent">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_FUND_ASSIGN_RADIO_ID.Nextval from dual
+		</selectKey>
+<!-- 		insert into STOCK_FUND_ASSIGN_RADIO(id,nickname) 
+		values(#{id},#{nickname}) -->
+		INSERT INTO STOCK_FUND_ASSIGN_RADIO
+		  (ID, USER_ID, NICKNAME, UP_LINE_PERCENT)
+		VALUES
+		  (#{id},
+		   (SELECT U.ID FROM STOCK_USER U WHERE U.NICKNAME = #{nickname}),
+		   #{nickname},
+		   (SELECT R.DOWN_LINE_PERCENT
+		      FROM STOCK_FUND_ASSIGN_RADIO R
+		     WHERE EXISTS (SELECT 1
+		              FROM STOCK_USER U
+		             WHERE U.NICKNAME = #{nickname}
+		               AND U.REFEREE_ID = R.USER_ID)))
+	</insert>
+	
+		<!-- bind Credit Card -->
+	<insert id="bindCreditCard" >
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_stock_bank_info_id.Nextval from dual
+		</selectKey>
+		INSERT INTO STOCK_BANK_INFO
+		  (ID, USER_ID, BANK, CARD_NUMBER)
+		VALUES
+		  (#{id},
+		   (SELECT U.ID
+		      FROM STOCK_USER U
+		     WHERE U.NICKNAME = #{nickname}<!-- 
+		       AND U.TELEPHONE = #{telephone} -->),
+		   #{bank},
+		   #{number})
+	</insert>
+	
+	<update id="setDepositPwd">
+		UPDATE STOCK_ID_CARD C
+	   SET DEPOSIT_PWD = #{depositPwd},TELEPHONE = #{telephone,jdbcType=VARCHAR}
+	 WHERE EXISTS (SELECT 1
+	          FROM STOCK_USER U
+	         WHERE C.USER_ID = U.ID
+	           AND U.NICKNAME = #{nickname}
+	          <!--  AND U.TELEPHONE = #{telephone} -->)
+	</update>
+	
+	<select id="checkDepositPwd" parameterType="string" resultType="string">
+		Select 1
+		  From Stock_Id_Card s
+		 Where s.Deposit_Pwd = #{depositPwd}
+		   And Exists (Select 1
+		          From Stock_User u
+		         Where u.Nickname = #{nickname}
+		           And u.Id = s.User_Id)
+	</select>
+
+
+	<select id="cashIsEnough" resultType="string" parameterType="string">
+		SELECT 1
+		  FROM STOCK_TOTAL_FUND S
+		 WHERE S.TOTAL_FUND > to_number(#{tradeFund}) AND S.FUND_ACOUNT = #{fundAccount} and is_current='Y'
+	</select>
+	
+	<select id="getAssignRadioForCurrUser" resultMap="resultRadio" parameterType="string">
+	SELECT ASSIGN_RADIO, STOP_RADIO, WARN_RADIO,FEE_RADIO
+	  FROM STOCK_FUND_ASSIGN_RADIO
+	 WHERE NICKNAME = #{nickname}
+	 
+	</select>
+	
+	<update id="updateTelephone" parameterType="string">
+		update stock_user set TELEPHONE = #{telephone} where nickname = #{nickname}
+	</update>
+	
+	<insert id="storeOperatorCash" parameterType="com.zeekie.stock.entity.form.TradeForm">
+	<selectKey resultType="LONG" keyProperty="id" order="BEFORE">
+		select sqt_user_operate_maininfo_id.nextval FROM DUAL
+	</selectKey> 
+		INSERT INTO STOCK_USER_OPERATE_MAININFO
+		  (ID,
+		   OPERATE_ACCOUNT_ID,
+		   NICKNAME,
+		   TRADE_FUND,
+		   GUARANTEE_CASH,
+		   STOP_CASH,
+		   WARN_CASH,
+		   START_DATE)
+		VALUES
+		  (#{id},
+		   #{operateAccountId,jdbcType=VARCHAR},
+		   #{nickname,jdbcType=VARCHAR},
+		   #{tradeFund,jdbcType=VARCHAR},
+		   #{guaranteeCash,jdbcType=VARCHAR},
+		   #{stopCash,jdbcType=VARCHAR},
+		   #{warnCash,jdbcType=VARCHAR},
+		   to_date(#{startDate,jdbcType=VARCHAR},'yyyy-mm-dd'))
+	</insert>
+	
+	<select id="getOperateAcount" resultMap="resultCurrOperateAcount" parameterType="string">
+		SELECT a.Trade_Acount,
+		       a.Trade_Password,
+		       (Select 'HB000' || m.Id
+		          From Stock_User_Operate_Maininfo m
+		         Where m.Operate_Account_Id = a.Id
+		           And m.Is_Current = '1') ASSET_ID
+        FROM stock_user_operate_acount a where a.nickname=#{nickname} and a.is_current='1'
+	</select>
+	
+	<select id="getInitUserInfo" resultMap="resultInitClientAcount">
+		SELECT OPERATOR_ACOUNT,
+		       OPERATOR_PWD,
+		       COMBINE_ID,
+		       (SELECT T.FUND_ACCOUNT FROM STOCK_MANAGER_ACOUNT T WHERE ROWNUM = 1) FUND_ACCOUNT
+		  FROM STOCK_USER_ACOUNT_ASSIGNED
+		 WHERE ROWNUM = 1
+		   AND FLAG = '0'
+	</select>
+	
+	<select id="getAllUserInfo" resultMap="resultAllClientAcount">
+		SELECT OPERATOR_ACOUNT,
+		       U.OPERATOR_PWD,
+		       U.COMBINE_ID,
+		       A.FUND_ACCOUNT,
+		       A.COMBINE_ID MANAGER_COMBINE_ID
+		  FROM STOCK_USER_ACOUNT_ASSIGNED U, STOCK_MANAGER_ACOUNT A
+		 WHERE FLAG = '0'
+		   AND U.FUND_ACCOUNT = A.FUND_ACCOUNT
+		   AND A.STATUS = '1'
+	</select>
+	
+	<select id="getAccount" parameterType="string" resultMap="resultGetAccount">
+		SELECT A.COMBIE_ID,
+		       A.FUND_ACCOUNT,
+		       A.TRADE_ACOUNT,
+		       (SELECT S.COMBINE_ID FROM STOCK_MANAGER_ACOUNT S WHERE ROWNUM = 1) MANAGER_COMBINE_ID
+		  FROM STOCK_USER_OPERATE_ACOUNT A
+		 WHERE A.NICKNAME = #{nickname}
+		   AND A.IS_CURRENT = '1'
+	</select>
+	
+	<update id="updateAccountStatus" parameterType="string">
+		update stock_user_acount_assigned a set a.flag ='1',operator_pwd = #{newOperatePwd} where a.OPERATOR_ACOUNT=#{operatorAcount}
+	</update>
+	
+	<select id="getStockManager" resultMap="resultManager">
+		SELECT M.OPERATOR_NO, M.OPERATOR_PWD, M.COMBINE_ID, M.FUND_ACCOUNT
+		  FROM STOCK_MANAGER_ACOUNT M
+		  where rownum = 1
+	</select>
+	
+	<select id="getSonAccountInfo" resultMap="resultSonAccount">
+		Select t.Nickname,
+		       t.Combie_Id,
+		       t.Fund_Account,
+		       t.Trade_Acount,
+		       t.Trade_Password
+		  From Stock_User_Operate_Acount t
+		 Where t.Is_Current = '1'
+	</select>
+	
+	<select id="queryClientCombineId" resultType="string" parameterType="string">
+		SELECT T.COMBIE_ID
+		  FROM STOCK_USER_OPERATE_ACOUNT T where t.nickname=#{nickname} and t.is_current = '1'
+	</select>
+	
+	
+	<select id="queryUserBalanceIsNotEnough" resultMap="resultBalanceIsNotEnoughUser">
+		SELECT W.NICKNAME,
+	       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = W.NICKNAME) TELEPHONE,
+	       W.BALANCE
+			  FROM STOCK_USER_WALLET W
+			 WHERE W.BALANCE &lt;= (SELECT M.ADD_MANAGEMENT_FEE 
+			                       FROM STOCK_USER_OPERATE_MAININFO M
+			                      WHERE W.NICKNAME = M.NICKNAME and M.Is_Current = '1')
+	</select>
+	
+	<select id="getFundFlow" resultMap="resultFlowFund" parameterType="string">
+		Select s.id,s.Fund,
+		       s.Transaction_Type,
+		       To_Char(s.Transaction_Time, 'yyyy-mm-dd HH24:MI:ss') Transaction_Time,
+		       s.DECRIPTION
+		  From (Select Row_Number() Over(Order By t.Transaction_Time desc) As Num, t.*
+		          From Stock_Fund_Flow t
+		         Where t.Nickname = #{nickname}
+		           And t.Transaction_Type != '70') s
+		 Where Num &gt; = #{offset} + 1
+		   And Num &lt; = #{offset} + 20
+		  <!-- Order By s.Transaction_Time Desc
+		  Order By Transaction_Time Desc -->
+    </select>
+    
+    <update id="updateFigurePwd" parameterType="string">
+    	UPDATE STOCK_USER U SET U.FIGURE_PWD = #{figurePwd} WHERE U.NICKNAME = #{nickname}
+    </update>
+    
+    <select id="getCurrentAccount" parameterType="string" resultMap="resultCurrentAccount">
+		    Select (Select Case
+	                 When m.Guarantee_Cash Is Null Or m.Guarantee_Cash = '' Then
+	                  0.00
+	                 Else
+	                  m.Guarantee_Cash
+	               End
+	          From Stock_User_Operate_Maininfo m
+	         Where m.Nickname = w.Nickname and m.is_current = '1') Guarantee_Cash,
+	       (Select Case
+	                 When m.Actual_Cash Is Null Or m.Actual_Cash = '' Then
+	                  0.00
+	                 Else
+	                  m.Actual_Cash
+	               End
+	          From Stock_User_Operate_Maininfo m
+	         Where m.Nickname = w.Nickname and m.is_current = '1') Actual_Cash,
+	       w.Balance,
+	       w.FREEZE_CASH
+	  From Stock_User_Wallet w
+	 Where w.Nickname = #{nickname}
+    </select>
+    
+    <insert id="withdraw"  parameterType="string">
+    	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_USER_WITHDRAWL_CASH.Nextval from dual
+		</selectKey>
+		INSERT INTO STOCK_USER_WITHDRAWL_CASH
+		  (ID, NICKNAME, WITHDRAWL_CASH, TIME)
+		VALUES
+		  (#{id}, #{nickname}, #{fund}, sysdate)
+    </insert>
+    
+    <update id="saveFreezeCash" parameterType="string">
+    	update Stock_User_Wallet set FREEZE_CASH = FREEZE_CASH + to_number(#{fund}),BALANCE = BALANCE- to_number(#{fund})
+    	where nickname = #{nickname}
+    </update>
+    
+    <select id="isIdentify" parameterType="string" resultType="string">
+    	SELECT 1
+		  FROM STOCK_ID_CARD C
+		 WHERE C.ID_CARD Is Not Null
+		   AND EXISTS (SELECT 1
+		          FROM STOCK_BANK_INFO B
+		         WHERE B.CARD_NUMBER Is Not Null
+		           AND B.USER_ID = C.USER_ID)
+		   AND EXISTS (SELECT 1
+		          FROM STOCK_USER U
+		         WHERE U.ID = c.user_id
+		           AND U.NICKNAME = #{nickname})
+    </select>
+    
+	<select id="queryDepositCount" parameterType="com.zeekie.stock.web.WithdrawlPage" resultType="long">
+			Select count(1)
+			  From Stock_User_Withdrawl_Cash s, Stock_Id_Card Card
+			 Where Exists (Select 1
+			                  From Stock_User u
+			                 Where u.Id = Card.User_Id
+			                   And s.Nickname = u.Nickname)
+			 <if test="nickname!=null and nickname!=''">
+			 	and nickname like '%'||#{nickname}||'%'
+			 </if>
+			 <if test="depositType!=null and depositType!=''">
+			 	and status = #{depositType}
+			 </if>
+	</select>
+	
+	<select id="getDepositList" parameterType="com.zeekie.stock.web.WithdrawlPage" resultMap="resultDeposit">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+			Select s.id,s.Nickname,
+			       Card.Truename,
+			       Card.Id_Card,
+			       (Select Bank.Bank
+			          From Stock_Bank_Info Bank
+			         Where Bank.User_Id = Card.User_Id) Bank,
+			       (Select Bank.Card_Number
+			          From Stock_Bank_Info Bank
+			         Where Bank.User_Id = Card.User_Id) Card_Number,
+			       s.Withdrawl_Cash,
+			       s.Status,
+			       to_char(s.Time,'yyyy-mm-dd HH24:mi:ss') time
+		  From Stock_User_Withdrawl_Cash s, Stock_Id_Card Card
+		 Where Exists (Select 1
+	                  From Stock_User u
+	                 Where u.Id = Card.User_Id
+	                   And s.Nickname = u.Nickname)
+		 <if test="nickname!=null and nickname!=''">
+		 	and nickname like '%'||#{nickname}||'%'
+		 </if>
+		 <if test="depositType!=null and depositType!=''">
+		 	and status = #{depositType}
+		 </if>
+		 Order by s.Time desc
+		<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+    
+    <update id="updateDepositStatus" parameterType="string">
+    	update STOCK_USER_WITHDRAWL_CASH set STATUS ='1' where id = #{id}
+    </update>
+    
+    <update id="deductWithdrawCahs" parameterType="string">
+    	update Stock_User_Wallet set freeze_cash = freeze_cash - to_number(#{cash})
+    	where nickname = #{nickname}
+    </update>
+    
+    <update id="updateStatusToN"  parameterType="string">
+		UPDATE STOCK_TOTAL_FUND S SET S.Is_Current = 'N' WHERE S.Is_Current='Y'  and S.FUND_ACOUNT = #{fundAccount}    
+    </update>
+    
+    <update id="updateStatusToY">
+   		 UPDATE STOCK_TOTAL_FUND S SET S.Is_Current = 'Y' WHERE S.Is_Current='M' and S.FUND_ACOUNT = #{fundAccount} 
+    </update>
+    
+    <insert id="addTotalFund" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select Seq_Stock_Total_Fund_Id.Nextval from dual
+		</selectKey>
+	    Insert Into Stock_Total_Fund
+		  (Id, Total_Fund, Modify_Cash, FUND_ACOUNT,Happend_Time)
+		Values
+		  (#{id},
+			(SELECT (CASE
+			         WHEN (SELECT TOTAL_FUND
+			                 FROM STOCK_TOTAL_FUND
+			                WHERE IS_CURRENT = 'Y'
+			                  AND FUND_ACOUNT = #{fundAccount}) IS NULL THEN
+			          0
+			          ELSE
+			          (SELECT TOTAL_FUND
+			              FROM STOCK_TOTAL_FUND
+			             WHERE IS_CURRENT = 'Y'
+			               AND FUND_ACOUNT = #{fundAccount})
+			       END) + To_Number(#{fund})
+			  FROM DUAL),
+		   '+' || #{fund},
+		   #{fundAccount},
+		   Sysdate
+		   )
+    </insert>
+    
+	<select id="queryTotalFundCount" resultType="long" parameterType="string">
+		Select count(1)
+		  From STOCK_TOTAL_FUND where FUND_ACOUNT = #{fundAccount}
+	</select>
+	
+    <select id="getTotalFundList" parameterType="com.zeekie.stock.web.TotalFundPage" resultMap="resultTotalFundList">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+			Select TOTAL_FUND,MODIFY_CASH,to_char(HAPPEND_TIME,'yyyy-mm-dd HH24:mi:ss') HAPPEND_TIME,is_current,
+			(select ASSET_UNIT_NAME from STOCK_MANAGER_ACOUNT where fund_account = #{fundAccount}) fundAccountName
+		    From STOCK_TOTAL_FUND where FUND_ACOUNT = #{fundAccount} order by HAPPEND_TIME desc
+		<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+    <select id="operationIsEnded" parameterType="string" resultType="string">
+		SELECT 1
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.IS_CURRENT = '1'
+		   AND M.market_cash = 0
+		   AND M.NICKNAME = #{nickname}
+	</select>
+	
+	<select id="queryUserLastCash" parameterType="string" resultMap="resultEndStockUserCash">
+		SELECT (M.GUARANTEE_CASH + M.PROFIT_LOSS_CASH) USERCASH,
+		       (M.TRADE_FUND - m.guarantee_cash) ASSIGNCASH
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.IS_CURRENT = '1'
+		   AND M.NICKNAME = #{nickname}
+	</select>
+	
+	<update id="moveProfitToUserWallet" parameterType="string">
+		UPDATE STOCK_USER_WALLET W
+		   SET W.BALANCE = W.BALANCE + to_number(#{userCash})
+		 WHERE W.NICKNAME = #{nickname}
+	</update>
+	
+	<update id="moveAssignCashToTotalFund" parameterType="string">
+		UPDATE STOCK_TOTAL_FUND F
+   		   SET F.TOTAL_FUND = F.TOTAL_FUND + to_number(#{assginCash}), F.MODIFY_CASH = '+' || #{assginCash}
+	</update>
+	
+	<insert id="recordIntegral" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_USER_INTEGRAL_ID.Nextval from dual
+		</selectKey>
+		INSERT INTO STOCK_USER_INTEGRAL I
+		  (ID, USER_ID, REFEREE_ID)
+		VALUES
+		  (#{id},
+		   (SELECT U.ID FROM STOCK_USER U WHERE U.NICKNAME = #{nickname}),
+		   (SELECT REFEREE_ID FROM STOCK_USER U WHERE U.NICKNAME = #{nickname}))
+	</insert>
+	
+	<select id="queryReferee" parameterType="string" resultType="string">
+		Select s.Nickname
+          From Stock_User s
+         Where Exists (Select 1
+                  From Stock_User u
+                 Where u.Nickname = #{nickname}
+                   And s.Id = u.Referee_Id)
+	</select> 
+	
+	<select id="existWallet" resultType="string" parameterType="string">
+		select 1 from Stock_User_Wallet w where w.nickname = #{nickname}
+	</select>
+	
+	<select id="getPlatRedPacketToReferee" parameterType="string" resultType="string">
+		Select Assign_Referee_Red_Packet
+		  From Stock_Fund_Assign_Radio r
+		 Where r.Nickname = #{referee}
+	</select>
+	
+	<select id="getRefereeRedPacket" parameterType="string" resultType="string">
+		Select Red_Packet
+		  From Stock_Referee_Red_Packet p
+		 Where p.REFEREE_NICKNAME = #{referee}
+	</select>
+	
+	
+	<select id="getPlatRedPacketToRegister" parameterType="string" resultType="string">
+		Select Assign_Register_Red_Packet
+		  From Stock_Fund_Assign_Radio r
+		 Where r.Nickname = #{nickname}
+	</select>
+	
+<!-- 	<insert id="insertMoneyToWallet">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_USER_INTEGRAL_ID.Nextval from dual
+		</selectKey>
+		Insert Into Stock_User_Wallet w
+		  (w.Id, w.Nickname, w.Balance)
+		Values
+		  (#{id},
+		   #{nickname},
+		   #{redPacket}
+		   )
+	</insert> -->
+	
+	<update id="moveRedPacketToReferee" parameterType="string">
+		Update STOCK_USER_WALLET w  Set w.balance = balance + to_number(#{redPacket}) where w.nickname = #{nickname}
+	</update>
+	
+	<update id="moveRedPacketToRegister" parameterType="string">
+		UPDATE STOCK_USER_WALLET W
+		   SET W.BALANCE = W.BALANCE + to_number(#{redPacket})
+		 where w.nickname = #{nickname}
+	</update>
+	
+	<update id="movePlatformRedPacketToRegister" parameterType="string">
+		UPDATE STOCK_USER_WALLET W
+	   	   SET W.BALANCE = W.BALANCE + #{redPacket}
+		 where w.nickname = #{nickname}
+	</update>
+	
+	<select id="getRedPacket" parameterType="string" resultMap="resultRedPacket">
+		SELECT R.ASSIGN_REFEREE_RED_PACKET,
+		       R.ASSIGN_REGISTER_RED_PACKET,
+		       R.ASSIGN_REFEREE_DRAW_PERCENT,
+		       (SELECT U.ID FROM STOCK_USER U WHERE R.NICKNAME = U.NICKNAME) ID
+		  FROM STOCK_FUND_ASSIGN_RADIO R
+		 WHERE R.Nickname =#{nickname}
+	</select>
+	
+	<update id="insertRefereeRedPacket"  parameterType="string">
+<!-- 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_REFEREE_RED_PACKET_ID.Nextval from dual
+		</selectKey> -->
+		MERGE INTO STOCK_REFEREE_RED_PACKET P
+		USING (SELECT #{id} ID,
+		              #{refereeId} REFEREE_ID,
+		              (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = #{refereeId}) REFEREE_NICKNAME,
+		              #{redPacket} RED_PACKET
+		         FROM DUAL) T
+		ON (P.REFEREE_ID = T.REFEREE_ID AND P.REFEREE_NICKNAME = T.REFEREE_NICKNAME)
+		WHEN MATCHED THEN
+		  UPDATE SET P.RED_PACKET = RED_PACKET
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (P.ID, P.REFEREE_ID, P.REFEREE_NICKNAME, P.RED_PACKET)
+		  VALUES
+		    (T.ID, T.REFEREE_ID, T.REFEREE_NICKNAME, T.RED_PACKET)
+	</update>
+	
+	
+	<select id="queryMoveCashToRefereeCount" resultType="long">
+	SELECT COUNT(1)
+	  FROM STOCK_USER U, STOCK_USER_INTEGRAL I, STOCK_USER_OPERATE_MAININFO M
+	 WHERE M.NICKNAME = U.NICKNAME
+	   AND U.ID = I.USER_ID
+	   AND M.END_DATE Is Not Null
+	   AND M.IS_CURRENT = '0'
+	</select>
+	
+	<select id="queryMoveCashToReferee" parameterType="com.zeekie.stock.web.MoveToRefereePage" resultMap="resultMoveCashToReferee">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT (SELECT A.COMBIE_ID
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE A.ID = M.OPERATE_ACCOUNT_ID
+		           AND A.IS_CURRENT = '0 ') COMBIE_ID,
+		       U.NICKNAME,
+		       (SELECT K.NICKNAME FROM STOCK_USER K WHERE K.ID = I.REFEREE_ID) REFEREE,
+		        M.SHARE_BONUS,
+		       (SELECT W.BALANCE
+		          FROM STOCK_USER_WALLET W
+		         WHERE W.NICKNAME = U.NICKNAME) BALANCE,
+		       M.ASSIGN_REFEREE_CASH
+		  FROM STOCK_USER U
+		  LEFT JOIN STOCK_USER_INTEGRAL I
+		    ON (I.USER_ID = U.ID), STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.NICKNAME = U.NICKNAME
+		   AND M.END_DATE IS NOT NULL
+		   AND M.IS_CURRENT = '0'
+		   AND U.REFEREE_ID IS NOT NULL
+		 <if test="referee!=null and referee!=''">
+		 	AND u.nickname like '%'||#{referee}||'%'
+		 </if>
+		 Order by m.END_DATE desc
+	   <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<select id="withdrawPageEnter" parameterType="string" resultMap="resultWithdrawPageEnter">
+		Select (Select b.Bank From Stock_Bank_Info b Where b.User_Id = u.Id) Bank,
+		       (Select b.Card_Number From Stock_Bank_Info b Where b.User_Id = u.Id) Card_Number,
+		       (Select Use_Rule From Stock_Rule) Use_Rule,
+		       (Select Securet_Rule From Stock_Rule) Securet_Rule
+		  From Stock_User u
+		 Where u.Nickname = #{nickname}
+	</select>
+	
+	<select id="checkBalance" parameterType="string" resultType="string">
+		Select 1
+		  From Stock_User_Wallet w
+		 Where w.Nickname = #{nickname}
+		   And w.Balance > #{fund}
+	</select>
+	
+	<select id="checkOldTelephone" parameterType="string" resultType="string">
+		select 1 from stock_user u where u.nickname = #{nickname} and u.telephone=#{telephone}
+	</select>
+	
+	<select id="userWalletIsFull" parameterType="string" resultType="string">
+		select 1 from Stock_User_Wallet w where w.nickname = #{nickname} and w.balance>#{guaranteeCash}
+	</select>
+	
+	<update id="modifyDepositPwd" parameterType="string">
+		Update Stock_Id_Card c
+		   Set Deposit_Pwd = #{depositPwd}
+		 Where Exists (Select 1
+		          From Stock_User u
+		         Where u.Id = c.User_Id
+		           And u.Nickname = #{nickname}) 
+	</update>
+	
+	<select id="getPayListCount" resultType="long">
+		SELECT COUNT(1) FROM DEPOSIT_RECORD U 
+	</select>
+	
+	<select id="getPayList" parameterType="com.zeekie.stock.web.PayPage" resultMap="resultPayList">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		 SELECT U.ID,U.NICKNAME,u.PAY_ACCOUNT,u.FUND,u.STATUS,to_char(u.PAY_DATE,'yyyy-mm-dd hh24:mm:ss') PAY_DATE FROM DEPOSIT_RECORD U 
+	    Order by U.pay_date desc
+	   <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<update id="updatePayStatus" parameterType="string">
+		update DEPOSIT_RECORD set STATUS = '1' where id = #{id}
+	</update>
+	
+	<select id="getOperateAccount" resultType="string">
+		SELECT 1
+		  FROM STOCK_USER_ACOUNT_ASSIGNED U
+		 WHERE FLAG = '0'
+		   AND ROWNUM = 1
+		   AND EXISTS (SELECT 1
+		          FROM STOCK_MANAGER_ACOUNT A
+		         WHERE U.FUND_ACCOUNT = A.FUND_ACCOUNT
+		           AND A.STATUS = '1')
+	</select>
+	
+	<update id="deductDebt" parameterType="string">
+		update STOCK_USER_WALLET w set w.debt = 0,w.balance = #{cash} where w.nickname = #{nickname} 
+	</update>
+	
+	<select id="selectCash" parameterType="string" resultMap="resultMoney">
+		SELECT (W.BALANCE + W.DEBT) residue, W.BALANCE FROM STOCK_USER_WALLET W
+ 		WHERE W.NICKNAME = #{nickname}
+	</select>
+	
+	<select id="getWallet" parameterType="string" resultMap="restultWallet">
+		Select w.Balance,
+	       (Select Guarantee_Cash
+	          From (Select m.Guarantee_Cash
+	                  From Stock_User_Operate_Maininfo m
+	                 Where m.Is_Current = '0'
+	                   And m.Nickname = #{nickname}
+	                 Order By m.End_Date Desc) s
+	         Where Rownum = 1) guarantee_cash
+	  From Stock_User_Wallet w
+	 Where w.Nickname = #{nickname}
+	</select>
+	
+	<select id="queryCurrentOperationCount" resultType="long" parameterType="string">
+		SELECT COUNT(1)
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE 1=1 
+		    AND M.ACTUAL_CASH &lt;= M.STOP_CASH
+   			<!-- AND M.MARKET_CASH != 0 -->
+   			AND M.is_current='1'
+		 <if test="nickname!=null and nickname!=''">
+		 	AND M.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+	<select id="queryCurrentOperation" resultMap="resultCurrentOperation" parameterType="com.zeekie.stock.web.EveningUpPage">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+			SELECT M.ID,
+			       M.NICKNAME,
+			       M.IS_CURRENT  STATUS,
+			       M.STOP_CASH   STOP_LINE,
+			       M.WARN_CASH   WARN_LINE,
+			       M.ACTUAL_CASH,
+				  (SELECT T.TRADE_ACOUNT
+				          FROM STOCK_USER_OPERATE_ACOUNT T
+				         WHERE T.NICKNAME = M.NICKNAME
+				           AND T.IS_CURRENT = '1') TRADE_ACOUNT
+			  FROM STOCK_USER_OPERATE_MAININFO M
+			 WHERE 1=1
+			 	AND M.ACTUAL_CASH &lt;= M.STOP_CASH
+	   			<!-- AND M.MARKET_CASH != 0 -->
+				AND M.is_current='1'
+			 <if test="nickname!=null and nickname!=''">
+			 	AND M.NICKNAME = #{nickname}
+			 </if>
+		<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<update id="update" parameterType="string">
+		update STOCK_USER_OPERATE_MAININFO set UNACTIVE_END = '1' where id = #{id}
+	</update>
+	
+	<update id="updateDebt" parameterType="string">
+		update Stock_User_Wallet set debt = debt + to_number(#{debt})  where nickname = #{nickname}
+	</update>
+	
+	<!-- 获取敏感词汇 -->
+	<select id="querySensitiveWords" resultType="string">
+		Select t.Sensitive_Worid
+		  From Stock_Sensitive_Word t
+		 Where t.Valid_Falg = '1'
+		 Order By Id
+	</select>
+	
+	<!-- 获取推广人 -->
+	<select id="queryRefereeNickname" resultType="string" parameterType="string">
+		SELECT S.NICKNAME
+		  FROM STOCK_USER S
+		 WHERE EXISTS (SELECT 1
+		          FROM STOCK_USER U
+		         WHERE U.NICKNAME = #{nickname}
+		           AND U.REFEREE_ID = S.ID)
+	</select>
+	
+	
+	<select id="queryClientCount" resultType="long" parameterType="string">
+		SELECT COUNT(1)
+		  FROM STOCK_FUND_ASSIGN_RADIO T
+		 WHERE 1=1 
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+	<select id="queryClient" resultMap="resultClient" parameterType="com.zeekie.stock.web.ClientPage">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		select T.ID,
+		       T.NICKNAME,
+		       (CASE
+		         WHEN T.USER_RANGE = '1' THEN
+		          '小生'
+		         WHEN T.USER_RANGE = '2' THEN
+		          '秀才'
+		         WHEN T.USER_RANGE = '3' THEN
+		          '探花'
+		         WHEN T.USER_RANGE = '5' THEN
+		          '榜眼'
+		         ELSE
+		          '状元'
+		       END) USER_RANGE,
+		       T.STOP_RADIO,
+		       T.WARN_RADIO,
+		       T.ASSIGN_RADIO,
+		       T.ASSIGN_REFEREE_RED_PACKET,
+		       T.ASSIGN_REGISTER_RED_PACKET,
+		       T.FEE_RADIO,
+		       T.ASSIGN_CASH,
+		       T.UP_LINE_PERCENT,
+		       T.DOWN_LINE_PERCENT 
+ 		  FROM STOCK_FUND_ASSIGN_RADIO T
+		 <if test="nickname!=null and nickname!=''">
+		 	where T.NICKNAME = #{nickname}
+		 </if>
+		 ORDER BY ID DESC
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<select id="getClientById" resultMap="resultClient" parameterType="string">
+		SELECT T.* FROM STOCK_FUND_ASSIGN_RADIO T 
+		 where T.id = #{id}
+	</select>
+	
+	<update id="saveClientInfo" parameterType="com.zeekie.stock.entity.ClientPercentDO">
+		update STOCK_FUND_ASSIGN_RADIO 
+		<set>
+			<if test="range!=null and range!=''">
+				  USER_RANGE = #{range,jdbcType=FLOAT},
+			</if>
+			<if test="stopLine!=null and stopLine!=''">
+				  STOP_RADIO = #{stopLine,jdbcType=FLOAT},
+			</if>
+			<if test="warnLine!=null and warnLine!=''">
+				  WARN_RADIO = #{warnLine,jdbcType=FLOAT},
+			</if>
+			<if test="assignPercent!=null and assignPercent!=''">
+				  ASSIGN_RADIO = #{assignPercent,jdbcType=FLOAT},
+			</if>
+			<if test="toRefereePacket!=null and toRefereePacket!=''">
+				  ASSIGN_REFEREE_RED_PACKET = #{toRefereePacket,jdbcType=FLOAT},
+			</if>
+			<if test="registerPacket!=null and registerPacket!=''">
+				  ASSIGN_REGISTER_RED_PACKET = #{registerPacket,jdbcType=FLOAT},
+			</if>
+			<if test="assignCash!=null and assignCash!=''">
+				  ASSIGN_CASH = #{assignCash,jdbcType=FLOAT},
+			</if>
+			<if test="managementFeePercent!=null and managementFeePercent!=''">
+				  FEE_RADIO = #{managementFeePercent,jdbcType=FLOAT},
+			</if>
+			<if test="upLinePercent!=null and upLinePercent!=''">
+				  UP_LINE_PERCENT = #{upLinePercent,jdbcType=FLOAT},
+			</if>
+			<if test="downLinePercent!=null and downLinePercent!=''">
+				  DOWN_LINE_PERCENT = #{downLinePercent,jdbcType=FLOAT}
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="getFundAccount" parameterType="string" resultMap="resultFundAccount">
+		select  t.FUND_ACCOUNT ,t.ASSET_UNIT_NAME FUND_ACCOUNT_NAME from STOCK_MANAGER_ACOUNT t
+		where t.status = #{status}
+	</select>
+	
+	<update id="updateStatusToZero" parameterType="string" statementType="STATEMENT">
+		UPDATE STOCK_MANAGER_ACOUNT set status = '0' where fund_account in (${account}) and status!='0'
+	</update>
+	
+	<update id="updateStatusToOne" parameterType="string" statementType="STATEMENT">
+		UPDATE STOCK_MANAGER_ACOUNT set status = '1' where fund_account not in (${account}) and status!='1'
+	</update>
+	
+	<update id="updateAllStatusToOne" parameterType="string" statementType="STATEMENT">
+		UPDATE STOCK_MANAGER_ACOUNT set status = '1' where status!='1'
+	</update>
+	
+	<update id="loginOff" parameterType="string">
+		update STOCK_USER set status ='0' where nickname = #{nickname}
+	</update>
+	
+	<select id="getUserPhone" parameterType="string" resultType="string">
+		select telephone from stock_user u where u.nickname = #{nickname}
+	</select>
+	
+	<select id="queryOwingFeeCount" resultType="long" parameterType="string">
+		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE T.BALANCE &lt;0
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+	<select id="queryOwingFee" resultMap="resultOwingFee" parameterType="com.zeekie.stock.web.ClientPage">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT T.NICKNAME,
+		       T.BALANCE,
+		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = T.NICKNAME) PHONE,
+		       (SELECT O.TRADE_ACOUNT
+		          FROM STOCK_USER_OPERATE_ACOUNT O
+		         WHERE O.NICKNAME = T.NICKNAME
+		           AND O.IS_CURRENT = '1') TRADE_ACOUNT
+				  FROM STOCK_USER_WALLET T
+		 WHERE T.BALANCE &lt; 0
+		 <if test="nickname!=null and nickname!=''">
+		 	and T.NICKNAME = #{nickname}
+		 </if>
+		 ORDER BY ID DESC
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+</mapper>

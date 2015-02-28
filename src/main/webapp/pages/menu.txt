@@ -1,0 +1,17 @@
+[
+	{id: "user", text: "用户管理"},
+	{id: "wallet", text: "钱包管理", pid: "user" },
+	{id: "pay", text: "支付", pid: "wallet"},			
+	{id: "withdraw", text: "提现" , pid: "wallet"},
+	{id: "recharge", text: "账户充值" , pid: "wallet"},
+	{id: "moveCashToReferee", text: "分红" , pid: "wallet"},
+	{id: "fee", text: "管理费收取日期" , pid: "wallet"},
+	
+	{id: "operation", text: "操盘管理"},
+	{id: "eveningUp", text: "结束操盘" , pid: "operation"},
+	{id: "client", text: "客户比例管理" , pid: "operation"},
+	{id: "account", text: "多账户管理" , pid: "operation"},
+	{id: "owingfee", text: "欠费管理" , pid: "operation"},
+	
+	{ id: "right", text: "权限管理"}		
+]

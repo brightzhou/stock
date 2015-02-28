@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<messages>
+
+    <message name="SUCCESS" code="00000000">
+        <text>成功</text>
+    </message>
+
+    <message name="BAD_REQUEST" code="80411101">
+        <text>输入参数有误</text>
+    </message>
+
+    <message name="INTERNAL_SERVER_ERROR" code="80411103">
+        <text>内部服务器异常</text>
+    </message>
+
+    <message name="UN_AUTHORIZATION" code="80411102">
+        <text>API访问未授权</text>
+    </message>
+
+</messages>
+
