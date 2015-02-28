@@ -77,7 +77,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						/* close(); */
                 		mini.alert("充值成功！","",function(action){
 		                		if (action == "ok") {
-		                			 close();
+		                			CloseWindow('save');
 		                		}
 	                	});
                 	}else{

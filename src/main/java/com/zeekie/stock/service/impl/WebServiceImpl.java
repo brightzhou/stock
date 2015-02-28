@@ -156,7 +156,9 @@ public class WebServiceImpl implements WebService {
 	@Override
 	public boolean payToUs(String id, String nickname, String fund) {
 		try {
-			account.updatePayStatus(id);
+			if(StringUtils.isNotBlank(id)){
+				account.updatePayStatus(id);
+			}
 
 			trade.recharge(nickname, fund);
 

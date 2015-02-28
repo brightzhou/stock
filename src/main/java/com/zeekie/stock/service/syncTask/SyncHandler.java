@@ -13,12 +13,15 @@ import org.springframework.stereotype.Service;
 
 import sitong.thinker.common.util.mybatis.BatchMapper;
 
+import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
+import com.zeekie.stock.service.xinge.StockMsg;
+import com.zeekie.stock.service.xinge.XingePush;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.DateUtil;
 
@@ -67,7 +70,22 @@ public class SyncHandler {
 
 		if (StringUtils.equals(Constants.TYPE_JOB_EVENING_UP_REMIND, type)) {
 			eveningUpRemind(param);
+
+			push(param.get("userId"), param.get("nickname"));
+
 		}
+	}
+
+	private void push(String userId, String nickname) {
+		if (log.isDebugEnabled()) {
+			log.debug("用户" + nickname + "被后台平仓，推送消息给APP");
+		}
+		StockMsg msg = new StockMsg();
+		msg.setContent("2");
+		msg.setNickname(nickname);
+		msg.setUserId(userId);
+		msg.setTitle("平仓");
+		XingePush.push(msg);
 	}
 
 	private void handle(String type, String param) {
@@ -123,7 +141,7 @@ public class SyncHandler {
 				log.debug("後台為操盘号为[" + operationId + "]平倉，發短信提醒用戶");
 			}
 			String telephone = account.getUserPhone(param.get("nickname"));
-			param.put("operationId", "HB000" + operationId);
+			param.put("operationId", operationNo + operationId);
 			ApiUtils.sendMsg(Constants.MODEL_EVENING_UP_REMIND_FN, param,
 					telephone);
 

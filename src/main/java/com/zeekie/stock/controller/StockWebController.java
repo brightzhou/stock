@@ -87,7 +87,7 @@ public class StockWebController {
 
 			return webService.getDepositList(withdrawlPage);
 		} catch (ServiceInvokerException e) {
-			log.error("query praise error happened:", e.getMessage());
+			log.error("query getDepositList error happened:", e.getMessage());
 			return new DefaultPage<WithdrawlDO>();
 		}
 	}
@@ -111,7 +111,7 @@ public class StockWebController {
 
 			return webService.getTotalFund(totalFundPage);
 		} catch (ServiceInvokerException e) {
-			log.error("query praise error happened:", e.getMessage());
+			log.error("query getTotalFund error happened:", e.getMessage());
 			return new DefaultPage<TotalFundDO>();
 		}
 	}
@@ -166,7 +166,7 @@ public class StockWebController {
 
 			return webService.queryMoveCashToReferee(moveToRefereePage);
 		} catch (ServiceInvokerException e) {
-			log.error("query praise error happened:", e.getMessage());
+			log.error("query queryMoveCashToReferee error happened:", e.getMessage());
 			return new DefaultPage<MovecashToRefereeDO>();
 		}
 	}
@@ -188,7 +188,7 @@ public class StockWebController {
 
 			return webService.getPayList(payPage);
 		} catch (ServiceInvokerException e) {
-			log.error("query praise error happened:", e.getMessage());
+			log.error("query getPayList error happened:", e.getMessage());
 			return new DefaultPage<PayDO>();
 		}
 	}
@@ -196,7 +196,7 @@ public class StockWebController {
 	@ResponseBody
 	@RequestMapping("payToUs")
 	public String payToUs(
-			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "id", required = false) String id,
 			@RequestParam(value = "nickname", required = true) String nickname,
 			@RequestParam(value = "fund", required = true) String fund) {
 		return webService.payToUs(id, nickname, fund) ? Constants.CODE_SUCCESS
@@ -222,7 +222,7 @@ public class StockWebController {
 
 			return webService.getEveningUp(eveningUpPage);
 		} catch (ServiceInvokerException e) {
-			log.error("query praise error happened:", e.getMessage());
+			log.error("query getEveningUp error happened:", e.getMessage());
 			return new DefaultPage<CurrentOperationWebDO>();
 		}
 	}
@@ -231,13 +231,15 @@ public class StockWebController {
 	@RequestMapping("eveningUp")
 	public String eveningUp(
 			@RequestParam(value = "id", required = true) String id,
-			@RequestParam(value = "nickname", required = true) String nickname) {
+			@RequestParam(value = "nickname", required = true) String nickname,
+			@RequestParam(value = "userId", required = true) String userId) {
 		String flag = webService.eveningUp(id, nickname) ? Constants.CODE_SUCCESS
 				: Constants.CODE_FAILURE;
 		if (StringUtils.equals(Constants.CODE_SUCCESS, flag)) {
 			Map<String, String> param = new HashMap<String, String>();
 			param.put("operationId", id);
 			param.put("nickname", nickname);
+			param.put("userId", userId);
 			handler.handleOtherJob(Constants.TYPE_JOB_EVENING_UP_REMIND, param);
 		}
 		return flag;

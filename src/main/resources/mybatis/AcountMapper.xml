@@ -136,6 +136,7 @@
 		<result column="WARN_LINE" property="warnLine" jdbcType="FLOAT"/>
 		<result column="ACTUAL_CASH" property="actualCash" jdbcType="FLOAT"/>
 		<result column="TRADE_ACOUNT" property="tradeAccount" jdbcType="FLOAT"/>
+		<result column="userId" property="userId" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.AccountDO" id="resultGetAccount">
@@ -815,6 +816,7 @@
 			       M.STOP_CASH   STOP_LINE,
 			       M.WARN_CASH   WARN_LINE,
 			       M.ACTUAL_CASH,
+			      (Select Id From Stock_User u Where u.Nickname = m.Nickname) Userid,
 				  (SELECT T.TRADE_ACOUNT
 				          FROM STOCK_USER_OPERATE_ACOUNT T
 				         WHERE T.NICKNAME = M.NICKNAME

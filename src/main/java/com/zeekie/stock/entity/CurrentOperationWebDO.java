@@ -4,6 +4,8 @@ public class CurrentOperationWebDO {
 
 	private String id;
 
+	private String userId;
+
 	private String nickname;
 
 	private String status;
@@ -20,6 +22,20 @@ public class CurrentOperationWebDO {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId
+	 *            the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	/**
 	 * @return the tradeAccount

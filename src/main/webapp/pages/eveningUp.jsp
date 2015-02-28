@@ -47,6 +47,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="id" width="5%" headerAlign="center" align="center" align="center">
 		序号
                     </div>
+                    <div width="10%" field=userId  headerAlign="center" align="center" visible="false">
+                        
+                    </div>
                     <div width="10%" field="tradeAccount"  headerAlign="center" align="center">
                         操盘账号
                     </div>
@@ -132,19 +135,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function onOpRender(e){
     	var re = e.record;
     	if(re.status=='1'){
-    		return '<span class="link_2"><a  onclick="pay(\''+re.id+'\',\''+re.nickname+'\')">平仓</a></span>';
+    		return '<span class="link_2"><a  onclick="pay(\''+re.id+'\',\''+re.nickname+'\',\''+re.userId+'\')">平仓</a></span>';
     	}else{
     		return '已平仓';
     	}
     }
 
-    function pay(id,nickname){
+    function pay(id,nickname,userId){
     	mini.confirm("确定平仓吗", "确定？",
 	            function (action) {            
 	                if(action == "ok"){
 	                	 $.ajax({
 		     	                url: "<%=basePath%>api/stock/web/eveningUp",
-		     	                data: {id : id,nickname : nickname},
+		     	                data: {id : id,nickname : nickname,userId:userId},
 		     	                type: "post",
 		     	                success: function (msg) {
 		     	                    if(msg == "1"){

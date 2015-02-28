@@ -110,9 +110,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			},
 			currentWindow:true,
 			ondestroy : function(action) {
-				grid.load({
-			          "type": mini.get("type").getValue(),
-			    });
+				if('cancel'!=action){
+					grid.load({
+				          "type": mini.get("type").getValue(),
+				    });
+				}
 			}
 		});
     }

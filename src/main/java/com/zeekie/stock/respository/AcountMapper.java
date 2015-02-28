@@ -235,7 +235,7 @@ public interface AcountMapper {
 	public String queryRefereeNickname(@Param("nickname") String nickname)
 			throws Exception;
 
-	public long queryClientCount(@Param("nickname") String string)
+	public long queryClientCount(@Param("nickname") String nickname)
 			throws Exception;
 
 	public List<ClientPercentDO> queryClient(ClientPage clientPage)
