@@ -992,4 +992,13 @@
 		 ORDER BY ID DESC
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
+	
+	<select id="queryTrueName" parameterType="string" resultType="string">
+			Select c.Truename
+			  From Stock_Id_Card c
+			 Where Exists (Select 1
+			          From Stock_User u
+			         Where Id = c.User_Id
+			           And u.Nickname = #{nickname})
+	</select>
 </mapper>

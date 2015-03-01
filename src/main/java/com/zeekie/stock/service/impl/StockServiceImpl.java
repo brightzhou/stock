@@ -36,6 +36,7 @@ import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
 import com.zeekie.stock.service.homes.StockCombineInfo;
 import com.zeekie.stock.service.homes.StockModifyPwd;
+import com.zeekie.stock.service.homes.StockModifyUserName;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.DateUtil;
@@ -86,6 +87,10 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${func_am_stock_current_qry}")
 	private String Fn_stock_current;// 769203-股票资产查询
+
+	@Autowired
+	@Value("${func_am_change_asset_info}")
+	private String fn_change_assetName;// 769952-修改homse用户名
 
 	@Override
 	public Map<String, String> startOperate(String nickname, String tradeFund) {
@@ -282,6 +287,15 @@ public class StockServiceImpl implements TradeService {
 		// 2.3 生成新密码更新到homes
 		String newOperatePwd = genNewPassword();
 		if (!modifyClientPwd(client, operatorPwd, operator, newOperatePwd)) {
+			log.error("modify homes password failure for user" + nickname
+					+ ",operation NO:" + operator);
+			return "";
+		}
+
+		// 2.3.1修改用户名称
+		if (!modifyUserName(nickname, fundAccount, combineId)) {
+			log.error("modify homes name failure for user" + nickname
+					+ ",operation NO:" + operator);
 			return "";
 		}
 
@@ -312,6 +326,16 @@ public class StockServiceImpl implements TradeService {
 
 		return id + "";
 
+	}
+
+	private boolean modifyUserName(String nickname, String fundAccount,
+			String combineId) throws Exception {
+		String trueName = StringUtils.defaultIfBlank(
+				acount.queryTrueName(nickname), "匿名用户");
+		StockModifyUserName user = new StockModifyUserName(fundAccount,
+				combineId, trueName);
+		user.callHomes(fn_change_assetName);
+		return user.visitSuccess(fn_change_assetName);
 	}
 
 	private boolean canUse(String operator, String combineId,
@@ -353,10 +377,7 @@ public class StockServiceImpl implements TradeService {
 				newOperatePwd);
 		modify.callHomes(Fn_changePwd);
 		// modify.over();
-		if (!modify.visitSuccess(Fn_changePwd)) {
-			return false;
-		}
-		return true;
+		return modify.visitSuccess(Fn_changePwd);
 
 	}
 
@@ -366,10 +387,7 @@ public class StockServiceImpl implements TradeService {
 				managerCombineId, clientCombineId, moveFund);
 		move.callHomes(Fn_asset_move);
 		// move.over();
-		if (!move.visitSuccess(Fn_asset_move)) {
-			return false;
-		}
-		return true;
+		return move.visitSuccess(Fn_asset_move);
 	}
 
 	private boolean setClientAssetInfo(TradeDO acountDO, IDatasets ds) {

@@ -269,4 +269,14 @@ public interface AcountMapper {
 	public List<OwingFeeDO> queryOwingFee(ClientPage clientPage)
 			throws Exception;
 
+	/**
+	 * 获取用户真实姓名
+	 * 
+	 * @param nickname
+	 * @return truename
+	 * @throws Exception
+	 */
+	public String queryTrueName(@Param("nickname") String nickname)
+			throws Exception;
+
 }
