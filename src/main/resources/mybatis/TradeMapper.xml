@@ -23,9 +23,9 @@
 		<result column="ASSIGN_RADIO" property="assignRadio" jdbcType="VARCHAR"/>
 		<result column="WARN_CASH" property="warnCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="STOP_CASH" property="stopCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="stop_radio" property="stopRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="warn_radio" property="warnRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="FUND_ACCOUNT" property="warnRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Stop_Radio" property="stopRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Warn_Radio" property="warnRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
 	</resultMap>
 
 
@@ -269,8 +269,8 @@
 	       (select r.ASSIGN_RADIO from STOCK_FUND_ASSIGN_RADIO r where r.NICKNAME = O.NICKNAME)ASSIGN_RADIO,
 	       O.STOP_CASH,
 	       O.WARN_CASH,
-	       (Select r.stop_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) stop_radio, 
-		   (Select r.warn_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) warn_radio,
+	       (Select r.stop_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) Stop_Radio, 
+		   (Select r.warn_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) Warn_Radio,
 		   (SELECT A.FUND_ACCOUNT
 			  FROM STOCK_USER_OPERATE_ACOUNT A
 			 WHERE A.IS_CURRENT = '1'
