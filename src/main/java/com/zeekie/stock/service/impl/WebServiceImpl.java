@@ -124,7 +124,7 @@ public class WebServiceImpl implements WebService {
 	@Override
 	public boolean addTotalFund(String fund, String fundAccount) {
 		try {
-			account.addTotalFund(fund,fundAccount);
+			account.addTotalFund(fund, fundAccount);
 			// 更新历史金额状态为N
 			account.updateStatusToN(fundAccount);
 			// 更新当前金额状态为Y
@@ -156,7 +156,7 @@ public class WebServiceImpl implements WebService {
 	@Override
 	public boolean payToUs(String id, String nickname, String fund) {
 		try {
-			if(StringUtils.isNotBlank(id)){
+			if (StringUtils.isNotBlank(id)) {
 				account.updatePayStatus(id);
 			}
 

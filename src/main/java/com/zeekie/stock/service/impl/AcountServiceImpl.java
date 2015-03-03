@@ -232,7 +232,7 @@ public class AcountServiceImpl implements AcountService {
 			} else if (StringUtils.equals("110", type)) {//
 				jo.put("transactionType", desc);
 				jo.put("fund", "+" + fund);
-			} else if (StringUtils.equals("120", type)) {// 
+			} else if (StringUtils.equals("120", type)) {//
 				jo.put("transactionType", desc);
 				jo.put("fund", "+" + fund);
 			}
@@ -417,6 +417,9 @@ public class AcountServiceImpl implements AcountService {
 		String combineId = client.getCombineId();
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
+		if (log.isDebugEnabled()) {
+			log.debug("开始访问homes做资金划转，以便结束操盘");
+		}
 		changes.callHomes(Fn_stock_current);
 		String currentCash = changes.getDataSet().getDataset(0)
 				.getString("current_cash");
@@ -429,12 +432,15 @@ public class AcountServiceImpl implements AcountService {
 			assetMove.callHomes(Fn_asset_move);
 			if (assetMove.visitSuccess(Fn_stock_current)) {
 				log.error("操盘账号：" + client.getTradeAcount()
-						+ " 仍然有有资金在HOMES中，结束操盘时将其划转到主单元!!!");
+						+ " 仍然有有资金在HOMES中，结束操盘时已将其划转到主单元!!!");
 				// Map<String, String> param = new HashMap<String, String>();
 				// param.put("operator", client.getTradeAcount());
 				// ApiUtils.sendMsg(Constants.MODEL_OPERATOR_HAS_CASH_FN, param,
 				// stock_manager_phone);
 			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("访问homes成功结束！");
 		}
 	}
 

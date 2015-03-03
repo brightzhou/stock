@@ -63,7 +63,7 @@ public interface WebService {
 	 * 增加总资产
 	 * 
 	 * @param fund
-	 * @param fundAccount 
+	 * @param fundAccount
 	 * @return
 	 */
 	public boolean addTotalFund(String fund, String fundAccount);
@@ -100,7 +100,8 @@ public interface WebService {
 	 * @param nickname
 	 * @return
 	 */
-	public boolean eveningUp(String id, String nickname);
+	public boolean eveningUp(String id, String nickname)
+			throws RuntimeException;
 
 	/**
 	 * 设置收取管理费的日期
@@ -171,6 +172,5 @@ public interface WebService {
 	 */
 	public DefaultPage<OwingFeeDO> getOwingFee(ClientPage clientPage)
 			throws ServiceInvokerException;
-
 
 }

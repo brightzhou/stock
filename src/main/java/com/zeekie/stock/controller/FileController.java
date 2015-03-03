@@ -50,7 +50,7 @@ public class FileController {
 	@Autowired
 	@Value("${apk_name}")
 	private String apk;
-	
+
 	@Autowired
 	@Value("${apk_version}")
 	private String version;
@@ -62,18 +62,18 @@ public class FileController {
 			throws IOException {
 
 		try {
-			String apkdownPath = apkPath + File.separator;
+			String downPath = apkPath + File.separator;
 			String name = "";
 			if (StringUtils.equals(apk, flag)) {
-				apkdownPath = apkdownPath + apk;
+				downPath = downPath + apk;
 				name = apk;
 			} else {
-				apkdownPath = apkdownPath + version;
+				downPath = downPath + version;
 				name = version;
 			}
 
-			if (StringUtils.isEmpty(apkdownPath)) {
-				log.error("file download error==>attId is empty!!");
+			if (StringUtils.isEmpty(downPath)) {
+				log.error("file download error==>flag is empty!!");
 				writeToClient(response, ApiUtils.toJSON(Constants.CODE_FAILURE,
 						"param[filepath] is empty", ""));
 				return;
@@ -82,7 +82,7 @@ public class FileController {
 			InputStream fis = null;
 			try {
 				response.reset();
-				File file = new File(request.getRealPath(apkdownPath));
+				File file = new File(request.getRealPath(downPath));
 				long fileLength = file.length();
 				String length = String.valueOf(fileLength);
 				fis = new BufferedInputStream(new FileInputStream(file));

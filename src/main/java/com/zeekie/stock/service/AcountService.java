@@ -85,7 +85,8 @@ public interface AcountService {
 	 *            判断是否强行平仓
 	 * @return
 	 */
-	public Map<String, String> endStock(String nickname, String flag);
+	public Map<String, String> endStock(String nickname, String flag)
+			throws RuntimeException;
 
 	/**
 	 * 进入用户推广页面

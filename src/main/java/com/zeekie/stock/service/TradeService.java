@@ -60,7 +60,8 @@ public interface TradeService {
 	 * @param nickname
 	 * @return
 	 */
-	public Map<String, String> addCuarantee(AddCuaranteeForm addCuaranteeForm);
+	public Map<String, String> addCuarantee(AddCuaranteeForm addCuaranteeForm)
+			throws RuntimeException;
 
 	/**
 	 * 设置自动增加保证金
@@ -81,9 +82,10 @@ public interface TradeService {
 
 	/**
 	 * 获取当前用户是否被强制结束操盘过
+	 * 
 	 * @param nickname
 	 * @return
 	 */
-	public Map<String,String> getEveningFlag(String nickname);
+	public Map<String, String> getEveningFlag(String nickname);
 
 }

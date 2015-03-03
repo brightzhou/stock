@@ -161,7 +161,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		     	                    }
 		     	                },
 		     	                error: function(msg){
-		     	                	mini.alert("服务器异常，提现失败！");
+		     	                	mini.alert("服务器异常，平仓失败！");
 		     	                	return false;
 		     	                }			
 		     				});

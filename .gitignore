@@ -15,3 +15,4 @@ artifacts
 pom.xml
 /target
 /.settings
+t2sdk-config.xml
