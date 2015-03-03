@@ -2,8 +2,10 @@ package com.zeekie.stock.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 
@@ -91,6 +93,8 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${func_am_change_asset_info}")
 	private String fn_change_assetName;// 769952-修改homse用户名
+
+	private Set<String> fundAccountSet = new HashSet<String>();
 
 	@Override
 	public Map<String, String> startOperate(String nickname, String tradeFund) {
@@ -245,11 +249,12 @@ public class StockServiceImpl implements TradeService {
 		List<TradeDO> li = null;
 		TradeDO client = null;
 		// ManagerDO manager = acount.getStockManager();
+		Integer total = acount.queryTotalFundAccount();
 		boolean flag = true;
 
 		// 判断该账号是否已经结束但是在HOMES却还有资金
 		li = acount.getAllUserInfo();
-		if (null == li) {
+		if (null == li || li.isEmpty()) {
 			if (log.isDebugEnabled()) {
 				log.debug("已经无可用的资金账号，请管理员注意了");
 			}
@@ -257,31 +262,23 @@ public class StockServiceImpl implements TradeService {
 		}
 		for (int i = 0; i < li.size(); i++) {
 			client = li.get(i);
+			fundAccount = client.getFundAccount();
+			if (fundAccountSet.contains(fundAccount)) {
+				continue;
+			}
+			if (total == fundAccountSet.size()) {
+				return "3#";
+			}
 			operatorPwd = client.getOperatorPwd();
 			operator = client.getOperatorNo();
 			combineId = client.getCombineId();
-			fundAccount = client.getFundAccount();
 			managerCombineId = client.getManagerCombineId();
 			if (canUse(operator, combineId, fundAccount, flag)) {
 				break;
 			}
-		}
-
-		if (null == client) {
-			return "";
-		}
-
-		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
-		if (!StringUtils
-				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			Map<String, String> param = new HashMap<String, String>();
-			param.put("fundAccount", fundAccount);
-			ApiUtils.sendMsg(Constants.MODEL_MANAAGER_RECHARGE_FN, param,
-					stock_manager_phone);
-			if (log.isDebugEnabled()) {
-				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
+			if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
+				break;
 			}
-			return "3#";
 		}
 
 		// 2.3 生成新密码更新到homes
@@ -326,6 +323,24 @@ public class StockServiceImpl implements TradeService {
 
 		return id + "";
 
+	}
+
+	private boolean mainFundCashIsEnough(String nickname, String moveFund,
+			String fundAccount) throws Exception {
+		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
+		if (!StringUtils
+				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
+			Map<String, String> param = new HashMap<String, String>();
+			param.put("fundAccount", fundAccount);
+			ApiUtils.sendMsg(Constants.MODEL_MANAAGER_RECHARGE_FN, param,
+					stock_manager_phone);
+			if (log.isDebugEnabled()) {
+				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
+			}
+			fundAccountSet.add(fundAccount);
+			return false;
+		}
+		return true;
 	}
 
 	private boolean modifyUserName(String nickname, String fundAccount,
@@ -485,6 +500,7 @@ public class StockServiceImpl implements TradeService {
 				map.put("stopRadio",
 						StringUtil.keepThreeDot(pageDO.getStopRadio()));
 				map.put("fundAccount", pageDO.getFundAccount());
+				map.put("managerCombineId", pageDO.getManagerCombineId());
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -580,11 +596,16 @@ public class StockServiceImpl implements TradeService {
 							+ "【增加保证金addCuarantee】访问HOMES,执行资金划转操作");
 					String clientCombineId = acount
 							.queryClientCombineId(nickname);
-					ManagerDO managerDO = acount.getStockManager();
-					moveFund(addedAssginCapital, clientCombineId,
-							managerDO.getFundAccount(),
-							managerDO.getCombineId());
-					log.info("成功【划转资金到操盘账户】");
+					// ManagerDO managerDO = acount.getStockManager();
+					boolean moveSuccess = moveFund(addedAssginCapital,
+							clientCombineId, result.get("fundAccount"),
+							result.get("managerCombineId"));
+					if (!moveSuccess) {
+						throw new RuntimeException("向用户" + nickname + "资金划转失败");
+					}
+					if (log.isDebugEnabled()) {
+						log.debug("成功【划转资金到操盘账户】,转移资金：" + addedAssginCapital);
+					}
 				}
 			}
 

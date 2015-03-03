@@ -26,6 +26,23 @@ public class AddGuaranteePageDO {
 
 	private String fundAccount;
 
+	private String managerCombineId;
+
+	/**
+	 * @return the managerCombineId
+	 */
+	public String getManagerCombineId() {
+		return managerCombineId;
+	}
+
+	/**
+	 * @param managerCombineId
+	 *            the managerCombineId to set
+	 */
+	public void setManagerCombineId(String managerCombineId) {
+		this.managerCombineId = managerCombineId;
+	}
+
 	/**
 	 * @return the fundAccount
 	 */

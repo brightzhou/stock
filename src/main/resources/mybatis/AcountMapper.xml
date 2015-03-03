@@ -351,6 +351,11 @@
 		  where rownum = 1
 	</select>
 	
+	<select id="queryTotalFundAccount" resultType="int">
+		SELECT count(1)
+		  FROM STOCK_MANAGER_ACOUNT M where m.STATUS='1'
+	</select>
+	
 	<select id="getSonAccountInfo" resultMap="resultSonAccount">
 		Select t.Nickname,
 		       t.Combie_Id,

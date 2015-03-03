@@ -279,4 +279,12 @@ public interface AcountMapper {
 	public String queryTrueName(@Param("nickname") String nickname)
 			throws Exception;
 
+	/**
+	 * 获取总共有多少个资金账号
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public Integer queryTotalFundAccount() throws Exception;
+
 }
