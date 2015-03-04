@@ -495,7 +495,7 @@
 		       (SELECT M.ID
 		          FROM STOCK_USER_OPERATE_MAININFO M
 		         WHERE M.IS_CURRENT = '1'
-		           AND (SELECT (1 - R.WARN_RADIO) * #{swingPercent} + M.WARN_CASH
+		           AND (SELECT ((1 - R.WARN_RADIO) * #{swingPercent} + R.WARN_RADIO) * M.TRADE_FUND
 		                  FROM STOCK_FUND_ASSIGN_RADIO R
 		                 WHERE R.NICKNAME = M.NICKNAME) &lt; M.ACTUAL_CASH
 		           AND M.WARN_FLAG = '1') 

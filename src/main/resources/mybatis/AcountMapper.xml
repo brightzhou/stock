@@ -309,7 +309,7 @@
         FROM stock_user_operate_acount a where a.nickname=#{nickname} and a.is_current='1'
 	</select>
 	
-	<select id="getInitUserInfo" resultMap="resultInitClientAcount">
+<!-- 	<select id="getInitUserInfo" resultMap="resultInitClientAcount">
 		SELECT OPERATOR_ACOUNT,
 		       OPERATOR_PWD,
 		       COMBINE_ID,
@@ -317,7 +317,7 @@
 		  FROM STOCK_USER_ACOUNT_ASSIGNED
 		 WHERE ROWNUM = 1
 		   AND FLAG = '0'
-	</select>
+	</select> -->
 	
 	<select id="getAllUserInfo" resultMap="resultAllClientAcount">
 		SELECT OPERATOR_ACOUNT,
@@ -335,7 +335,7 @@
 		SELECT A.COMBIE_ID,
 		       A.FUND_ACCOUNT,
 		       A.TRADE_ACOUNT,
-		       (SELECT S.COMBINE_ID FROM STOCK_MANAGER_ACOUNT S WHERE ROWNUM = 1) MANAGER_COMBINE_ID
+		       (SELECT S.COMBINE_ID FROM STOCK_MANAGER_ACOUNT S WHERE S.FUND_ACCOUNT = A.FUND_ACCOUNT) MANAGER_COMBINE_ID
 		  FROM STOCK_USER_OPERATE_ACOUNT A
 		 WHERE A.NICKNAME = #{nickname}
 		   AND A.IS_CURRENT = '1'

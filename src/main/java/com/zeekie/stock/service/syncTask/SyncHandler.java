@@ -47,6 +47,10 @@ public class SyncHandler {
 	@Value("${stock.operation.number}")
 	private String operationNo;
 
+	@Autowired
+	@Value("${xinge.tag.all}")
+	private String tag;
+
 	public void handleJob(final String type, final String param) {
 		new Thread() {
 			@Override
@@ -101,6 +105,19 @@ public class SyncHandler {
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
+		} else if (StringUtils.equals(Constants.TYPE_JOB_CONTROL_APP, type)) {
+
+			StockMsg msg = new StockMsg();
+			if (StringUtils.equals("open", param)) {
+				msg.setContent("3");
+				msg.setTitle("打开APP");
+				msg.setUserId(tag);
+			} else {
+				msg.setTitle("关闭APP");
+				msg.setContent("4");
+				msg.setUserId(tag);
+			}
+			XingePush.pushTags(msg);
 		}
 	}
 

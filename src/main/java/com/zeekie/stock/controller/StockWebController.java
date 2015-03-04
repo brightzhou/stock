@@ -132,7 +132,7 @@ public class StockWebController {
 	public String addTotalFund(
 			@RequestParam(value = "fund", required = true) String fund,
 			@RequestParam(value = "type", required = true) String fundAccount) {
-		return webService.addTotalFund(fund,fundAccount) ? Constants.CODE_SUCCESS
+		return webService.addTotalFund(fund, fundAccount) ? Constants.CODE_SUCCESS
 				: Constants.CODE_FAILURE;
 	}
 
@@ -166,7 +166,8 @@ public class StockWebController {
 
 			return webService.queryMoveCashToReferee(moveToRefereePage);
 		} catch (ServiceInvokerException e) {
-			log.error("query queryMoveCashToReferee error happened:", e.getMessage());
+			log.error("query queryMoveCashToReferee error happened:",
+					e.getMessage());
 			return new DefaultPage<MovecashToRefereeDO>();
 		}
 	}
@@ -441,4 +442,11 @@ public class StockWebController {
 			return new DefaultPage<OwingFeeDO>();
 		}
 	}
+
+	@ResponseBody
+	@RequestMapping("manager/openOrCloseApp")
+	public void openApp(@RequestParam("flag") String flag) {
+		webService.openOrCloseApp(flag);
+	}
+
 }

@@ -149,6 +149,8 @@ public class Constants {
 
 	public static String TYPE_JOB_NOTICE_REACH_WARNLINE = "warnline";
 
+	public static String TYPE_JOB_CONTROL_APP = "closeOrOpenApp";
+
 	public static String accessId = "";
 
 	public static String secretkey = "";

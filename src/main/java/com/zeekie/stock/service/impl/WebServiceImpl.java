@@ -32,6 +32,7 @@ import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.WebService;
+import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
@@ -56,6 +57,9 @@ public class WebServiceImpl implements WebService {
 
 	@Autowired
 	private BatchMapper batchMapper;
+
+	@Autowired
+	private SyncHandler handler;
 
 	@Override
 	public DefaultPage<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage)
@@ -414,5 +418,10 @@ public class WebServiceImpl implements WebService {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);
 		}
+	}
+
+	@Override
+	public void openOrCloseApp(String param) {
+		handler.handleJob(Constants.TYPE_JOB_CONTROL_APP, param);
 	}
 }

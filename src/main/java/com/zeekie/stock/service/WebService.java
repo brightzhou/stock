@@ -173,4 +173,13 @@ public interface WebService {
 	public DefaultPage<OwingFeeDO> getOwingFee(ClientPage clientPage)
 			throws ServiceInvokerException;
 
+	/**
+	 * 开启或关闭APP
+	 * 
+	 * @param flag
+	 *            open:打开 /close:关闭
+	 */
+
+	public void openOrCloseApp(String flag);
+
 }
