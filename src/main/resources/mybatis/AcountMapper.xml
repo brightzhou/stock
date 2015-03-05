@@ -79,12 +79,15 @@
 		<result column="HAPPEND_TIME" property="storeTime" jdbcType="VARCHAR"/>
 		<result column="IS_CURRENT" property="current" jdbcType="VARCHAR"/>
 		<result column="fundAccountName" property="fundAccountName" jdbcType="VARCHAR"/>
+		<result column="description" property="desc" jdbcType="VARCHAR"/>
+		<result column="Percents" property="leaveCashPercent" jdbcType="VARCHAR"/>
 		
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.EndStockCashDO" id="resultEndStockUserCash">
 		<result column="USERCASH" property="userCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="ASSIGNCASH" property="assginCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.RedPacketDO" id="resultRedPacket">
@@ -187,7 +190,9 @@
 		<result column="Total_Fund" property="leaveFund" jdbcType="VARCHAR"/>
 		<result column="Total" property="total" jdbcType="VARCHAR"/>
 		<result column="percents" property="leaveFundPercent" jdbcType="VARCHAR"/>
-		<result column="Asset_Unit_Name" property="assetName" jdbcType="VARCHAR"/>
+		<result column="ASSET_UNIT_NAME" property="assetName" jdbcType="VARCHAR"/>
+		<result column="MANAGER_ACCOUNT_ID" property="managerAccountId" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	
@@ -528,31 +533,32 @@
 			select Seq_Stock_Total_Fund_Id.Nextval from dual
 		</selectKey>
 	    Insert Into Stock_Total_Fund
-		  (Id, Total , Total_Fund, Modify_Cash, FUND_ACOUNT,Happend_Time)
+		  (Id, Total , Total_Fund, Modify_Cash, FUND_ACOUNT,DESCRIPTION,Happend_Time)
 		Values
 		  (#{id},
-		  (SELECT TOTAL + To_Number(#{fund})
+		  (SELECT TOTAL + (CASE WHEN #{type}=1 then To_Number(#{fund}) else 0 end)
 			FROM STOCK_TOTAL_FUND
 			WHERE IS_CURRENT = 'Y'
 			  AND FUND_ACOUNT = #{fundAccount}),
-			(SELECT (CASE
-			         WHEN (SELECT TOTAL_FUND
-			                 FROM STOCK_TOTAL_FUND
-			                WHERE IS_CURRENT = 'Y'
-			                  AND FUND_ACOUNT = #{fundAccount}) IS NULL THEN
-			          0
-			          ELSE
-			          (SELECT TOTAL_FUND
-			              FROM STOCK_TOTAL_FUND
-			             WHERE IS_CURRENT = 'Y'
-			               AND FUND_ACOUNT = #{fundAccount})
-			       END) + To_Number(#{fund})
-			  FROM DUAL),
-		   '+' || #{fund},
-		   #{fundAccount},
+		  (SELECT TOTAL_FUND + To_Number(#{fund})
+			FROM STOCK_TOTAL_FUND
+			WHERE IS_CURRENT = 'Y'
+		    AND FUND_ACOUNT = #{fundAccount}),
+		   (CASE
+	          WHEN TO_NUMBER(#{fund}) &lt; 0 THEN
+	           #{fund}
+	          ELSE
+	           '+' || #{fund}
+	        END),
+	        #{fundAccount},
+	        #{desc},
 		   Sysdate
 		   )
     </insert>
+    
+    <select id="queryFundAccount" parameterType="string" resultType="string">
+    	select fund_account from STOCK_USER_OPERATE_ACOUNT t where t.is_current='1' and nickname = #{nickname}
+    </select>
     
 	<select id="queryTotalFundCount" resultType="long" parameterType="string">
 		Select count(1)
@@ -561,8 +567,9 @@
 	
     <select id="getTotalFundList" parameterType="com.zeekie.stock.web.TotalFundPage" resultMap="resultTotalFundList">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-			Select TOTAL,TOTAL_FUND,MODIFY_CASH,to_char(HAPPEND_TIME,'yyyy-mm-dd HH24:mi:ss') HAPPEND_TIME,is_current,
-			(select ASSET_UNIT_NAME from STOCK_MANAGER_ACOUNT where fund_account = #{fundAccount}) fundAccountName
+			Select TOTAL,TOTAL_FUND,MODIFY_CASH,to_char(HAPPEND_TIME,'yyyy-mm-dd HH24:mi:ss') HAPPEND_TIME,is_current,description,
+			(select ASSET_UNIT_NAME from STOCK_MANAGER_ACOUNT where fund_account = #{fundAccount}) fundAccountName,
+			Trim(To_Char((Total_Fund / Total * 100), '99999999999999.99')) || '%' Percents
 		    From STOCK_TOTAL_FUND where FUND_ACOUNT = #{fundAccount} order by HAPPEND_TIME desc
 		<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
@@ -577,7 +584,8 @@
 	
 	<select id="queryUserLastCash" parameterType="string" resultMap="resultEndStockUserCash">
 		SELECT (M.GUARANTEE_CASH + M.PROFIT_LOSS_CASH) USERCASH,
-		       (M.TRADE_FUND - m.guarantee_cash) ASSIGNCASH
+		       (M.TRADE_FUND - m.guarantee_cash) ASSIGNCASH,
+		       (SELECT A.FUND_ACCOUNT FROM STOCK_USER_OPERATE_ACOUNT A WHERE A.ID = M.OPERATE_ACCOUNT_ID) FUND_ACCOUNT
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'
 		   AND M.NICKNAME = #{nickname}
@@ -589,10 +597,11 @@
 		 WHERE W.NICKNAME = #{nickname}
 	</update>
 	
-	<update id="moveAssignCashToTotalFund" parameterType="string">
+<!-- 	<update id="moveAssignCashToTotalFund" parameterType="string">
 		UPDATE STOCK_TOTAL_FUND F
    		   SET F.TOTAL_FUND = F.TOTAL_FUND + to_number(#{assginCash}), F.MODIFY_CASH = '+' || #{assginCash}
-	</update>
+   		   where F.is_current='Y' and f.fund_acount = #{fundAccount}
+	</update> -->
 	
 	<insert id="recordIntegral" parameterType="string">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1020,22 +1029,44 @@
 			           And u.Nickname = #{nickname})
 	</select>
 	
-	<select id="queryTotal" resultType="long">
+	<select id="queryTotal" resultType="long" parameterType="string">
 		Select count(1)
 		  From Stock_Total_Fund s
 		 Where s.Is_Current = 'Y'
+		<if test="assetName!=null and assetName!=''">
+		    AND EXISTS (SELECT 1
+		          FROM STOCK_MANAGER_ACOUNT K
+		         WHERE K.FUND_ACCOUNT = S.FUND_ACOUNT
+		         AND K.ASSET_UNIT_NAME = #{assetName})
+         </if>
 	</select>
 	
 	<select id="queryList" resultMap="resultPercentDO" parameterType="com.zeekie.stock.web.PercentDOPage">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		Select s.Total_Fund,
-		       s.Total,
-		       Trim(To_Char((s.Total_Fund / s.Total * 100), '99999999999999.99')) || '%' Percents,
-		       (Select a.Asset_Unit_Name
-		          From Stock_Manager_Acount a
-		         Where a.Fund_Account = s.Fund_Acount) Asset_Unit_Name
-		  From Stock_Total_Fund s
-		 Where s.Is_Current = 'Y'
+				SELECT S.TOTAL_FUND,
+		       (SELECT ASSET_UNIT_NAME
+		          FROM STOCK_MANAGER_ACOUNT A
+		         WHERE S.FUND_ACOUNT = A.FUND_ACCOUNT) ASSET_UNIT_NAME,
+		       (SELECT ID
+		          FROM STOCK_MANAGER_ACOUNT A
+		         WHERE S.FUND_ACOUNT = A.FUND_ACCOUNT) MANAGER_ACCOUNT_ID,
+		       (SELECT A.STATUS
+		          FROM STOCK_MANAGER_ACOUNT A
+		         WHERE S.FUND_ACOUNT = A.FUND_ACCOUNT) STATUS,
+		       S.TOTAL,
+		       TRIM(TO_CHAR((S.TOTAL_FUND / S.TOTAL * 100), '99999999999999.99')) || '%' PERCENTS
+		  FROM STOCK_TOTAL_FUND S
+		 WHERE S.IS_CURRENT = 'Y'
+		 <if test="assetName!=null and assetName!=''">
+		    AND EXISTS (SELECT 1
+		          FROM STOCK_MANAGER_ACOUNT K
+		         WHERE K.FUND_ACCOUNT = S.FUND_ACOUNT
+		         AND K.ASSET_UNIT_NAME = #{assetName})
+         </if>
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
+	
+	<update id="updateFundAccountStatus" parameterType="string">
+		update STOCK_MANAGER_ACOUNT set status=#{type} where id = #{managerAccountId}
+	</update>
 </mapper>

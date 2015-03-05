@@ -377,11 +377,16 @@ public class AcountServiceImpl implements AcountService {
 
 				String assginCash = StringUtil.keepThreeDot(cashDO
 						.getAssginCash());
+
 				// 3、把我们的配资的钱划到我们的总资金
-				acounter.moveAssignCashToTotalFund(nickname, assginCash);
+				// acounter.moveAssignCashToTotalFund(cashDO.getFundAccount(),
+				// assginCash);
+				acounter.addTotalFund("0", assginCash, cashDO.getFundAccount(),
+						"从HOMES划回配资的钱");
+
 				// 3、1记录流水
-				trade.recordFundflow(nickname,
-						Constants.TRANS_FROM_HOMES_TO_TOTALFUND, assginCash, "");
+//				trade.recordFundflow(nickname,
+//						Constants.TRANS_FROM_HOMES_TO_TOTALFUND, assginCash, "");
 
 				// 4、计算推荐人的收益，如果该用户有推荐人。计算规则：每笔服务费的乘以一个百分比
 				trade.caculateRefereeIncome(nickname);

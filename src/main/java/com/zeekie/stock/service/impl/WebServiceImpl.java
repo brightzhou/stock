@@ -130,7 +130,7 @@ public class WebServiceImpl implements WebService {
 	@Override
 	public boolean addTotalFund(String fund, String fundAccount) {
 		try {
-			account.addTotalFund(fund, fundAccount);
+			account.addTotalFund("1", fund, fundAccount, "平台充值");
 			// 更新历史金额状态为N
 			account.updateStatusToN(fundAccount);
 			// 更新当前金额状态为Y
@@ -381,28 +381,38 @@ public class WebServiceImpl implements WebService {
 
 	@Override
 	public String saveFundAccount(String data) throws ServiceInvokerException {
-		JSONArray ja = JSONArray.fromObject(data);
+		// JSONArray ja = JSONArray.fromObject(data);
+		JSONObject jo = JSONObject.fromObject(data);
+		String type = jo.getString("type");
+		String managerAccountId = jo.getString("id");
 		try {
-			if (ja.isEmpty()) {
-				account.updateAllStatusToOne();
-			} else {
-				StringBuffer sb = new StringBuffer();
-				for (int i = 0; i < ja.size(); i++) {
-					JSONObject jo = ja.getJSONObject(i);
-					sb.append("'");
-					sb.append(jo.getString("id"));
-					sb.append("',");
-				}
-				String accounts = sb.toString();
-				accounts = accounts.substring(0, accounts.lastIndexOf(","));
-				account.updateStatusToZero(accounts);
-				account.updateStatusToOne(accounts);
-			}
+			account.updateFundAccountStatus(type, managerAccountId);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e.getMessage());
 		}
 		return "1";
+		// try {
+		// if (jo.isEmpty()) {
+		// account.updateAllStatusToOne();
+		// } else {
+		// StringBuffer sb = new StringBuffer();
+		// for (int i = 0; i < ja.size(); i++) {
+		// JSONObject jo = ja.getJSONObject(i);
+		// sb.append("'");
+		// sb.append(jo.getString("id"));
+		// sb.append("',");
+		// }
+		// String accounts = sb.toString();
+		// accounts = accounts.substring(0, accounts.lastIndexOf(","));
+		// account.updateStatusToZero(accounts);
+		// account.updateStatusToOne(accounts);
+		// }
+		// } catch (Exception e) {
+		// log.error(e.getMessage(), e);
+		// throw new ServiceInvokerException(e.getMessage());
+		// }
+
 	}
 
 	@Override
@@ -433,7 +443,7 @@ public class WebServiceImpl implements WebService {
 		List<PercentDO> result = new ArrayList<PercentDO>();
 		long total = 0;
 		try {
-			total = account.queryTotal();
+			total = account.queryTotal(page.getAssetName());
 			if (0 != total) {
 				result = account.queryList(page);
 			}

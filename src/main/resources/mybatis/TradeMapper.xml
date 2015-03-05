@@ -116,13 +116,13 @@
 		 WHERE W.NICKNAME = #{nickname}
 	</update>
 	
-	<update id="deductTradeFund" parameterType="Float">
+<!-- 	<update id="deductTradeFund" parameterType="Float">
 		UPDATE STOCK_TOTAL_FUND
 		   SET TOTAL_FUND = TOTAL_FUND - #{tradeFund},
 		       MODIFY_CASH  = '-' || #{tradeFund},
 		       HAPPEND_TIME = SYSDATE
 		WHERE IS_CURRENT = 'Y'       
-	</update>
+	</update> -->
 	
 	<insert id="recordFundflow" parameterType="string">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">

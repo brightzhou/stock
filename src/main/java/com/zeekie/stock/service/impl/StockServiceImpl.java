@@ -164,8 +164,10 @@ public class StockServiceImpl implements TradeService {
 			// 3、从客户账户扣除保证金
 			trade.deductGuaranteeCash(guaranteeCash, nickname);
 
+			String fundAccount = acount.queryFundAccount(nickname);
 			// 4、主账户减去配资的钱
-			trade.deductTradeFund(Float.parseFloat(tradeFund));
+			// trade.deductTradeFund(Float.parseFloat(tradeFund));
+			acount.addTotalFund("0", "-" + tradeFund, fundAccount, "主账户扣除配资的钱");
 
 			// 5、记录资金流水
 			trade.recordFundflow(tradeForm.getNickname(),
@@ -273,7 +275,7 @@ public class StockServiceImpl implements TradeService {
 			combineId = client.getCombineId();
 			managerCombineId = client.getManagerCombineId();
 			if (canUse(operator, combineId, fundAccount)) {
-				if(mainFundCashIsEnough(nickname, moveFund, fundAccount)){
+				if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
 					break;
 				}
 			}
@@ -609,7 +611,9 @@ public class StockServiceImpl implements TradeService {
 
 			// 3、如果主账户资金充足从主账户减去配资的钱
 			if (StringUtils.equals("1", flag) && moveCash != 0f) {
-				trade.deductTradeFund(moveCash);
+				acount.addTotalFund("0", "-" + moveCash,
+						acount.queryFundAccount(nickname), "主账户扣除配资的钱");
+				// trade.deductTradeFund(moveCash);
 				// // 5、记录流水新增配资
 				// trade.recordFundflow(nickname,
 				// Constants.TRANS_FROM_MAINACOUNT_TO_STOCKACCOUNT,

@@ -14,6 +14,40 @@ public class TotalFundDO {
 
 	private String fundAccountName;
 
+	private String desc;
+
+	private String leaveCashPercent;
+
+	/**
+	 * @return the leaveCashPercent
+	 */
+	public String getLeaveCashPercent() {
+		return leaveCashPercent;
+	}
+
+	/**
+	 * @param leaveCashPercent
+	 *            the leaveCashPercent to set
+	 */
+	public void setLeaveCashPercent(String leaveCashPercent) {
+		this.leaveCashPercent = leaveCashPercent;
+	}
+
+	/**
+	 * @return the desc
+	 */
+	public String getDesc() {
+		return desc;
+	}
+
+	/**
+	 * @param desc
+	 *            the desc to set
+	 */
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
 	/**
 	 * @return the total
 	 */

@@ -114,7 +114,8 @@ public interface AcountMapper {
 	public void moveProfitToUserWallet(@Param("nickname") String nickname,
 			@Param("userCash") String userCash) throws Exception;
 
-	public void moveAssignCashToTotalFund(@Param("nickname") String nickname,
+	public void moveAssignCashToTotalFund(
+			@Param("fundAccount") String fundAccount,
 			@Param("assginCash") String assginCash) throws Exception;
 
 	public void recordIntegral(@Param("nickname") String nickname)
@@ -142,8 +143,10 @@ public interface AcountMapper {
 	public List<MovecashToRefereeDO> queryMoveCashToReferee(
 			MoveToRefereePage moveToRefereePage) throws Exception;
 
-	public void addTotalFund(@Param("fund") String fund,
-			@Param("fundAccount") String fundAccount) throws Exception;
+	public void addTotalFund(@Param("type") String type,
+			@Param("fund") String fund,
+			@Param("fundAccount") String fundAccount, @Param("desc") String desc)
+			throws Exception;
 
 	public void bindPercent(@Param("nickname") String nickname)
 			throws Exception;
@@ -290,8 +293,36 @@ public interface AcountMapper {
 	 */
 	public Integer queryTotalFundAccount() throws Exception;
 
-	public long queryTotal() throws Exception;
+	/**
+	 * 查询资产比例
+	 * 
+	 * @param assetName
+	 * @return
+	 * @throws Exception
+	 */
+	public long queryTotal(@Param("assetName") String assetName)
+			throws Exception;
 
+	/**
+	 * 获取剩余资产占有比例
+	 * 
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
 	public List<PercentDO> queryList(PageQuery page) throws Exception;
+
+	/**
+	 * 获取资金账号，根据用户名称
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public String queryFundAccount(@Param("nickname") String nickname)
+			throws Exception;
+
+	public void updateFundAccountStatus(@Param("type") String type,
+			@Param("managerAccountId") String managerAccountId)
+			throws Exception;
 
 }

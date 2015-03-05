@@ -20,6 +20,26 @@ public class EndStockCashDO {
 	private Float assginCash;
 
 	/**
+	 * 资金账号
+	 */
+	private String fundAccount;
+
+	/**
+	 * @return the fundAccount
+	 */
+	public String getFundAccount() {
+		return fundAccount;
+	}
+
+	/**
+	 * @param fundAccount
+	 *            the fundAccount to set
+	 */
+	public void setFundAccount(String fundAccount) {
+		this.fundAccount = fundAccount;
+	}
+
+	/**
 	 * @return the userCash
 	 */
 	public Float getUserCash() {

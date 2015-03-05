@@ -59,14 +59,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="10%" field="fundAccountName" headerAlign="center" align="center" >
                         资金账号名称
                     </div>
+                    <div width="10%" field="total" headerAlign="center" align="center" >
+                        总资产
+                    </div>
                     <div width="10%" field="totalFund" headerAlign="center" align="center" renderer="addColor">
                         当前剩余资产(元)
                     </div>
                     <div field="modifyFund" width="10%"  headerAlign="center" align="center" >
                         金额变更情况(元)
                     </div>
+                    <div field="leaveCashPercent" width="10%"  headerAlign="center" align="center" >
+                        剩余资产比例
+                    </div>
+                    <div field="desc" width="15%"  headerAlign="center" align="center" >
+                        描述
+                    </div>
                     <div width="10%" field="storeTime" headerAlign="center" align="center" renderer="onBirthdayRenderer">
-                        存入时间
+                        发生时间
                     </div>
                 </div>
             </div>

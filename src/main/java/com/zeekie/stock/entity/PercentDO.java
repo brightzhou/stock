@@ -9,6 +9,39 @@ public class PercentDO {
 	private String leaveFundPercent;
 
 	private String assetName;
+	
+	private String status;
+	
+	private String managerAccountId;
+	
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	/**
+	 * @return the managerAccountId
+	 */
+	public String getManagerAccountId() {
+		return managerAccountId;
+	}
+
+	/**
+	 * @param managerAccountId the managerAccountId to set
+	 */
+	public void setManagerAccountId(String managerAccountId) {
+		this.managerAccountId = managerAccountId;
+	}
 
 	/**
 	 * @return the assetName

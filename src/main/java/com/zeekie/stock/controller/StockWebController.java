@@ -137,21 +137,22 @@ public class StockWebController {
 		return webService.addTotalFund(fund, fundAccount) ? Constants.CODE_SUCCESS
 				: Constants.CODE_FAILURE;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("caculatePercent")
-	public DefaultPage<PercentDO> caculatePercent(HttpServletRequest request,
+	public DefaultPage<PercentDO> caculatePercent(
+			HttpServletRequest request,
 			@RequestParam(value = "pageIndex", required = false) String pageIndex,
 			@RequestParam(value = "pageSize", required = false) String pageSize,
 			@RequestParam(value = "sortField", required = false) String sortField,
-			@RequestParam(value = "sortOrder", required = false) String sortOrder) {
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "assetName", required = false) String assetName) {
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
 
-			PercentDOPage page = new PercentDOPage(
-					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
-					sortOrder);
+			PercentDOPage page = new PercentDOPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, assetName);
 
 			return webService.caculatePercent(page);
 		} catch (ServiceInvokerException e) {
