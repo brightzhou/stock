@@ -5,16 +5,17 @@ import sitong.thinker.common.page.DefaultPage;
 
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
-import com.zeekie.stock.entity.EveningUpDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
+import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.PayPage;
+import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -181,5 +182,14 @@ public interface WebService {
 	 */
 
 	public void openOrCloseApp(String flag);
+
+	/**
+	 * 查询比例
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public DefaultPage<PercentDO> caculatePercent(PercentDOPage page)
+			throws ServiceInvokerException;
 
 }

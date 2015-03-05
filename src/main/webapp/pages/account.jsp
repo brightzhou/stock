@@ -20,6 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <body class="body_fit" >
 <div class="Place_text"><span>多账户设置</span></div>  
+ <div  class="mini-splitter " vertical="true" style="width:100%;height:100%;">
     <table align="center">
         <tr>
             <td >
@@ -61,12 +62,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        </td>
         </tr>
     </table>    
+     
+        <div >
+            <div id="datagrid1" class="mini-datagrid" style="width:98%;height:90%;  padding-left:5px; margin-top:10px;" allowalternating="false"
+                 allowresize="false" multiselect="true"  sizeList="[20,30,50,100]" pageSize="10" allowCellEdit="true" allowCellSelect="true"
+                 url="<%=basePath%>api/stock/web/caculatePercent">
+                <div property="columns">
+                    <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
+                    <div width="10%" field="assetName" headerAlign="center" align="center">
+                       资产单元名称
+                    </div>
+                    <div width="10%" field="total" headerAlign="center" align="center">
+                       总资产
+                    </div>
+                    <div width="10%" field="leaveFund" headerAlign="center" align="center">
+                       剩余资产
+                    </div>
+                    <div field="leaveFundPercent" width="10%"  headerAlign="center" align="center" >
+                        剩余资产比例
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script type="text/javascript">
         mini.parse();
+        var grid = mini.get("datagrid1");
+        grid.setShowEmptyText(true);
+    	grid.setEmptyText("查询结果为空!");
+        $(function(){
+       	    grid = mini.get("datagrid1");
+            grid.load();
+       	});
+        
         var grid1 = mini.get("grid1");
         var grid2 = mini.get("grid2");
-
         grid1.load();
         grid2.load();
         

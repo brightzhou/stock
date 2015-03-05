@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import sitong.thinker.common.page.PageQuery;
+
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.ClientPercentDO;
@@ -18,6 +20,7 @@ import com.zeekie.stock.entity.ManagerDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
+import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TotalFundDO;
@@ -286,5 +289,9 @@ public interface AcountMapper {
 	 * @throws Exception
 	 */
 	public Integer queryTotalFundAccount() throws Exception;
+
+	public long queryTotal() throws Exception;
+
+	public List<PercentDO> queryList(PageQuery page) throws Exception;
 
 }

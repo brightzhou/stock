@@ -250,7 +250,6 @@ public class StockServiceImpl implements TradeService {
 		TradeDO client = null;
 		// ManagerDO manager = acount.getStockManager();
 		Integer total = acount.queryTotalFundAccount();
-		boolean flag = true;
 
 		// 判断该账号是否已经结束但是在HOMES却还有资金
 		li = acount.getAllUserInfo();
@@ -273,11 +272,10 @@ public class StockServiceImpl implements TradeService {
 			operator = client.getOperatorNo();
 			combineId = client.getCombineId();
 			managerCombineId = client.getManagerCombineId();
-			if (canUse(operator, combineId, fundAccount, flag)) {
-				break;
-			}
-			if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
-				break;
+			if (canUse(operator, combineId, fundAccount)) {
+				if(mainFundCashIsEnough(nickname, moveFund, fundAccount)){
+					break;
+				}
 			}
 		}
 
@@ -353,8 +351,8 @@ public class StockServiceImpl implements TradeService {
 		return user.visitSuccess(fn_change_assetName);
 	}
 
-	private boolean canUse(String operator, String combineId,
-			String fundAccount, boolean flag) throws Exception {
+	private boolean canUse(String operator, String combineId, String fundAccount)
+			throws Exception {
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
 		changes.callHomes(Fn_stock_current);
@@ -371,9 +369,9 @@ public class StockServiceImpl implements TradeService {
 			param.put("operator", operator);
 			ApiUtils.sendMsg(Constants.MODEL_OPERATOR_HAS_CASH_FN, param,
 					stock_manager_phone);
-			flag = false;
+			return false;
 		}
-		return flag;
+		return true;
 	}
 
 	private boolean setCombineInfo(TradeDO clientDO, String fundAccount)

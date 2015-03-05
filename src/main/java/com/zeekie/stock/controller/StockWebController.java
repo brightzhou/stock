@@ -31,6 +31,7 @@ import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
+import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.WebService;
@@ -40,6 +41,7 @@ import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.PayPage;
+import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -134,6 +136,29 @@ public class StockWebController {
 			@RequestParam(value = "type", required = true) String fundAccount) {
 		return webService.addTotalFund(fund, fundAccount) ? Constants.CODE_SUCCESS
 				: Constants.CODE_FAILURE;
+	}
+	
+	@ResponseBody
+	@RequestMapping("caculatePercent")
+	public DefaultPage<PercentDO> caculatePercent(HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+
+			PercentDOPage page = new PercentDOPage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder);
+
+			return webService.caculatePercent(page);
+		} catch (ServiceInvokerException e) {
+			log.error("query queryMoveCashToReferee error happened:",
+					e.getMessage());
+			return new DefaultPage<PercentDO>();
+		}
 	}
 
 	@ResponseBody

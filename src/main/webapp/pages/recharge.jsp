@@ -16,6 +16,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="scripts/sui/themes/sqt/skin.css" rel="stylesheet" type="text/css" />
 	<link href="styles/style_sqt.css" rel="stylesheet" type="text/css" />
 
+<style type="text/css">
+
+.my{
+	padding-left: 20px;
+	color: red;
+}
+</style>
 </head>
 
 <body class="body_fit" >
@@ -41,6 +48,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </td>
                 </tr>
             </table>
+       <!--  <div id="total" class="my"></div>
+        <div id="leaveCashPercent" class="my" style="float: left"></div> -->
         </div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:98%;height:90%;  padding-left:15px; margin-top:10px;" allowalternating="false"
@@ -51,7 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         资金账号名称
                     </div>
                     <div width="10%" field="totalFund" headerAlign="center" align="center" renderer="addColor">
-                        总资产(元)
+                        当前剩余资产(元)
                     </div>
                     <div field="modifyFund" width="10%"  headerAlign="center" align="center" >
                         金额变更情况(元)
@@ -85,6 +94,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function addColor(e) {
         var re = e.record;
         if (re.current=='Y') {
+        	/* $("#total").html('');
+        	$("#leaveCashPercent").html('');
+        	$('#total').append('总资产  : '+re.total+'(元)');
+        	$('#leaveCashPercent').append('剩余资产比例  : '+ ((re.totalFund/re.total)*100).toFixed(2)+'%'); */
         	return '<span ><font color=red>'+re.totalFund+'</font></span>';
         }else{
         	return re.totalFund;

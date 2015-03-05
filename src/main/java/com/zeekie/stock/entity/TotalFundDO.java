@@ -2,6 +2,8 @@ package com.zeekie.stock.entity;
 
 public class TotalFundDO {
 
+	private String total;
+
 	private String totalFund;
 
 	private String modifyFund;
@@ -11,6 +13,21 @@ public class TotalFundDO {
 	private String current;
 
 	private String fundAccountName;
+
+	/**
+	 * @return the total
+	 */
+	public String getTotal() {
+		return total;
+	}
+
+	/**
+	 * @param total
+	 *            the total to set
+	 */
+	public void setTotal(String total) {
+		this.total = total;
+	}
 
 	/**
 	 * @return the fundAccountName

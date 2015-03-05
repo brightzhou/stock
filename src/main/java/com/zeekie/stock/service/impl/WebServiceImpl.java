@@ -26,6 +26,7 @@ import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
+import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.respository.AcountMapper;
@@ -37,6 +38,7 @@ import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.PayPage;
+import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -423,5 +425,22 @@ public class WebServiceImpl implements WebService {
 	@Override
 	public void openOrCloseApp(String param) {
 		handler.handleJob(Constants.TYPE_JOB_CONTROL_APP, param);
+	}
+
+	@Override
+	public DefaultPage<PercentDO> caculatePercent(PercentDOPage page)
+			throws ServiceInvokerException {
+		List<PercentDO> result = new ArrayList<PercentDO>();
+		long total = 0;
+		try {
+			total = account.queryTotal();
+			if (0 != total) {
+				result = account.queryList(page);
+			}
+			return new DefaultPage<PercentDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
 	}
 }
