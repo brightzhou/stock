@@ -23,10 +23,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <table align="center">
         <tr >
 	        <td align="center" colspan="3">
-	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('open')">关闭</a>
+	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('open')">打开</a>
 	        </td>
 	        <td align="center" colspan="3">
-	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('close')">打开</a>
+	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('close')">关闭</a>
 	        </td>
         </tr>
     </table>    

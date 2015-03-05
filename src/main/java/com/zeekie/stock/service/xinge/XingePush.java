@@ -30,9 +30,9 @@ public class XingePush {
 		tagList.add(msg.getUserId());
 
 		JSONObject androidRet = app.pushTags(XingeApp.DEVICE_ANDROID, tagList,
-				"AND", Messages.getAndroidMessage(msg));// send to android
+				"OR", Messages.getAndroidMessage(msg));// send to android
 
-		JSONObject iosRet = app.pushTags(XingeApp.DEVICE_IOS, tagList, "AND",
+		JSONObject iosRet = app.pushTags(XingeApp.DEVICE_IOS, tagList, "OR",
 				Messages.getIosMessage(msg),// send to ios
 				Constants.environment);
 		boolean success = (0 == androidRet.getInt("ret_code") && 0 == iosRet
@@ -45,7 +45,7 @@ public class XingePush {
 					+ iosRet.getInt("ret_code"));
 		} else {
 			if (log.isDebugEnabled()) {
-				log.debug("acceptor =" + msg.getContent()
+				log.debug("control app close or open，sendmessage ：" + msg.getContent()
 						+ " already accept message successfully. ");
 			}
 		}
