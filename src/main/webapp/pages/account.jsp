@@ -51,7 +51,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="leaveFund" headerAlign="center" align="center">
                         剩余资产
                     </div>
-                    <div  field="leaveFundPercent"  headerAlign="center" align="center">
+                    <div  field="leaveFundPercent"  headerAlign="center" align="center" dataType="float">
                         剩余资产比例
                     </div>         
                     <div field="status"   headerAlign="center" align="center" renderer="onHdRender">

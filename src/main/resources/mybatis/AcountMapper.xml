@@ -584,7 +584,8 @@
 	
 	<select id="queryUserLastCash" parameterType="string" resultMap="resultEndStockUserCash">
 		SELECT (M.GUARANTEE_CASH + M.PROFIT_LOSS_CASH) USERCASH,
-		       (M.TRADE_FUND - m.guarantee_cash) ASSIGNCASH,
+		      <!--  (M.TRADE_FUND  - m.guarantee_cash ) ASSIGNCASH, -->
+		       M.Actual_Cash ASSIGNCASH,
 		       (SELECT A.FUND_ACCOUNT FROM STOCK_USER_OPERATE_ACOUNT A WHERE A.ID = M.OPERATE_ACCOUNT_ID) FUND_ACCOUNT
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'
@@ -1054,7 +1055,7 @@
 		          FROM STOCK_MANAGER_ACOUNT A
 		         WHERE S.FUND_ACOUNT = A.FUND_ACCOUNT) STATUS,
 		       S.TOTAL,
-		       TRIM(TO_CHAR((S.TOTAL_FUND / S.TOTAL * 100), '99999999999999.99')) || '%' PERCENTS
+		       TRIM(TO_CHAR((S.TOTAL_FUND / S.TOTAL * 100), 'fm9999999990.99')) || '%' PERCENTS
 		  FROM STOCK_TOTAL_FUND S
 		 WHERE S.IS_CURRENT = 'Y'
 		 <if test="assetName!=null and assetName!=''">

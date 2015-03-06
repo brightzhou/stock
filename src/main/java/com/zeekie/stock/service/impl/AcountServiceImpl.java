@@ -383,7 +383,11 @@ public class AcountServiceImpl implements AcountService {
 				// assginCash);
 				acounter.addTotalFund("0", assginCash, cashDO.getFundAccount(),
 						"从HOMES划回配资的钱");
-
+				// 更新历史金额状态为N
+				acounter.updateStatusToN(cashDO.getFundAccount());
+				// 更新当前金额状态为Y
+				acounter.updateStatusToY(cashDO.getFundAccount());
+				
 				// 3、1记录流水
 //				trade.recordFundflow(nickname,
 //						Constants.TRANS_FROM_HOMES_TO_TOTALFUND, assginCash, "");

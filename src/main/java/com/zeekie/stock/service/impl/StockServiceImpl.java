@@ -169,6 +169,11 @@ public class StockServiceImpl implements TradeService {
 			// trade.deductTradeFund(Float.parseFloat(tradeFund));
 			acount.addTotalFund("0", "-" + tradeFund, fundAccount, "主账户扣除配资的钱");
 
+			// 更新历史金额状态为N
+			acount.updateStatusToN(fundAccount);
+			// 更新当前金额状态为Y
+			acount.updateStatusToY(fundAccount);
+
 			// 5、记录资金流水
 			trade.recordFundflow(tradeForm.getNickname(),
 					Constants.CLIENTWALLET_TO_MAINACOUNT, guaranteeCash, "");
@@ -252,7 +257,7 @@ public class StockServiceImpl implements TradeService {
 		TradeDO client = null;
 		// ManagerDO manager = acount.getStockManager();
 		Integer total = acount.queryTotalFundAccount();
-
+		boolean haveOperator = false;
 		// 判断该账号是否已经结束但是在HOMES却还有资金
 		li = acount.getAllUserInfo();
 		if (null == li || li.isEmpty()) {
@@ -268,6 +273,7 @@ public class StockServiceImpl implements TradeService {
 				continue;
 			}
 			if (total == fundAccountSet.size()) {
+				fundAccountSet.clear();
 				return "3#";
 			}
 			operatorPwd = client.getOperatorPwd();
@@ -276,9 +282,14 @@ public class StockServiceImpl implements TradeService {
 			managerCombineId = client.getManagerCombineId();
 			if (canUse(operator, combineId, fundAccount)) {
 				if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
+					haveOperator = true;
 					break;
 				}
 			}
+		}
+		fundAccountSet.clear();
+		if (!haveOperator) {
+			return "";
 		}
 
 		// 2.3 生成新密码更新到homes
@@ -357,6 +368,9 @@ public class StockServiceImpl implements TradeService {
 			throws Exception {
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
+		if (log.isDebugEnabled()) {
+			log.debug("开始操盘，判断获取的操盘账号是否可用，开始访问HOMES");
+		}
 		changes.callHomes(Fn_stock_current);
 		String currentCash = changes.getDataSet().getDataset(0)
 				.getString("current_cash");
@@ -372,6 +386,9 @@ public class StockServiceImpl implements TradeService {
 			ApiUtils.sendMsg(Constants.MODEL_OPERATOR_HAS_CASH_FN, param,
 					stock_manager_phone);
 			return false;
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("开始操盘，访问HOMES结束");
 		}
 		return true;
 	}
@@ -611,8 +628,13 @@ public class StockServiceImpl implements TradeService {
 
 			// 3、如果主账户资金充足从主账户减去配资的钱
 			if (StringUtils.equals("1", flag) && moveCash != 0f) {
-				acount.addTotalFund("0", "-" + moveCash,
-						acount.queryFundAccount(nickname), "主账户扣除配资的钱");
+				String fundAccount = acount.queryFundAccount(nickname);
+				acount.addTotalFund("0", "-" + moveCash, fundAccount,
+						"主账户扣除配资的钱");
+				// 更新历史金额状态为N
+				acount.updateStatusToN(fundAccount);
+				// 更新当前金额状态为Y
+				acount.updateStatusToY(fundAccount);
 				// trade.deductTradeFund(moveCash);
 				// // 5、记录流水新增配资
 				// trade.recordFundflow(nickname,

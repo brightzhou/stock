@@ -112,19 +112,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function onOpRender(e){
     	var re = e.record;
     	if(re.status=='0'){
-    		return '<span class="link_2"><a  onclick="withdrawl(\''+re.nickname+'\')">提现</a></span>';
+    		return '<span class="link_2"><a  onclick="withdrawl(\''+re.id+'\',\''+re.nickname+'\',\''+re.cash+'\')">提现</a></span>';
     	}else{
     		return '已提现';
     	}
     }
 
-    function withdrawl(nickname){
+    function withdrawl(id,nickname,cash){
     	mini.confirm("确定要提现吗", "确定？",
 	            function (action) {            
 	                if(action == "ok"){
 	                	 $.ajax({
 		     	                url: "<%=basePath%>api/stock/web/withdrawlToUser",
-		     	                data: {nickname : nickname},
+		     	                data: {id:id,nickname : nickname,cash:cash},
 		     	                type: "post",
 		     	                success: function (msg) {
 		     	                    if(msg == "1"){

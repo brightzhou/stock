@@ -89,7 +89,7 @@ public class AStockTrade {
 				log.error("[!EventReturnCode.I_OK] error_no:"
 						+ resp.getErrorNo() + ",error_info:"
 						+ resp.getErrorInfo());
-				Constants.HOMES_TOKEN = "";
+//				Constants.HOMES_TOKEN = "";
 				return null;
 			} else {
 				result = resp.getEventDatas();
