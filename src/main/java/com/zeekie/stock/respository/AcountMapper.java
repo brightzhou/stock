@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.AccountDO;
+import com.zeekie.stock.entity.BankInfoDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
@@ -25,6 +26,7 @@ import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TradeDO;
+import com.zeekie.stock.entity.UserDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.entity.form.TradeForm;
@@ -43,9 +45,10 @@ public interface AcountMapper {
 			@Param("truename") String truename, @Param("idCard") String idCard)
 			throws Exception;
 
-	public void bindCreditCard(@Param("nickname") String nickname,
-			@Param("telephone") String telephone, @Param("bank") String bank,
-			@Param("number") String number) throws Exception;
+	public void bindCreditCard(@Param("userId") String userId,
+			@Param("phone") String phone, @Param("bank") String bank,
+			@Param("number") String number, @Param("bankCode") String bankCode)
+			throws Exception;
 
 	public void setDepositPwd(@Param("nickname") String nickname,
 			@Param("telephone") String telephone,
@@ -145,7 +148,8 @@ public interface AcountMapper {
 
 	public void addTotalFund(@Param("type") String type,
 			@Param("fund") String fund,
-			@Param("fundAccount") String fundAccount, @Param("desc") String desc)
+			@Param("fundAccount") String fundAccount,
+			@Param("desc") String desc, @Param("storeType") String storeType)
 			throws Exception;
 
 	public void bindPercent(@Param("nickname") String nickname)
@@ -194,7 +198,7 @@ public interface AcountMapper {
 	public String userWalletIsFull(@Param("nickname") String nickname,
 			@Param("guaranteeCash") String guaranteeCash) throws Exception;
 
-	public void modifyDepositPwd(@Param("nickname") String nickname,
+	public String checkDepoist(@Param("userId") String userId,
 			@Param("depositPwd") String depositPwd) throws Exception;
 
 	public long getPayListCount() throws Exception;
@@ -264,7 +268,7 @@ public interface AcountMapper {
 	public void updateStatusToOne(@Param("account") String account)
 			throws Exception;
 
-	public void loginOff(@Param("account") String nickname) throws Exception;
+	public void loginOff(@Param("nickname") String nickname) throws Exception;
 
 	public String getUserPhone(@Param("nickname") String nickname)
 			throws Exception;
@@ -323,6 +327,34 @@ public interface AcountMapper {
 
 	public void updateFundAccountStatus(@Param("type") String type,
 			@Param("managerAccountId") String managerAccountId)
+			throws Exception;
+
+	/**
+	 * 通过用户id获取真实姓名和身份证号
+	 * 
+	 * @param userId
+	 * @return UserDO
+	 * @throws Exception
+	 */
+	public UserDO getUserInfo(@Param("userId") String userId) throws Exception;
+
+	/**
+	 * 获取银行信息
+	 * 
+	 * @param userId
+	 * @return BankInfoDO
+	 * @throws Exception
+	 */
+	public BankInfoDO getBankInfo(@Param("userId") String userId)
+			throws Exception;
+
+	/**
+	 * 根据用户id获取用户名
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public String queryNickname(@Param("userId") String userId)
 			throws Exception;
 
 }

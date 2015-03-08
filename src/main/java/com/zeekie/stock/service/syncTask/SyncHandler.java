@@ -18,8 +18,10 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.enums.Fund;
+import com.zeekie.stock.enums.XingeEnum;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
+import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.xinge.StockMsg;
 import com.zeekie.stock.service.xinge.XingePush;
 import com.zeekie.stock.util.ApiUtils;
@@ -38,6 +40,9 @@ public class SyncHandler {
 
 	@Autowired
 	private BatchMapper batchMapper;
+
+	@Autowired
+	private WebService webService;
 
 	@Autowired
 	@Value("${stock.actualAsset.reach.warnline.percent}")
@@ -77,7 +82,31 @@ public class SyncHandler {
 
 			push(param.get("userId"), param.get("nickname"));
 
+		} else if (StringUtils.equals(Constants.TYPE_JOB_PAY_NOTICE, type)) {
+
+			String nickname = "";
+			try {
+				nickname = account.queryNickname(param.get("userId"));
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+			if (webService.payToUs("", nickname, param.get("amount"))) {
+				if (log.isDebugEnabled()) {
+					log.debug("用户:" + nickname + "充值成功，开始向APP对宋消息");
+				}
+				pushPaySuccess(param.get("userId"), nickname);
+			}
+
 		}
+	}
+
+	private void pushPaySuccess(String userId, String nickname) {
+		StockMsg msg = new StockMsg();
+		msg.setContent("5");
+		msg.setNickname(nickname);
+		msg.setUserId(userId);
+		msg.setTitle("充值成功");
+		XingePush.push(msg);
 	}
 
 	private void push(String userId, String nickname) {
@@ -117,6 +146,13 @@ public class SyncHandler {
 				msg.setContent("4");
 				msg.setUserId(tag);
 			}
+			XingePush.pushTags(msg);
+		} else if (StringUtils.equals(Constants.TYPE_JOB_PIC_UPDATE, type)) {
+
+			StockMsg msg = new StockMsg();
+			msg.setContent(XingeEnum.PIC_UPDATE.getContent());
+			msg.setTitle(XingeEnum.PIC_UPDATE.getTitle());
+			msg.setUserId(tag);
 			XingePush.pushTags(msg);
 		}
 	}

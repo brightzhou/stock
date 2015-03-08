@@ -128,9 +128,10 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public boolean addTotalFund(String fund, String fundAccount) {
+	public boolean addTotalFund(String fund, String fundAccount, String desc,
+			String storeType) {
 		try {
-			account.addTotalFund("1", fund, fundAccount, "平台充值");
+			account.addTotalFund("1", fund, fundAccount, desc, storeType);
 			// 更新历史金额状态为N
 			account.updateStatusToN(fundAccount);
 			// 更新当前金额状态为Y

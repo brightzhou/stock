@@ -119,10 +119,17 @@ public class StockServiceImpl implements TradeService {
 	@Override
 	public Map<String, String> storeOperationInfo(TradeForm tradeForm)
 			throws RuntimeException {
-		// 1、插入操盘资金信息
+
 		Map<String, String> currentOperateInfo = new HashMap<String, String>();
 		currentOperateInfo.put("flag", "0");
 		try {
+			// 0、判断是否有操盘
+			String has = trade.queryHasOperation(tradeForm.getNickname());
+			if (StringUtils.isNotBlank(has)) {
+				currentOperateInfo.put("flag", "4");
+				return currentOperateInfo;
+			}
+			
 			String nickname = tradeForm.getNickname();
 			String tradeFund = tradeForm.getTradeFund();
 			String guaranteeCash = tradeForm.getGuaranteeCash();
@@ -167,7 +174,8 @@ public class StockServiceImpl implements TradeService {
 			String fundAccount = acount.queryFundAccount(nickname);
 			// 4、主账户减去配资的钱
 			// trade.deductTradeFund(Float.parseFloat(tradeFund));
-			acount.addTotalFund("0", "-" + tradeFund, fundAccount, "主账户扣除配资的钱");
+			acount.addTotalFund("0", "-" + tradeFund, fundAccount, "主账户扣除配资的钱",
+					"recharge");
 
 			// 更新历史金额状态为N
 			acount.updateStatusToN(fundAccount);
@@ -630,7 +638,7 @@ public class StockServiceImpl implements TradeService {
 			if (StringUtils.equals("1", flag) && moveCash != 0f) {
 				String fundAccount = acount.queryFundAccount(nickname);
 				acount.addTotalFund("0", "-" + moveCash, fundAccount,
-						"主账户扣除配资的钱");
+						"主账户扣除配资的钱", "recharge");
 				// 更新历史金额状态为N
 				acount.updateStatusToN(fundAccount);
 				// 更新当前金额状态为Y

@@ -17,12 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
+import com.zeekie.stock.entity.BankInfoDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.RedPacketDO;
+import com.zeekie.stock.entity.UserDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
 import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.respository.AcountMapper;
@@ -150,10 +152,10 @@ public class AcountServiceImpl implements AcountService {
 	}
 
 	@Override
-	public boolean bindCreditCard(String nickname, String telephone,
-			String bank, String number) {
+	public boolean bindCreditCard(String userId, String telephone, String bank,
+			String number, String bankCode) {
 		try {
-			acounter.bindCreditCard(nickname, telephone, bank, number);
+			acounter.bindCreditCard(userId, telephone, bank, number, bankCode);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;
@@ -382,15 +384,15 @@ public class AcountServiceImpl implements AcountService {
 				// acounter.moveAssignCashToTotalFund(cashDO.getFundAccount(),
 				// assginCash);
 				acounter.addTotalFund("0", assginCash, cashDO.getFundAccount(),
-						"从HOMES划回配资的钱");
+						"从HOMES划回配资的钱", "recharge");
 				// 更新历史金额状态为N
 				acounter.updateStatusToN(cashDO.getFundAccount());
 				// 更新当前金额状态为Y
 				acounter.updateStatusToY(cashDO.getFundAccount());
-				
+
 				// 3、1记录流水
-//				trade.recordFundflow(nickname,
-//						Constants.TRANS_FROM_HOMES_TO_TOTALFUND, assginCash, "");
+				// trade.recordFundflow(nickname,
+				// Constants.TRANS_FROM_HOMES_TO_TOTALFUND, assginCash, "");
 
 				// 4、计算推荐人的收益，如果该用户有推荐人。计算规则：每笔服务费的乘以一个百分比
 				trade.caculateRefereeIncome(nickname);
@@ -516,18 +518,15 @@ public class AcountServiceImpl implements AcountService {
 	}
 
 	@Override
-	public Map<String, String> modifyDepositPwd(String nickname,
-			String depositPwd, String telephone, String verifyCode) {
-		Map<String, String> result = new HashMap<String, String>();
+	public String checkDepoist(String userId, String depositPwd) {
 		try {
-			acounter.modifyDepositPwd(nickname, depositPwd);
-			result.put("flag", "1");
-			return result;
+			if (StringUtils.isBlank(acounter.checkDepoist(userId, depositPwd))) {
+				return "0";
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			result.put("flag", "0");
 		}
-		return result;
+		return "1";
 	}
 
 	@Override
@@ -559,5 +558,31 @@ public class AcountServiceImpl implements AcountService {
 			log.error(e.getMessage(), e);
 		}
 		return map;
+	}
+
+	@Override
+	public JSONObject getUserInfo(String userId) {
+		try {
+			UserDO user = acounter.getUserInfo(userId);
+			if (null != user) {
+				return JSONObject.fromObject(user);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	@Override
+	public JSONObject getBankInfo(String userId) {
+		try {
+			BankInfoDO bankInfo = acounter.getBankInfo(userId);
+			if (null != bankInfo) {
+				return JSONObject.fromObject(bankInfo);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
 	}
 }

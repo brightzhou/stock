@@ -65,9 +65,12 @@ public interface WebService {
 	 * 
 	 * @param fund
 	 * @param fundAccount
+	 * @param storeType recharge 平台充值/adjust 金额调整
+	 * @param desc
 	 * @return
 	 */
-	public boolean addTotalFund(String fund, String fundAccount);
+	public boolean addTotalFund(String fund, String fundAccount, String desc,
+			String storeType);
 
 	/**
 	 * 获取支付页面

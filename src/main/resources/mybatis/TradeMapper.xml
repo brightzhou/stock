@@ -500,4 +500,9 @@
 		                 WHERE R.NICKNAME = M.NICKNAME) &lt; M.ACTUAL_CASH
 		           AND M.WARN_FLAG = '1') 
     </update>
+    
+	<select id="queryHasOperation" parameterType="string" resultType="string">
+		select 1 from STOCK_USER_OPERATE_MAININFO m
+		where m.is_current = '1' and m.nickname=#{nickname}
+	</select>
 </mapper>

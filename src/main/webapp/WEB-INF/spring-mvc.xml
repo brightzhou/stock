@@ -38,6 +38,7 @@
     <mvc:resources mapping="/styles/**" location="/styles/" />
     <mvc:resources mapping="/icons/**" location="/icons/"/>
     <mvc:resources mapping="/files/**" location="/files/"/>
+    <mvc:resources mapping="/swfupload/**" location="/swfupload/"/>
 	
 	<!-- enable autowire -->
 	<context:annotation-config />
@@ -121,5 +122,5 @@
 
     <bean id="objectMapper" class="sitong.thinker.common.util.JsonUtils"
           factory-method="getObjectMapper"/>
-
+          
 </beans>

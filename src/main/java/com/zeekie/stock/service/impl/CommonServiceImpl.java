@@ -276,7 +276,7 @@ public class CommonServiceImpl implements CommonService {
 			result.put("telephone",
 					StringUtils.defaultIfBlank(loginDO.getTelephone(), ""));
 			result.put("bankCard",
-					StringUtils.defaultIfBlank(loginDO.getBankCard(), ""));
+					StringUtils.isBlank(loginDO.getBankCard()) ? "0" : "1");
 			result.put("assignCash", StringUtils.defaultIfBlank(
 					StringUtil.keepThreeDot(loginDO.getAssignCash()), ""));
 			result.put(

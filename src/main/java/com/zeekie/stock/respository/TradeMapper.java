@@ -109,13 +109,13 @@ public interface TradeMapper {
 
 	String selectFeeDay(@Param("feeDate") String feeDate) throws Exception;
 
-	
 	/**
 	 * 处理到达警戒金额后发送短信
 	 * *********************************************************************
 	 */
 	/**
 	 * 查詢當warnflag=0 但是实际资产低于警戒金额后的用户
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -123,27 +123,41 @@ public interface TradeMapper {
 
 	/**
 	 * 更新发送短信的用户warnflag=1
-	 * @param result List<WarnLineDO>
+	 * 
+	 * @param result
+	 *            List<WarnLineDO>
 	 * @throws Exception
 	 */
 	void updateWarnFlagToOne(List<WarnLineDO> result) throws Exception;
-	
+
 	/**
 	 * 查詢當warnflag=1 但是实际资产如果大于（（1-警戒线）*20%+警戒线），则设置alm-sms为0
+	 * 
 	 * @return List<WarnLineDO>
 	 * @throws Exception
 	 */
-	/*List<WarnLineDO> querySwingUser() throws Exception;*/
-	
-	
+	/* List<WarnLineDO> querySwingUser() throws Exception; */
+
 	/**
 	 * 更新发送短信的用户warnflag=0
+	 * 
 	 * @param swingPercent
 	 * @throws Exception
 	 */
 	void updateWarnFlagToZero(String swingPercent) throws Exception;
+
 	/**
 	 * *********************************************************************
 	 */
+
+	/**
+	 * 判断用户是否存在操盘
+	 * 
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	String queryHasOperation(@Param("nickname") String nickname)
+			throws Exception;
 
 }

@@ -2,11 +2,12 @@ package com.zeekie.stock.controller;
 
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,6 @@ import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.error.Message;
 
 import com.zeekie.stock.Constants;
-import com.zeekie.stock.StockResultMessage;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.util.ApiUtils;
 
@@ -44,12 +44,13 @@ public class AcountController {
 
 	@ResponseBody
 	@RequestMapping("creditCard/bind")
-	public String bindCreditCard(@RequestParam("nickname") String nickname,
+	public String bindCreditCard(@RequestParam("userId") String userId,
 			@RequestParam("telephone") String telephone,
 			@RequestParam("bank") String bank,
-			@RequestParam("number") String number) {
-		return operator.bindCreditCard(nickname, telephone, bank, number) ? Constants.CODE_SUCCESS
-				: Constants.CODE_FAILURE;
+			@RequestParam("number") String number,
+			@RequestParam("bankCode") String bankCode) {
+		return operator.bindCreditCard(userId, telephone, bank, number,
+				bankCode) ? Constants.CODE_SUCCESS : Constants.CODE_FAILURE;
 	}
 
 	@ResponseBody
@@ -63,15 +64,10 @@ public class AcountController {
 	}
 
 	@ResponseBody
-	@RequestMapping("depositPwd/modify")
-	public String modifyDepositPwd(
-			@RequestParam("nickname") String nickname,
-			@RequestParam("depositPwd") String depositPwd,
-			@RequestParam(value = "telephone", required = false) String telephone,
-			@RequestParam(value = "verifyCode", required = false) String verifyCode) {
-		Map<String, String> result = operator.modifyDepositPwd(nickname,
-				depositPwd, telephone, verifyCode);
-		return result.get("flag");
+	@RequestMapping("depositPwd/check")
+	public String checkDepoist(@RequestParam("userId") String userId,
+			@RequestParam("depositPwd") String depositPwd) {
+		return operator.checkDepoist(userId, depositPwd);
 	}
 
 	@ResponseBody
@@ -107,5 +103,25 @@ public class AcountController {
 			@RequestParam("fund") String fund,
 			@RequestParam("depositPwd") String depositPwd) {
 		return ApiUtils.good(operator.withdraw(nickname, fund, depositPwd));
+	}
+
+	@ResponseBody
+	@RequestMapping("userInfo/get")
+	public ApiResponse getUserInfo(@RequestParam("userId") String userId) {
+		JSONObject jo = operator.getUserInfo(userId);
+		if (null != jo) {
+			return ApiUtils.good(jo);
+		}
+		return ApiUtils.good();
+	}
+
+	@ResponseBody
+	@RequestMapping("bankInfo/get")
+	public ApiResponse getBankInfo(@RequestParam("userId") String userId) {
+		JSONObject jo = operator.getBankInfo(userId);
+		if (null != jo) {
+			return ApiUtils.good(jo);
+		}
+		return ApiUtils.good();
 	}
 }

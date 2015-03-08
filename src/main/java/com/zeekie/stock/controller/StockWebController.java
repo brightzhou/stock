@@ -1,9 +1,17 @@
 package com.zeekie.stock.controller;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +50,7 @@ import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.StringUtil;
+import com.zeekie.stock.util.XmlUtil;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
@@ -133,8 +147,10 @@ public class StockWebController {
 	@RequestMapping("manager/totalFund/add")
 	public String addTotalFund(
 			@RequestParam(value = "fund", required = true) String fund,
-			@RequestParam(value = "type", required = true) String fundAccount) {
-		return webService.addTotalFund(fund, fundAccount) ? Constants.CODE_SUCCESS
+			@RequestParam(value = "type", required = true) String fundAccount,
+			@RequestParam(value = "desc", required = true) String desc,
+			@RequestParam(value = "storeType", required = true) String storeType) {
+		return webService.addTotalFund(fund, fundAccount, desc, storeType) ? Constants.CODE_SUCCESS
 				: Constants.CODE_FAILURE;
 	}
 
@@ -331,40 +347,53 @@ public class StockWebController {
 
 	@ResponseBody
 	@RequestMapping("acceptCall")
-	public void acceptCall(HttpServletRequest request) {
-		byte[] bt = null;
-		InputStream stream = null;
-		ByteArrayOutputStream out = null;
+	public void acceptCall(HttpServletRequest request,
+			HttpServletResponse response) {
 		try {
-			stream = request.getInputStream();
-			out = new ByteArrayOutputStream(1000);
-			byte[] b = new byte[1000];
-			int len = 0;
-			while ((len = stream.read(b)) != -1) {
-				out.write(b, 0, len);
+			String xml = getStreamString(request.getInputStream());
+			if (StringUtils.isNotBlank(xml)) {
+				Map<String, String> parasResult = XmlUtil.readStringXmlOut(xml);
+				if (log.isDebugEnabled()) {
+					log.debug("获取支付回调结果：" + parasResult);
+				}
+				if (StringUtils.equals(parasResult.get("respMsg"), "交易成功")) {
+					handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
+							parasResult);
+				} else {
+					if (log.isDebugEnabled()) {
+						log.debug("支付失败，不推送消息");
+					}
+				}
 			}
-			stream.close();
-			out.close();
-			bt = out.toByteArray();
-
-			log.debug("收到支付宝的调用返回：" + bt.toString());
+			// if (in != null) {
+			// System.out.println("流不是空的。");
+			// this.writeInputStreamToFile(in);
+			// log.debug("server time is " + new Date());
+			// } else {
+			// log.debug("流是空的");
+			// }
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-		} finally {
-			try {
-				if (stream != null)
-					stream.close();
-			} catch (IOException e1) {
-				log.error(e1.getMessage(), e1);
-			}
-			try {
-				if (out != null)
-					out.close();
-			} catch (IOException e1) {
-				log.error(e1.getMessage(), e1);
-			}
+		} catch (DocumentException e) {
+			log.error(e.getMessage(), e);
 		}
 	}
+
+	/*
+	 * private void writeInputStreamToFile(InputStream in) throws
+	 * FileNotFoundException {
+	 * 
+	 * File file = new File("D:/returnResult.txt"); if (!file.exists()) { try {
+	 * file.createNewFile(); } catch (IOException e) { log.error(e.getMessage(),
+	 * e); } } FileOutputStream fos = new FileOutputStream(file);
+	 * BufferedInputStream bis = new BufferedInputStream(in); int BUFFER_SIZE =
+	 * 1024; byte[] buf = new byte[BUFFER_SIZE]; int size = 0; try { while
+	 * ((size = bis.read(buf)) != -1) fos.write(buf, 0, size); } catch
+	 * (IOException e) { log.error(e.getMessage(), e); } finally {
+	 * IOUtils.closeQuietly(bis); IOUtils.closeQuietly(fos); }
+	 * 
+	 * }
+	 */
 
 	@ResponseBody
 	@RequestMapping("getPayMsg")
@@ -473,6 +502,43 @@ public class StockWebController {
 	@RequestMapping("manager/openOrCloseApp")
 	public void openApp(@RequestParam("flag") String flag) {
 		webService.openOrCloseApp(flag);
+	}
+
+	/**
+	 * 将一个输入流转化为字符串
+	 */
+	private String getStreamString(InputStream in) {
+		if (in != null) {
+			try {
+				BufferedReader tBufferedReader = new BufferedReader(
+						new InputStreamReader(in));
+				StringBuffer xml = new StringBuffer();
+				String sTempOneLine = new String("");
+				while ((sTempOneLine = tBufferedReader.readLine()) != null) {
+					xml.append(sTempOneLine);
+				}
+
+				String originResult = StringUtil.getResult(xml.toString());
+				if (log.isDebugEnabled()) {
+					log.debug("原始结果：" + originResult);
+				}
+				String convertResult = URLDecoder.decode(new String(
+						originResult.getBytes()), "UTF-8");
+				if (log.isDebugEnabled()) {
+					log.debug("回调函数转换返回结果为：" + convertResult);
+				}
+				return convertResult;
+			} catch (Exception ex) {
+				log.error(ex.getMessage(), ex);
+			} finally {
+				IOUtils.closeQuietly(in);
+			}
+		} else {
+			if (log.isDebugEnabled()) {
+				log.debug("获取支付回调结果为空");
+			}
+		}
+		return "";
 	}
 
 }

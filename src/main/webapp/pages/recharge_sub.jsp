@@ -33,6 +33,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     					url="<%=basePath%>api/stock/web/manager/getFundAccount" />  --%> 
                     </td>
 				</tr>
+                <tr>
+                    <td class="mini-item_18">
+                                              选择存取方式：
+                    </td>
+                    <td class="mini-content_32">
+                    <input id="storeType" class="mini-combobox" style="width:150px;" textField="text" valueField="id" 
+    					data="[{'id': 'recharge', 'text': '平台充值'},{'id': 'adjust', 'text': '金额调整'}]" />  
+                    </td>
+                </tr>
+                <tr>
+                    <td class="mini-item_18">
+                                              充值描述：
+                    </td>
+                    <td class="mini-content_32">
+                 	  <input id="desc" class="mini-textbox" style="width: 60%;" emptyText=""/> 
+                    </td>
+                </tr>
 				<tr>
 					<td class="mini-item_18">
 						<font>请输入金额:</font>
@@ -65,12 +82,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var gridUrl = "<%=basePath%>/api/stock/web/manager/totalFund/add";
     function handle(type) {
 		if (type == 'sure') {
+			var desc = $.trim(mini.get("desc").getValue());
+			var fund = $.trim(mini.get("fund").getValue());
+			if(desc==''){
+				mini.alert('[充值描述]不能为空');
+				return;
+			}
+			if(fund==''){
+				mini.alert('[金额]不能为空');
+				return;
+			}
 			$.ajax({
                 url: gridUrl,
                 type: "POST",
                 data: {
-                    "fund": $.trim(mini.get("fund").getValue()),
-                    "type": $.trim(mini.get("type").getValue())
+                    "fund": fund,
+                    "type": $.trim(mini.get("type").getValue()),
+                    "desc": desc,
+                    "storeType": $.trim(mini.get("storeType").getValue())
                 },
                 success: function(data) {
                 	if(data=='1'){
@@ -95,6 +124,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        data = mini.clone(data);
        mini.get("text").setValue(data.text);
        mini.get("type").setValue(data.value);
+       mini.get("storeType").setValue("recharge");
     }
     
 	function CloseWindow(action) {

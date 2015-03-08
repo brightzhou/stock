@@ -9,10 +9,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +28,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.oreilly.servlet.MultipartRequest;
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
+import com.zeekie.stock.util.StringUtil;
 
 /**
  * 
@@ -54,6 +60,9 @@ public class FileController {
 	@Autowired
 	@Value("${apk_version}")
 	private String version;
+
+	@Autowired
+	private SyncHandler handler;
 
 	@RequestMapping(value = "file/download")
 	public void fileDownload(HttpServletResponse response,
@@ -113,6 +122,34 @@ public class FileController {
 			writeToClient(response, ApiUtils.toJSON(Constants.CODE_FAILURE,
 					"internal server error", ""));
 			return;
+		}
+	}
+
+	@RequestMapping(value = "file/upload")
+	public void upload(HttpServletResponse response, HttpServletRequest request)
+			throws UnsupportedEncodingException, IOException {
+
+		MultipartHttpServletRequest mult = (MultipartHttpServletRequest) request;
+		MultipartFile multipartFile = mult.getFile("Fdata");
+		String path = request.getRealPath("//files//");
+		String fileName = multipartFile.getOriginalFilename();
+		File targetFile = new File(path, StringUtil.getFileName(mult
+				.getParameter("type")));
+		if (!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+		try {
+			multipartFile.transferTo(targetFile);
+			handler.handleJob(Constants.TYPE_JOB_PIC_UPDATE, "");
+			if(log.isDebugEnabled()){
+				log.debug("文件"+fileName+"上传成功");
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new IOException("服务异常");
+		} finally {
+			response.getWriter().write(
+					new String(fileName.getBytes("utf-8"), "GBK")); // 可以返回一个JSON字符串,
 		}
 	}
 

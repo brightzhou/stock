@@ -3,6 +3,7 @@ package com.zeekie.stock.service;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 public interface AcountService {
 
@@ -23,10 +24,11 @@ public interface AcountService {
 	 * @param telephone
 	 * @param bank
 	 * @param number
+	 * @param bankCode
 	 * @return
 	 */
 	public boolean bindCreditCard(String nickname, String telephone,
-			String bank, String number);
+			String bank, String number, String bankCode);
 
 	/**
 	 * 修改/修改提款密码
@@ -123,8 +125,7 @@ public interface AcountService {
 	 * @param telephone
 	 * @return
 	 */
-	public Map<String, String> modifyDepositPwd(String nickname,
-			String depositPwd, String telephone, String verifyCode);
+	public String checkDepoist(String userId, String depositPwd);
 
 	/**
 	 * 扣除欠款
@@ -141,4 +142,20 @@ public interface AcountService {
 	 * @return
 	 */
 	public Map<String, String> getWallet(String nickname);
+
+	/**
+	 * 获取用户真实姓名和身份证号
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject getUserInfo(String userId);
+
+	/**
+	 * 獲取銀行信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject getBankInfo(String userId);
 }

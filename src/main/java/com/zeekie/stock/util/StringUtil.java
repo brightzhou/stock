@@ -14,6 +14,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.zeekie.stock.enums.PicEnum;
+
 /**
  * @author zeekie
  * @since 1.0
@@ -325,6 +327,34 @@ public class StringUtil {
 			dayForWeek = 0;
 		}
 		return weekDays[dayForWeek];
+	}
+
+	public static String getResult(String param) {
+		if (StringUtils.isNotBlank(param)) {
+			return param.split("&")[1].split("=")[1];
+		}
+		return "";
+	}
+
+	/**
+	 * 根据页面传递的类别生成不同的页面名称
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static String getFileName(String type) {
+
+		if (StringUtils.equals(PicEnum.MAINPAGE.getType(), type)) {
+			return PicEnum.MAINPAGE.getPage();
+		} else if (StringUtils.equals(PicEnum.STARTPAGE.getType(), type)) {
+			return PicEnum.STARTPAGE.getPage();
+		} else if (StringUtils.equals(PicEnum.VERSION.getType(), type)) {
+			return PicEnum.VERSION.getPage();
+		} else if (StringUtils.equals(PicEnum.APK.getType(), type)) {
+			return PicEnum.APK.getPage();
+		} else {
+			return "";
+		}
 	}
 
 }

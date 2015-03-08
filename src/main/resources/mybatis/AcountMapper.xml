@@ -195,6 +195,17 @@
 		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.UserDO" id="resultUserInfo">
+		<result column="TRUENAME" property="trueName" jdbcType="VARCHAR"/>
+		<result column="ID_CARD" property="idCard" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.BankInfoDO" id="resultBankInfo">
+		<result column="BANK" property="bank" jdbcType="VARCHAR"/>
+		<result column="CARD_NUMBER" property="cardNumber" jdbcType="VARCHAR"/>
+		<result column="BANK_CODE" property="bankCode" jdbcType="VARCHAR"/>
+		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+	</resultMap>
 	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
@@ -240,20 +251,19 @@
 			select SEQ_stock_bank_info_id.Nextval from dual
 		</selectKey>
 		INSERT INTO STOCK_BANK_INFO
-		  (ID, USER_ID, BANK, CARD_NUMBER)
+		  (ID, USER_ID, BANK, CARD_NUMBER,BANK_CODE,PHONE)
 		VALUES
 		  (#{id},
-		   (SELECT U.ID
-		      FROM STOCK_USER U
-		     WHERE U.NICKNAME = #{nickname}<!-- 
-		       AND U.TELEPHONE = #{telephone} -->),
+		   #{userId},
 		   #{bank},
-		   #{number})
+		   #{number},
+		   #{bankCode},
+		   #{phone})
 	</insert>
 	
 	<update id="setDepositPwd">
 		UPDATE STOCK_ID_CARD C
-	   SET DEPOSIT_PWD = #{depositPwd},TELEPHONE = #{telephone,jdbcType=VARCHAR}
+	   SET DEPOSIT_PWD = #{depositPwd}<!-- ,TELEPHONE = #{telephone,jdbcType=VARCHAR} -->
 	 WHERE EXISTS (SELECT 1
 	          FROM STOCK_USER U
 	         WHERE C.USER_ID = U.ID
@@ -540,7 +550,7 @@
 			FROM STOCK_TOTAL_FUND
 			WHERE IS_CURRENT = 'Y'
 			  AND FUND_ACOUNT = #{fundAccount}),
-		  (SELECT TOTAL_FUND + To_Number(#{fund})
+		  (SELECT TOTAL_FUND + (CASE WHEN #{storeType}='recharge' then To_Number(#{fund}) else 0 end)
 			FROM STOCK_TOTAL_FUND
 			WHERE IS_CURRENT = 'Y'
 		    AND FUND_ACOUNT = #{fundAccount}),
@@ -767,14 +777,10 @@
 		select 1 from Stock_User_Wallet w where w.nickname = #{nickname} and w.balance>#{guaranteeCash}
 	</select>
 	
-	<update id="modifyDepositPwd" parameterType="string">
-		Update Stock_Id_Card c
-		   Set Deposit_Pwd = #{depositPwd}
-		 Where Exists (Select 1
-		          From Stock_User u
-		         Where u.Id = c.User_Id
-		           And u.Nickname = #{nickname}) 
-	</update>
+	<select id="checkDepoist" parameterType="string" resultType="string">
+		select 1 from STOCK_ID_CARD
+		 Where user_id = #{userId} and Deposit_Pwd = #{depositPwd}
+	</select>
 	
 	<select id="getPayListCount" resultType="long">
 		SELECT COUNT(1) FROM DEPOSIT_RECORD U 
@@ -1070,4 +1076,18 @@
 	<update id="updateFundAccountStatus" parameterType="string">
 		update STOCK_MANAGER_ACOUNT set status=#{type} where id = #{managerAccountId}
 	</update>
+	
+	<select id="getUserInfo" parameterType="string" resultMap="resultUserInfo">
+		SELECT C.TRUENAME, C.ID_CARD FROM STOCK_ID_CARD C WHERE C.USER_ID = #{userId}
+	</select>
+	
+	<select id="getBankInfo" parameterType="string" resultMap="resultBankInfo">
+		SELECT T.BANK, T.CARD_NUMBER, T.BANK_CODE, T.PHONE
+		  FROM STOCK_BANK_INFO T
+		 WHERE T.USER_ID = #{userId}
+	</select>
+	
+	<select id="queryNickname" parameterType="string" resultType="string">
+		select nickname from stock_user where id = #{userId}
+	</select>
 </mapper>

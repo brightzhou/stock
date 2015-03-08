@@ -95,7 +95,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function search(){
         grid.setUrl(gridUrl);
         grid.load({
-          "type": mini.get("type").getValue(),
+          "type": mini.get("type").getValue()
         });
     }
     
@@ -127,7 +127,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			height : 350,
 			onload : function() {
 				var iframe = this.getIFrameEl();
-				var data = { value: mini.get("type").getValue(),text:mini.get("type").getText()};
+				var data = { value: mini.get("type").getValue(),
+						      text:mini.get("type").getText()};
 				iframe.contentWindow.SetData(data); 
 			},
 			currentWindow:true,

@@ -151,6 +151,12 @@ public class Constants {
 
 	public static String TYPE_JOB_CONTROL_APP = "closeOrOpenApp";
 
+	public static String TYPE_JOB_PAY_NOTICE = "payNotice";
+	/**
+	 * 通知图片更新
+	 */
+	public static String TYPE_JOB_PIC_UPDATE = "picUpdate";
+	
 	public static String accessId = "";
 
 	public static String secretkey = "";

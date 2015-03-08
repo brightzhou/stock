@@ -11,6 +11,7 @@ public class StockMsg {
 	private String title;
 
 	private String content;
+	
 
 	/**
 	 * @return the userId

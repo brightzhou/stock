@@ -179,4 +179,5 @@
 		   SET S.STATUS = '1'
 		 WHERE S.ID = #{userId}
 	</update>
+	
 </mapper>
