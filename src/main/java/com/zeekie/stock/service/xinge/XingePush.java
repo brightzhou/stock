@@ -45,7 +45,7 @@ public class XingePush {
 					+ iosRet.getInt("ret_code"));
 		} else {
 			if (log.isDebugEnabled()) {
-				log.debug("control app close or open，sendmessage ：" + msg.getContent()
+				log.debug("sendmessage ：" + msg.getContent()
 						+ " already accept message successfully. ");
 			}
 		}
