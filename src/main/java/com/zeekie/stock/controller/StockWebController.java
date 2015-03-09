@@ -356,9 +356,19 @@ public class StockWebController {
 				if (log.isDebugEnabled()) {
 					log.debug("获取支付回调结果：" + parasResult);
 				}
-				if (StringUtils.equals(parasResult.get("respMsg"), "交易成功")) {
-					handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
-							parasResult);
+
+				String rechargeResult = StringUtils.equals(
+						parasResult.get("respMsg"), "交易成功") ? Constants.CODE_SUCCESS
+						: Constants.CODE_FAILURE;
+				parasResult.put("rechargeResult", rechargeResult);
+
+				handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
+						parasResult);
+				
+				if (StringUtils.equals(rechargeResult, Constants.CODE_SUCCESS)) {
+					if (log.isDebugEnabled()) {
+						log.debug("支付失败，不推送消息");
+					}
 				} else {
 					if (log.isDebugEnabled()) {
 						log.debug("支付失败，不推送消息");

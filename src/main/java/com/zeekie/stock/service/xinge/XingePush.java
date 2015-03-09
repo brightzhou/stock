@@ -24,6 +24,31 @@ public class XingePush {
 		callApi(msg);
 	}
 
+	public static void pushAllServices(StockMsg msg) {
+
+		JSONObject androidRet = app.pushAllDevice(XingeApp.DEVICE_ALL,
+				Messages.getAndroidMessage(msg));// send to android
+
+		JSONObject iosRet = app.pushAllDevice(XingeApp.DEVICE_ALL,
+				Messages.getIosMessage(msg),// send to ios
+				Constants.environment);
+
+		boolean success = (0 == androidRet.getInt("ret_code") && 0 == iosRet
+				.getInt("ret_code"));
+		if (!success) {
+			log.error("batch set tag exception happend:android err_msg="
+					+ androidRet.getString("err_msg") + ",ret_code="
+					+ androidRet.getInt("ret_code") + ",iso err_msg="
+					+ iosRet.getString("err_msg") + ",ret_code="
+					+ iosRet.getInt("ret_code"));
+		} else {
+			if (log.isDebugEnabled()) {
+				log.debug("sendmessage ：" + msg.getContent()
+						+ ",already accept message successfully. ");
+			}
+		}
+	}
+
 	private static void callApi(StockMsg msg) {
 
 		List<String> tagList = new ArrayList<String>();

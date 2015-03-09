@@ -18,6 +18,7 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.enums.Fund;
+import com.zeekie.stock.enums.PicEnum;
 import com.zeekie.stock.enums.XingeEnum;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
@@ -94,18 +95,30 @@ public class SyncHandler {
 				if (log.isDebugEnabled()) {
 					log.debug("用户:" + nickname + "充值成功，开始向APP对宋消息");
 				}
-				pushPaySuccess(param.get("userId"), nickname);
+
+				pushPaySuccess(param.get("userId"), nickname,
+						param.get("rechargeResult"));
 			}
 
 		}
 	}
 
-	private void pushPaySuccess(String userId, String nickname) {
+	private void pushPaySuccess(String userId, String nickname,
+			String rechargeResult) {
 		StockMsg msg = new StockMsg();
-		msg.setContent("5");
+		String content = "";
+		String title = "";
+		if (StringUtils.equals(Constants.CODE_SUCCESS, rechargeResult)) {
+			content = XingeEnum.USER_RECHARGE_SUCCESS.getContent();
+			title = XingeEnum.USER_RECHARGE_SUCCESS.getTitle();
+		} else {
+			content = XingeEnum.USER_RECHARGE_FAILURE.getContent();
+			title = XingeEnum.USER_RECHARGE_FAILURE.getTitle();
+		}
+		msg.setContent(content);
 		msg.setNickname(nickname);
 		msg.setUserId(userId);
-		msg.setTitle("充值成功");
+		msg.setTitle(title);
 		XingePush.push(msg);
 	}
 
@@ -114,10 +127,10 @@ public class SyncHandler {
 			log.debug("用户" + nickname + "被后台平仓，推送消息给APP");
 		}
 		StockMsg msg = new StockMsg();
-		msg.setContent("2");
+		msg.setContent(XingeEnum.ELEVING_UP.getContent());
 		msg.setNickname(nickname);
 		msg.setUserId(userId);
-		msg.setTitle("平仓");
+		msg.setTitle(XingeEnum.ELEVING_UP.getTitle());
 		XingePush.push(msg);
 	}
 
@@ -137,23 +150,24 @@ public class SyncHandler {
 		} else if (StringUtils.equals(Constants.TYPE_JOB_CONTROL_APP, type)) {
 
 			StockMsg msg = new StockMsg();
-			if (StringUtils.equals("open", param)) {
-				msg.setContent("3");
-				msg.setTitle("打开APP");
-				msg.setUserId(tag);
-			} else {
-				msg.setTitle("关闭APP");
-				msg.setContent("4");
-				msg.setUserId(tag);
+			if (StringUtils.equals(PicEnum.MAINPAGE.getType(), param)) {
+				msg.setContent(XingeEnum.OPEN_APP.getContent());
+				msg.setTitle(XingeEnum.OPEN_APP.getTitle());
+			} else if (StringUtils.equals(PicEnum.STARTPAGE.getType(), param)) {
+				msg.setTitle(XingeEnum.CLOSE_APP.getContent());
+				msg.setContent(XingeEnum.CLOSE_APP.getTitle());
 			}
-			XingePush.pushTags(msg);
+			XingePush.pushAllServices(msg);
 		} else if (StringUtils.equals(Constants.TYPE_JOB_PIC_UPDATE, type)) {
-
 			StockMsg msg = new StockMsg();
-			msg.setContent(XingeEnum.PIC_UPDATE.getContent());
-			msg.setTitle(XingeEnum.PIC_UPDATE.getTitle());
-			msg.setUserId(tag);
-			XingePush.pushTags(msg);
+			if (StringUtils.equals(param, "main")) {
+				msg.setContent(XingeEnum.PIC_MAIN_UPDATE.getContent());
+				msg.setTitle(XingeEnum.PIC_MAIN_UPDATE.getTitle());
+			} else if (StringUtils.equals(param, "start")) {
+				msg.setContent(XingeEnum.PIC_START_UPDATE.getContent());
+				msg.setTitle(XingeEnum.PIC_START_UPDATE.getTitle());
+			}
+			XingePush.pushAllServices(msg);
 		}
 	}
 

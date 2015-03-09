@@ -13,7 +13,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.oreilly.servlet.MultipartRequest;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
@@ -140,9 +140,13 @@ public class FileController {
 		}
 		try {
 			multipartFile.transferTo(targetFile);
-			handler.handleJob(Constants.TYPE_JOB_PIC_UPDATE, "");
-			if(log.isDebugEnabled()){
-				log.debug("文件"+fileName+"上传成功");
+			if (!StringUtils.endsWithIgnoreCase(fileName, "apk")
+					&& !StringUtils.endsWithIgnoreCase(fileName, "txt")) {
+				handler.handleJob(Constants.TYPE_JOB_PIC_UPDATE,
+						mult.getParameter("type"));
+			}
+			if (log.isDebugEnabled()) {
+				log.debug("文件" + fileName + "上传成功");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
