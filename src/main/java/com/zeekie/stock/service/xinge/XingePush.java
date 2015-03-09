@@ -29,24 +29,28 @@ public class XingePush {
 		JSONObject androidRet = app.pushAllDevice(XingeApp.DEVICE_ALL,
 				Messages.getAndroidMessage(msg));// send to android
 
+		if (0 == androidRet.getInt("ret_code")) {
+			if (log.isDebugEnabled()) {
+				log.debug("push to android success,send title="
+						+ msg.getTitle() + " and content=" + msg.getContent());
+			}
+		} else {
+			log.error("push exception happened,androidRet="
+					+ androidRet.toString());
+		}
+
 		JSONObject iosRet = app.pushAllDevice(XingeApp.DEVICE_ALL,
 				Messages.getIosMessage(msg),// send to ios
 				Constants.environment);
-
-		boolean success = (0 == androidRet.getInt("ret_code") && 0 == iosRet
-				.getInt("ret_code"));
-		if (!success) {
-			log.error("batch set tag exception happend:android err_msg="
-					+ androidRet.getString("err_msg") + ",ret_code="
-					+ androidRet.getInt("ret_code") + ",iso err_msg="
-					+ iosRet.getString("err_msg") + ",ret_code="
-					+ iosRet.getInt("ret_code"));
-		} else {
+		if (0 == iosRet.getInt("ret_code")) {
 			if (log.isDebugEnabled()) {
-				log.debug("sendmessage ：" + msg.getContent()
-						+ ",already accept message successfully. ");
+				log.debug("push to ios success,send title=" + msg.getTitle()
+						+ " and content=" + msg.getContent());
 			}
+		} else {
+			log.error("push exception happened,iosRet=" + iosRet.toString());
 		}
+
 	}
 
 	private static void callApi(StockMsg msg) {

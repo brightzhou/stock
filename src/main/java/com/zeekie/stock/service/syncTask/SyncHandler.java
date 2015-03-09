@@ -150,20 +150,20 @@ public class SyncHandler {
 		} else if (StringUtils.equals(Constants.TYPE_JOB_CONTROL_APP, type)) {
 
 			StockMsg msg = new StockMsg();
-			if (StringUtils.equals(PicEnum.MAINPAGE.getType(), param)) {
+			if (StringUtils.equals("open", param)) {
 				msg.setContent(XingeEnum.OPEN_APP.getContent());
 				msg.setTitle(XingeEnum.OPEN_APP.getTitle());
-			} else if (StringUtils.equals(PicEnum.STARTPAGE.getType(), param)) {
-				msg.setTitle(XingeEnum.CLOSE_APP.getContent());
-				msg.setContent(XingeEnum.CLOSE_APP.getTitle());
+			} else if (StringUtils.equals("close", param)) {
+				msg.setTitle(XingeEnum.CLOSE_APP.getTitle());
+				msg.setContent(XingeEnum.CLOSE_APP.getContent());
 			}
 			XingePush.pushAllServices(msg);
 		} else if (StringUtils.equals(Constants.TYPE_JOB_PIC_UPDATE, type)) {
 			StockMsg msg = new StockMsg();
-			if (StringUtils.equals(param, "main")) {
+			if (StringUtils.equals(param, PicEnum.MAINPAGE.getType())) {
 				msg.setContent(XingeEnum.PIC_MAIN_UPDATE.getContent());
 				msg.setTitle(XingeEnum.PIC_MAIN_UPDATE.getTitle());
-			} else if (StringUtils.equals(param, "start")) {
+			} else if (StringUtils.equals(param, PicEnum.STARTPAGE.getType())) {
 				msg.setContent(XingeEnum.PIC_START_UPDATE.getContent());
 				msg.setTitle(XingeEnum.PIC_START_UPDATE.getTitle());
 			}

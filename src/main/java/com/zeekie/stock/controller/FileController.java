@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -150,11 +151,11 @@ public class FileController {
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			throw new IOException("服务异常");
-		} finally {
-			response.getWriter().write(
-					new String(fileName.getBytes("utf-8"), "GBK")); // 可以返回一个JSON字符串,
+			throw new IOException(e.getMessage(),e);
 		}
+		response.getWriter().write(
+				new String(fileName.getBytes("utf-8"), "GBK")); // 可以返回一个JSON字符串,
+
 	}
 
 	@RequestMapping(value = "zc/ptxz")

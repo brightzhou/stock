@@ -41,8 +41,7 @@
 			data="[{'id': 'main', 'text': '首页'},{'id': 'start', 'text': '启动页'},{'id': 'apk', 'text': 'APK'},{'id': 'version', 'text': '版本信息'}]"
 			value="main" name="type"/> 
 			<br /> 
-			<input type="button" value="上传" onclick="startUpload()" id="uploadButton"/>
-			
+			<a class="mini-button" style="margin:0px 10px;" onclick="startUpload()" id="uploadButton">上传</a>
 			
 	</div>
 
@@ -51,12 +50,12 @@
 
 		function onUploadSuccess(e) {
 
-			mini.alert("上传成功：" + e.serverData);
+			mini.alert("上传成功：" + e.file.name);
 			mini.get('uploadButton').enable();
 			this.setText("");
 		}
 		function onUploadError(e) {
-			mini.alert("上传失败："+e.message);
+			mini.alert("上传失败："+e.file.name+",请联系管理员");
 			mini.get('uploadButton').enable();
 		}
 
