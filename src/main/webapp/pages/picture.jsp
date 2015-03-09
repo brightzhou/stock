@@ -67,7 +67,9 @@
 				type : picType
 			});
 			fileupload.startUpload();
-			mini.get('uploadButton').disable();
+			if(fileupload.getText()){
+				mini.get('uploadButton').disable();
+			}
 		}
 	</script>
 </body>
