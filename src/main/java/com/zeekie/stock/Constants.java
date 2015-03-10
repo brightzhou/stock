@@ -143,6 +143,8 @@ public class Constants {
 
 	public static String MSG_URL = "";
 
+	public static String TYPE_JOB_DEDUCT_ADDGURANTEE = "deductByAddGurantee";
+
 	public static String TYPE_JOB_DEDUCT = "deduct";
 
 	public static String TYPE_JOB_EVENING_UP_REMIND = "remind";
@@ -156,7 +158,7 @@ public class Constants {
 	 * 通知图片更新
 	 */
 	public static String TYPE_JOB_PIC_UPDATE = "picUpdate";
-	
+
 	public static String accessId = "";
 
 	public static String secretkey = "";

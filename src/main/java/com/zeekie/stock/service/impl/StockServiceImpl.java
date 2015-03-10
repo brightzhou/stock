@@ -129,7 +129,7 @@ public class StockServiceImpl implements TradeService {
 				currentOperateInfo.put("flag", "4");
 				return currentOperateInfo;
 			}
-			
+
 			String nickname = tradeForm.getNickname();
 			String tradeFund = tradeForm.getTradeFund();
 			String guaranteeCash = tradeForm.getGuaranteeCash();
@@ -478,16 +478,19 @@ public class StockServiceImpl implements TradeService {
 				Float newProfitAndLossCash = 0f;
 				Float loss = 0f;
 				// 如果有亏损，先填平亏损，如果没有，盈利多少就是多少
+				Float balance = 0f;
 				if (profitAndLossCash < 0) {
-					if ((addGuranteeCashFloat + profitAndLossCash) < 0) {
-						newProfitAndLossCash = addGuranteeCashFloat
-								+ profitAndLossCash;
+					balance = addGuranteeCashFloat + profitAndLossCash;
+					if (balance < 0) {
+						newProfitAndLossCash = balance;
 						loss = addGuranteeCashFloat;
+						balance = 0f;
 					} else {
 						loss = profitAndLossCash;
 					}
 				} else if (profitAndLossCash >= 0) {
 					newProfitAndLossCash = profitAndLossCash;
+					balance = addGuranteeCashFloat;
 				}
 
 				Float progressBar = 1f;
@@ -526,6 +529,7 @@ public class StockServiceImpl implements TradeService {
 						StringUtil.keepThreeDot(pageDO.getStopRadio()));
 				map.put("fundAccount", pageDO.getFundAccount());
 				map.put("managerCombineId", pageDO.getManagerCombineId());
+				map.put("needDeductFee", StringUtil.keepThreeDot(balance));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -557,6 +561,7 @@ public class StockServiceImpl implements TradeService {
 
 			Map<String, String> result = enterAddGuaranteePage(nickname,
 					addedGuaranteeCash);
+
 			String profitAndLossCash = result.get("profitAndLossCash");
 			transferData.setCurrentOperateLimit(result
 					.get("currentOperateLimit"));
@@ -662,9 +667,21 @@ public class StockServiceImpl implements TradeService {
 					Constants.CLIENTWALLET_TO_MAINACOUNT, addedGuaranteeCash,
 					"");
 			map.put("flag", flag);
-			log.info("成功【记录资金流水】");
-
-			log.info("客户" + nickname + "成功增加保证金结束！");
+			
+			if(log.isDebugEnabled()){
+				log.debug("成功【记录资金流水】");
+				log.debug("客户" + nickname + "成功增加保证金结束！");
+			}
+			
+			
+			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
+			if (deductFee != 0f) {
+				Map<String, String> param = new HashMap<String, String>();
+				param.put("nickname", nickname);
+				param.put("needDeductFee", result.get("needDeductFee"));
+				jobHandler.handleOtherJob(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE, param);
+			}
+			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			map.put("flag", Constants.CODE_FAILURE);

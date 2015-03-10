@@ -95,11 +95,14 @@ public class SyncHandler {
 				if (log.isDebugEnabled()) {
 					log.debug("用户:" + nickname + "充值成功，开始向APP对宋消息");
 				}
-
 				pushPaySuccess(param.get("userId"), nickname,
 						param.get("rechargeResult"));
 			}
 
+		} else if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE,
+				type)) {
+			deductFeeWhenAddGuarantee(param.get("nickname"),
+					param.get("needDeductFee"));
 		}
 	}
 
@@ -212,6 +215,24 @@ public class SyncHandler {
 			ApiUtils.sendMsg(Constants.MODEL_EVENING_UP_REMIND_FN, param,
 					telephone);
 
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	private void deductFeeWhenAddGuarantee(String nickname, String fee) {
+
+		try {
+			if (DateUtil.compareDate()) {
+				String deductFee = "-" + (Float.parseFloat(fee) * 0.002);
+				account.moveProfitToUserWallet(nickname, deductFee);
+
+				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, fee
+						+ "", "技术服务费");
+				if (log.isDebugEnabled()) {
+					log.debug("用户增加保证金，收取服务费：" + deductFee);
+				}
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
