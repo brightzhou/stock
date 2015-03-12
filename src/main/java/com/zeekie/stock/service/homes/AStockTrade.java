@@ -90,7 +90,6 @@ public class AStockTrade {
 						+ resp.getErrorNo() + ",error_info:"
 						+ resp.getErrorInfo());
 				// Constants.HOMES_TOKEN = "";
-				Constants.HOMES_STATUS = "exception";
 				return null;
 			} else {
 				result = resp.getEventDatas();
@@ -106,13 +105,11 @@ public class AStockTrade {
 		IDataset dataset = result.getDataset(0);
 		String errorNo = dataset.getString("error_no");
 		if (StringUtils.equals(Constants.CODE_HOMES_SUCCESS, errorNo)) {
-			Constants.HOMES_STATUS = "nomral";
 			return true;
 		} else {
 			log.error("when operate function[" + operation_no
 					+ "] excute failure ,error is : "
 					+ dataset.getString("error_info"));
-			Constants.HOMES_STATUS = "exception";
 			return false;
 		}
 	}
@@ -128,7 +125,6 @@ public class AStockTrade {
 		IDataset dataset = result.getDataset(0);
 		String errorNo = dataset.getString("error_no");
 		if (StringUtils.isEmpty(errorNo)) {
-			Constants.HOMES_STATUS = "nomral";
 			return true;
 		} else {
 			if (StringUtils.equals("-1", errorNo)
@@ -136,7 +132,6 @@ public class AStockTrade {
 							dataset.getString("error_info"))) {
 				log.warn("token loss，下次访问重新登陆");
 				Constants.HOMES_TOKEN = "";
-				Constants.HOMES_STATUS = "exception";
 			}
 			return false;
 		}

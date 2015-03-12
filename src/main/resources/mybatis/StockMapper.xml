@@ -147,7 +147,7 @@
 		       S.MARKET_CASH       = TO_NUMBER(#{marketValue}),
 		       S.CURRENT_CASH      = TO_NUMBER(#{currentCash}),
 		       S.DRAW_FEE        =
-			       (SELECT R.FEE_RADIO * (TO_NUMBER(#{currentCash}) * R.UP_LINE_PERCENT
+			       (SELECT R.FEE_RADIO * TO_NUMBER(#{currentCash}) * R.UP_LINE_PERCENT
 			          FROM STOCK_FUND_ASSIGN_RADIO R
 			         WHERE R.NICKNAME = S.NICKNAME)
 		 WHERE S.NICKNAME = #{nickname}	

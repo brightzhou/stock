@@ -12,6 +12,7 @@ public class StockRadioDO {
 
 	private Float upLinePercent;
 
+
 	/**
 	 * @return the upLinePercent
 	 */

@@ -223,14 +223,16 @@ public class SyncHandler {
 		}
 	}
 
-	private void deductFeeWhenAddGuarantee(String nickname, String fee) {
+	private void deductFeeWhenAddGuarantee(String nickname,
+			String needCaculateMoney) {
 		try {
 			if (DateUtil.compareDate()) {
 				StockRadioDO radioDO = account
 						.getAssignRadioForCurrUser(nickname);
-				Double deductFee = (Float.parseFloat(fee) * 0.002 * radioDO
-						.getAssignRadio());
-				account.moveProfitToUserWallet(nickname, "-" + deductFee);
+				Float deductFee = (Float.parseFloat(needCaculateMoney)
+						* radioDO.getAssignRadio() * radioDO
+						.getManageFeeRadio());
+				trade.recharge(nickname, "-" + deductFee);
 				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, ""
 						+ deductFee + "", "技术服务费");
 				if (log.isDebugEnabled()) {
