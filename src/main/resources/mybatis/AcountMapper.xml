@@ -7,6 +7,7 @@
 		<result column="STOP_RADIO" property="stopRadio" jdbcType="NUMERIC"/>
 		<result column="WARN_RADIO" property="warnRadio" jdbcType="NUMERIC"/>
 		<result column="FEE_RADIO" property="manageFeeRadio" jdbcType="NUMERIC"/>
+		<result column="Up_Line_Percent" property="upLinePercent" jdbcType="NUMERIC"/>
 	</resultMap>
 	
 	
@@ -289,8 +290,8 @@
 	</select>
 	
 	<select id="getAssignRadioForCurrUser" resultMap="resultRadio" parameterType="string">
-	SELECT ASSIGN_RADIO, STOP_RADIO, WARN_RADIO,FEE_RADIO
-	  FROM STOCK_FUND_ASSIGN_RADIO
+	SELECT ASSIGN_RADIO, STOP_RADIO, WARN_RADIO,FEE_RADIO, Up_Line_Percent
+	  FROM STOCK_FUND_ASSIGN_RADIO  
 	 WHERE NICKNAME = #{nickname}
 	 
 	</select>
@@ -688,11 +689,13 @@
 	</update>
 	
 	<select id="getRedPacket" parameterType="string" resultMap="resultRedPacket">
-		SELECT R.ASSIGN_REFEREE_RED_PACKET,
-		       R.ASSIGN_REGISTER_RED_PACKET,
-		       R.ASSIGN_REFEREE_DRAW_PERCENT,
-		       (SELECT U.ID FROM STOCK_USER U WHERE R.NICKNAME = U.NICKNAME) ID
-		  FROM STOCK_FUND_ASSIGN_RADIO R
+		Select r.Assign_Referee_Red_Packet,
+		       (Select p.Red_Packet
+		          From Stock_Referee_Red_Packet p
+		         Where p.Referee_Id = r.User_Id) Assign_Register_Red_Packet,
+		       r.Assign_Referee_Draw_Percent,
+		       (Select u.Id From Stock_User u Where r.Nickname = u.Nickname) Id
+		  From Stock_Fund_Assign_Radio r
 		 WHERE R.Nickname =#{nickname}
 	</select>
 	

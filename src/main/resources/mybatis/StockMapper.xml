@@ -145,7 +145,11 @@
 		       S.CURRENT_ASSET     = (S.PROFIT_LOSS_CASH + S.GUARANTEE_CASH),
 		       S.ACTUAL_CASH       = (TO_NUMBER(#{currentCash}) + TO_NUMBER(#{marketValue})),
 		       S.MARKET_CASH       = TO_NUMBER(#{marketValue}),
-		       S.CURRENT_CASH      = TO_NUMBER(#{currentCash})
+		       S.CURRENT_CASH      = TO_NUMBER(#{currentCash}),
+		       S.DRAW_FEE        =
+			       (SELECT R.FEE_RADIO * (TO_NUMBER(#{currentCash}) * R.UP_LINE_PERCENT
+			          FROM STOCK_FUND_ASSIGN_RADIO R
+			         WHERE R.NICKNAME = S.NICKNAME)
 		 WHERE S.NICKNAME = #{nickname}	
 		 and s.IS_CURRENT = '1'
 	</update>

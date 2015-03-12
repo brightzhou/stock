@@ -291,8 +291,10 @@ public class CommonServiceImpl implements CommonService {
 			result.put("depositPwd", "");
 			result.put("identification", "0");
 			result.put("telephone", "");
-			result.put("bankCard", "");
-			result.put("operateAccount", "");
+			result.put("bankCard", "0");
+			result.put("operateAccount", "0");
+			result.put("assignCash", "");
+			result.put("debt", "0");
 		}
 	}
 

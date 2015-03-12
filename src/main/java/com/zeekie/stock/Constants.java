@@ -173,6 +173,8 @@ public class Constants {
 
 	public static Map sensitiveWordMap = null;
 
+	public static String HOMES_STATUS = "nomral";
+
 	public static IClient getClient() {
 		return client;
 	}

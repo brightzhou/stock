@@ -466,7 +466,8 @@ public class AcountServiceImpl implements AcountService {
 				map.put("assignRefereeRedPacket",
 						packketDO.getAssignRefereeRedPacket());
 				map.put("assignRegisterRedPacket",
-						packketDO.getAssignRegisterRedPacket());
+						StringUtils.defaultIfBlank(
+								packketDO.getAssignRegisterRedPacket(), "1.2"));
 				map.put("assignRefereeDrawPercent", StringUtil
 						.keepThreeDot(packketDO.getAssignRefereeDrawPercent()));
 				map.put("spreedPath",

@@ -16,6 +16,7 @@ import sitong.thinker.common.util.mybatis.BatchMapper;
 import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
+import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.enums.PicEnum;
@@ -138,7 +139,7 @@ public class SyncHandler {
 	}
 
 	private void handle(String type, String param) {
-		// 操盘口手续费
+		// 操盘扣手续费
 		if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT, type)) {
 			deductFeeWhenOperation(param);
 			// 到达警戒线需要短信提醒
@@ -160,7 +161,8 @@ public class SyncHandler {
 				msg.setTitle(XingeEnum.CLOSE_APP.getTitle());
 				msg.setContent(XingeEnum.CLOSE_APP.getContent());
 			}
-			XingePush.pushAllServices(msg);
+			msg.setUserId("all");
+			XingePush.pushTags(msg);
 		} else if (StringUtils.equals(Constants.TYPE_JOB_PIC_UPDATE, type)) {
 			StockMsg msg = new StockMsg();
 			if (StringUtils.equals(param, PicEnum.MAINPAGE.getType())) {
@@ -170,7 +172,8 @@ public class SyncHandler {
 				msg.setContent(XingeEnum.PIC_START_UPDATE.getContent());
 				msg.setTitle(XingeEnum.PIC_START_UPDATE.getTitle());
 			}
-			XingePush.pushAllServices(msg);
+			msg.setUserId("all");
+			XingePush.pushTags(msg);
 		}
 	}
 
@@ -221,16 +224,32 @@ public class SyncHandler {
 	}
 
 	private void deductFeeWhenAddGuarantee(String nickname, String fee) {
-
 		try {
 			if (DateUtil.compareDate()) {
-				String deductFee = "-" + (Float.parseFloat(fee) * 0.002);
-				account.moveProfitToUserWallet(nickname, deductFee);
-
-				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, fee
-						+ "", "技术服务费");
+				StockRadioDO radioDO = account
+						.getAssignRadioForCurrUser(nickname);
+				Double deductFee = (Float.parseFloat(fee) * 0.002 * radioDO
+						.getAssignRadio());
+				account.moveProfitToUserWallet(nickname, "-" + deductFee);
+				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, ""
+						+ deductFee + "", "技术服务费");
 				if (log.isDebugEnabled()) {
 					log.debug("用户增加保证金，收取服务费：" + deductFee);
+				}
+
+				String referee = account.queryRefereeNickname(nickname);
+				if (StringUtils.isNotBlank(referee)) {
+					String refereeDrawFee = "" + radioDO.getUpLinePercent()
+							* deductFee;
+					String type = Fund.AMORTIZATION.getType();
+					trade.recharge(referee, refereeDrawFee);
+					trade.recordFundflow(referee, type, refereeDrawFee + "",
+							Fund.getDesc(nickname, type));
+
+					if (log.isDebugEnabled()) {
+						log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成："
+								+ refereeDrawFee);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -250,8 +269,15 @@ public class SyncHandler {
 				String referee = account.queryRefereeNickname(nickname);
 				if (StringUtils.isNotBlank(referee)) {
 					String type = Fund.AMORTIZATION.getType();
-					trade.recordFundflow(referee, type, fee.getDrawFee() + "",
+					String refereeDrawFee = fee.getDrawFee() + "";
+
+					trade.recharge(referee, refereeDrawFee);
+					trade.recordFundflow(referee, type, refereeDrawFee,
 							Fund.getDesc(nickname, type));
+					if (log.isDebugEnabled()) {
+						log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成："
+								+ refereeDrawFee);
+					}
 				}
 			}
 		} catch (Exception e) {

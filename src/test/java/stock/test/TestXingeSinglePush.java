@@ -109,8 +109,8 @@ public class TestXingeSinglePush {
 //		tagList.add("0400");
 //		tagList.add("2");
 		Message message = new Message();
-		message.setTitle("DFDFDF");
-		message.setContent("的反对反对法");
+		message.setTitle("222222");
+		message.setContent("哈哈哈哈哈");
 		message.setType(Message.TYPE_MESSAGE);
 //		message.setSendTime("2014-08-06 18:17:00");
 //		message.setExpireTime(120);
@@ -129,8 +129,8 @@ public class TestXingeSinglePush {
 	}
 
 	protected static JSONObject demoQueryTags() {
-		XingeApp xinge = new XingeApp(Long.parseLong("2100042697"),
-				"a6c34c8e082bae24089b4d08a72b31a6");
+		XingeApp xinge = new XingeApp(Long.parseLong("2100079370"),
+				"dcb9ef3ca073a484de3631d9e26dbb28");
 		JSONObject ret = xinge.queryTags();
 		return (ret);
 	}
@@ -177,13 +177,13 @@ public class TestXingeSinglePush {
 		// System.out.println("���ʱ�䣺" +
 		// (Calendar.getInstance().getTimeInMillis() - start));
 
-		 System.out.println(demoPushAllService().toString());
+//		 System.out.println(demoPushAllService().toString());
 
 //		 System.out.println(demoQueryTags().toString());
 		// System.out.println(queryTokenTags().toString());
 		// System.out.println(BatchDelTag().toString());
 		// System.out.println(queryTokenTags().toString());
-		// System.out.println(demoPushTags().toString());
+		 System.out.println(demoPushTags1().toString());
 		// System.out.println(new String(Base64.decode("VLo11Rw")));
 		// Long f = new Long("2200043529");
 		// System.out.println(f);

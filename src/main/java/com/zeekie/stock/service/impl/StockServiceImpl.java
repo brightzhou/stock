@@ -113,6 +113,7 @@ public class StockServiceImpl implements TradeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+//		currentOperate.put("homesStatus", Constants.HOMES_STATUS);
 		return currentOperate;
 	}
 
@@ -667,21 +668,21 @@ public class StockServiceImpl implements TradeService {
 					Constants.CLIENTWALLET_TO_MAINACOUNT, addedGuaranteeCash,
 					"");
 			map.put("flag", flag);
-			
-			if(log.isDebugEnabled()){
+
+			if (log.isDebugEnabled()) {
 				log.debug("成功【记录资金流水】");
 				log.debug("客户" + nickname + "成功增加保证金结束！");
 			}
-			
-			
+
 			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
 			if (deductFee != 0f) {
 				Map<String, String> param = new HashMap<String, String>();
 				param.put("nickname", nickname);
 				param.put("needDeductFee", result.get("needDeductFee"));
-				jobHandler.handleOtherJob(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE, param);
+				jobHandler.handleOtherJob(
+						Constants.TYPE_JOB_DEDUCT_ADDGURANTEE, param);
 			}
-			
+
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			map.put("flag", Constants.CODE_FAILURE);

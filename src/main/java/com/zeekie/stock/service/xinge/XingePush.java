@@ -29,27 +29,11 @@ public class XingePush {
 		JSONObject androidRet = app.pushAllDevice(XingeApp.DEVICE_ALL,
 				Messages.getAndroidMessage(msg));// send to android
 
-		if (0 == androidRet.getInt("ret_code")) {
-			if (log.isDebugEnabled()) {
-				log.debug("push to android success,send title="
-						+ msg.getTitle() + " and content=" + msg.getContent());
-			}
-		} else {
-			log.error("push exception happened,androidRet="
-					+ androidRet.toString());
-		}
-
 		JSONObject iosRet = app.pushAllDevice(XingeApp.DEVICE_ALL,
 				Messages.getIosMessage(msg),// send to ios
 				Constants.environment);
-		if (0 == iosRet.getInt("ret_code")) {
-			if (log.isDebugEnabled()) {
-				log.debug("push to ios success,send title=" + msg.getTitle()
-						+ " and content=" + msg.getContent());
-			}
-		} else {
-			log.error("push exception happened,iosRet=" + iosRet.toString());
-		}
+
+		log(msg, androidRet, iosRet);
 
 	}
 
@@ -64,20 +48,7 @@ public class XingePush {
 		JSONObject iosRet = app.pushTags(XingeApp.DEVICE_IOS, tagList, "OR",
 				Messages.getIosMessage(msg),// send to ios
 				Constants.environment);
-		boolean success = (0 == androidRet.getInt("ret_code") && 0 == iosRet
-				.getInt("ret_code"));
-		if (!success) {
-			log.error("batch set tag exception happend:android err_msg="
-					+ androidRet.getString("err_msg") + ",ret_code="
-					+ androidRet.getInt("ret_code") + ",iso err_msg="
-					+ iosRet.getString("err_msg") + ",ret_code="
-					+ iosRet.getInt("ret_code"));
-		} else {
-			if (log.isDebugEnabled()) {
-				log.debug("sendmessage ：" + msg.getContent()
-						+ " already accept message successfully. ");
-			}
-		}
+		log(msg, androidRet, iosRet);
 	}
 
 	// 下发单个账号
@@ -89,20 +60,29 @@ public class XingePush {
 		JSONObject iosRet = app.pushSingleAccount(XingeApp.DEVICE_IOS,
 				acceptor, Messages.getIosMessage(msg), Constants.environment);
 
-		boolean success = (0 == androidRet.getInt("ret_code") && 0 == iosRet
-				.getInt("ret_code"));
+		log(msg, androidRet, iosRet);
+		
+	}
 
-		if (!success) {
-			log.error("send message exception happend:android err_msg="
-					+ androidRet.getString("err_msg") + ",ret_code="
-					+ androidRet.getInt("ret_code") + ",iso err_msg="
-					+ iosRet.getString("err_msg") + ",ret_code="
-					+ iosRet.getInt("ret_code"));
-		} else {
+	private static void log(StockMsg msg, JSONObject androidRet,
+			JSONObject iosRet) {
+		if (0 == androidRet.getInt("ret_code")) {
 			if (log.isDebugEnabled()) {
-				log.debug("nickname =" + acceptor
-						+ " already accept message successfully. ");
+				log.debug("push to android success,send title="
+						+ msg.getTitle() + " and content=" + msg.getContent());
 			}
+		} else {
+			log.error("push exception happened,androidRet="
+					+ androidRet.toString());
+		}
+
+		if (0 == iosRet.getInt("ret_code")) {
+			if (log.isDebugEnabled()) {
+				log.debug("push to ios success,send title=" + msg.getTitle()
+						+ " and content=" + msg.getContent());
+			}
+		} else {
+			log.error("push exception happened,iosRet=" + iosRet.toString());
 		}
 	}
 }
