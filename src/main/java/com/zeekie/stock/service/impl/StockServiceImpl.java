@@ -113,7 +113,7 @@ public class StockServiceImpl implements TradeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-//		currentOperate.put("homesStatus", Constants.HOMES_STATUS);
+		// currentOperate.put("homesStatus", Constants.HOMES_STATUS);
 		return currentOperate;
 	}
 
@@ -219,8 +219,10 @@ public class StockServiceImpl implements TradeService {
 						+ "");// 实盘金额
 				currentOperateInfo.put("profitAndLossCash",
 						current.getProfitAndLossCash() + "");// 盈亏金额
-				currentOperateInfo.put("profitAndLossRadio",
-						current.getProfitAndLossRadio() + "");// 盈亏比例
+				currentOperateInfo.put(
+						"profitAndLossRadio",
+						StringUtil.keepTwoDecimalFloat(current
+								.getProfitAndLossRadio() * 100) + "%");// 盈亏比例
 				currentOperateInfo.put("progressBar", current.getProgressBar()
 						+ "");// 进度条
 			}
