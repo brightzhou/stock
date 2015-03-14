@@ -12,6 +12,22 @@ public class StockRadioDO {
 
 	private Float upLinePercent;
 
+	private Float assignCash;
+
+	/**
+	 * @return the assignCash
+	 */
+	public Float getAssignCash() {
+		return assignCash;
+	}
+
+	/**
+	 * @param assignCash
+	 *            the assignCash to set
+	 */
+	public void setAssignCash(Float assignCash) {
+		this.assignCash = assignCash;
+	}
 
 	/**
 	 * @return the upLinePercent

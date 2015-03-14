@@ -102,8 +102,16 @@ public class StockServiceImpl implements TradeService {
 		currentOperate.put("flag", "0");
 		try {
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
-
 			if (null != radioDO) {
+				// 判断是否大于设置操盘额度的上线
+				if (StringUtil.compareNum(Float.parseFloat(tradeFund),
+						radioDO.getAssignCash())) {
+					currentOperate.put("flag", "2");
+					currentOperate.put("msg", "您当前操盘额度【" + tradeFund
+							+ "】元不能超过设置的操盘上线【" + radioDO.getAssignCash()
+							+ "】元，如果需要调整，可以联系客户，谢谢!");
+					return currentOperate;
+				}
 				// 3、返回操盘信息
 				returnOperateInfo(currentOperate, radioDO,
 						Float.parseFloat(tradeFund));
@@ -471,6 +479,7 @@ public class StockServiceImpl implements TradeService {
 	public Map<String, String> enterAddGuaranteePage(String nickname,
 			String addGuranteeCash) {
 		Map<String, String> map = new HashMap<String, String>();
+		map.put("flag", "0");// 增加保证金操盘额度大于设置上线
 		try {
 			Float addGuranteeCashFloat = Float.parseFloat(StringUtils
 					.defaultIfBlank(addGuranteeCash, "0"));
@@ -533,6 +542,9 @@ public class StockServiceImpl implements TradeService {
 				map.put("fundAccount", pageDO.getFundAccount());
 				map.put("managerCombineId", pageDO.getManagerCombineId());
 				map.put("needDeductFee", StringUtil.keepThreeDot(balance));
+				map.put("assignCash",
+						StringUtil.keepThreeDot(pageDO.getAssignCash()));
+				map.put("flag", "1");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -546,6 +558,7 @@ public class StockServiceImpl implements TradeService {
 		Map<String, String> map = new HashMap<String, String>();
 		String flag = "0";
 		try {
+
 			log.info("开始增加保证金...");
 			// 判断当前账户是否有足够的钱
 			String addedGuaranteeCash = transferData.getAddedGuaranteeCash();
@@ -564,6 +577,17 @@ public class StockServiceImpl implements TradeService {
 
 			Map<String, String> result = enterAddGuaranteePage(nickname,
 					addedGuaranteeCash);
+
+			Float currentOperateLimit = Float.parseFloat(result
+					.get("currentOperateLimit"));
+			Float assignCash = Float.parseFloat(result.get("assignCash"));
+			if (StringUtil.compareNum(currentOperateLimit, assignCash)) {
+				map.put("msg", "增加保证金后，您当前操盘额度【" + currentOperateLimit
+						+ "】元不能超过设置的操盘上线【" + assignCash
+						+ "】元，如果需要调整，可以联系客户，谢谢!");
+				map.put("flag", Constants.CODE_ERROR_EXCEED_LIMIT);
+				return map;
+			}
 
 			String profitAndLossCash = result.get("profitAndLossCash");
 			transferData.setCurrentOperateLimit(result

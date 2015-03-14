@@ -16,6 +16,8 @@ public class AddGuaranteePageDO {
 
 	private String assignRadio;
 
+	private Float assignCash;
+
 	private Float warnCash;
 
 	private Float stopCash;
@@ -27,6 +29,21 @@ public class AddGuaranteePageDO {
 	private String fundAccount;
 
 	private String managerCombineId;
+
+	/**
+	 * @return the assignCash
+	 */
+	public Float getAssignCash() {
+		return assignCash;
+	}
+
+	/**
+	 * @param assignCash
+	 *            the assignCash to set
+	 */
+	public void setAssignCash(Float assignCash) {
+		this.assignCash = assignCash;
+	}
 
 	/**
 	 * @return the managerCombineId

@@ -8,6 +8,7 @@
 		<result column="WARN_RADIO" property="warnRadio" jdbcType="NUMERIC"/>
 		<result column="FEE_RADIO" property="manageFeeRadio" jdbcType="NUMERIC"/>
 		<result column="Up_Line_Percent" property="upLinePercent" jdbcType="NUMERIC"/>
+		<result column="assign_cash" property="assignCash" jdbcType="NUMERIC"/>
 	</resultMap>
 	
 	
@@ -290,7 +291,7 @@
 	</select>
 	
 	<select id="getAssignRadioForCurrUser" resultMap="resultRadio" parameterType="string">
-	SELECT ASSIGN_RADIO, STOP_RADIO, WARN_RADIO,FEE_RADIO, Up_Line_Percent
+	SELECT ASSIGN_RADIO, STOP_RADIO, WARN_RADIO,FEE_RADIO, Up_Line_Percent,assign_cash
 	  FROM STOCK_FUND_ASSIGN_RADIO  
 	 WHERE NICKNAME = #{nickname}
 	 

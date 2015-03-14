@@ -3,6 +3,7 @@ package com.zeekie.stock.util;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -357,4 +358,19 @@ public class StringUtil {
 		}
 	}
 
+	/**
+	 * 数字转
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public static String FloatToPercentum(Float param) {
+		DecimalFormat df = new DecimalFormat("0.00%");
+		String r = df.format(param);
+		return r;
+	}
+
+	public static boolean compareNum(Float param1, Float param2) {
+		return (param1 > param2);
+	}
 }

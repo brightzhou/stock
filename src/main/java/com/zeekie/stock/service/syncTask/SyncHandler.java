@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import sitong.thinker.common.util.mybatis.BatchMapper;
 
-import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.StockRadioDO;

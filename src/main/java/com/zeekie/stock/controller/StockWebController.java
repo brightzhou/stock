@@ -364,7 +364,7 @@ public class StockWebController {
 
 				handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
 						parasResult);
-				
+
 				if (StringUtils.equals(rechargeResult, Constants.CODE_SUCCESS)) {
 					if (log.isDebugEnabled()) {
 						log.debug("支付失败，不推送消息");
@@ -375,35 +375,12 @@ public class StockWebController {
 					}
 				}
 			}
-			// if (in != null) {
-			// System.out.println("流不是空的。");
-			// this.writeInputStreamToFile(in);
-			// log.debug("server time is " + new Date());
-			// } else {
-			// log.debug("流是空的");
-			// }
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		} catch (DocumentException e) {
 			log.error(e.getMessage(), e);
 		}
 	}
-
-	/*
-	 * private void writeInputStreamToFile(InputStream in) throws
-	 * FileNotFoundException {
-	 * 
-	 * File file = new File("D:/returnResult.txt"); if (!file.exists()) { try {
-	 * file.createNewFile(); } catch (IOException e) { log.error(e.getMessage(),
-	 * e); } } FileOutputStream fos = new FileOutputStream(file);
-	 * BufferedInputStream bis = new BufferedInputStream(in); int BUFFER_SIZE =
-	 * 1024; byte[] buf = new byte[BUFFER_SIZE]; int size = 0; try { while
-	 * ((size = bis.read(buf)) != -1) fos.write(buf, 0, size); } catch
-	 * (IOException e) { log.error(e.getMessage(), e); } finally {
-	 * IOUtils.closeQuietly(bis); IOUtils.closeQuietly(fos); }
-	 * 
-	 * }
-	 */
 
 	@ResponseBody
 	@RequestMapping("getPayMsg")
@@ -512,6 +489,13 @@ public class StockWebController {
 	@RequestMapping("manager/openOrCloseApp")
 	public void openApp(@RequestParam("flag") String flag) {
 		webService.openOrCloseApp(flag);
+		Constants.HOMES_STATUS = flag;
+	}
+
+	@ResponseBody
+	@RequestMapping("manager/getAppStatus")
+	public String getAppStatus() {
+		return Constants.HOMES_STATUS;
 	}
 
 	/**
