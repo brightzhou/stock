@@ -21,6 +21,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body class="body_fit" >
 <div class="Place_text"><span>哈哈宝开关设置</span></div>  
     <table align="center">
+    	<tr>
+    		<td align="center" colspan="2">
+    			<div id="status"></div>
+    		</td>
+    	</tr>
         <tr >
 	        <td align="center" colspan="3">
 	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('open')">打开</a>
@@ -33,6 +38,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <script type="text/javascript">
         mini.parse();
+        
+        init();
+        function init(){
+        	$.ajax({
+                url: "<%=basePath%>api/stock/web/manager/getAppStatus",
+                data: '',
+                cache: false,
+                success: function (text) {
+                	if(text=='open'){
+	                	$('#status').append('APP已经打开');
+                	}else{
+                		$('#status').append('APP已经关闭');
+                	}
+                },
+                error: function (text) {
+                	mini.alert('服务器发生异常');
+                }
+            });
+        }
+        
+        
         function openOrCloseApp(param) {
             $.ajax({
                 url: "<%=basePath%>api/stock/web/manager/openOrCloseApp?flag="+param,
@@ -41,8 +67,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 success: function (text) {
                 	if(param=='open'){
 	                	mini.alert('打开成功');
+	                	$('#status').empty();
+	                	$('#status').append('APP已经打开');
                 	}else{
                 		mini.alert('关闭成功');
+                		$('#status').empty();
+                		$('#status').append('APP已经关闭');
                 	}
                 },
                 error: function (text) {

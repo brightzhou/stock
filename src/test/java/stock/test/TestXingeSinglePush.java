@@ -109,8 +109,8 @@ public class TestXingeSinglePush {
 //		tagList.add("0400");
 //		tagList.add("2");
 		Message message = new Message();
-		message.setTitle("222222");
-		message.setContent("哈哈哈哈哈");
+		message.setTitle("1212121");
+		message.setContent("风格风格发");
 		message.setType(Message.TYPE_MESSAGE);
 //		message.setSendTime("2014-08-06 18:17:00");
 //		message.setExpireTime(120);

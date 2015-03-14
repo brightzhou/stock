@@ -467,9 +467,9 @@ public class AcountServiceImpl implements AcountService {
 						packketDO.getAssignRefereeRedPacket());
 				map.put("assignRegisterRedPacket",
 						StringUtils.defaultIfBlank(
-								packketDO.getAssignRegisterRedPacket(), "1.2"));
+								packketDO.getAssignRegisterRedPacket(), "0.0"));
 				map.put("assignRefereeDrawPercent", StringUtil
-						.keepThreeDot(packketDO.getAssignRefereeDrawPercent()));
+						.FloatToPercentum(packketDO.getAssignRefereeDrawPercent()));
 				map.put("spreedPath",
 						stock_spreed_page_path + packketDO.getUserId());
 				map.put("refereeId", packketDO.getUserId());

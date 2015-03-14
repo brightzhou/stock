@@ -57,6 +57,8 @@ public class Constants {
 	public static final String CODE_ERROR_NICKNAME_MSG = "该用户已经存在，请重新输入";
 
 	public static final String CODE_ERROR_WALLET_LITTLE = "4";
+	
+	public static final String CODE_ERROR_EXCEED_LIMIT = "5";
 
 	public static final String MSG_ERROR_WALLET_LITTLE = "余额不足以支付保证金";
 	// 无效的验证码
@@ -173,7 +175,9 @@ public class Constants {
 
 	public static Map sensitiveWordMap = null;
 
-	public static String HOMES_STATUS = "nomral";
+	// public static String HOMES_STATUS = "nomral";
+
+	public static String HOMES_STATUS = "open";
 
 	public static IClient getClient() {
 		return client;
