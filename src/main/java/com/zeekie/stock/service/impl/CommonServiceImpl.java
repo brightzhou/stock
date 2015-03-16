@@ -200,7 +200,7 @@ public class CommonServiceImpl implements CommonService {
 				return Constants.ERROR_CODE_WRONG_TEL;
 			}
 			// 2、校验验证码是否正确
-			if (!check(telephone, verifyCode,
+			if (!check(newTelephone, verifyCode,
 					Constants.CODE_VERIFYCODE_SOURCE_UPDATETEL)) {
 				return Constants.ERROR_CODE_WRONG_VERIFYCODE;
 			}
