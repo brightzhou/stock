@@ -229,11 +229,12 @@ public class StringUtil {
 	public static Float keepTwoDecimalFloat(Float f) {
 		if (null == f)
 			return 0f;
-		DecimalFormat df = new DecimalFormat(".###");
-		df.setMaximumFractionDigits(3);
+        DecimalFormat df = new DecimalFormat("#.00");
+        df.setMaximumFractionDigits(2);
 		df.setRoundingMode(RoundingMode.HALF_UP);
-		df.applyPattern(".###");
-		return Float.parseFloat(df.format(f));
+//		df.applyPattern(".00");
+		Float ss = Float.parseFloat(df.format(f));
+		return ss;
 	}
 
 	public static String keepThreeDot(Float f) {

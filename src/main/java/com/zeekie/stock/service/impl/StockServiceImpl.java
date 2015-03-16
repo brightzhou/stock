@@ -230,7 +230,7 @@ public class StockServiceImpl implements TradeService {
 				currentOperateInfo.put(
 						"profitAndLossRadio",
 						StringUtil.keepTwoDecimalFloat(current
-								.getProfitAndLossRadio() * 100) + "%");// 盈亏比例
+								.getProfitAndLossRadio() * 100)+"");// 盈亏比例
 				currentOperateInfo.put("progressBar", current.getProgressBar()
 						+ "");// 进度条
 			}
@@ -569,7 +569,7 @@ public class StockServiceImpl implements TradeService {
 				if (log.isDebugEnabled()) {
 					String msg = "亲爱的" + nickname + " 对不起 ，账户余额不足，请充值后再操作";
 					log.debug(msg);
-					map.put(Constants.CODE_FAILURE, msg);
+					map.put("msg", msg);
 					map.put("flag", Constants.CODE_ERROR_WALLET_LITTLE);
 				}
 				return map;
