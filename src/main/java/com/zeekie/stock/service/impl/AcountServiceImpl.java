@@ -24,6 +24,7 @@ import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.RedPacketDO;
+import com.zeekie.stock.entity.RedpacketAndBalanceDO;
 import com.zeekie.stock.entity.UserDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
 import com.zeekie.stock.enums.Fund;
@@ -74,7 +75,8 @@ public class AcountServiceImpl implements AcountService {
 		// true
 		try {
 			// 1、实名认证
-			acounter.insertIdentify(nickname, truename, idCard);
+			acounter.insertIdentify(nickname, truename,
+					StringUtils.upperCase(idCard));
 
 			// 2、身份认证账号平台给注册的人的钱
 			String plat_money = acounter.getPlatRedPacketToRegister(nickname);
@@ -91,55 +93,83 @@ public class AcountServiceImpl implements AcountService {
 			// 3、1 如果有推荐人，给推荐人红包
 			String referee = acounter.queryReferee(nickname);
 			if (StringUtils.isNotBlank(referee)) {
-				// 3、2 给推荐人算积分
-				acounter.recordIntegral(nickname);
-				String platRedPacketToreferee = acounter
-						.getPlatRedPacketToReferee(referee);
 
-				String type = "";
-				if (StringUtils.isNotBlank(platRedPacketToreferee)
-						&& null != platRedPacketToreferee) {
-					acounter.moveRedPacketToReferee(referee,
-							platRedPacketToreferee);
+				RedpacketAndBalanceDO packet = acounter
+						.getRefereeRedPacket(referee);
 
-					// 3、3 给推荐人分红包 5
-					type = Fund.REFEREE_PACKET.getType();
-					trade.recordFundflow(referee, type, platRedPacketToreferee,
-							Fund.getDesc(nickname, type));
-
+				if (packet == null) {
 					if (log.isDebugEnabled()) {
-						log.debug("用户[" + nickname + "]拥有推荐人[" + referee
-								+ "]，平台给推荐人红包：" + platRedPacketToreferee + "元");
+						log.debug("推荐人" + referee + "未设置红包");
 					}
+					return true;
 				}
 
-				String referee_redPacket = acounter
-						.getRefereeRedPacket(referee);
-				if (null != referee_redPacket
-						&& StringUtils.isNotBlank(referee_redPacket)) {
-					// 4、1推广人给下线指定的红包,先减去推荐人指定的红钱，然后加到注册人的钱包中
-					trade.deductGuaranteeCash(referee_redPacket, referee);
+				Float refereeRedPacket = packet.getRedPacket();
+				Float value = packet.getValue();
 
-					type = Fund.REFEREE_PRAISE.getType();
-					trade.recordFundflow(referee, type, referee_redPacket,
-							Fund.getDesc(nickname, type));
-
+				// 钱包余额不足以支付推荐人设置的红包
+				if (value < 0f) {
 					if (log.isDebugEnabled()) {
-						log.debug("用户[" + referee + "]指定了一个红包["
-								+ referee_redPacket + "]，分给注册人[" + nickname
-								+ "],从钱包扣除该笔金额：" + referee_redPacket);
+						log.debug("推荐人" + referee + "所剩余额以及不足以支付红包，故用户"
+								+ nickname + "不设置推荐人，且不分配红包");
 					}
 
-					acounter.moveRedPacketToReferee(nickname, referee_redPacket);
+					acounter.updateRefereeIsNull(nickname);
+				} else {
 
-					type = Fund.CLIENT_PRIASE.getType();
-					trade.recordFundflow(nickname, type, referee_redPacket,
-							Fund.getDesc(referee, type));
+					// 3、2 给推荐人算积分
+					acounter.recordIntegral(nickname);
+					String platRedPacketToreferee = acounter
+							.getPlatRedPacketToReferee(referee);
+					String type = "";
+					if (StringUtils.isNotBlank(platRedPacketToreferee)
+							&& null != platRedPacketToreferee) {
+						acounter.moveRedPacketToReferee(referee,
+								platRedPacketToreferee);
 
-					if (log.isDebugEnabled()) {
-						log.debug("用户[" + nickname + "]收到了推荐人[" + referee
-								+ "]的一个红包[" + referee_redPacket + "]");
+						// 3、3 给推荐人分红包 5
+						type = Fund.REFEREE_PACKET.getType();
+						trade.recordFundflow(referee, type,
+								platRedPacketToreferee,
+								Fund.getDesc(nickname, type));
+
+						if (log.isDebugEnabled()) {
+							log.debug("用户[" + nickname + "]拥有推荐人[" + referee
+									+ "]，平台给推荐人红包：" + platRedPacketToreferee
+									+ "元");
+						}
 					}
+
+					// 设置红包大于0，才开始分红包
+					if (refereeRedPacket > 0f) {
+						// 4、1推广人给下线指定的红包,先减去推荐人指定的红钱，然后加到注册人的钱包中
+						trade.deductGuaranteeCash(refereeRedPacket + "",
+								referee);
+
+						type = Fund.REFEREE_PRAISE.getType();
+						trade.recordFundflow(referee, type, refereeRedPacket
+								+ "", Fund.getDesc(nickname, type));
+
+						if (log.isDebugEnabled()) {
+							log.debug("用户[" + referee + "]指定了一个红包["
+									+ refereeRedPacket + "" + "]，分给注册人["
+									+ nickname + "],从钱包扣除该笔金额："
+									+ refereeRedPacket + "");
+						}
+
+						acounter.moveRedPacketToReferee(nickname,
+								refereeRedPacket + "");
+
+						type = Fund.CLIENT_PRIASE.getType();
+						trade.recordFundflow(nickname, type, refereeRedPacket
+								+ "", Fund.getDesc(referee, type));
+
+						if (log.isDebugEnabled()) {
+							log.debug("用户[" + nickname + "]收到了推荐人[" + referee
+									+ "]的一个红包[" + refereeRedPacket + "" + "]");
+						}
+					}
+
 				}
 
 			}
@@ -469,7 +499,8 @@ public class AcountServiceImpl implements AcountService {
 						StringUtils.defaultIfBlank(
 								packketDO.getAssignRegisterRedPacket(), "0.0"));
 				map.put("assignRefereeDrawPercent", StringUtil
-						.FloatToPercentum(packketDO.getAssignRefereeDrawPercent()));
+						.FloatToPercentum(packketDO
+								.getAssignRefereeDrawPercent()));
 				map.put("spreedPath",
 						stock_spreed_page_path + packketDO.getUserId());
 				map.put("refereeId", packketDO.getUserId());

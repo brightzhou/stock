@@ -86,18 +86,26 @@ public class SyncHandler {
 		} else if (StringUtils.equals(Constants.TYPE_JOB_PAY_NOTICE, type)) {
 
 			String nickname = "";
-			try {
-				nickname = account.queryNickname(param.get("userId"));
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-			if (webService.payToUs("", nickname, param.get("amount"))) {
-				if (log.isDebugEnabled()) {
-					log.debug("用户:" + nickname + "充值成功，开始向APP对宋消息");
+			String rechargeResult = param.get("rechargeResult");
+			String respResult = param.get("responseResult");
+			String userId = param.get("userId");
+			if (StringUtils.equals(Constants.CODE_SUCCESS, rechargeResult)) {
+				try {
+					nickname = account.queryNickname(param.get("userId"));
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
 				}
-				pushPaySuccess(param.get("userId"), nickname,
-						param.get("rechargeResult"));
+				if (webService.payToUs("", nickname, param.get("amount"))) {
+					if (log.isDebugEnabled()) {
+						log.debug("用户:" + nickname + "充值成功，开始向APP对宋消息");
+					}
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("用户" + userId + "支付失败：" + respResult);
+				}
 			}
+			pushPayResult(userId, nickname, rechargeResult, respResult);
 
 		} else if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE,
 				type)) {
@@ -106,22 +114,19 @@ public class SyncHandler {
 		}
 	}
 
-	private void pushPaySuccess(String userId, String nickname,
-			String rechargeResult) {
+	private void pushPayResult(String userId, String nickname,
+			String rechargeResult, String responseResult) {
 		StockMsg msg = new StockMsg();
 		String content = "";
-		String title = "";
 		if (StringUtils.equals(Constants.CODE_SUCCESS, rechargeResult)) {
 			content = XingeEnum.USER_RECHARGE_SUCCESS.getContent();
-			title = XingeEnum.USER_RECHARGE_SUCCESS.getTitle();
 		} else {
 			content = XingeEnum.USER_RECHARGE_FAILURE.getContent();
-			title = XingeEnum.USER_RECHARGE_FAILURE.getTitle();
 		}
 		msg.setContent(content);
 		msg.setNickname(nickname);
 		msg.setUserId(userId);
-		msg.setTitle(title);
+		msg.setTitle(responseResult);
 		XingePush.push(msg);
 	}
 

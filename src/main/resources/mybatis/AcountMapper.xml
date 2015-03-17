@@ -209,6 +209,11 @@
 		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.RedpacketAndBalanceDO" id="resultRefereeRedPacket">
+		<result column="Red_Packet" property="redPacket" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="value" property="value" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -647,8 +652,8 @@
 		 Where r.Nickname = #{referee}
 	</select>
 	
-	<select id="getRefereeRedPacket" parameterType="string" resultType="string">
-		Select Red_Packet
+	<select id="getRefereeRedPacket" parameterType="string" resultMap="resultRefereeRedPacket">
+		Select Red_Packet,(select (w.balance -p.Red_Packet)  from stock_user_wallet w where w.nickname = p.REFEREE_NICKNAME ) value
 		  From Stock_Referee_Red_Packet p
 		 Where p.REFEREE_NICKNAME = #{referee}
 	</select>
@@ -1094,4 +1099,8 @@
 	<select id="queryNickname" parameterType="string" resultType="string">
 		select nickname from stock_user where id = #{userId}
 	</select>
+	
+	<update id="updateRefereeIsNull" parameterType="string">
+		Update stock_user  Set referee_id = '' Where nickname = #{nickname}
+	</update>
 </mapper>

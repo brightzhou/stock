@@ -23,6 +23,7 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.RedPacketDO;
+import com.zeekie.stock.entity.RedpacketAndBalanceDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TradeDO;
@@ -161,8 +162,8 @@ public interface AcountMapper {
 	public String getPlatRedPacketToReferee(@Param("referee") String referee)
 			throws Exception;
 
-	public String getRefereeRedPacket(@Param("referee") String referee)
-			throws Exception;
+	public RedpacketAndBalanceDO getRefereeRedPacket(
+			@Param("referee") String referee) throws Exception;
 
 	public String getPlatRedPacketToRegister(@Param("nickname") String nickname)
 			throws Exception;
@@ -355,6 +356,15 @@ public interface AcountMapper {
 	 * @return
 	 */
 	public String queryNickname(@Param("userId") String userId)
+			throws Exception;
+
+	/**
+	 * 设置推荐人为空
+	 * 
+	 * @param nickname
+	 * @throws Exception
+	 */
+	public void updateRefereeIsNull(@Param("nickname") String nickname)
 			throws Exception;
 
 }

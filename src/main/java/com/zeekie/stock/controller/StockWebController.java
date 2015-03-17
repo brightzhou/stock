@@ -354,26 +354,16 @@ public class StockWebController {
 			if (StringUtils.isNotBlank(xml)) {
 				Map<String, String> parasResult = XmlUtil.readStringXmlOut(xml);
 				if (log.isDebugEnabled()) {
-					log.debug("获取支付回调结果：" + parasResult);
+					log.debug("提取需要的参数：" + parasResult);
 				}
 
-				String rechargeResult = StringUtils.equals(
-						parasResult.get("respMsg"), "交易成功") ? Constants.CODE_SUCCESS
+				String respMsg = parasResult.get("respMsg");
+				String rechargeResult = StringUtils.equals(respMsg, "交易成功") ? Constants.CODE_SUCCESS
 						: Constants.CODE_FAILURE;
 				parasResult.put("rechargeResult", rechargeResult);
-
+				parasResult.put("responseResult", respMsg);
 				handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
 						parasResult);
-
-				if (StringUtils.equals(rechargeResult, Constants.CODE_SUCCESS)) {
-					if (log.isDebugEnabled()) {
-						log.debug("支付失败，不推送消息");
-					}
-				} else {
-					if (log.isDebugEnabled()) {
-						log.debug("支付失败，不推送消息");
-					}
-				}
 			}
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
@@ -514,12 +504,12 @@ public class StockWebController {
 
 				String originResult = StringUtil.getResult(xml.toString());
 				if (log.isDebugEnabled()) {
-					log.debug("原始结果：" + originResult);
+					log.debug("原始返回：" + originResult);
 				}
 				String convertResult = URLDecoder.decode(new String(
 						originResult.getBytes()), "UTF-8");
 				if (log.isDebugEnabled()) {
-					log.debug("回调函数转换返回结果为：" + convertResult);
+					log.debug("转换后结果为：" + convertResult);
 				}
 				return convertResult;
 			} catch (Exception ex) {
