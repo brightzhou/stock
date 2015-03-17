@@ -66,7 +66,8 @@ public class DeductManageFeeTimer {
 			// 2、查询更新的用户
 			List<DeductDO> result = trade.queryCurrentStocker();
 			// 3、从用户账户中批量扣除管理费
-			batchMapper.batchInsert(TradeMapper.class, "deductManageFeeBatch",result);
+			batchMapper.batchInsert(TradeMapper.class, "deductManageFeeBatch",
+					result);
 
 			List<FundFlowDO> fee = new ArrayList<FundFlowDO>();
 			List<FundFlowDO> drawFeeJh = new ArrayList<FundFlowDO>();
@@ -88,10 +89,12 @@ public class DeductManageFeeTimer {
 				}
 			}
 			// 4、1 给推广人加服务提成费
-			batchMapper.batchInsert(TradeMapper.class, "addDrawFeeBatch",drawFeeJh);
-					
+			batchMapper.batchInsert(TradeMapper.class, "addDrawFeeBatch",
+					drawFeeJh);
+
 			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
-			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch",drawFeeJh);
+			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch",
+					drawFeeJh);
 
 			// trade.caculateRefereeIncome();
 
@@ -113,12 +116,10 @@ public class DeductManageFeeTimer {
 		}
 	}
 
-	private void sendRechargeNotice(String tel, String nickname) {
-		if (StringUtils.isNotBlank(tel)) {
-			Map<String, String> param = new HashMap<String, String>();
-			param.put("nickname", nickname);
-			if (!ApiUtils.sendMsg(Constants.MODEL_NOTICE_RECHARGE_FN, param,
-					tel)) {
+	private void sendRechargeNotice(String phone, String nickname) {
+		if (StringUtils.isNotBlank(phone)) {
+			if (!ApiUtils.send(Constants.MODEL_NOTICE_RECHARGE_FN, phone,
+					nickname)) {
 				log.error("send recharge notice failure,nickname:" + nickname
 						+ ",reason call api is wrong");
 			}

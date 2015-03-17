@@ -1,5 +1,7 @@
 package com.zeekie.stock.service;
 
+import java.util.Map;
+
 import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service;
 import com.hundsun.t2sdk.impl.client.T2Services;
 import com.hundsun.t2sdk.interfaces.T2SDKException;
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.service.dao.Mapper;
 import com.zeekie.stock.service.sensitive.SensitiveWordInit;
+import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.FloatJsonValueProcessor;
 
 @Service
@@ -22,6 +26,8 @@ public class InitServer implements InitializingBean {
 	Logger log = LoggerFactory.getLogger(InitServer.class);
 
 	private String homes_server_name = "";
+
+	private final String selectClause = "queryMsgTemplate";
 
 	@Autowired
 	private SensitiveWordInit sensitive;
@@ -70,17 +76,24 @@ public class InitServer implements InitializingBean {
 	@Value("${startHomes}")
 	private String startHomes;
 
+	@Autowired
+	private Mapper<String, String> dao;
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-
 		initContants();
-
 		registerJsonConfig();
-
 		Constants.sensitiveWordMap = sensitive.initKeyWord();
-
+		initTemplate();
 		if (StringUtils.equals("1", startHomes))
 			startHomes();
+	}
+
+	private void initTemplate() {
+		Constants.MSG_MODEL = dao.getMap(selectClause, null, "FN", "MODEL");
+		if (log.isDebugEnabled()) {
+			log.debug("初始化短信模板成功！！！");
+		}
 	}
 
 	private void initContants() {

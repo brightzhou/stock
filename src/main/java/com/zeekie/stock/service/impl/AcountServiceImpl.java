@@ -33,6 +33,7 @@ import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
+import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
 
@@ -68,19 +69,25 @@ public class AcountServiceImpl implements AcountService {
 	@Value("${func_am_asset_move}")
 	private String Fn_asset_move;
 
+	@Autowired
+	private SyncHandler handler;
+
 	@Override
 	public boolean indentify(String nickname, String truename, String idCard)
 			throws RuntimeException {
-		// TODO:indentify can't be finish. do it after i am happy . this return
-		// true
+		// TODO:indentify can't be finish. do it after i am happy .
 		try {
+
+			if (log.isDebugEnabled()) {
+				log.debug("用户" + nickname + "开始认证...");
+			}
+
 			// 1、实名认证
 			acounter.insertIdentify(nickname, truename,
 					StringUtils.upperCase(idCard));
 
-			// 2、身份认证账号平台给注册的人的钱
+			// 2、身份认证,平台给注册的人的钱
 			String plat_money = acounter.getPlatRedPacketToRegister(nickname);
-
 			acounter.moveRedPacketToReferee(nickname, plat_money);
 
 			// 2、1记录流水 平台红包
@@ -88,9 +95,7 @@ public class AcountServiceImpl implements AcountService {
 					plat_money,
 					Fund.getDesc(nickname, Fund.PLAT_RED_PACKET.getType()));
 
-			// 3、实名认证之后开始分钱
-
-			// 3、1 如果有推荐人，给推荐人红包
+			// 3、如果有推荐人，给推荐人红包
 			String referee = acounter.queryReferee(nickname);
 			if (StringUtils.isNotBlank(referee)) {
 
@@ -101,6 +106,15 @@ public class AcountServiceImpl implements AcountService {
 					if (log.isDebugEnabled()) {
 						log.debug("推荐人" + referee + "未设置红包");
 					}
+					// 如果未设置红包，那么给推荐人红包和积分
+					caculatePacketAndIntegral(nickname, referee);
+
+					Map<String, String> param = new HashMap<String, String>();
+					param.put("nickname", nickname);
+					param.put("referee", referee);
+					param.put("packet", "0");
+					param.put("flag", "zero");
+					handler.handleOtherJob(Constants.TYPE_JOB_TO_REFEREE, param);
 					return true;
 				}
 
@@ -110,39 +124,25 @@ public class AcountServiceImpl implements AcountService {
 				// 钱包余额不足以支付推荐人设置的红包
 				if (value < 0f) {
 					if (log.isDebugEnabled()) {
-						log.debug("推荐人" + referee + "所剩余额以及不足以支付红包，故用户"
-								+ nickname + "不设置推荐人，且不分配红包");
+						log.debug("推荐人" + referee + "所剩余额已经不足以支付红包，故用户"
+								+ nickname + "不设置该推荐人");
 					}
-
 					acounter.updateRefereeIsNull(nickname);
+
+					Map<String, String> param = new HashMap<String, String>();
+					param.put("nickname", nickname);
+					param.put("referee", referee);
+					param.put("packet", refereeRedPacket + "");
+					param.put("flag", "insufficient");
+					handler.handleOtherJob(Constants.TYPE_JOB_TO_REFEREE, param);
 				} else {
+					caculatePacketAndIntegral(nickname, referee);
 
-					// 3、2 给推荐人算积分
-					acounter.recordIntegral(nickname);
-					String platRedPacketToreferee = acounter
-							.getPlatRedPacketToReferee(referee);
 					String type = "";
-					if (StringUtils.isNotBlank(platRedPacketToreferee)
-							&& null != platRedPacketToreferee) {
-						acounter.moveRedPacketToReferee(referee,
-								platRedPacketToreferee);
-
-						// 3、3 给推荐人分红包 5
-						type = Fund.REFEREE_PACKET.getType();
-						trade.recordFundflow(referee, type,
-								platRedPacketToreferee,
-								Fund.getDesc(nickname, type));
-
-						if (log.isDebugEnabled()) {
-							log.debug("用户[" + nickname + "]拥有推荐人[" + referee
-									+ "]，平台给推荐人红包：" + platRedPacketToreferee
-									+ "元");
-						}
-					}
-
-					// 设置红包大于0，才开始分红包
+					// 途径人设置红包大于0，才开始分红包
 					if (refereeRedPacket > 0f) {
-						// 4、1推广人给下线指定的红包,先减去推荐人指定的红钱，然后加到注册人的钱包中
+
+						// 3、1 减去推荐人指定的红包，记录流水
 						trade.deductGuaranteeCash(refereeRedPacket + "",
 								referee);
 
@@ -157,9 +157,9 @@ public class AcountServiceImpl implements AcountService {
 									+ refereeRedPacket + "");
 						}
 
+						// 3、2将推荐人的红包发给注册人，记录流水
 						acounter.moveRedPacketToReferee(nickname,
 								refereeRedPacket + "");
-
 						type = Fund.CLIENT_PRIASE.getType();
 						trade.recordFundflow(nickname, type, refereeRedPacket
 								+ "", Fund.getDesc(referee, type));
@@ -170,15 +170,47 @@ public class AcountServiceImpl implements AcountService {
 						}
 					}
 
+					Map<String, String> param = new HashMap<String, String>();
+					param.put("nickname", nickname);
+					param.put("referee", referee);
+					param.put("packet", refereeRedPacket + "");
+					param.put("flag", "enough");
+					handler.handleOtherJob(Constants.TYPE_JOB_TO_REFEREE, param);
+
 				}
 
 			}
-
+			if (log.isDebugEnabled()) {
+				log.debug("用户" + nickname + "认证成功，认证结束！！！");
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}
 		return true;
+	}
+
+	private void caculatePacketAndIntegral(String nickname, String referee)
+			throws Exception {
+		// 3、2 给推荐人算积分
+		acounter.recordIntegral(nickname);
+		String platRedPacketToreferee = acounter
+				.getPlatRedPacketToReferee(referee);
+		String type = "";
+		if (StringUtils.isNotBlank(platRedPacketToreferee)
+				&& null != platRedPacketToreferee) {
+			acounter.moveRedPacketToReferee(referee, platRedPacketToreferee);
+
+			// 3、3 给推荐人分红包 5
+			type = Fund.REFEREE_PACKET.getType();
+			trade.recordFundflow(referee, type, platRedPacketToreferee,
+					Fund.getDesc(nickname, type));
+
+			if (log.isDebugEnabled()) {
+				log.debug("用户[" + nickname + "]拥有推荐人[" + referee
+						+ "]，平台给推荐人红包：" + platRedPacketToreferee + "元");
+			}
+		}
 	}
 
 	@Override
@@ -355,11 +387,8 @@ public class AcountServiceImpl implements AcountService {
 				acounter.saveFreezeCash(nickname, fund);
 
 				// 发短信通知管理员有人提款
-				ApiUtils.sendMsg(Constants.MODEL_DEPOSIT_SQ_FN, null,
+				ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
 						stock_manager_phone);
-				// ucpaasApi.sendSMS(stock_manager_phone, nickname,
-				// templateId_deposit_notice, fund);
-
 				map.put("flag", "1");
 				map.put("msg", msg);
 			}

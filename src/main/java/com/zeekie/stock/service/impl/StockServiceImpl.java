@@ -155,7 +155,7 @@ public class StockServiceImpl implements TradeService {
 			// 判断是否存在可用的操盘账号
 			if (!StringUtils.equals("1", acount.getOperateAccount())) {
 				currentOperateInfo.put("flag", "2");
-				ApiUtils.sendMsg(Constants.MODEL_ACCOUNT_EMPTY_FN, null,
+				ApiUtils.send(Constants.MODEL_ACCOUNT_EMPTY_FN,
 						stock_manager_phone);
 				if (log.isDebugEnabled()) {
 					log.debug("没有可用的操盘账号,不能操盘，操盘用户：" + nickname);
@@ -230,7 +230,7 @@ public class StockServiceImpl implements TradeService {
 				currentOperateInfo.put(
 						"profitAndLossRadio",
 						StringUtil.keepTwoDecimalFloat(current
-								.getProfitAndLossRadio() * 100)+"");// 盈亏比例
+								.getProfitAndLossRadio() * 100) + "");// 盈亏比例
 				currentOperateInfo.put("progressBar", current.getProgressBar()
 						+ "");// 进度条
 			}
@@ -360,10 +360,8 @@ public class StockServiceImpl implements TradeService {
 		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
 		if (!StringUtils
 				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			Map<String, String> param = new HashMap<String, String>();
-			param.put("fundAccount", fundAccount);
-			ApiUtils.sendMsg(Constants.MODEL_MANAAGER_RECHARGE_FN, param,
-					stock_manager_phone);
+			ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
+					stock_manager_phone, fundAccount);
 			if (log.isDebugEnabled()) {
 				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
 			}
@@ -400,10 +398,8 @@ public class StockServiceImpl implements TradeService {
 		}
 		if (money != 0f) {
 			log.error("操盘账号：" + operator + " 仍然有有资金在HOMES中，不可使用!!!");
-			Map<String, String> param = new HashMap<String, String>();
-			param.put("operator", operator);
-			ApiUtils.sendMsg(Constants.MODEL_OPERATOR_HAS_CASH_FN, param,
-					stock_manager_phone);
+			ApiUtils.send(Constants.MODEL_OPERATOR_HAS_CASH_FN,
+					stock_manager_phone, operator);
 			return false;
 		}
 		if (log.isDebugEnabled()) {

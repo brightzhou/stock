@@ -112,11 +112,8 @@ public class CommonServiceImpl implements CommonService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("verifyCode", verifyCode);
-		// param.put("interval", interval);
 		// 发送验证码
-		if (ApiUtils.sendMsg(Constants.MODEL_VERYFY_FN, param, telephone)) {
+		if (ApiUtils.send(Constants.MODEL_VERYFY_FN, telephone, verifyCode)) {
 			return verifyCode;
 		}
 		return "";

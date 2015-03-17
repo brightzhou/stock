@@ -57,7 +57,7 @@ public class Constants {
 	public static final String CODE_ERROR_NICKNAME_MSG = "该用户已经存在，请重新输入";
 
 	public static final String CODE_ERROR_WALLET_LITTLE = "4";
-	
+
 	public static final String CODE_ERROR_EXCEED_LIMIT = "5";
 
 	public static final String MSG_ERROR_WALLET_LITTLE = "余额不足以支付保证金";
@@ -103,39 +103,33 @@ public class Constants {
 	public static final String AMORTIZATION = "获取用户【nickname】技术服务费提成";
 	// 验证码 1307
 	public static final String MODEL_VERYFY_FN = "1307";
-	public static final String MODEL_VERYFY = "【哈哈宝】亲爱的，你的验证码是{?}，请在2分钟以内输入验证。过期请重新获取";
 	// 提醒充值 1308
 	public static final String MODEL_NOTICE_RECHARGE_FN = "1308";
-	public static final String MODEL_NOTICE_RECHARGE = "【哈哈宝】亲爱的{?},你的账户余额所剩不多，请及时充值，以免影响正常使用";
 	// 用户发起提现 1309
 	public static final String MODEL_DEPOSIT_SQ_FN = "1309";
-	public static final String MODEL_DEPOSIT_SQ = "【哈哈宝】管理员，有用户发起提醒，请及时处理";
 	// 管理账户余额不多 1310
 	public static final String MODEL_MANAAGER_RECHARGE_FN = "1310";
-	public static final String MODEL_MANAAGER_RECHARGE = "【哈哈宝】管理员，资金账户{?}余额不多,请处理";
 	// 操盘账户已经用完 1311
 	public static final String MODEL_ACCOUNT_EMPTY_FN = "1311";
-	public static final String MODEL_ACCOUNT_EMPTY = "【哈哈宝】管理员，子账户已经使用完毕,请处理";
-
 	// 实盘金额已经达到平仓线 1312
 	public static final String MODEL_TRADE_STOP_FN = "1312";
-	public static final String MODEL_TRADE_STOP = "【哈哈宝】亲爱的{?}，你的交易{?},按照预先的设置,已经达到{?},请及时增加保证金以免影响操盘";
-
 	// 实盘金额已经达到警戒线 1313
 	public static final String MODEL_TRADE_WARN_FN = "1313";
-	public static final String MODEL_TRADE_WARN = "【哈哈宝】管理员，子账户已经使用完毕,请处理";
-
 	// 该账号在HOMES中还有资金 1314
 	public static final String MODEL_OPERATOR_HAS_CASH_FN = "1314";
-	public static final String MODEL_OPERATOR_HAS_CASH = "【哈哈宝】管理员，该账号{?}已经结束操盘，但是在HOMES中还有资金未划转到管理单元,请处理";
-
 	// 后台平仓 1315
 	public static final String MODEL_EVENING_UP_REMIND_FN = "1315";
-	public static final String MODEL_EVENING_UP_REMIND = "【哈哈宝】亲爱的#,您当前操盘单号为#由于已经爆仓,已经被后台强制结束操盘.请在历史操盘中查询。如有疑问请联系管理员，谢谢！";
-
 	// 当实际资产小于警戒线以下的时候发送短信给用户1316
 	public static final String MODEL_REACH_WARNLINE_REMIND_FN = "1316";
-	public static final String MODEL_REACH_WARNLINE_REMIND = "【哈哈宝】亲爱的#,您当前操盘单号为#的操盘，实际资产#已经低于警戒线#,请及时增加保证金，以免爆仓，谢谢！";
+	/**
+	 * 未成为推荐人 FN=1317
+	 */
+	public static final String MODEL_TO_BE_REFEREE_FN = "1317";
+
+	/**
+	 * 未成为推荐人 FN=1318
+	 */
+	public static final String MODEL_NOT_TO_BE_REFEREE_FN = "1318";
 
 	public static final String EVENING_UP = "1";
 
@@ -156,6 +150,13 @@ public class Constants {
 	public static String TYPE_JOB_CONTROL_APP = "closeOrOpenApp";
 
 	public static String TYPE_JOB_PAY_NOTICE = "payNotice";
+
+	public static Map<String, String> MSG_MODEL = null;
+
+	/**
+	 * 发给推荐人的信息，告知是否成为推荐人
+	 */
+	public static String TYPE_JOB_TO_REFEREE = "toBeReferee";
 	/**
 	 * 通知图片更新
 	 */

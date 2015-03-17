@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 
 import com.tencent.xinge.Message;
 import com.tencent.xinge.XingeApp;
+import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.CryptoUtils;
 import com.zeekie.stock.util.XmlUtil;
 
@@ -68,15 +70,29 @@ public class TestUtils {
 //		String lll = sss.split("&")[1].split("=")[1];
 //		System.out.println(lll);
 		
-		String s  =StringUtils.upperCase("565656fdfdfd565");
-		System.out.println(s);
-		
 //		 String keyBytes = "abcdefgh";
 //		String ss="wNJGbETndgnF2emdzx2yHz6LwSnWqstf";
 //		String dd = CryptoUtils.desDecryptFromBase64(ss,
 //				keyBytes.getBytes());
 //		System.out.println(dd.substring(14));
+		testSendMsg();
 	}
+	
+	public static void testSendMsg(){
+		String phone="15867198578";
+		ApiUtils.send("1307", phone, "2356");
+		ApiUtils.send("1308", phone, "张三");
+		ApiUtils.send("1309", phone);
+		ApiUtils.send("1310", phone, "2669854699");
+		ApiUtils.send("1311", phone);
+		ApiUtils.send("1312", phone, "张三","63389001","95");
+		ApiUtils.send("1314", phone, "63389001");
+		ApiUtils.send("1315", phone, "张三","HB000565");
+		ApiUtils.send("1316", phone, "张三","HB000565","36","28");
+		ApiUtils.send("1317", phone, "张三","李四","李四","3");
+		ApiUtils.send("1318", phone, "张三","李四","5");
+	}
+	
 
 	public static void ts() {
 

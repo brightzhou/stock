@@ -82,6 +82,9 @@
 		<property name="mapperLocations" value="classpath:/mybatis/*.xml" />
 	</bean>
 	
+	<bean id="userDAO" class="com.zeekie.stock.service.dao.Mapper">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
 
 	<bean id="charsetTransformer" class="com.zeekie.stock.mybatis.CharsetTransformer">
 		<constructor-arg index="0">

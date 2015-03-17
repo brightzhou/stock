@@ -7,6 +7,7 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,11 +15,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.json.JSONObject;
 import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.api.Head;
 import sitong.thinker.common.error.Message;
@@ -146,56 +148,17 @@ public class ApiUtils {
 		return json.toString();
 	}
 
-	public static boolean sendMsg(final String fn,
-			final Map<String, String> param, final String telephone) {
+	public static boolean send(String fn, String phone, String... args) {
+		String template = Constants.MSG_MODEL.get(fn);
 		String content = "";
-		// 获取验证码
-		if (StringUtils.equals(Constants.MODEL_VERYFY_FN, fn)) {
-			for (Map.Entry<String, String> entry : param.entrySet()) {
-				content = Constants.MODEL_VERYFY.replace("{?}",
-						entry.getValue());
-			}
-			// 操盘账户已经使用完
-		} else if (StringUtils.equals(Constants.MODEL_ACCOUNT_EMPTY_FN, fn)) {
-			content = Constants.MODEL_ACCOUNT_EMPTY;
-			// 提现申请
-		} else if (StringUtils.equals(Constants.MODEL_DEPOSIT_SQ_FN, fn)) {
-			content = Constants.MODEL_DEPOSIT_SQ;
-			// 管理员提醒充值
-		} else if (StringUtils.equals(Constants.MODEL_MANAAGER_RECHARGE_FN, fn)) {
-			content = Constants.MODEL_MANAAGER_RECHARGE.replace("{?}",
-					param.get("fundAccount"));
-			// 客户余额不足
-		} else if (StringUtils.equals(Constants.MODEL_NOTICE_RECHARGE_FN, fn)) {
-			for (Map.Entry<String, String> entry : param.entrySet()) {
-				content = Constants.MODEL_NOTICE_RECHARGE.replace("{?}",
-						entry.getValue());
-			}
-		} else if (StringUtils.equals(Constants.MODEL_OPERATOR_HAS_CASH_FN, fn)) {
-			for (Map.Entry<String, String> entry : param.entrySet()) {
-				content = Constants.MODEL_OPERATOR_HAS_CASH.replace("{?}",
-						entry.getValue());
-			}
-		} else if (StringUtils.equals(Constants.MODEL_EVENING_UP_REMIND_FN, fn)) {
-			content = Constants.MODEL_EVENING_UP_REMIND.replaceFirst("#",
-					param.get("nickname")).replace("#",
-					param.get("operationId"));
-		} else if (StringUtils.equals(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
-				fn)) {
-			content = Constants.MODEL_REACH_WARNLINE_REMIND
-					.replaceFirst("#", param.get("nickname"))
-					.replaceFirst("#", param.get("operateId"))
-					.replaceFirst("#", param.get("actualAsset"))
-					.replace("#", param.get("warnFund"));
-		}
-
-		if (StringUtils.isEmpty(content)) {
+		if (StringUtils.isBlank(template)) {
 			return false;
 		}
+		content = MessageFormat.format(template, args);
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("name", Constants.MSG_USER);
 		datas.put("pwd", Constants.MSG_PWD);
-		datas.put("mobile", telephone);
+		datas.put("mobile", phone);
 		datas.put("content", content);
 		datas.put("type", "pt");
 		HandleHttpRequest request = new HandleHttpRequest();
@@ -207,7 +170,7 @@ public class ApiUtils {
 
 			if (StringUtils.startsWith(result, "0")) {
 				if (log.isDebugEnabled()) {
-					log.debug("send msg to [" + telephone
+					log.debug("send msg to [" + phone
 							+ "] success,msg content:[" + content + "]");
 				}
 				return true;

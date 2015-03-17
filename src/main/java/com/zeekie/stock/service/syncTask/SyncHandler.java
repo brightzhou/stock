@@ -111,6 +111,25 @@ public class SyncHandler {
 				type)) {
 			deductFeeWhenAddGuarantee(param.get("nickname"),
 					param.get("needDeductFee"));
+		} else if (StringUtils.equals(Constants.TYPE_JOB_TO_REFEREE, type)) {
+
+			String flag = param.get("flag");
+			String referee = param.get("referee");
+			String packet = param.get("packet");
+			String nickname = param.get("nickname");
+			String telephone = "";
+			try {
+				telephone = account.getUserPhone(param.get("nickname"));
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+			if (StringUtils.equals("insufficient", flag)) {
+				ApiUtils.send(Constants.MODEL_NOT_TO_BE_REFEREE_FN, telephone,
+						referee, nickname, packet);
+			} else {
+				ApiUtils.send(Constants.MODEL_TO_BE_REFEREE_FN, telephone,
+						referee, nickname, packet);
+			}
 		}
 	}
 
@@ -193,13 +212,10 @@ public class SyncHandler {
 						+ result.size());
 			}
 			for (WarnLineDO lineDO : result) {
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("operateId", operationNo + lineDO.getOperateId());
-				params.put("nickname", lineDO.getNickname());
-				params.put("actualAsset", lineDO.getActualAsset());
-				params.put("warnFund", lineDO.getWarnFund());
-				ApiUtils.sendMsg(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
-						params, lineDO.getPhone());
+				ApiUtils.send(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
+						lineDO.getPhone(), lineDO.getNickname(), operationNo
+								+ lineDO.getOperateId(),
+						lineDO.getActualAsset(), lineDO.getWarnFund());
 			}
 			batchMapper.batchInsert(TradeMapper.class, "updateWarnFlagToOne",
 					result);
@@ -218,9 +234,8 @@ public class SyncHandler {
 				log.debug("後台為操盘号为[" + operationId + "]平倉，發短信提醒用戶");
 			}
 			String telephone = account.getUserPhone(param.get("nickname"));
-			param.put("operationId", operationNo + operationId);
-			ApiUtils.sendMsg(Constants.MODEL_EVENING_UP_REMIND_FN, param,
-					telephone);
+			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN, telephone,
+					operationNo + operationId);
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

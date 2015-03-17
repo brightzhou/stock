@@ -1103,4 +1103,8 @@
 	<update id="updateRefereeIsNull" parameterType="string">
 		Update stock_user  Set referee_id = '' Where nickname = #{nickname}
 	</update>
+	
+	<select id="queryMsgTemplate" parameterType="com.zeekie.stock.service.dao.BaseParam" resultType="java.util.Map">
+		select fn ,model from Stock_Message_Template
+	</select>
 </mapper>
