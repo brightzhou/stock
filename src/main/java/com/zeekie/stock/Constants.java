@@ -76,6 +76,11 @@ public class Constants {
 
 	public static final String CODE_VERIFYCODE_SOURCE_BINDTEL = "13";
 
+	/**
+	 * 修改提现密码验证码
+	 */
+	public static final String CODE_VERIFYCODE_SOURCE_DEPOSIT_UPDATE = "14";
+
 	public static final String TIPS_RETURN_GURANTEE_CASH = "00";// 返回剩余保证金
 
 	public static final String CLIENTWALLET_TO_MAINACOUNT = "10";// 扣除客户账户的钱（用于保证金）
@@ -113,8 +118,8 @@ public class Constants {
 	public static final String MODEL_ACCOUNT_EMPTY_FN = "1311";
 	// 实盘金额已经达到平仓线 1312
 	public static final String MODEL_TRADE_STOP_FN = "1312";
-	// 实盘金额已经达到警戒线 1313
-	public static final String MODEL_TRADE_WARN_FN = "1313";
+
+	// public static final String MODEL_TRADE_WARN_FN = "1313";
 	// 该账号在HOMES中还有资金 1314
 	public static final String MODEL_OPERATOR_HAS_CASH_FN = "1314";
 	// 后台平仓 1315

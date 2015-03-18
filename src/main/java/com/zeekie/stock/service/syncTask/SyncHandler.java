@@ -1,6 +1,5 @@
 package com.zeekie.stock.service.syncTask;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +118,7 @@ public class SyncHandler {
 			String nickname = param.get("nickname");
 			String telephone = "";
 			try {
-				telephone = account.getUserPhone(param.get("nickname"));
+				telephone = account.getUserPhone(referee);
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
@@ -128,7 +127,7 @@ public class SyncHandler {
 						referee, nickname, packet);
 			} else {
 				ApiUtils.send(Constants.MODEL_TO_BE_REFEREE_FN, telephone,
-						referee, nickname, packet);
+						referee, nickname, nickname, packet);
 			}
 		}
 	}

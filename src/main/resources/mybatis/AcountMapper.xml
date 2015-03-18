@@ -1107,4 +1107,8 @@
 	<select id="queryMsgTemplate" parameterType="com.zeekie.stock.service.dao.BaseParam" resultType="java.util.Map">
 		select fn ,model from Stock_Message_Template
 	</select>
+	
+	<update id="updateDepositePwd" parameterType="string">
+		update Stock_Id_Card set DEPOSIT_PWD = #{depositPwd} where USER_ID = #{userId}
+	</update>
 </mapper>

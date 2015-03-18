@@ -39,7 +39,7 @@ import com.zeekie.stock.util.StringUtil;
 
 @Service
 @Transactional
-public class AcountServiceImpl implements AcountService {
+public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	static Logger log = LoggerFactory.getLogger(AcountServiceImpl.class);
 
@@ -112,7 +112,7 @@ public class AcountServiceImpl implements AcountService {
 					Map<String, String> param = new HashMap<String, String>();
 					param.put("nickname", nickname);
 					param.put("referee", referee);
-					param.put("packet", "0");
+					param.put("packet", "0.0");
 					param.put("flag", "zero");
 					handler.handleOtherJob(Constants.TYPE_JOB_TO_REFEREE, param);
 					return true;
@@ -503,10 +503,6 @@ public class AcountServiceImpl implements AcountService {
 			if (assetMove.visitSuccess(Fn_stock_current)) {
 				log.error("操盘账号：" + client.getTradeAcount()
 						+ " 仍然有有资金在HOMES中，结束操盘时已将其划转到主单元!!!");
-				// Map<String, String> param = new HashMap<String, String>();
-				// param.put("operator", client.getTradeAcount());
-				// ApiUtils.sendMsg(Constants.MODEL_OPERATOR_HAS_CASH_FN, param,
-				// stock_manager_phone);
 			}
 		}
 		if (log.isDebugEnabled()) {
@@ -645,5 +641,21 @@ public class AcountServiceImpl implements AcountService {
 			log.error(e.getMessage(), e);
 		}
 		return null;
+	}
+
+	@Override
+	public String modifyDepositPwd(String userId, String depositPwd,
+			String telephone, String verifyCode) {
+		if (!validVerifyCode(telephone, verifyCode,
+				Constants.CODE_VERIFYCODE_SOURCE_DEPOSIT_UPDATE)) {
+			return Constants.CODE_ERROR_VERIFYCODE;
+		} else {
+			try {
+				acounter.updateDepositePwd(userId, depositPwd);
+			} catch (Exception e) {
+				return Constants.CODE_FAILURE;
+			}
+		}
+		return Constants.CODE_SUCCESS;
 	}
 }

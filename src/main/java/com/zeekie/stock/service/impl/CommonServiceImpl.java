@@ -1,6 +1,5 @@
 package com.zeekie.stock.service.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +22,10 @@ import com.zeekie.stock.service.sensitive.SensitivewordFilter;
 import com.zeekie.stock.service.xinge.StockMsg;
 import com.zeekie.stock.service.xinge.XingePush;
 import com.zeekie.stock.util.ApiUtils;
-import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 
 @Service
-public class CommonServiceImpl implements CommonService {
+public class CommonServiceImpl extends BaseImpl implements CommonService {
 
 	static Logger log = LoggerFactory.getLogger(CommonServiceImpl.class);
 
@@ -43,10 +41,6 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	@Value("${num}")
 	private String num;
-
-	@Autowired
-	@Value("${interval}")
-	private String interval;
 
 	@Autowired
 	@Value("${templateId}")
@@ -69,13 +63,6 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public ReturnMsg register(RegisterForm register) {
 		try {
-			// 校验验证码是否有效
-			// if (!validVerifyCode(register.getTelephone(),
-			// register.getVerifyCode(),
-			// Constants.CODE_VERIFYCODE_SOURCE_REGISTER)) {
-			// return new ReturnMsg(Constants.CODE_ERROR_VERIFYCODE,
-			// Constants.CODE_ERROR_VERIFYCODE_MSG);
-			// }
 			// 校验该昵称和电话是否唯一
 			String registerName = register.getNickname();
 			// 校验是否存在敏感词汇
@@ -117,28 +104,6 @@ public class CommonServiceImpl implements CommonService {
 			return verifyCode;
 		}
 		return "";
-	}
-
-	private boolean validVerifyCode(String telephone, String verifyCode,
-			String source) {
-		boolean flag = false;
-		try {
-			if (StringUtils.isNotEmpty(trade.checkVerifyCode(telephone,
-					verifyCode, getSecond(), source))) {
-				flag = true;
-			} else {
-				// 验证码过期
-				trade.setVerifyCodeExpired(telephone);
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		return flag;
-	}
-
-	private int getSecond() {
-		return StringUtils.isNotBlank(interval) ? Integer.parseInt(interval) * 60
-				: 60;
 	}
 
 	@Override

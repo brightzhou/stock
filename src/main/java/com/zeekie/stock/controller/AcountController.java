@@ -64,6 +64,17 @@ public class AcountController {
 	}
 
 	@ResponseBody
+	@RequestMapping("depositPwd/modify")
+	public String modifyDepositPwd(@RequestParam("userId") String userId,
+			@RequestParam("depositPwd") String depositPwd,
+			@RequestParam("telephone") String telephone,
+			@RequestParam("verifyCode") String verifyCode) {
+		return operator.modifyDepositPwd(userId, depositPwd, telephone,
+				verifyCode);
+
+	}
+
+	@ResponseBody
 	@RequestMapping("depositPwd/check")
 	public String checkDepoist(@RequestParam("userId") String userId,
 			@RequestParam("depositPwd") String depositPwd) {

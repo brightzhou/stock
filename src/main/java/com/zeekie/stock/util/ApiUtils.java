@@ -155,6 +155,11 @@ public class ApiUtils {
 			return false;
 		}
 		content = MessageFormat.format(template, args);
+
+		if (log.isDebugEnabled()) {
+			log.debug("推送的消息是：" + content);
+		}
+
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("name", Constants.MSG_USER);
 		datas.put("pwd", Constants.MSG_PWD);
@@ -164,14 +169,9 @@ public class ApiUtils {
 		HandleHttpRequest request = new HandleHttpRequest();
 		try {
 			String result = request.post(Constants.MSG_URL, datas);
-			if (log.isDebugEnabled()) {
-				log.debug("send msg then return :" + result);
-			}
-
 			if (StringUtils.startsWith(result, "0")) {
 				if (log.isDebugEnabled()) {
-					log.debug("send msg to [" + phone
-							+ "] success,msg content:[" + content + "]");
+					log.debug("send msg to [" + phone + "] success");
 				}
 				return true;
 			}

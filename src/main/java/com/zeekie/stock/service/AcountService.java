@@ -158,4 +158,16 @@ public interface AcountService {
 	 * @return
 	 */
 	public JSONObject getBankInfo(String userId);
+
+	/**
+	 * 修改资金密码
+	 * 
+	 * @param userId
+	 * @param depositPwd
+	 * @param telephone
+	 * @param verifyCode
+	 * @return
+	 */
+	public String modifyDepositPwd(String userId, String depositPwd,
+			String telephone, String verifyCode);
 }

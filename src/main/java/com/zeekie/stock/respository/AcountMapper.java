@@ -367,4 +367,14 @@ public interface AcountMapper {
 	public void updateRefereeIsNull(@Param("nickname") String nickname)
 			throws Exception;
 
+	/**
+	 * 修改提现密码
+	 * 
+	 * @param userId
+	 * @param depositPwd
+	 * @throws Exception
+	 */
+	public void updateDepositePwd(@Param("userId") String userId,
+			@Param("depositPwd") String depositPwd) throws Exception;
+
 }
