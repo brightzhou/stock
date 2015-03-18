@@ -1,7 +1,5 @@
 package com.zeekie.stock.service;
 
-import java.util.Map;
-
 import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +15,6 @@ import com.hundsun.t2sdk.interfaces.T2SDKException;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.service.dao.Mapper;
 import com.zeekie.stock.service.sensitive.SensitiveWordInit;
-import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.FloatJsonValueProcessor;
 
 @Service

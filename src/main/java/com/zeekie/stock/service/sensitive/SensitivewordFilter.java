@@ -30,8 +30,6 @@ public class SensitivewordFilter {
 	/**
 	 * 判断文字是否包含敏感字符
 	 * 
-	 * @author chenming
-	 * @date 2014年4月20日 下午4:28:30
 	 * @param txt
 	 *            文字
 	 * @param matchType
@@ -54,8 +52,6 @@ public class SensitivewordFilter {
 	/**
 	 * 获取文字中的敏感词
 	 * 
-	 * @author chenming
-	 * @date 2014年4月20日 下午5:10:52
 	 * @param txt
 	 *            文字
 	 * @param matchType
@@ -80,8 +76,6 @@ public class SensitivewordFilter {
 	/**
 	 * 替换敏感字字符
 	 * 
-	 * @author chenming
-	 * @date 2014年4月20日 下午5:12:07
 	 * @param txt
 	 * @param matchType
 	 * @param replaceChar
@@ -107,8 +101,6 @@ public class SensitivewordFilter {
 	/**
 	 * 获取替换字符串
 	 * 
-	 * @author chenming
-	 * @date 2014年4月20日 下午5:21:19
 	 * @param replaceChar
 	 * @param length
 	 * @return
@@ -126,8 +118,6 @@ public class SensitivewordFilter {
 	/**
 	 * 检查文字中是否包含敏感字符，检查规则如下：<br>
 	 * 
-	 * @author chenming
-	 * @date 2014年4月20日 下午4:31:03
 	 * @param txt
 	 * @param beginIndex
 	 * @param matchType

@@ -10,7 +10,6 @@ import com.tencent.xinge.MessageIOS;
 
 /**
  * @Author zeekie
- * @date 2014��8��1��
  */
 public class Messages {
 

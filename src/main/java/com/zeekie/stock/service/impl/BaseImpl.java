@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.zeekie.stock.enums.VerifyCodeEnum;
 import com.zeekie.stock.respository.StockMapper;
 
 public class BaseImpl {
@@ -18,6 +19,16 @@ public class BaseImpl {
 	@Autowired
 	@Value("${interval}")
 	private String interval;
+
+	public String getDesc(String source) {
+		VerifyCodeEnum[] code = VerifyCodeEnum.values();
+		for (VerifyCodeEnum item : code) {
+			if (StringUtils.equals(StringUtils.trim(source), item.getSource())) {
+				return item.getDesc();
+			}
+		}
+		return "";
+	}
 
 	public boolean validVerifyCode(String telephone, String verifyCode,
 			String source) {

@@ -100,7 +100,8 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 			log.error(e.getMessage(), e);
 		}
 		// 发送验证码
-		if (ApiUtils.send(Constants.MODEL_VERYFY_FN, telephone, verifyCode)) {
+		if (ApiUtils.send(Constants.MODEL_VERYFY_FN, telephone,
+				getDesc(source), verifyCode)) {
 			return verifyCode;
 		}
 		return "";
