@@ -281,9 +281,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				jo.put("transactionType", "用户提现");
 				jo.put("fund", "-" + fund);
 			} else if (StringUtils.equals("60", type)) {
-				jo.put("transactionType", "盈亏金额");
-				jo.put("fund", StringUtils.startsWith(fund, "-") ? fund : "+"
-						+ fund);
+				boolean flag = StringUtils.startsWith(fund, "-");
+				jo.put("transactionType", flag ? "股票亏损" : "股票盈利");
+				jo.put("fund", flag ? fund : "+" + fund);
 			} else if (StringUtils.equals("80", type)) {
 				jo.put("transactionType", desc);
 				jo.put("fund", "+" + fund);
