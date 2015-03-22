@@ -322,11 +322,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				String freezeCash = account.getFreezeCash() + "";
 				map.put("freezeCash",
 						(account.getFreezeCash() == null) ? "0.00" : freezeCash);
+				String fee = account.getFee() + "";
+				map.put("fee", (null == account.getFee()) ? "" : fee);
 			} else {
 				map.put("balance", "0.00");
 				map.put("guaranteeCash", "0.00");
 				map.put("stockCapital", "0.00");
 				map.put("freezeCash", "0.00");
+				map.put("fee", "");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -610,9 +613,6 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("balance", StringUtil.keepThreeDot(debtDO.getBalance()));
 				map.put("guaranteeCash",
 						StringUtil.keepThreeDot(debtDO.getGuaranteeCash()));
-				map.put("fee",
-						StringUtils.defaultIfBlank(
-								StringUtil.keepThreeDot(debtDO.getFee()), "0"));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

@@ -60,6 +60,7 @@
 		<result column="ACTUAL_CASH" property="stockCapital" jdbcType="FLOAT"/>
 		<result column="BALANCE" property="balance" jdbcType="FLOAT"/>
 		<result column="FREEZE_CASH" property="freezeCash" jdbcType="FLOAT"/>
+		<result column="fee" property="fee" jdbcType="FLOAT"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.WithdrawlDO" id="resultDeposit">
@@ -132,7 +133,6 @@
 	<resultMap type="com.zeekie.stock.entity.DebtDO" id="restultWallet">
 		<result column="BALANCE" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="guarantee_cash" property="guaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="fee" property="fee" jdbcType="FLOAT"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.CurrentOperationWebDO" id="resultCurrentOperation">
@@ -451,7 +451,12 @@
 	          From Stock_User_Operate_Maininfo m
 	         Where m.Nickname = w.Nickname and m.is_current = '1') Actual_Cash,
 	       w.Balance,
-	       w.FREEZE_CASH
+	       w.FREEZE_CASH,
+		(SELECT T.TRADE_FUND * R.FEE_RADIO
+          FROM STOCK_USER_OPERATE_MAININFO T, STOCK_FUND_ASSIGN_RADIO R
+         WHERE T.IS_CURRENT = '1'
+           AND T.NICKNAME = R.NICKNAME
+           AND T.NICKNAME = W.NICKNAME) fee
 	  From Stock_User_Wallet w
 	 Where w.Nickname = #{nickname}
     </select>
@@ -835,11 +840,7 @@
 	                 Where m.Is_Current = '0'
 	                   And m.Nickname = #{nickname}
 	                 Order By m.End_Date Desc) s
-	         Where Rownum = 1) guarantee_cash,
-			(SELECT T.ADD_MANAGEMENT_FEE
-			  FROM STOCK_USER_OPERATE_MAININFO T
-			 WHERE T.IS_CURRENT = '1'
-			   AND T.NICKNAME = w.nickname) fee
+	         Where Rownum = 1) guarantee_cash
 	  From Stock_User_Wallet w
 	 Where w.Nickname = #{nickname}
 	</select>

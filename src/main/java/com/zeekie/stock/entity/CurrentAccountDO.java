@@ -23,6 +23,26 @@ public class CurrentAccountDO {
 	private Float freezeCash;
 
 	/**
+	 * 管理费
+	 */
+	private Float fee;
+
+	/**
+	 * @return the fee
+	 */
+	public Float getFee() {
+		return fee;
+	}
+
+	/**
+	 * @param fee
+	 *            the fee to set
+	 */
+	public void setFee(Float fee) {
+		this.fee = fee;
+	}
+
+	/**
 	 * @return the freezeCash
 	 */
 	public Float getFreezeCash() {
