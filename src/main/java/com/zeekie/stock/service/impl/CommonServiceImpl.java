@@ -124,8 +124,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 				} else {
 					if (log.isWarnEnabled()) {
 						log.warn("execute operation[updatePwd] user:"
-								+ nickname + " telephone:" + telephone
-								+ " oldPassward:" + oldPassward
+								+ nickname + " oldPassward:" + oldPassward
 								+ " one of them is wrong!!!");
 					}
 					return false;

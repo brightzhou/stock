@@ -6,6 +6,23 @@ public class DebtDO {
 
 	private Float guaranteeCash;
 
+	private Float fee;
+
+	/**
+	 * @return the fee
+	 */
+	public Float getFee() {
+		return fee;
+	}
+
+	/**
+	 * @param fee
+	 *            the fee to set
+	 */
+	public void setFee(Float fee) {
+		this.fee = fee;
+	}
+
 	/**
 	 * @return the balance
 	 */

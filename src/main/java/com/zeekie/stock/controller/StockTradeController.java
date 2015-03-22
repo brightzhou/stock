@@ -116,7 +116,7 @@ public class StockTradeController {
 	@ResponseBody
 	@RequestMapping("operation/end")
 	public ApiResponse endStock(@RequestParam("nickname") String nickname) {
-		return ApiUtils.good(account.endStock(nickname,""));
+		return ApiUtils.good(account.endStock(nickname, ""));
 	}
 
 	@ResponseBody

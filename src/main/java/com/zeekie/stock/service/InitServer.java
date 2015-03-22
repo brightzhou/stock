@@ -81,8 +81,11 @@ public class InitServer implements InitializingBean {
 		initContants();
 		registerJsonConfig();
 		Constants.sensitiveWordMap = sensitive.initKeyWord();
+		if (log.isDebugEnabled()) {
+			log.debug("初始化敏感词汇成功！！！");
+		}
 		initTemplate();
-		if (StringUtils.equals("1", startHomes))
+		if (StringUtils.equals(Constants.CODE_SUCCESS, startHomes))
 			startHomes();
 	}
 

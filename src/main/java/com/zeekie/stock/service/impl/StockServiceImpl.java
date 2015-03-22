@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,6 @@ import com.zeekie.stock.entity.AddGuaranteePageDO;
 import com.zeekie.stock.entity.CurrentOperationDO;
 import com.zeekie.stock.entity.EveningEndDO;
 import com.zeekie.stock.entity.HistoryOperationDO;
-import com.zeekie.stock.entity.ManagerDO;
 import com.zeekie.stock.entity.RuleDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TradeDO;
@@ -100,6 +100,12 @@ public class StockServiceImpl implements TradeService {
 	public Map<String, String> startOperate(String nickname, String tradeFund) {
 		Map<String, String> currentOperate = new HashMap<String, String>();
 		currentOperate.put("flag", "0");
+
+		if (StringUtils.equals(Constants.HOMES_STATUS, "close")) {
+			currentOperate.put("flag", "3");
+			return currentOperate;
+		}
+
 		try {
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
 			if (null != radioDO) {
@@ -121,7 +127,6 @@ public class StockServiceImpl implements TradeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		// currentOperate.put("homesStatus", Constants.HOMES_STATUS);
 		return currentOperate;
 	}
 
@@ -131,6 +136,12 @@ public class StockServiceImpl implements TradeService {
 
 		Map<String, String> currentOperateInfo = new HashMap<String, String>();
 		currentOperateInfo.put("flag", "0");
+
+		if (StringUtils.equals(Constants.HOMES_STATUS, "close")) {
+			currentOperateInfo.put("flag", "5");
+			return currentOperateInfo;
+		}
+
 		try {
 			// 0、判断是否有操盘
 			String has = trade.queryHasOperation(tradeForm.getNickname());
@@ -314,8 +325,8 @@ public class StockServiceImpl implements TradeService {
 		// 2.3 生成新密码更新到homes
 		String newOperatePwd = genNewPassword();
 		if (!modifyClientPwd(client, operatorPwd, operator, newOperatePwd)) {
-			log.error("modify homes password failure for user" + nickname
-					+ ",operation NO:" + operator);
+			log.error("modify homes password failure for user[" + nickname
+					+ "],operation NO:" + operator);
 			return "";
 		}
 
@@ -403,7 +414,7 @@ public class StockServiceImpl implements TradeService {
 			return false;
 		}
 		if (log.isDebugEnabled()) {
-			log.debug("开始操盘，访问HOMES结束");
+			log.debug("访问HOMES结束,该操盘账号[" + operator + "]可用!");
 		}
 		return true;
 	}
@@ -731,22 +742,15 @@ public class StockServiceImpl implements TradeService {
 	}
 
 	@Override
-	public JSONArray getHistoryOperation(String nickname, String offset) {
-		JSONArray jo = new JSONArray();
+	public List<HistoryOperationDO> getHistoryOperation(String nickname,
+			String offset) {
+		List<HistoryOperationDO> historyDO = new ArrayList<HistoryOperationDO>();
 		try {
-			List<HistoryOperationDO> historyDO = trade.getHistoryOperation(
-					nickname, offset);
-			if (null != historyDO) {
-				jo = JSONArray.fromObject(historyDO, Constants.jsonConfig);
-			}
-			if (log.isDebugEnabled()) {
-				log.debug("用户[" + nickname + "]获取历史操盘，传递偏移量：[" + offset
-						+ "] 返回的结果：" + jo);
-			}
+			historyDO = trade.getHistoryOperation(nickname, offset);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		return jo;
+		return historyDO;
 	}
 
 	@Override

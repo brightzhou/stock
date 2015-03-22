@@ -1,10 +1,10 @@
 package com.zeekie.stock.service;
 
+import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-
 import com.hundsun.t2sdk.interfaces.T2SDKException;
+import com.zeekie.stock.entity.HistoryOperationDO;
 import com.zeekie.stock.entity.form.AddCuaranteeForm;
 import com.zeekie.stock.entity.form.TradeForm;
 
@@ -78,7 +78,7 @@ public interface TradeService {
 	 * @param offset
 	 * @return
 	 */
-	public JSONArray getHistoryOperation(String nickname, String offset);
+	public List<HistoryOperationDO> getHistoryOperation(String nickname, String offset);
 
 	/**
 	 * 获取当前用户是否被强制结束操盘过

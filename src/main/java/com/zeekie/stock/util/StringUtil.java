@@ -374,4 +374,5 @@ public class StringUtil {
 	public static boolean compareNum(Float param1, Float param2) {
 		return (param1 > param2);
 	}
+	
 }

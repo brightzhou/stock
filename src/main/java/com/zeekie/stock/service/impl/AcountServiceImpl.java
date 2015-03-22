@@ -610,6 +610,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("balance", StringUtil.keepThreeDot(debtDO.getBalance()));
 				map.put("guaranteeCash",
 						StringUtil.keepThreeDot(debtDO.getGuaranteeCash()));
+				map.put("fee",
+						StringUtils.defaultIfBlank(
+								StringUtil.keepThreeDot(debtDO.getFee()), "0"));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

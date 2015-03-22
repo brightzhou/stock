@@ -95,7 +95,7 @@
 	<resultMap type="com.zeekie.stock.entity.RedPacketDO" id="resultRedPacket">
 		<result column="ASSIGN_REFEREE_RED_PACKET" property="assignRefereeRedPacket" jdbcType="VARCHAR"/>
 		<result column="ASSIGN_REGISTER_RED_PACKET" property="assignRegisterRedPacket" jdbcType="VARCHAR"/>
-		<result column="ASSIGN_REFEREE_DRAW_PERCENT" property="assignRefereeDrawPercent" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ASSIGN_REFEREE_DRAW_PERCENT" property="assignRefereeDrawPercent" jdbcType="FLOAT"/>
 		<result column="ID" property="userId" jdbcType="VARCHAR"/>
 	</resultMap>
 	
@@ -132,6 +132,7 @@
 	<resultMap type="com.zeekie.stock.entity.DebtDO" id="restultWallet">
 		<result column="BALANCE" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="guarantee_cash" property="guaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="fee" property="fee" jdbcType="FLOAT"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.CurrentOperationWebDO" id="resultCurrentOperation">
@@ -834,7 +835,11 @@
 	                 Where m.Is_Current = '0'
 	                   And m.Nickname = #{nickname}
 	                 Order By m.End_Date Desc) s
-	         Where Rownum = 1) guarantee_cash
+	         Where Rownum = 1) guarantee_cash,
+			(SELECT T.ADD_MANAGEMENT_FEE
+			  FROM STOCK_USER_OPERATE_MAININFO T
+			 WHERE T.IS_CURRENT = '1'
+			   AND T.NICKNAME = w.nickname) fee
 	  From Stock_User_Wallet w
 	 Where w.Nickname = #{nickname}
 	</select>
@@ -885,7 +890,7 @@
 	
 	<!-- 获取敏感词汇 -->
 	<select id="querySensitiveWords" resultType="string">
-		Select t.Sensitive_Worid
+		Select t.Sensitive_Word
 		  From Stock_Sensitive_Word t
 		 Where t.Valid_Falg = '1'
 		 Order By Id

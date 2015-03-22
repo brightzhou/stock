@@ -377,7 +377,7 @@
 			       S.CURRENT_ASSET,
 			       S.ACTUAL_CASH,
 			       S.PROFIT_LOSS_CASH,
-			       S.PROFIT_LOSS_RADIO,
+			       S.PROFIT_LOSS_RADIO * 100 PROFIT_LOSS_RADIO,
 			       S.MANAGEMENT_FEE,
 			       S.GUARANTEE_CASH,
 			       'HB000' || S.ID ASSET_ID,
