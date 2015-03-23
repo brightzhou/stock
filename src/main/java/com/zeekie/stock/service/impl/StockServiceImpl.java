@@ -275,7 +275,7 @@ public class StockServiceImpl implements TradeService {
 		return operateAcount;
 	}
 
-	private String saveOperateAcount(String nickname, String moveFund)
+	private synchronized String saveOperateAcount(String nickname, String moveFund)
 			throws Exception {
 		// 2.2、查詢数据库获取密码
 		String operatorPwd = "";
