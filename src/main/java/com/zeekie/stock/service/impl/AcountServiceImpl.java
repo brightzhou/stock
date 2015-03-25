@@ -128,7 +128,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 								+ nickname + "不设置该推荐人");
 					}
 					acounter.updateRefereeIsNull(nickname);
-
+					acounter.updateRefereeRadioIsNull(nickname);
 					Map<String, String> param = new HashMap<String, String>();
 					param.put("nickname", nickname);
 					param.put("referee", referee);
@@ -282,7 +282,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				jo.put("fund", "-" + fund);
 			} else if (StringUtils.equals("60", type)) {
 				boolean flag = StringUtils.startsWith(fund, "-");
-				jo.put("transactionType", flag ? "股票亏损" : "股票盈利");
+				jo.put("transactionType", flag ? "亏损(扣除保证金)" : "盈利（保证金和利润）");
 				jo.put("fund", flag ? fund : "+" + fund);
 			} else if (StringUtils.equals("80", type)) {
 				jo.put("transactionType", desc);

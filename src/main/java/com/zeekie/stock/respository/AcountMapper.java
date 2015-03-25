@@ -377,4 +377,13 @@ public interface AcountMapper {
 	public void updateDepositePwd(@Param("userId") String userId,
 			@Param("depositPwd") String depositPwd) throws Exception;
 
+	/**
+	 * 更新上线比例为空
+	 * 
+	 * @param nickname
+	 * @throws Exception
+	 */
+	public void updateRefereeRadioIsNull(@Param("nickname") String nickname)
+			throws Exception;
+
 }

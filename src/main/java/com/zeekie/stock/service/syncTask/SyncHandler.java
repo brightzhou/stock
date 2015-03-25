@@ -232,9 +232,10 @@ public class SyncHandler {
 			if (log.isDebugEnabled()) {
 				log.debug("後台為操盘号为[" + operationId + "]平倉，發短信提醒用戶");
 			}
-			String telephone = account.getUserPhone(param.get("nickname"));
+			String nickname = param.get("nickname");
+			String telephone = account.getUserPhone(nickname);
 			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN, telephone,
-					operationNo + operationId);
+					nickname, operationNo + operationId);
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

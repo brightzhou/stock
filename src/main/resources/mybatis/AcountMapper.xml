@@ -1110,6 +1110,10 @@
 		Update stock_user  Set referee_id = '' Where nickname = #{nickname}
 	</update>
 	
+	<update id="updateRefereeRadioIsNull" parameterType="string">
+		Update Stock_Fund_Assign_Radio set up_line_percent ='' Where nickname = #{nickname}
+	</update>
+	
 	<select id="queryMsgTemplate" parameterType="com.zeekie.stock.service.dao.BaseParam" resultType="java.util.Map">
 		select fn ,model from Stock_Message_Template
 	</select>
