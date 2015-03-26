@@ -229,10 +229,10 @@ public class StringUtil {
 	public static Float keepTwoDecimalFloat(Float f) {
 		if (null == f)
 			return 0f;
-        DecimalFormat df = new DecimalFormat("#.00");
-        df.setMaximumFractionDigits(2);
+		DecimalFormat df = new DecimalFormat("#.00");
+		df.setMaximumFractionDigits(2);
 		df.setRoundingMode(RoundingMode.HALF_UP);
-//		df.applyPattern(".00");
+		// df.applyPattern(".00");
 		Float ss = Float.parseFloat(df.format(f));
 		return ss;
 	}
@@ -333,7 +333,11 @@ public class StringUtil {
 
 	public static String getResult(String param) {
 		if (StringUtils.isNotBlank(param)) {
-			return param.split("&")[1].split("=")[1];
+			if (param.indexOf("&") != -1) {
+				return param.split("&")[1].split("=")[1];
+			} else {
+				return param;
+			}
 		}
 		return "";
 	}
@@ -374,5 +378,5 @@ public class StringUtil {
 	public static boolean compareNum(Float param1, Float param2) {
 		return (param1 > param2);
 	}
-	
+
 }

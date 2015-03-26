@@ -263,10 +263,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			String fund = jo.getString("fund");
 			String desc = jo.getString("desc");
 			if (StringUtils.equals(type, Constants.TIPS_RETURN_GURANTEE_CASH)) {
-				jo.put("transactionType", "返还剩余保证金");
+				jo.put("transactionType", "返还保证金");
 				jo.put("fund", "-" + fund);
 			} else if (StringUtils.equals("10", type)) {
-				jo.put("transactionType", "保证金");
+				jo.put("transactionType", "支付保证金");
 				jo.put("fund", "-" + fund);
 			} else if (StringUtils.equals("20", type)) {
 				jo.put("transactionType", "获取配资");
