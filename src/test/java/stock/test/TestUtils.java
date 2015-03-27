@@ -3,7 +3,6 @@ package stock.test;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,15 +18,21 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import net.sf.json.JSONException;
+
 import org.apache.commons.io.IOUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.json.JSONException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +47,6 @@ import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.CryptoUtils;
 import com.zeekie.stock.util.StringUtil;
-import com.zeekie.stock.util.XmlUtil;
 import com.zeekie.stock.util.http.HandleHttpRequest;
 
 public class TestUtils {
@@ -86,47 +90,39 @@ public class TestUtils {
 
 		// ts();
 
-		// try {
-		// // Map<String, String> result = XmlUtil
-		// //
-		// .paserXmlByDOM4J("C:\\Users\\Administrator.PC-20111014DELE\\Desktop\\result.xml");
-		// InputStream in = new FileInputStream(new File(
-		// "C:\\Users\\liz\\Desktop\\result.xml"));
-		// String result1 = getStreamString(in);
-		// System.out.println(result1);
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 
-		// String sss =
-		// "mac=da7114ac34ad8110a82b000992bbcbbf&xml=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%3Cmessage%3E%3Chead%3E%3Cversion%3E01%3C%2Fversion%3E%3CmsgType%3E0002%3C%2FmsgType%3E%3CchanId%3E99%3C%2FchanId%3E%3CmerchantNo%3E1058%3C%2FmerchantNo%3E%3CclientDate%3E20150307175634%3C%2FclientDate%3E%3CserverDate%3E20150307175215%3C%2FserverDate%3E%3CtranFlow%3E1058141501000%3C%2FtranFlow%3E%3CtranCode%3EQP0001%3C%2FtranCode%3E%3CrespCode%3EC000000000%3C%2FrespCode%3E%3CrespMsg%3E%E4%BA%A4%E6%98%93%E6%88%90%E5%8A%9F%3C%2FrespMsg%3E%3C%2Fhead%3E%3Cbody%3E%3CtranRespCode%3E00%3C%2FtranRespCode%3E%3CmerOrderId%3ECF100000000017561974%3C%2FmerOrderId%3E%3CcustId%3EwNJGbETndgnF2emdzx2yHz6LwSnWqstf%0A%3C%2FcustId%3E%3CrefNo%3EQP20150307175532633%3C%2FrefNo%3E%3CstorableCardNo%3E6226201053%3C%2FstorableCardNo%3E%3Camount%3E368.00%3C%2Famount%3E%3C%2Fbody%3E%3C%2Fmessage%3E";
-		//
-		// String lll = sss.split("&")[1].split("=")[1];
-		// System.out.println(lll);
-
-		// String keyBytes = "ifls8709";
-		// String ss="RrBlHXtQpqNeVlHQaR1YGSxIo65HuAXY";
-		// String dd = CryptoUtils.desDecryptFromBase64(ss,
-		// keyBytes.getBytes());
-		// System.out.println(dd.substring(14));
-		// testSendMsg();
-		// getString();
 
 		getMaxBytes();
 
 	}
 
-	public static void acceptCall() {
-		try {
-			InputStream in = new FileInputStream(new File(
-					"C:\\Users\\liz\\Desktop\\result.xml"));
-			HandleHttpRequest request = new HandleHttpRequest();
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+	public static void testAcceptCall() {
+		// InputStream in = new FileInputStream(new File(
+		// "C:\\Users\\liz\\Desktop\\result.xml"));
+		// HandleHttpRequest request = new HandleHttpRequest();
+		// Map<String, String> map = new HashMap<String, String>();
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost post = new HttpPost("http://localhost:8080/stock/api/stock/acceptCall");
+		FileBody fileBody = new FileBody(new File(
+				"C:\\Users\\liz\\Desktop\\result.xml"));
+		MultipartEntity entity = new MultipartEntity();
+		entity.addPart("file", fileBody);
+		post.setEntity(entity);
+		HttpResponse response = null;
+		try {
+			response = httpclient.execute(post);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+			System.out.println("ddd");
+		}
+		httpclient.getConnectionManager().shutdown();
+
+
 	}
 
 	public static void testw() throws Exception {
@@ -214,6 +210,7 @@ public class TestUtils {
 
 	}
 
+
 	public static void getMaxBytes() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> headers = new HashMap<String, String>();
@@ -239,6 +236,7 @@ public class TestUtils {
 			e.printStackTrace();
 		}
 	}
+
 
 	public static void getString() {
 		System.out.println(CryptoUtils.encryptKeyData("175", Calendar

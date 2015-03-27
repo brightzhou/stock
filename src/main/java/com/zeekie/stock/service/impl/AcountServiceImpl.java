@@ -271,8 +271,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			String fund = jo.getString("fund");
 			String desc = jo.getString("desc");
 			if (StringUtils.equals(type, Constants.TIPS_RETURN_GURANTEE_CASH)) {
-				jo.put("transactionType", "返还保证金");
-				jo.put("fund", "-" + fund);
+				jo.put("transactionType", "返还平仓后保证金");
+				jo.put("fund", fund);
 			} else if (StringUtils.equals("10", type)) {
 				jo.put("transactionType", "支付保证金");
 				jo.put("fund", "-" + fund);
@@ -290,7 +290,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				jo.put("fund", "-" + fund);
 			} else if (StringUtils.equals("60", type)) {
 				boolean flag = StringUtils.startsWith(fund, "-");
-				jo.put("transactionType", flag ? "亏损(扣除保证金)" : "盈利（保证金和利润）");
+				jo.put("transactionType", flag ? "亏损(扣除保证金)" : "返还保证金");
 				jo.put("fund", flag ? fund : "+" + fund);
 			} else if (StringUtils.equals("80", type)) {
 				jo.put("transactionType", desc);
