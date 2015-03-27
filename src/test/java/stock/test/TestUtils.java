@@ -86,16 +86,18 @@ public class TestUtils {
 
 		// ts();
 
-		 try {
-//		  Map<String, String> result = XmlUtil
-//		 .paserXmlByDOM4J("C:\\Users\\Administrator.PC-20111014DELE\\Desktop\\result.xml");
-		 InputStream in = new FileInputStream(new File("C:\\Users\\liz\\Desktop\\result.xml"));
-		 String result1 = getStreamString(in);
-		 System.out.println(result1);
-		 } catch (Exception e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 }
+		// try {
+		// // Map<String, String> result = XmlUtil
+		// //
+		// .paserXmlByDOM4J("C:\\Users\\Administrator.PC-20111014DELE\\Desktop\\result.xml");
+		// InputStream in = new FileInputStream(new File(
+		// "C:\\Users\\liz\\Desktop\\result.xml"));
+		// String result1 = getStreamString(in);
+		// System.out.println(result1);
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
 		// String sss =
 		// "mac=da7114ac34ad8110a82b000992bbcbbf&xml=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%3Cmessage%3E%3Chead%3E%3Cversion%3E01%3C%2Fversion%3E%3CmsgType%3E0002%3C%2FmsgType%3E%3CchanId%3E99%3C%2FchanId%3E%3CmerchantNo%3E1058%3C%2FmerchantNo%3E%3CclientDate%3E20150307175634%3C%2FclientDate%3E%3CserverDate%3E20150307175215%3C%2FserverDate%3E%3CtranFlow%3E1058141501000%3C%2FtranFlow%3E%3CtranCode%3EQP0001%3C%2FtranCode%3E%3CrespCode%3EC000000000%3C%2FrespCode%3E%3CrespMsg%3E%E4%BA%A4%E6%98%93%E6%88%90%E5%8A%9F%3C%2FrespMsg%3E%3C%2Fhead%3E%3Cbody%3E%3CtranRespCode%3E00%3C%2FtranRespCode%3E%3CmerOrderId%3ECF100000000017561974%3C%2FmerOrderId%3E%3CcustId%3EwNJGbETndgnF2emdzx2yHz6LwSnWqstf%0A%3C%2FcustId%3E%3CrefNo%3EQP20150307175532633%3C%2FrefNo%3E%3CstorableCardNo%3E6226201053%3C%2FstorableCardNo%3E%3Camount%3E368.00%3C%2Famount%3E%3C%2Fbody%3E%3C%2Fmessage%3E";
@@ -103,16 +105,28 @@ public class TestUtils {
 		// String lll = sss.split("&")[1].split("=")[1];
 		// System.out.println(lll);
 
-		// String keyBytes = "abcdefgh";
-		// String ss="wNJGbETndgnF2emdzx2yHz6LwSnWqstf";
+		// String keyBytes = "ifls8709";
+		// String ss="RrBlHXtQpqNeVlHQaR1YGSxIo65HuAXY";
 		// String dd = CryptoUtils.desDecryptFromBase64(ss,
 		// keyBytes.getBytes());
 		// System.out.println(dd.substring(14));
 		// testSendMsg();
 		// getString();
 
-		// getMaxBytes();
+		getMaxBytes();
 
+	}
+
+	public static void acceptCall() {
+		try {
+			InputStream in = new FileInputStream(new File(
+					"C:\\Users\\liz\\Desktop\\result.xml"));
+			HandleHttpRequest request = new HandleHttpRequest();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void testw() throws Exception {
@@ -207,7 +221,7 @@ public class TestUtils {
 		item.put("authType", "2");
 		try {
 			item.put("token", TokenUtils.encryptToken(
-					"02,6338673674855554,20150326181236,100015",
+					"02,6338673674855554,20150327155536,100015",
 					"servyou_sitong_s"));
 		} catch (JSONException e1) {
 			e1.printStackTrace();

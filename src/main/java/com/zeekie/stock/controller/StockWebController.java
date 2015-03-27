@@ -356,9 +356,7 @@ public class StockWebController {
 				handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
 						parasResult);
 			}
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		} catch (DocumentException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}

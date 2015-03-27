@@ -96,7 +96,7 @@
 	<resultMap type="com.zeekie.stock.entity.RedPacketDO" id="resultRedPacket">
 		<result column="ASSIGN_REFEREE_RED_PACKET" property="assignRefereeRedPacket" jdbcType="VARCHAR"/>
 		<result column="ASSIGN_REGISTER_RED_PACKET" property="assignRegisterRedPacket" jdbcType="VARCHAR"/>
-		<result column="ASSIGN_REFEREE_DRAW_PERCENT" property="assignRefereeDrawPercent" jdbcType="FLOAT"/>
+		<result column="down_line_percent" property="assignRefereeDrawPercent" jdbcType="FLOAT"/>
 		<result column="ID" property="userId" jdbcType="VARCHAR"/>
 	</resultMap>
 	
@@ -220,8 +220,8 @@
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select SEQ_ID_CARD.Nextval from dual
 		</selectKey>
-		INSERT INTO STOCK_ID_CARD
-		  (ID, USER_ID, TRUENAME, ID_CARD, IDENTIFY_DATE)
+ 		INSERT INTO STOCK_ID_CARD
+		  (ID, USER_ID, TRUENAME, ID_CARD, IDENTIFY_DATE,FLAG)
 		VALUES
 		  (#{id},
 		   (SELECT U.ID
@@ -230,7 +230,25 @@
 		       AND ROWNUM = 1),
 		   #{truename},
 		   #{idCard},
-		   SYSDATE)
+		   SYSDATE,'Y') 
+		<!-- Merge Into Stock_Id_Card p
+		Using (Select #{id} Id,
+		              (Select u.Id
+		                 From Stock_User u
+		                Where u.Nickname = #{nickname}
+		                  And Rownum = 1) User_Id,
+		              #{truename} Truename,
+		              #{idcard} Id_Card,
+		              Sysdate Identify_Date
+		         From Dual) t
+		On (p.User_Id = t.User_Id)
+		When Matched Then
+		  Update Set p.Identify_Date = t.Identify_Date
+		When Not Matched Then
+		  Insert
+		    (p.Id, p.User_Id, p.Truename, p.Id_Card, p.Identify_Date)
+		  Values
+		    (t.Id, t.User_Id, t.Truename, t.Id_Card, t.Identify_Date) -->
 	</insert>
 	
 	<insert id="bindPercent">
@@ -705,7 +723,7 @@
 		       (Select p.Red_Packet
 		          From Stock_Referee_Red_Packet p
 		         Where p.Referee_Id = r.User_Id) Assign_Register_Red_Packet,
-		       r.Assign_Referee_Draw_Percent,
+		       r.down_line_percent,
 		       (Select u.Id From Stock_User u Where r.Nickname = u.Nickname) Id
 		  From Stock_Fund_Assign_Radio r
 		 WHERE R.Nickname =#{nickname}
@@ -1121,4 +1139,8 @@
 	<update id="updateDepositePwd" parameterType="string">
 		update Stock_Id_Card set DEPOSIT_PWD = #{depositPwd} where USER_ID = #{userId}
 	</update>
+	
+	<select  id="queryIdentifyFlag" parameterType="string" resultType="string">
+		select 1 from Stock_Id_Card c where  c.user_id =(select id from stock_user u where u.nickname =#{nickname})
+	</select>
 </mapper>

@@ -82,6 +82,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				log.debug("用户" + nickname + "开始认证...");
 			}
 
+			if (StringUtils.equals(Constants.CODE_SUCCESS,
+					acounter.queryIdentifyFlag(nickname))) {
+				if (log.isDebugEnabled()) {
+					log.debug("用户" + nickname + "已经认证,直接返回true");
+				}
+				return true;
+			}
+
 			// 1、实名认证
 			acounter.insertIdentify(nickname, truename,
 					StringUtils.upperCase(idCard));

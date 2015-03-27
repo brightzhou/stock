@@ -386,4 +386,14 @@ public interface AcountMapper {
 	public void updateRefereeRadioIsNull(@Param("nickname") String nickname)
 			throws Exception;
 
+	/**
+	 * 验证该用户是否已经认证过了
+	 * 
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	public String queryIdentifyFlag(@Param("nickname") String nickname)
+			throws Exception;
+
 }

@@ -20,7 +20,7 @@ public class XmlUtil {
 
 	Logger log = LoggerFactory.getLogger(getClass());
 
-	private static String keyBytes = "abcdefgh";
+	private static String keyBytes = "ifls8709";
 
 	// 利用dom4j解析xml文件内容，并返回map数据形式
 	public static Map<String, String> paserXmlByDOM4J(String path)
@@ -55,7 +55,7 @@ public class XmlUtil {
 	}
 
 	public static Map<String, String> readStringXmlOut(String xml)
-			throws DocumentException {
+			throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
 		Document doc = null;
 		doc = DocumentHelper.parseText(xml); // 将字符串转为XML
