@@ -73,6 +73,8 @@
 		<result column="Time" property="time" jdbcType="VARCHAR"/>
 		<result column="Status" property="status" jdbcType="VARCHAR"/>
 		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="openbank" property="openBank" jdbcType="VARCHAR"/>
+		<result column="phone" property="phone" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.TotalFundDO" id="resultTotalFundList">
@@ -221,7 +223,7 @@
 			select SEQ_ID_CARD.Nextval from dual
 		</selectKey>
  		INSERT INTO STOCK_ID_CARD
-		  (ID, USER_ID, TRUENAME, ID_CARD, IDENTIFY_DATE,FLAG)
+		  (ID, USER_ID, TRUENAME, ID_CARD, IDENTIFY_DATE)
 		VALUES
 		  (#{id},
 		   (SELECT U.ID
@@ -230,7 +232,7 @@
 		       AND ROWNUM = 1),
 		   #{truename},
 		   #{idCard},
-		   SYSDATE,'Y') 
+		   SYSDATE) 
 		<!-- Merge Into Stock_Id_Card p
 		Using (Select #{id} Id,
 		              (Select u.Id
@@ -536,6 +538,8 @@
 			         Where Bank.User_Id = Card.User_Id) Card_Number,
 			       s.Withdrawl_Cash,
 			       s.Status,
+			       (SELECT B.openbank FROM STOCK_BANK_INFO B WHERE B.USER_ID = CARD.USER_ID ) openbank,
+			       (select u.telephone from stock_user u where u.id = card.user_id) phone,
 			       to_char(s.Time,'yyyy-mm-dd HH24:mi:ss') time
 		  From Stock_User_Withdrawl_Cash s, Stock_Id_Card Card
 		 Where Exists (Select 1
@@ -1143,4 +1147,9 @@
 	<select  id="queryIdentifyFlag" parameterType="string" resultType="string">
 		select 1 from Stock_Id_Card c where  c.user_id =(select id from stock_user u where u.nickname =#{nickname})
 	</select>
+	
+	<update id="updateOpenBank" parameterType="string">
+		update 	STOCK_BANK_INFO s set openbank = #{openBank} 
+		where exists(select 1 from stock_user u where u.nickname = #{nickname} and u.id = s.user_id)
+	</update>
 </mapper>

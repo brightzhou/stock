@@ -60,9 +60,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div field="truename" width="10%"  headerAlign="center" align="center" >
                         真实姓名
                     </div>
+                    <div field="phone" width="10%"  headerAlign="center" align="center" >
+                        手机号码
+                    </div>
                     <div  field="idCard" headerAlign="center" align="center">
                         身份证号
                     </div>
+                    <div  field="openBank"  headerAlign="center" align="center">
+                        开户行
+                    </div>  
                     <div  field="bank"  headerAlign="center" align="center">
                         银行名称
                     </div>         

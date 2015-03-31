@@ -205,8 +205,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		String platRedPacketToreferee = acounter
 				.getPlatRedPacketToReferee(referee);
 		String type = "";
-		if (StringUtils.isNotBlank(platRedPacketToreferee)
-				&& null != platRedPacketToreferee) {
+		if (StringUtils.isNotBlank(platRedPacketToreferee)) {
 			acounter.moveRedPacketToReferee(referee, platRedPacketToreferee);
 
 			// 3、3 给推荐人分红包 5
@@ -286,7 +285,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				jo.put("transactionType", "用户充值");
 				jo.put("fund", "+" + fund);
 			} else if (StringUtils.equals("50", type)) {
-				jo.put("transactionType", "用户提现");
+				jo.put("transactionType", desc);
 				jo.put("fund", "-" + fund);
 			} else if (StringUtils.equals("60", type)) {
 				boolean flag = StringUtils.startsWith(fund, "-");
@@ -364,7 +363,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	@Override
 	public Map<String, String> withdraw(String nickname, String fund,
-			String depositPwd) {
+			String depositPwd,String openBank) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("flag", "0");
 		String msg = "";
@@ -396,7 +395,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				acounter.withdraw(nickname, fund);
 				// 设置冻结金额
 				acounter.saveFreezeCash(nickname, fund);
-
+				//更新开户行
+				acounter.updateOpenBank(nickname,openBank);
 				// 发短信通知管理员有人提款
 				ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
 						stock_manager_phone);
@@ -436,33 +436,26 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					result.put("debt", userCash);
 				} else {
 					result.put("debt", "0");
+					// 2、
+					// 把获取的利润划到账户钱包,特别注意，如果只有利润大于0才加到用户余额中，不然会直接扣掉用户钱。但是又回记账debt，造成重复扣款
+					acounter.moveProfitToUserWallet(nickname, userCash);
+					// 2、1记录流水
+					String type = StringUtils
+							.equals(Constants.EVENING_UP, flag) ? Constants.TIPS_RETURN_GURANTEE_CASH
+							: Constants.TRANS_FROM_HOMES_TO_CLIENT;
+					trade.recordFundflow(nickname, type, userCash, "");
 				}
-
-				// 2、 把获取的利润划到账户钱包
-				acounter.moveProfitToUserWallet(nickname, userCash);
-
-				// 2、1记录流水
-				String type = StringUtils.equals(Constants.EVENING_UP, flag) ? Constants.TIPS_RETURN_GURANTEE_CASH
-						: Constants.TRANS_FROM_HOMES_TO_CLIENT;
-
-				trade.recordFundflow(nickname, type, userCash, "");
 
 				String assginCash = StringUtil.keepThreeDot(cashDO
 						.getAssginCash());
 
 				// 3、把我们的配资的钱划到我们的总资金
-				// acounter.moveAssignCashToTotalFund(cashDO.getFundAccount(),
-				// assginCash);
 				acounter.addTotalFund("0", assginCash, cashDO.getFundAccount(),
 						"从HOMES划回配资的钱", "recharge");
 				// 更新历史金额状态为N
 				acounter.updateStatusToN(cashDO.getFundAccount());
 				// 更新当前金额状态为Y
 				acounter.updateStatusToY(cashDO.getFundAccount());
-
-				// 3、1记录流水
-				// trade.recordFundflow(nickname,
-				// Constants.TRANS_FROM_HOMES_TO_TOTALFUND, assginCash, "");
 
 				// 4、计算推荐人的收益，如果该用户有推荐人。计算规则：每笔服务费的乘以一个百分比
 				trade.caculateRefereeIncome(nickname);

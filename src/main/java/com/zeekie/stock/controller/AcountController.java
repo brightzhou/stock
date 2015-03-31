@@ -112,8 +112,10 @@ public class AcountController {
 	@RequestMapping("fund/withdraw")
 	public ApiResponse withdraw(@RequestParam("nickname") String nickname,
 			@RequestParam("fund") String fund,
-			@RequestParam("depositPwd") String depositPwd) {
-		return ApiUtils.good(operator.withdraw(nickname, fund, depositPwd));
+			@RequestParam("depositPwd") String depositPwd,
+			@RequestParam("openBank") String openBank) {
+		return ApiUtils.good(operator.withdraw(nickname, fund, depositPwd,
+				openBank));
 	}
 
 	@ResponseBody

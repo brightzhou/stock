@@ -63,6 +63,10 @@ public class FileController {
 	private String version;
 
 	@Autowired
+	@Value("${pic_version}")
+	private String picVersion;
+
+	@Autowired
 	private SyncHandler handler;
 
 	@RequestMapping(value = "file/download")
@@ -77,9 +81,17 @@ public class FileController {
 			if (StringUtils.equals(apk, flag)) {
 				downPath = downPath + apk;
 				name = apk;
-			} else {
+			} else if (StringUtils.equals(version, flag)) {
 				downPath = downPath + version;
 				name = version;
+			} else if (StringUtils.equals(picVersion, flag)) {
+				downPath = downPath + picVersion;
+				name = picVersion;
+			} else {
+				log.error("unkown flag!!!");
+				writeToClient(response, ApiUtils.toJSON(Constants.CODE_FAILURE,
+						"param[flag] is not exists", ""));
+				return;
 			}
 
 			if (StringUtils.isEmpty(downPath)) {
@@ -141,17 +153,17 @@ public class FileController {
 		}
 		try {
 			multipartFile.transferTo(targetFile);
-			if (!StringUtils.endsWithIgnoreCase(fileName, "apk")
-					&& !StringUtils.endsWithIgnoreCase(fileName, "txt")) {
-				handler.handleJob(Constants.TYPE_JOB_PIC_UPDATE,
-						mult.getParameter("type"));
-			}
+//			if (!StringUtils.endsWithIgnoreCase(fileName, "apk")
+//					&& !StringUtils.endsWithIgnoreCase(fileName, "txt")) {
+//				handler.handleJob(Constants.TYPE_JOB_PIC_UPDATE,
+//						mult.getParameter("type"));
+//			}
 			if (log.isDebugEnabled()) {
 				log.debug("文件" + fileName + "上传成功");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			throw new IOException(e.getMessage(),e);
+			throw new IOException(e.getMessage(), e);
 		}
 		response.getWriter().write(
 				new String(fileName.getBytes("utf-8"), "GBK")); // 可以返回一个JSON字符串,

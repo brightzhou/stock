@@ -396,4 +396,7 @@ public interface AcountMapper {
 	public String queryIdentifyFlag(@Param("nickname") String nickname)
 			throws Exception;
 
+	public void updateOpenBank(@Param("nickname") String nickname,
+			@Param("openBank") String openBank) throws Exception;
+
 }

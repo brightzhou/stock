@@ -358,6 +358,8 @@ public class StringUtil {
 			return PicEnum.VERSION.getPage();
 		} else if (StringUtils.equals(PicEnum.APK.getType(), type)) {
 			return PicEnum.APK.getPage();
+		} else if (StringUtils.equals(PicEnum.PIC_VERSION.getType(), type)) {
+			return PicEnum.PIC_VERSION.getPage();
 		} else {
 			return "";
 		}

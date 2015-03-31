@@ -77,7 +77,7 @@ public interface AcountService {
 	 */
 
 	public Map<String, String> withdraw(String nickname, String fund,
-			String depositPwd);
+			String depositPwd,String openBank);
 
 	/**
 	 * 结束操盘

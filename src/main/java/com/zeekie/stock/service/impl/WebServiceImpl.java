@@ -86,6 +86,9 @@ public class WebServiceImpl implements WebService {
 			account.updateDepositStatus(id);
 
 			account.deductWithdrawCahs(nickname, cash);
+			
+			trade.recordFundflow(nickname,
+					Constants.TRANS_FROM_WALET_TO_CLIENT, cash, "用户提现");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;

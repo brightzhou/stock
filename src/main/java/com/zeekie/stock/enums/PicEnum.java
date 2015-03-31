@@ -3,7 +3,8 @@ package com.zeekie.stock.enums;
 public enum PicEnum {
 
 	MAINPAGE("main", "main.jpg"), STARTPAGE("start", "start.jpg"), APK("apk",
-			"HaHaBao.apk"), VERSION("version", "update_version.txt");
+			"HaHaBao.apk"), VERSION("version", "update_version.txt"), PIC_VERSION(
+			"picVersion", "pic_version.txt");
 
 	private String type;
 

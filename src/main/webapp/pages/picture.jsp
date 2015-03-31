@@ -38,7 +38,7 @@
 			&nbsp;&nbsp;&nbsp;
 		类别：<input id="storeType" class="mini-combobox" style="width: 150px;"
 			textField="text" valueField="id"
-			data="[{'id': 'main', 'text': '首页'},{'id': 'start', 'text': '启动页'},{'id': 'apk', 'text': 'APK'},{'id': 'version', 'text': '版本信息'}]"
+			data="[{'id': 'main', 'text': '首页'},{'id': 'start', 'text': '启动页'},{'id': 'apk', 'text': 'APK'},{'id': 'version', 'text': '版本信息'},{'id': 'picVersion', 'text': '图片版本信息'}]"
 			value="main" name="type"/> 
 			<br /> 
 			<a class="mini-button" style="margin:0px 10px;" onclick="startUpload()" id="uploadButton">上传</a>

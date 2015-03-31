@@ -20,6 +20,40 @@ public class WithdrawlDO {
 
 	private String status;
 
+	private String phone;
+
+	private String openBank;
+
+	/**
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * @param phone
+	 *            the phone to set
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	/**
+	 * @return the openBank
+	 */
+	public String getOpenBank() {
+		return openBank;
+	}
+
+	/**
+	 * @param openBank
+	 *            the openBank to set
+	 */
+	public void setOpenBank(String openBank) {
+		this.openBank = openBank;
+	}
+
 	/**
 	 * @return the id
 	 */

@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.syncTask;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -280,27 +281,38 @@ public class SyncHandler {
 
 	private void deductFeeWhenOperation(String nickname) {
 		try {
-			if (DateUtil.compareDate()) {
-				trade.updateManageFeeByUser(nickname);
-				DeductDO fee = trade.queryNewStocker(nickname);
-				trade.deductManageFee(fee);
-				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,
-						fee.getFee() + "", "技术服务费");
 
-				String referee = account.queryRefereeNickname(nickname);
-				if (StringUtils.isNotBlank(referee)) {
-					String type = Fund.AMORTIZATION.getType();
-					String refereeDrawFee = fee.getDrawFee() + "";
+			String rightNow = DateUtil.dateToStr(new Date(),
+					DateUtil.FORMAT_YYYY_MM_DD);
 
-					trade.recharge(referee, refereeDrawFee);
-					trade.recordFundflow(referee, type, refereeDrawFee,
-							Fund.getDesc(nickname, type));
-					if (log.isDebugEnabled()) {
-						log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成："
-								+ refereeDrawFee);
+			if (StringUtils.isBlank(trade.selectFeeDay(rightNow))) {
+				if (log.isDebugEnabled()) {
+					log.debug("用户操盘，但是今天[" + rightNow + "]未设置收取服务费，故不进行时间比较了");
+				}
+			} else {
+				if (DateUtil.compareDate()) {
+					trade.updateManageFeeByUser(nickname);
+					DeductDO fee = trade.queryNewStocker(nickname);
+					trade.deductManageFee(fee);
+					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,
+							fee.getFee() + "", "技术服务费");
+
+					String referee = account.queryRefereeNickname(nickname);
+					if (StringUtils.isNotBlank(referee)) {
+						String type = Fund.AMORTIZATION.getType();
+						String refereeDrawFee = fee.getDrawFee() + "";
+
+						trade.recharge(referee, refereeDrawFee);
+						trade.recordFundflow(referee, type, refereeDrawFee,
+								Fund.getDesc(nickname, type));
+						if (log.isDebugEnabled()) {
+							log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成："
+									+ refereeDrawFee);
+						}
 					}
 				}
 			}
+
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
