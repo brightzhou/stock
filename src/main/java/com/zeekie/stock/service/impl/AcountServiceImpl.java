@@ -33,6 +33,7 @@ import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
+import com.zeekie.stock.service.homes.StockModifyUserName;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
@@ -68,6 +69,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Autowired
 	@Value("${func_am_asset_move}")
 	private String Fn_asset_move;
+
+	@Autowired
+	@Value("${func_am_change_asset_info}")
+	private String fn_change_assetName;// 769952-修改homse用户名
 
 	@Autowired
 	private SyncHandler handler;
@@ -363,7 +368,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	@Override
 	public Map<String, String> withdraw(String nickname, String fund,
-			String depositPwd,String openBank) {
+			String depositPwd, String openBank) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("flag", "0");
 		String msg = "";
@@ -374,6 +379,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("flag", "4");
 				return map;
 			} else {
+				
+				if (!StringUtils.equals("1",
+						acounter.queryDepositPwd(nickname))) {
+					msg = "提现密码未设置";
+					map.put("msg", msg);
+					map.put("flag", "5");
+					return map;
+				}
+				
 				if (!StringUtils.equals("1",
 						acounter.checkDepositPwd(nickname, depositPwd))) {
 					msg = "提现密码输入错误，请重新输入,或则联系管理员!";
@@ -395,8 +409,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				acounter.withdraw(nickname, fund);
 				// 设置冻结金额
 				acounter.saveFreezeCash(nickname, fund);
-				//更新开户行
-				acounter.updateOpenBank(nickname,openBank);
+				// 更新开户行
+				acounter.updateOpenBank(nickname, openBank);
 				// 发短信通知管理员有人提款
 				ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
 						stock_manager_phone);
@@ -485,6 +499,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		return result;
 	}
 
+	private boolean modifyUserName(String fundAccount, String combineId)
+			throws Exception {
+		StockModifyUserName user = new StockModifyUserName(fundAccount,
+				combineId, "空闲用户");
+		user.callHomes(fn_change_assetName);
+		return user.visitSuccess(fn_change_assetName);
+	}
+
 	private void moveCashForEndStock(String nickname) throws Exception {
 		AccountDO client = acounter.getAccount(nickname);
 		String fundAccount = client.getFundAccount();
@@ -509,8 +531,18 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						+ " 仍然有有资金在HOMES中，结束操盘时已将其划转到主单元!!!");
 			}
 		}
+
+		if (modifyUserName(fundAccount, combineId)) {
+			if (log.isDebugEnabled()) {
+				log.debug("修改用户名称为【空闲用户】");
+			}
+		} else {
+			log.warn("修改用户名称为【空闲用户】失败，调用HOMES发生异常.但是主程序继续进行！！！");
+		}
+
 		if (log.isDebugEnabled()) {
 			log.debug("访问homes成功结束！");
+
 		}
 	}
 

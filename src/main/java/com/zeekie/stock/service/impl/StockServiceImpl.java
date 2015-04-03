@@ -92,6 +92,10 @@ public class StockServiceImpl implements TradeService {
 	@Value("${func_am_change_asset_info}")
 	private String fn_change_assetName;// 769952-修改homse用户名
 
+	@Autowired
+	@Value("${stock.operation.number}")
+	private String operationNo;
+
 	private Set<String> fundAccountSet = new HashSet<String>();
 
 	@Override
@@ -273,8 +277,8 @@ public class StockServiceImpl implements TradeService {
 		return operateAcount;
 	}
 
-	private synchronized String saveOperateAcount(String nickname, String moveFund)
-			throws Exception {
+	private synchronized String saveOperateAcount(String nickname,
+			String moveFund) throws Exception {
 		// 2.2、查詢数据库获取密码
 		String operatorPwd = "";
 		String operator = "";

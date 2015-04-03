@@ -63,6 +63,7 @@
 		<result column="ACTUAL_CASH" property="actualAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="WARN_CASH" property="warnFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 <!-- 	<resultMap type="com.zeekie.stock.entity.WarnLineDO" id="resultSwingUser">
@@ -380,7 +381,7 @@
 			       S.PROFIT_LOSS_RADIO * 100 PROFIT_LOSS_RADIO,
 			       S.MANAGEMENT_FEE,
 			       S.GUARANTEE_CASH,
-			       'HB000' || S.ID ASSET_ID,
+			       S.TICKET ASSET_ID,
 			       TO_CHAR(START_DATE, 'yyyy-mm-dd') STARTDATE,
 			       TO_CHAR(END_DATE, 'yyyy-mm-dd') ENDDATE,
 			       (SELECT R.LOAN_RULE FROM STOCK_RULE R) LOAN_RULE
@@ -417,11 +418,7 @@
     <select id="getEveningFlag" parameterType="string" resultMap="resultEveningResult">
     	SELECT M.ID,
 		       M.CURRENT_CASH,
-		       <!-- (SELECT A.ASSET_ID
-		          FROM STOCK_USER_OPERATE_ACOUNT A
-		         WHERE A.NICKNAME = M.NICKNAME
-		           AND M.OPERATE_ACCOUNT_ID = A.ID) --> 
-		       'HB000'||M.ID ASSET_ID,
+		       M.TICKET ASSET_ID,
 		       (SELECT R.STOP_RADIO * 100 || '%'
 		          FROM STOCK_FUND_ASSIGN_RADIO R
 		         WHERE R.NICKNAME = M.NICKNAME) STOP_RADIO
@@ -469,6 +466,7 @@
 		       M.NICKNAME,
 		       M.ACTUAL_CASH,
 		       M.WARN_CASH,
+		       M.TICKET,
 		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = M.NICKNAME) PHONE
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'

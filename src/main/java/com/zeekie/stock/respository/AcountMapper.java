@@ -22,6 +22,7 @@ import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
+import com.zeekie.stock.entity.PhoneAndTIcketDO;
 import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.RedpacketAndBalanceDO;
 import com.zeekie.stock.entity.StockRadioDO;
@@ -271,7 +272,7 @@ public interface AcountMapper {
 
 	public void loginOff(@Param("nickname") String nickname) throws Exception;
 
-	public String getUserPhone(@Param("nickname") String nickname)
+	public PhoneAndTIcketDO getUserPhone(@Param("nickname") String nickname)
 			throws Exception;
 
 	public long queryOwingFeeCount(@Param("nickname") String nickname)
@@ -398,5 +399,13 @@ public interface AcountMapper {
 
 	public void updateOpenBank(@Param("nickname") String nickname,
 			@Param("openBank") String openBank) throws Exception;
+
+	/**
+	 * 判断是否设置提现密码
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public String queryDepositPwd(@Param("nickname")String nickname) throws Exception;
 
 }

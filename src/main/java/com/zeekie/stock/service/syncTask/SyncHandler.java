@@ -15,6 +15,7 @@ import sitong.thinker.common.util.mybatis.BatchMapper;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
+import com.zeekie.stock.entity.PhoneAndTIcketDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.enums.Fund;
@@ -27,6 +28,7 @@ import com.zeekie.stock.service.xinge.StockMsg;
 import com.zeekie.stock.service.xinge.XingePush;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.DateUtil;
+import com.zeekie.stock.util.StringUtil;
 
 @Service
 public class SyncHandler {
@@ -112,14 +114,13 @@ public class SyncHandler {
 			deductFeeWhenAddGuarantee(param.get("nickname"),
 					param.get("needDeductFee"));
 		} else if (StringUtils.equals(Constants.TYPE_JOB_TO_REFEREE, type)) {
-
 			String flag = param.get("flag");
 			String referee = param.get("referee");
 			String packet = param.get("packet");
 			String nickname = param.get("nickname");
 			String telephone = "";
 			try {
-				telephone = account.getUserPhone(referee);
+				telephone = account.getUserPhone(referee).getPhone();
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
@@ -213,9 +214,9 @@ public class SyncHandler {
 			}
 			for (WarnLineDO lineDO : result) {
 				ApiUtils.send(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
-						lineDO.getPhone(), lineDO.getNickname(), operationNo
-								+ lineDO.getOperateId(),
-						lineDO.getActualAsset(), lineDO.getWarnFund());
+						lineDO.getPhone(), lineDO.getNickname(),
+						lineDO.getTicket(), lineDO.getActualAsset(),
+						lineDO.getWarnFund());
 			}
 			batchMapper.batchInsert(TradeMapper.class, "updateWarnFlagToOne",
 					result);
@@ -234,9 +235,9 @@ public class SyncHandler {
 				log.debug("後台為操盘号为[" + operationId + "]平倉，發短信提醒用戶");
 			}
 			String nickname = param.get("nickname");
-			String telephone = account.getUserPhone(nickname);
-			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN, telephone,
-					nickname, operationNo + operationId);
+			PhoneAndTIcketDO andTIcketDO = account.getUserPhone(nickname);
+			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN,
+					andTIcketDO.getPhone(), nickname, andTIcketDO.getTicket());
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
