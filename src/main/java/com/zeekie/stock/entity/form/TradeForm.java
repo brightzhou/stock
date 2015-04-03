@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity.form;
 
+import com.zeekie.stock.util.StringUtil;
+
 public class TradeForm {
 
 	private Long id;
@@ -35,6 +37,23 @@ public class TradeForm {
 	private String startDate;
 
 	private String operateAccountId;
+
+	private int ticket = Integer.parseInt(StringUtil.genRandomFive(1));
+
+	/**
+	 * @return the ticket
+	 */
+	public int getTicket() {
+		return ticket;
+	}
+
+	/**
+	 * @param ticket
+	 *            the ticket to set
+	 */
+	public void setTicket(int ticket) {
+		this.ticket = ticket;
+	}
 
 	/**
 	 * @return the operateAccountId

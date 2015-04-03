@@ -217,6 +217,11 @@
 		<result column="value" property="value" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.PhoneAndTIcketDO" id="ResultUserPhone">
+		<result column="ticket" property="ticket" jdbcType="VARCHAR"/>
+		<result column="telephone" property="phone" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -342,6 +347,7 @@
 	</selectKey> 
 		INSERT INTO STOCK_USER_OPERATE_MAININFO
 		  (ID,
+		   TICKET,
 		   OPERATE_ACCOUNT_ID,
 		   NICKNAME,
 		   TRADE_FUND,
@@ -351,6 +357,7 @@
 		   START_DATE)
 		VALUES
 		  (#{id},
+		   'HHB000'||(#{id} * 5 + #{ticket}),
 		   #{operateAccountId,jdbcType=VARCHAR},
 		   #{nickname,jdbcType=VARCHAR},
 		   #{tradeFund,jdbcType=VARCHAR},
@@ -363,7 +370,7 @@
 	<select id="getOperateAcount" resultMap="resultCurrOperateAcount" parameterType="string">
 		SELECT a.Trade_Acount,
 		       a.Trade_Password,
-		       (Select 'HB000' || m.Id
+		       (Select m.ticket
 		          From Stock_User_Operate_Maininfo m
 		         Where m.Operate_Account_Id = a.Id
 		           And m.Is_Current = '1') ASSET_ID
@@ -1044,8 +1051,10 @@
 		update STOCK_USER set status ='0' where nickname = #{nickname}
 	</update>
 	
-	<select id="getUserPhone" parameterType="string" resultType="string">
-		select telephone from stock_user u where u.nickname = #{nickname}
+	<select id="getUserPhone" parameterType="string" resultMap="ResultUserPhone">
+		select telephone,
+			   (select M.ticket from Stock_User_Operate_Maininfo m where m.nickname = u.nickname) ticket
+		 from stock_user u where u.nickname = #{nickname}
 	</select>
 	
 	<select id="queryOwingFeeCount" resultType="long" parameterType="string">
