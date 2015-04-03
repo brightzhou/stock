@@ -308,6 +308,15 @@
 		         Where u.Nickname = #{nickname}
 		           And u.Id = s.User_Id)
 	</select>
+	
+	<select id="queryDepositPwd" parameterType="string" resultType="string">
+		Select 1
+		  From Stock_Id_Card s
+		 Where Exists (Select 1
+		          From Stock_User u
+		         Where u.Nickname = #{nickname}
+		           And u.Id = s.User_Id)
+	</select>
 
 
 	<select id="cashIsEnough" resultType="string" parameterType="string">

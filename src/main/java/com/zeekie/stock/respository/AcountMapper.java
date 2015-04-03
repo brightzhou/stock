@@ -399,4 +399,12 @@ public interface AcountMapper {
 	public void updateOpenBank(@Param("nickname") String nickname,
 			@Param("openBank") String openBank) throws Exception;
 
+	/**
+	 * 判断是否设置提现密码
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public String queryDepositPwd(@Param("nickname")String nickname) throws Exception;
+
 }
