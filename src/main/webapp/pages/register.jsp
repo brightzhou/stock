@@ -67,8 +67,9 @@ input{
     height: 74px;
     background-image: url("images/register_04.png") ;
 	 background-repeat:no-repeat;
-	 margin-left: 49px;
+	 margin-left: 0px;
 	 margin-top: 63px;
+	 text-align:center;
 }
 .info .register{ 
 	width: 981px;
@@ -99,7 +100,6 @@ input{
 
 <body class="body_fit" >
    <div class="info">
-    <div id="form1" align="left">
       <div  style="clear: both; "></div>
       <div class="name"><input type="text"  name="nickname" id="nickname" />  </div>
       <div class="password"><input type="text"  name="password"  id="password"/></div>
