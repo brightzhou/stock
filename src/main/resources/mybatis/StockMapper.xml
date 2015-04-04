@@ -88,10 +88,21 @@
 	</select>
 
 	<select id="genVerifyCode">
-		Insert Into Dm_Verifycode
+<!-- 		Insert Into Dm_Verifycode
 		  (Telephone, verifyCode, source, Gendate)
 		Values
-		  (#{telephone}, #{verifyCode}, #{source}, Sysdate)
+		  (#{telephone}, #{verifyCode}, #{source}, Sysdate) -->
+	MERGE INTO DM_VERIFYCODE D
+	USING (SELECT #{telephone} TELEPHONE, #{verifyCode} VERIFYCODE, #{source} SOURCE
+	         FROM DUAL) T
+	ON (D.TELEPHONE = T.TELEPHONE AND D.SOURCE = T.SOURCE)
+	WHEN MATCHED THEN
+	  UPDATE SET D.VERIFYCODE = T.VERIFYCODE,D.Gendate = SYSDATE
+	WHEN NOT MATCHED THEN
+	  INSERT
+	    (D.TELEPHONE, D.VERIFYCODE, D.SOURCE, D.GENDATE)
+	  VALUES
+	    (T.TELEPHONE, T.VERIFYCODE, T.SOURCE, SYSDATE)
 	</select>
 
 	<select id="checkVerifyCode" resultType="String" parameterType="string">

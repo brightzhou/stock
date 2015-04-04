@@ -357,7 +357,7 @@
 		   START_DATE)
 		VALUES
 		  (#{id},
-		   'HHB000'||(#{id} * 5 + #{ticket}),
+		   'H000'||(#{id} * 5 + #{ticket}),
 		   #{operateAccountId,jdbcType=VARCHAR},
 		   #{nickname,jdbcType=VARCHAR},
 		   #{tradeFund,jdbcType=VARCHAR},

@@ -95,12 +95,12 @@ public class CaculateFundTimer {
 		Float money = StringUtil.keepTwoDecimalFloat(Float
 				.parseFloat(currentCash));
 
-		// if (money == 0f) {
-		// if (log.isDebugEnabled()) {
-		// log.debug("nickname:" + nickname + "当前资产为0，不更新盈亏金额");
-		// }
-		// return;
-		// }
+		if (money == 0f) {
+			if (log.isDebugEnabled()) {
+				log.debug("nickname:" + nickname + "当前资产为0，不更新盈亏金额");
+			}
+			return;
+		}
 		// 1、先更新盈亏金额
 		mapper.updateProfitAndLoss(currentCash, marketValue, nickname);
 		log.info("======success update profitAndLoss======");
