@@ -77,7 +77,7 @@ public interface AcountService {
 	 */
 
 	public Map<String, String> withdraw(String nickname, String fund,
-			String depositPwd,String openBank);
+			String depositPwd, String openBank);
 
 	/**
 	 * 结束操盘
@@ -170,4 +170,20 @@ public interface AcountService {
 	 */
 	public String modifyDepositPwd(String userId, String depositPwd,
 			String telephone, String verifyCode);
+
+	/**
+	 * 获取绑定的用户信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Map<String, String> getId(String userId);
+
+	/**
+	 * 获取绑定银行卡信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Map<String, String> getBindCreditCard(String userId);
 }

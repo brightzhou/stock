@@ -18,11 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BankInfoDO;
+import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.RedpacketAndBalanceDO;
 import com.zeekie.stock.entity.UserDO;
@@ -701,5 +703,38 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			}
 		}
 		return Constants.CODE_SUCCESS;
+	}
+
+	@Override
+	public Map<String, String> getId(String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			IdentifyDO indetifyDO = acounter.queryIdentifyInfo(userId);
+			if (null != indetifyDO) {
+				map.put("trueName", indetifyDO.getTrueName());
+				map.put("idCard", indetifyDO.getIdCard());
+				map.put("indentifyDate", indetifyDO.getIndentifyDate());
+				map.put("depositPwd", indetifyDO.getDepositPwd());
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, String> getBindCreditCard(String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			BindBankDO bindBankDO = acounter.getBindCreditCard(userId);
+			if (null != bindBankDO) {
+				map.put("bank", bindBankDO.getBank());
+				map.put("cardNo", bindBankDO.getCardNo());
+				map.put("openBank", bindBankDO.getOpenBank());
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return map;
 	}
 }

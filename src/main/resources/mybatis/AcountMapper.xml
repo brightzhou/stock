@@ -222,6 +222,19 @@
 		<result column="telephone" property="phone" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.IdentifyDO" id="resultIdentifyInfo">
+		<result column="Truename" property="trueName" jdbcType="VARCHAR"/>
+		<result column="Id_Card" property="idCard" jdbcType="VARCHAR"/>
+		<result column="Identify_Date" property="indentifyDate" jdbcType="VARCHAR"/>
+		<result column="Deposit_Pwd" property="depositPwd" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.BindBankDO" id="resultBindCreditCard">
+		<result column="Bank" property="bank" jdbcType="VARCHAR"/>
+		<result column="Card_Number" property="cardNo" jdbcType="VARCHAR"/>
+		<result column="Openbank" property="openBank" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1170,4 +1183,19 @@
 		update 	STOCK_BANK_INFO s set openbank = #{openBank} 
 		where exists(select 1 from stock_user u where u.nickname = #{nickname} and u.id = s.user_id)
 	</update>
+	
+	<select id="queryIdentifyInfo" parameterType="string" resultMap="resultIdentifyInfo">
+		Select t.Truename,
+		       t.Id_Card,
+		       To_Char(t.Identify_Date, 'yyyy-mm-dd') Identify_Date,
+		       t.Deposit_Pwd
+		  From Stock_Id_Card t
+		 Where t.User_Id = #{userId}
+	</select>
+	
+	<select id="getBindCreditCard" parameterType="string" resultMap="resultBindCreditCard">
+		Select t.Bank, t.Card_Number, t.Openbank
+		  From Stock_Bank_Info t
+		 Where t.User_Id = #{userId}
+	</select>
 </mapper>

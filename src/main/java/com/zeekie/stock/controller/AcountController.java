@@ -43,6 +43,12 @@ public class AcountController {
 	}
 
 	@ResponseBody
+	@RequestMapping("ID/get")
+	public ApiResponse getId(@RequestParam("userId") String userId) {
+		return ApiUtils.good(operator.getId(userId));
+	}
+
+	@ResponseBody
 	@RequestMapping("creditCard/bind")
 	public String bindCreditCard(@RequestParam("userId") String userId,
 			@RequestParam("telephone") String telephone,
@@ -51,6 +57,12 @@ public class AcountController {
 			@RequestParam("bankCode") String bankCode) {
 		return operator.bindCreditCard(userId, telephone, bank, number,
 				bankCode) ? Constants.CODE_SUCCESS : Constants.CODE_FAILURE;
+	}
+	
+	@ResponseBody
+	@RequestMapping("creditCard/get")
+	public ApiResponse getBindCreditCard(@RequestParam("userId") String userId) {
+		return ApiUtils.good(operator.getBindCreditCard(userId));
 	}
 
 	@ResponseBody
