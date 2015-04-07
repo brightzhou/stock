@@ -37,10 +37,11 @@ public class BaseImpl {
 			if (StringUtils.isNotEmpty(trade.checkVerifyCode(telephone,
 					verifyCode, getSecond(), source))) {
 				flag = true;
-			} else {
-				// 验证码过期
-				trade.setVerifyCodeExpired(telephone);
-			}
+			} 
+//			else {
+//				// 验证码过期
+//				trade.setVerifyCodeExpired(telephone);
+//			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

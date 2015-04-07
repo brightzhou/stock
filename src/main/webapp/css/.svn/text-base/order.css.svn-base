@@ -1,0 +1,49 @@
+.info{ 
+	margin: 0px auto;
+	width: 500px;
+	height: 190px;
+	border: 1px solid #E6E6E6;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+.ioc{
+    width: 50px;
+    float: left;
+    margin-left: 50px;
+    margin-top: 30px;
+}
+.order_info{
+   float: right;
+   width: 380px;
+   margin-top: 30px;
+}
+.pay_fail_message{
+  height: 50px;
+  line-height: 50px;
+   color: #d47d09;
+   font-size: 25px;
+   font-weight: bold;
+}
+
+.pay_success_message{
+     height: 50px;
+     line-height: 50px;
+     color: rgb(120, 194, 40);
+     font-size: 25px;
+     font-weight: bold;
+}
+.pay_info{
+  font-weight: bold;
+  line-height: 12px;
+  height: 20px;
+}
+.reminder{
+  line-height: 12px;
+  height: 20px;
+}
+.other{
+    margin-top: 20px;
+}
+.other a{
+   color: #00C;
+}

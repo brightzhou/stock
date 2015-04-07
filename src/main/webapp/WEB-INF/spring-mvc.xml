@@ -39,6 +39,7 @@
     <mvc:resources mapping="/icons/**" location="/icons/"/>
     <mvc:resources mapping="/files/**" location="/files/"/>
     <mvc:resources mapping="/swfupload/**" location="/swfupload/"/>
+    <mvc:resources mapping="/images/**" location="/images/"/>
 	
 	<!-- enable autowire -->
 	<context:annotation-config />

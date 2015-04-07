@@ -1,0 +1,261 @@
+﻿@charset "utf-8";
+	body {
+	font-family:"微软雅黑","Microsoft YaHei";
+}
+.crumbs {
+	padding:0 10px;
+	margin-top:6px;
+	line-height:50px;
+	width:1144px;
+	font-size:14px;
+}
+
+.left_warp .tit {
+	font-size:16px;
+	line-height:40px;
+	background-color:#15466E;
+	height:40px;
+	color:#fff;
+	padding-left:15px;
+	border-bottom: 2px solid #EBEBEB;
+}
+.left_warp .user_msg {
+	height:150px;
+	border-bottom:1px solid #ccc;
+}
+.left_warp .user_msg dl dt {
+	float:left;
+}
+.left_warp .user_msg dl dd {
+	line-height:25px;
+	text-align:center;
+	position:relative;
+	top:30px;
+}
+.zhaunjifen table .tr_bj {
+background-color: #EBEBEB;
+height: 35px;
+line-height: 35px;
+font-size: 14px;
+font-family: '微软雅黑';
+}
+.zhaunjifen table .tr_bj th {
+padding-left: 15px;
+}
+.zhaunjifen table tr {
+line-height: 34px;
+height: 34px;
+font-size: 14px;
+font-family: "微软雅黑";
+}
+.left_warp .user_msg dl dt img {
+	margin:18px 10px 18px 15px;
+}
+.left_warp .btn-submit {
+	display:inline-block;
+	padding:0;
+	line-height:34px;
+	border:1px solid #F4955B;
+	color:#fff;
+	font-weight:bold;
+	font-size:16px;
+	width:105px;
+	background-color:#EF7D18;
+	text-align:center;
+	border-radius:3px;
+	outline:none;
+}
+.left_warp .btn-submit:hover {
+	background-color:#ff9900;
+}
+.left_warp .zhaunjifen {
+	text-align:center;
+}
+.left_warp .zhaunjifen dd a img {
+	margin-top:15px;
+}
+
+.jifen_main .right_warp .tit {
+	height:40px;
+	line-height:40px;
+	font-size:16px;
+	border-bottom:1px solid #ccc;
+}
+.right_warp .tit h3 {
+	border-bottom:2px solid #ff9900;
+	width:200px;
+	text-indent:15px;
+}
+.right_warp .tit h3 span {
+	font-size:14px;
+	color:#D6D6D6;
+	margin-left:5px;
+}
+.right_warp .product_top {
+	padding:15px 0 5px 10px;
+}
+.goods_item {
+	margin:0 11px 11px 0;
+	font-size:12px;
+	letter-spacing:normal;
+	word-spacing:normal;
+	vertical-align:top;
+	display:inline-block;
+    width:230px;
+	border:1px solid #f1f1f1;
+	background:#fff;
+	height:315px;
+	border-radius:3px;
+	*float:left;
+}
+.goods_item .goods_img {
+	position: relative;
+	width: 220px;
+	height: 220px;
+	overflow: hidden;
+	margin-left: 5px;
+	margin-top: 5px;
+	border: 1px solid #EBEBEB;
+}
+.goods_item .goods_info {
+	position:relative;
+	width:100%;
+}
+.goods_item .goods_info strong {
+	padding:0 3px;
+	height:30px;
+	line-height:30px;
+	font-weight:normal;
+	overflow:hidden;
+	display:block;
+	font-size:14px;
+	    margin-left: 5px;
+}
+.goods_item .goods_info .goods_price {
+	height:20px;
+	line-height:20px;
+	color:#ff5a00;
+	font-size:12px;
+	margin:0 0 2px;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	width:96px;
+	margin-left: 5px;
+}
+.goods_item .goods_info .goods_price span {
+	font-size:18px;
+}
+.goods_item .goods_info p {
+	padding:0 3px;
+	height:21px;
+	line-height:30px;
+	width:92px;
+	overflow:hidden;
+	white-space:nowrap;
+	margin-left: 5px;
+}
+.goods_item .goods_info .btn_btn {
+	position:absolute;
+	left: 136px;
+    top: 40px;
+	display:inline-block;
+	padding:0;
+	line-height:34px;
+	border:1px solid #0292e5;
+	color:#fff;
+	font-weight:bold;
+	font-size:14px;
+	width:85px;
+	border-radius:3px;
+	text-align:center;
+	outline:none;
+	background-color:#0292e5;
+}
+.goods_item .goods_info .btn_btn:hover {
+	
+}
+.goods_item .goods_info .btn_null
+{
+    	position:absolute;
+	left:105px;
+	top:40px;
+	display:inline-block;
+	padding:0;
+	line-height:34px;
+	border:1px solid #999;
+	color:#fff;
+	font-weight:bold;
+	font-size:14px;
+	width:85px;
+	border-radius:3px;
+	text-align:center;
+	outline:none;
+	background-color:#999;
+    
+    }
+.goods_item .goods_info .btn_blue 
+{
+    position:absolute;
+	left:105px;
+	top:40px;
+	display:inline-block;
+	padding:0;
+	line-height:34px;
+	font-weight:bold;
+	font-size:14px;
+	width:85px;
+	border-radius:3px;
+	text-align:center;
+	outline:none;
+	background-color:#0292e5;
+	color:#fff;
+	border:1px solid #0178bc;
+}
+.suba:hover {
+	color:#0178bc;
+}
+.goods_item:hover {
+	border:1px solid #18a2f2;
+}
+.n-pages {
+	padding:10px 60px 10px 0;
+	font-size:16px;
+	text-align:right;
+}
+.n-pages a {
+	color:#7d7d7e;
+	margin:0 3px;
+}
+.n-pages a.sel {
+	color:#0178bc;
+}
+.jifen_main .left_warp div ul .jf {
+font-size: 16px;
+line-height: 40px;
+display: block;
+text-indent: 4em;
+margin-bottom: 10px;
+background: url(/img/icon/jilu_01.jpg) no-repeat;
+background-position: 17px 0;
+}
+.jifen_main .left_warp div ul .jl {
+font-size: 16px;
+line-height: 40px;
+display: block;
+text-indent: 4em;
+background: url(/img/icon/jilu_02.png) no-repeat;
+background-position: 17px 0;
+}
+a.jilu:hover { color:#0178bc;}
+/*分页样式*/
+.fy{height:30px; line-height:30px; text-align:right; padding-right:20px; margin:20px 0 40px 0; *margin-top:290px;}
+        .fy span,.fy a{display:inline-block; height:28px; line-height:28px; padding:0 10px; margin:0 2px; border:1px solid #cccccc; border-radius:2px; vertical-align:middle;}
+        .fy a:hover{color:#2980b9; border:1px solid #2980b9;}
+        .fy span i,.fy a i{display:inline-block; width:7px; height:12px; line-height:12px; font-size:0; vertical-align:middle; background:url(/img/icon/fy.gif) no-repeat;}
+        .fy span.first i,.fy a.first i{background-position:0 0; margin-right:5px;}
+        .fy a.first:hover i{background-position:0 -13px;}
+        .fy span.last i,.fy a.last i{background-position:-8px 0; margin-left:5px;}
+        .fy a.last:hover i{background-position:-8px -13px;}
+        .fy .active{background-color:#2980b9; color:#fff; border:1px solid #2980b9;}
+        .fy span.first, .fy span.last{color:#999;}

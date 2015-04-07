@@ -150,7 +150,7 @@ public class StockTradeController {
 	public ModelAndView enterDownloadApkPage(HttpServletRequest req,
 			String refereeId) {
 
-		ModelAndView view = new ModelAndView("downloadApk");
+		ModelAndView view = new ModelAndView("welcome");
 		view.addObject("refereeId", refereeId);
 		view.addObject("apkPath", stock_apk_down_url + apk_name);
 		return view;

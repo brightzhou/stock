@@ -39,9 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import sitong.thinker.common.util.codec.CodecException;
-import sitong.thinker.common.util.codec.TokenUtils;
-
 import com.tencent.xinge.Message;
 import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.util.ApiUtils;
@@ -216,15 +213,15 @@ public class TestUtils {
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 		item.put("authType", "2");
-		try {
-			item.put("token", TokenUtils.encryptToken(
-					"02,6338673674855554,20150327155536,100015",
-					"servyou_sitong_s"));
-		} catch (JSONException e1) {
-			e1.printStackTrace();
-		} catch (CodecException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+//			item.put("token", TokenUtils.encryptToken(
+//					"02,6338673674855554,20150327155536,100015",
+//					"servyou_sitong_s"));
+//		} catch (JSONException e1) {
+//			e1.printStackTrace();
+//		} catch (CodecException e1) {
+//			e1.printStackTrace();
+//		}
 		headers.put("user_auth", item.toString());
 		req.setHeaders(headers);
 		try {

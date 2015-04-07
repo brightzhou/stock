@@ -379,15 +379,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("flag", "4");
 				return map;
 			} else {
-				
-				if (!StringUtils.equals("1",
-						acounter.queryDepositPwd(nickname))) {
+
+				if (!StringUtils
+						.equals("1", acounter.queryDepositPwd(nickname))) {
 					msg = "提现密码未设置";
 					map.put("msg", msg);
 					map.put("flag", "5");
 					return map;
 				}
-				
+
 				if (!StringUtils.equals("1",
 						acounter.checkDepositPwd(nickname, depositPwd))) {
 					msg = "提现密码输入错误，请重新输入,或则联系管理员!";
@@ -435,6 +435,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		try {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 			if (StringUtils.equals(Constants.CODE_SUCCESS,
 					acounter.operationIsEnded(nickname))) {
+
+				if (log.isDebugEnabled()) {
+					log.debug("用户" + nickname + "开始结束操盘");
+				}
 
 				// 1、1结束操盘将资金划到HOMES
 				moveCashForEndStock(nickname);
@@ -484,6 +488,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 				result.put("flag", Constants.CODE_SUCCESS);
 				result.put("msg", msg);
+
+				if (log.isDebugEnabled()) {
+					log.debug("用户" + nickname + "结束操盘成功");
+				}
 
 			} else {
 				msg = "您还有未卖出的股票，请平仓后再结束操盘！";
@@ -541,7 +549,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 
 		if (log.isDebugEnabled()) {
-			log.debug("访问homes成功结束！");
+			log.debug("结束操盘操作，访问homes成功结束！");
 
 		}
 	}

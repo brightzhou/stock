@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.json.JSONException;
 
-import sitong.thinker.common.util.codec.CodecException;
-import sitong.thinker.common.util.codec.TokenUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -105,6 +103,7 @@ public class TestPublishChannel {
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 		item.put("authType", "2");
+
 		try {
 			item.put("token", TokenUtils.encryptToken(
 					"02,6338673674855554,20150407193536,100015",
@@ -114,6 +113,7 @@ public class TestPublishChannel {
 		} catch (CodecException e1) {
 			e1.printStackTrace();
 		}
+
 		headers.put("user_auth", item.toString());
 		request.setHeaders(headers);
 
