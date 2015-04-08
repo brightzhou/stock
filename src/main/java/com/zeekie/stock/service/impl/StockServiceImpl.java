@@ -109,6 +109,14 @@ public class StockServiceImpl implements TradeService {
 		}
 
 		try {
+			
+			// 0、判断是否有操盘
+			String has = trade.queryHasOperation(nickname);
+			if (StringUtils.isNotBlank(has)) {
+				currentOperate.put("flag", "4");
+				return currentOperate;
+			}
+			
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
 			if (null != radioDO) {
 				// 判断是否大于设置操盘额度的上线
