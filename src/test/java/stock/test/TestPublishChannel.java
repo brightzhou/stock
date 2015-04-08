@@ -106,7 +106,7 @@ public class TestPublishChannel {
 
 		try {
 			item.put("token", TokenUtils.encryptToken(
-					"02,6338673674855554,20150402193536,100015",
+					"02,6338673674855554,20150407193536,100015",
 					"servyou_sitong_s"));
 		} catch (JSONException e1) {
 			e1.printStackTrace();

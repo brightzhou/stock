@@ -26,6 +26,39 @@ public class ClientPercentDO {
 
 	private Float downLinePercent;
 
+	private String phone;
+
+	private String trueName;
+
+	/**
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * @param phone
+	 *            the phone to set
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	/**
+	 * @return the trueName
+	 */
+	public String getTrueName() {
+		return trueName;
+	}
+
+	/**
+	 * @param trueName
+	 *            the trueName to set
+	 */
+	public void setTrueName(String trueName) {
+		this.trueName = trueName;
+	}
 
 	public ClientPercentDO() {
 		// TODO Auto-generated constructor stub

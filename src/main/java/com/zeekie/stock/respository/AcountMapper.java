@@ -8,6 +8,7 @@ import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BankInfoDO;
+import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
@@ -16,6 +17,7 @@ import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.entity.ManagerDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
@@ -406,6 +408,27 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public String queryDepositPwd(@Param("nickname")String nickname) throws Exception;
+	public String queryDepositPwd(@Param("nickname") String nickname)
+			throws Exception;
+
+	/**
+	 * 获取身份认证信息
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public IdentifyDO queryIdentifyInfo(@Param("userId") String userId)
+			throws Exception;
+
+	/**
+	 * 获取绑定的银行卡信息
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public BindBankDO getBindCreditCard(@Param("userId") String userId)
+			throws Exception;
 
 }

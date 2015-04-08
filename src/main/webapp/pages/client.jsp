@@ -44,6 +44,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="25%" field="nickname" renderer="onHdRender" headerAlign="center" align="center">
                         用户昵称
                     </div>
+                    <div  field="trueName"  headerAlign="center" align="center">
+                        真实姓名
+                    </div>
+                    <div  field="phone"  headerAlign="center" align="center">
+                        手机
+                    </div>
                     <div field="range" width="10%"  headerAlign="center" align="center" >
                         用户等级
                     </div>
