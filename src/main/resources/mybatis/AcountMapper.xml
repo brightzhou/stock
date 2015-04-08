@@ -177,6 +177,8 @@
 		<result column="ASSIGN_CASH" property="assignCash" jdbcType="FLOAT"/>
 		<result column="UP_LINE_PERCENT" property="upLinePercent" jdbcType="FLOAT"/>
 		<result column="DOWN_LINE_PERCENT" property="downLinePercent" jdbcType="FLOAT"/>
+		<result column="phone" property="phone" jdbcType="VARCHAR"/>
+		<result column="truename" property="trueName" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.FundAccountDO" id="resultFundAccount">
@@ -992,7 +994,14 @@
 		       T.FEE_RADIO,
 		       T.ASSIGN_CASH,
 		       T.UP_LINE_PERCENT,
-		       T.DOWN_LINE_PERCENT 
+		       T.DOWN_LINE_PERCENT,
+		       (Select u.Telephone From Stock_User u Where u.Nickname = t.Nickname) Phone,
+		       (Select c.Truename
+		          From Stock_Id_Card c
+		         Where Exists (Select 1
+		                  From Stock_User u
+		                 Where u.Id = c.User_Id
+		                   And u.Nickname = t.Nickname)) Truename
  		  FROM STOCK_FUND_ASSIGN_RADIO T
 		 <if test="nickname!=null and nickname!=''">
 		 	where T.NICKNAME = #{nickname}
