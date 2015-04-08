@@ -21,6 +21,7 @@ import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.entity.ManagerDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
@@ -31,6 +32,7 @@ import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TradeDO;
 import com.zeekie.stock.entity.UserDO;
+import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.entity.form.TradeForm;
@@ -430,5 +432,39 @@ public interface AcountMapper {
 	 */
 	public BindBankDO getBindCreditCard(@Param("userId") String userId)
 			throws Exception;
+
+	/**
+	 * 获取基本信息记录数据
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public long queryClientInfoCount(@Param("nickname") String nickname)
+			throws Exception;
+
+	/**
+	 * 获取基础信息列表
+	 * 
+	 * @param clientPage
+	 * @return List<UserInfoDO>
+	 */
+	public List<UserInfoDO> queryClientInfo(ClientPage clientPage)
+			throws Exception;
+
+	/**
+	 * 获取其他流水数目
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public long queryFundFlowInfoCount(@Param("nickname") String nickname);
+
+	/**
+	 * 获取其他流水列表
+	 * 
+	 * @param nickname
+	 * @return List<OtherFundFlowDO>
+	 */
+	public List<OtherFundFlowDO> queryFundFlowInfo(ClientPage clientPage);
 
 }

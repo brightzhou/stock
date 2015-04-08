@@ -237,6 +237,28 @@
 		<result column="Openbank" property="openBank" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.UserInfoDO" id="resultClientInfo">
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="telephone" property="phone" jdbcType="VARCHAR"/>
+		<result column="truename" property="trueName" jdbcType="VARCHAR"/>
+		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ACTUAL_CASH" property="actualFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="referee" property="upLine" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.OtherFundFlowDO" id="resultFundFlowInfo">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+		<result column="TRUENAME" property="trueName" jdbcType="VARCHAR"/>
+		<result column="OPENBANK" property="openBank" jdbcType="VARCHAR"/>
+		<result column="BANK" property="bank" jdbcType="VARCHAR"/>
+		<result column="CARD_NUMBER" property="cardNo" jdbcType="VARCHAR"/>
+		<result column="FUND" property="fund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="TRANSACTION_TYPE" property="bussniessType" jdbcType="VARCHAR"/>
+		<result column="decription" property="desc" jdbcType="VARCHAR"/>
+		<result column="transaction_time" property="transactionDate" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1207,4 +1229,71 @@
 		  From Stock_Bank_Info t
 		 Where t.User_Id = #{userId}
 	</select>
+	
+	<select id="queryClientInfoCount" parameterType="string" resultType="long">
+		SELECT COUNT(1)
+		  FROM STOCK_USER T
+		 WHERE 1=1 
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+	<select id="queryClientInfo" parameterType="string" resultMap="resultClientInfo">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT NICKNAME,
+		       TELEPHONE,
+		       (SELECT W.BALANCE
+		          FROM STOCK_USER_WALLET W
+		         WHERE W.NICKNAME = T.NICKNAME) BALANCE,
+		       (SELECT M.ACTUAL_CASH
+		          FROM STOCK_USER_OPERATE_MAININFO M
+		         WHERE M.NICKNAME = T.NICKNAME
+		           AND M.IS_CURRENT = '1') ACTUAL_CASH,
+		       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = T.ID) TRUENAME,
+		       (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = T.REFEREE_ID) REFEREE
+		  FROM STOCK_USER T
+		 WHERE 1 = 1
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+		 order by T.REGISTERDATE desc
+		 
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<select id="queryFundFlowInfoCount" parameterType="string" resultType="long">
+		SELECT COUNT(1)
+		  FROM STOCK_ID_CARD T
+		 WHERE 1=1 
+		 <if test="nickname!=null and nickname!=''">
+		 	AND exists (select 1 from stock_user u where u.id = t.user_id and u.NICKNAME = #{nickname})
+		 </if>
+	</select>
+	
+	<select id="queryFundFlowInfo" parameterType="string" resultMap="resultFundFlowInfo">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = T.USER_ID) NICKNAME,
+		       TRUENAME,
+		       (SELECT B.PHONE FROM STOCK_BANK_INFO B WHERE B.USER_ID = T.USER_ID) PHONE,
+		       (SELECT B.BANK FROM STOCK_BANK_INFO B WHERE B.USER_ID = T.USER_ID) BANK,
+		       (SELECT B.OPENBANK FROM STOCK_BANK_INFO B WHERE B.USER_ID = T.USER_ID) OPENBANK,
+		       (SELECT B.CARD_NUMBER
+		          FROM STOCK_BANK_INFO B
+		         WHERE B.USER_ID = T.USER_ID) CARD_NUMBER,
+		       FUND,
+		       TRANSACTION_TYPE,f.decription,to_char(f.transaction_time,'yyyy-mm-dd HH24:MI:ss')transaction_time
+		  FROM STOCK_ID_CARD T, STOCK_FUND_FLOW F
+		 WHERE 1 = 1
+		   AND EXISTS (SELECT 1
+		          FROM STOCK_USER U
+		         WHERE U.ID = T.USER_ID
+		           AND F.NICKNAME = U.NICKNAME)
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+		 ORDER BY f.transaction_time DESC
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
 </mapper>
+

@@ -16,7 +16,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +32,12 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
+import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
@@ -390,6 +391,52 @@ public class StockWebController {
 		} catch (ServiceInvokerException e) {
 			log.error("query ClientPage error happened:", e.getMessage());
 			return new DefaultPage<ClientPercentDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("getClientInfo")
+	public DefaultPage<UserInfoDO> getClientInfo(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+
+			ClientPage clientPage = new ClientPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, nickname);
+
+			return webService.getClientInfo(clientPage);
+		} catch (ServiceInvokerException e) {
+			log.error("getClientInfo error happened:", e.getMessage());
+			return new DefaultPage<UserInfoDO>();
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping("getFundFlowInfo")
+	public DefaultPage<OtherFundFlowDO> getFundFlowInfo(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+
+			ClientPage clientPage = new ClientPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, nickname);
+
+			return webService.getFundFlowInfo(clientPage);
+		} catch (ServiceInvokerException e) {
+			log.error("getFundFlowInfo error happened:", e.getMessage());
+			return new DefaultPage<OtherFundFlowDO>();
 		}
 	}
 

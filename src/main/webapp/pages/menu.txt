@@ -5,6 +5,8 @@
 	{id: "withdraw", text: "提现" , pid: "wallet"},
 	{id: "recharge", text: "账户充值" , pid: "wallet"},
 	{id: "fee", text: "管理费收取日期" , pid: "wallet"},
+	{id: "clientInfo", text: "用户基本信息" , pid: "wallet"},
+	{id: "fundFlow", text: "用户资金流水信息" , pid: "wallet"},
 	
 	{id: "operation", text: "操盘管理"},
 	{id: "eveningUp", text: "结束操盘" , pid: "operation"},
