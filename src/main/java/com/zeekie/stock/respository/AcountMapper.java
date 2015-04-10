@@ -21,6 +21,7 @@ import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.entity.ManagerDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
@@ -40,6 +41,7 @@ import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
+import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
@@ -457,7 +459,8 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public long queryFundFlowInfoCount(@Param("nickname") String nickname);
+	public long queryFundFlowInfoCount(@Param("nickname") String nickname)
+			throws Exception;
 
 	/**
 	 * 获取其他流水列表
@@ -465,6 +468,26 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return List<OtherFundFlowDO>
 	 */
-	public List<OtherFundFlowDO> queryFundFlowInfo(ClientPage clientPage);
+	public List<OtherFundFlowDO> queryFundFlowInfo(ClientPage clientPage)
+			throws Exception;
+
+	/**
+	 * 查询操盘总数
+	 * 
+	 * @param nickname
+	 * @param range
+	 * @return
+	 */
+	public long queryOperationInfoCount(@Param("nickname") String nickname,
+			@Param("range") String range) throws Exception;
+
+	/**
+	 * 查询操盘列表
+	 * 
+	 * @param infoPage
+	 * @return
+	 */
+	public List<OperationInfoDO> queryOperationInfo(OperationInfoPage infoPage)
+			throws Exception;
 
 }

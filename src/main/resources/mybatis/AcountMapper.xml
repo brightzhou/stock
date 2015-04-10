@@ -259,6 +259,18 @@
 		<result column="transaction_time" property="transactionDate" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.OperationInfoDO" id="resultOperationInfo">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="Ticket" property="operationNo" jdbcType="VARCHAR"/>
+		<result column="Trade_Acount" property="operationAccount" jdbcType="VARCHAR"/>
+		<result column="Profit_Loss_Cash" property="profitAndLoss" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Trade_Fund" property="operationFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Guarantee_Cash" property="guranteeFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Add_Management_Fee" property="managementFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Start_Date" property="startDate" jdbcType="VARCHAR"/>
+		<result column="End_Date" property="endDate" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1294,6 +1306,42 @@
 		 </if>
 		 ORDER BY f.transaction_time DESC
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<select id="queryOperationInfoCount" parameterType="string" resultType="long">
+		select count(1) from Stock_User_Operate_Maininfo  t where 1=1
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+		 <if test="range!=null and range!=''">
+		 	AND T.is_current = #{range}
+		 </if>
+	</select>
+	
+	<select id="queryOperationInfo" parameterType="string" resultMap="resultOperationInfo">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		Select t.Nickname,
+		       t.Ticket,
+		       (Select k.Trade_Acount
+		          From Stock_User_Operate_Acount k
+		         Where k.Id = t.Operate_Account_Id) Trade_Acount,
+		       t.Trade_Fund,
+		       t.Profit_Loss_Cash,
+		       t.Guarantee_Cash,
+		       t.Add_Management_Fee,
+		       to_char(t.Start_Date,'yyyy-mm-dd HH24:MI:ss')Start_Date,
+		       to_char(t.End_Date,'yyyy-mm-dd HH24:MI:ss')End_Date
+		  From Stock_User_Operate_Maininfo t
+		  Where 1 = 1
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+		 <if test="range!=null and range!=''">
+		 	AND T.is_current = #{range}
+		 </if>
+		 Order By t.start_date Desc
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+		 
 	</select>
 </mapper>
 

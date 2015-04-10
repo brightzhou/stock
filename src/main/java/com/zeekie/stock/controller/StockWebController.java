@@ -32,6 +32,7 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
@@ -46,6 +47,7 @@ import com.zeekie.stock.util.XmlUtil;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
+import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.TotalFundPage;
@@ -416,7 +418,7 @@ public class StockWebController {
 			return new DefaultPage<UserInfoDO>();
 		}
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("getFundFlowInfo")
 	public DefaultPage<OtherFundFlowDO> getFundFlowInfo(
@@ -561,4 +563,28 @@ public class StockWebController {
 		return "";
 	}
 
+	@ResponseBody
+	@RequestMapping("getOperationInfo")
+	public DefaultPage<OperationInfoDO> getOperationInfo(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname,
+			@RequestParam(value = "range", required = false) String range) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+
+			OperationInfoPage infoPage = new OperationInfoPage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, nickname, range);
+
+			return webService.getOperationInfo(infoPage);
+		} catch (ServiceInvokerException e) {
+			log.error("getOperationInfo error happened:", e.getMessage());
+			return new DefaultPage<OperationInfoDO>();
+		}
+	}
 }

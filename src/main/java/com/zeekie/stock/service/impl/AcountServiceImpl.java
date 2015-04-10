@@ -443,7 +443,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				}
 
 				// 1、1结束操盘将资金划到HOMES
-				moveCashForEndStock(nickname);
+				if(!moveCashForEndStock(nickname)){
+					result.put("msg", "【9001】结束操盘时资金划转失败！");
+					return result;
+				}
 				// 1、2计算我们的钱和用户的钱
 				EndStockCashDO cashDO = acounter.queryUserLastCash(nickname);
 
@@ -503,7 +506,6 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		} catch (Exception e) {
 			log.error("结束操盘失败!!!");
 			log.error(e.getMessage(), e);
-			result.put("msg", "服务异常，结束操盘失败!!!");
 			throw new RuntimeException();
 		}
 		return result;
@@ -517,7 +519,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		return user.visitSuccess(fn_change_assetName);
 	}
 
-	private void moveCashForEndStock(String nickname) throws Exception {
+	private boolean moveCashForEndStock(String nickname) throws Exception {
 		AccountDO client = acounter.getAccount(nickname);
 		String fundAccount = client.getFundAccount();
 		String combineId = client.getCombineId();
@@ -532,13 +534,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		if (StringUtils.isNotBlank(currentCash)
 				|| !StringUtils.equals("0", currentCash)) {
 			log.error("操盘账号：" + client.getTradeAcount()
-					+ " 仍然有有资金在HOMES中，不可使用!!!");
+					+ " 仍然有有资金在HOMES中，下面将资金划转到主单元!!!");
 			StockAssetMove assetMove = new StockAssetMove(fundAccount,
 					combineId, client.getManagerCombineId(), currentCash);
 			assetMove.callHomes(Fn_asset_move);
 			if (assetMove.visitSuccess(Fn_stock_current)) {
-				log.error("操盘账号：" + client.getTradeAcount()
-						+ " 仍然有有资金在HOMES中，结束操盘时已将其划转到主单元!!!");
+				log.error("将操盘账号为：" + client.getTradeAcount()
+						+ " 的资金["+currentCash+"]划转到主单元!!!");
+			}else{
+				return false;
 			}
 		}
 
@@ -554,6 +558,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			log.debug("结束操盘操作，访问homes成功结束！");
 
 		}
+		return true;
 	}
 
 	@Override

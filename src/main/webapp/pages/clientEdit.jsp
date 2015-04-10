@@ -75,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </td>
                     <td >技术服务费比例：</td>
                     <td >    
-                        <input name="managementFeePercent"  class="mini-textbox" required="true" vtype="float" vtype="float;rangeDecimals:3"/>
+                        <input name="managementFeePercent"  class="mini-textbox" required="true"  />
                     </td>
                 </tr>   
                 

@@ -6,7 +6,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>用户信息表</title>
+<title>操盘记录</title>
 	<base href="<%=basePath%>"/>
 	<script src="scripts/base/jquery-1.8.3.min.js" type="text/javascript"></script>
 	<script src="scripts/sui/mini-all-min.js" type="text/javascript"></script>
@@ -26,6 +26,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                <tr>
 	                    <td style="white-space:nowrap;">
 	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>   
+	                        <input name="range" id="range" class="mini-combobox" valueField="id" textField="text" 
+	                            data="[{'id': '1', 'text': '当前操盘'},{'id': '0', 'text': '历史操盘'}]"
+	                             
+	                            />
 	                        <a class="mini-button" onclick="search()">查询</a>
 	                    </td>
 	                </tr>
@@ -34,27 +38,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
-        			url="<%=basePath%>api/stock/web/getClientInfo"  idField="id" multiSelect="false">
+        			url="<%=basePath%>api/stock/web/getOperationInfo"  idField="id" multiSelect="false">
                 <div property="columns">
-                    <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
+                    <div type="indexcolumn" headerAlign="center" width="7%">序号</div>
                     <div width="15%" field="nickname" headerAlign="center" align="center">
                         用户昵称
                     </div>
-                    <div  field="trueName"  headerAlign="center" align="center">
-                        真实姓名
+                    <div  field="operationNo"  headerAlign="center" align="center">
+                        操盘ID
                     </div>
-                    <div  field="phone"  headerAlign="center" align="center">
-                        手机
+                    <div  field="operationAccount"  headerAlign="center" align="center">
+                        操盘账号
                     </div>
-                    <div field="balance" width="10%"  headerAlign="center" align="center" >
-                        账户余额
+                    <div  field="operationFund"  headerAlign="center" align="center">
+                        操盘金额
+                    </div>       
+					<div  field="profitAndLoss"  headerAlign="center" align="center">
+                       盈亏金额
                     </div>
-                    <div  field="actualFund" headerAlign="center" align="center" renderer="onHdRender">
-                        实盘金额
+					<div  field="guranteeFund"  headerAlign="center" align="center">
+                        保证金
                     </div>
-                    <div  field="upLine"  headerAlign="center" align="center">
-                        上线
-                    </div>         
+					<div  field="managementFee"  headerAlign="center" align="center">
+                        管理费
+                    </div>
+                    <div field="startDate"  headerAlign="center" align="center" renderer="onBirthdayRenderer" width="25%">
+                        开始时间
+                    </div>
+                    <div  field="endDate" headerAlign="center" align="center" renderer="onBirthdayRenderer" width="25%">
+                        结束操盘时间
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,27 +76,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     $(function(){
 	    grid = mini.get("datagrid1");
+	    mini.get("range").setValue('1');
         grid.load();
 	});
     
 	
 	function search() {
         var nickname = mini.get("key").getValue();
-        grid.load({ nickname: nickname });
+        var range = mini.get("range").getValue();
+        grid.load({ nickname: nickname,range:range });
     }
 	
     function onKeyEnter(e) {
         search();
     }
     
-    function onHdRender(e){
-       	var re = e.record;
-    	if(re.actualFund==''||re.actualFund==null){
-    		return '<font color=red>未操盘</font>';
-    	}else{
-    		return re.actualFund;
-    	}
+    function onBirthdayRenderer(e) {
+        var value = e.value;
+        if (value) return mini.formatDate(value, 'yyyy-MM-dd HH:mm:ss');
+        return "";
     }
+    
 </script>
 </body>
 </html>

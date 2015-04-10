@@ -24,6 +24,7 @@ import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DayDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
@@ -39,6 +40,7 @@ import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
+import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.TotalFundPage;
@@ -541,5 +543,23 @@ public class WebServiceImpl implements WebService {
 			}
 		}
 
+	}
+
+	@Override
+	public DefaultPage<OperationInfoDO> getOperationInfo(
+			OperationInfoPage infoPage) throws ServiceInvokerException {
+		List<OperationInfoDO> result = new ArrayList<OperationInfoDO>();
+		long total = 0;
+		try {
+			total = account.queryOperationInfoCount(infoPage.getNickname(),
+					infoPage.getRange());
+			if (0 != total) {
+				result = account.queryOperationInfo(infoPage);
+			}
+			return new DefaultPage<OperationInfoDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
 	}
 }

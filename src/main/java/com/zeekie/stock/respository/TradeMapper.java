@@ -10,6 +10,7 @@ import com.zeekie.stock.entity.DayDO;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.EveningEndDO;
 import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.entity.HasOpertAndDebtDO;
 import com.zeekie.stock.entity.HistoryOperationDO;
 import com.zeekie.stock.entity.RuleDO;
 import com.zeekie.stock.entity.TradeDO;
@@ -157,7 +158,7 @@ public interface TradeMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	String queryHasOperation(@Param("nickname") String nickname)
+	HasOpertAndDebtDO queryHasOperation(@Param("nickname") String nickname)
 			throws Exception;
 
 }

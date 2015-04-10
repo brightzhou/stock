@@ -78,7 +78,8 @@ public interface TradeService {
 	 * @param offset
 	 * @return
 	 */
-	public List<HistoryOperationDO> getHistoryOperation(String nickname, String offset);
+	public List<HistoryOperationDO> getHistoryOperation(String nickname,
+			String offset);
 
 	/**
 	 * 获取当前用户是否被强制结束操盘过
@@ -87,5 +88,13 @@ public interface TradeService {
 	 * @return
 	 */
 	public Map<String, String> getEveningFlag(String nickname);
+
+	/**
+	 * 判断用户是否有操盘
+	 * 
+	 * @param nickname
+	 * @return flag=1(存在)/0（不存在）
+	 */
+	public Map<String, String> hasOperation(String nickname);
 
 }

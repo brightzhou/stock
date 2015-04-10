@@ -66,6 +66,11 @@
 		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.HasOpertAndDebtDO" id="resultHasSth">
+		<result column="Debt" property="debt" jdbcType="VARCHAR"/>
+		<result column="operation" property="operation" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 <!-- 	<resultMap type="com.zeekie.stock.entity.WarnLineDO" id="resultSwingUser">
 		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
 	</resultMap> -->
@@ -501,8 +506,18 @@
 		           AND M.WARN_FLAG = '1') 
     </update>
     
-	<select id="queryHasOperation" parameterType="string" resultType="string">
-		select 1 from STOCK_USER_OPERATE_MAININFO m
-		where m.is_current = '1' and m.nickname=#{nickname}
+	<select id="queryHasOperation" parameterType="string" resultMap="resultHasSth">
+		Select (Case
+		         When w.Debt = 0 Then
+		          ''
+		         Else
+		          w.Debt||''
+		       End) Debt,
+		       (Select 1
+		          From Stock_User_Operate_Maininfo m
+		         Where m.Is_Current = '1'
+		           And m.Nickname = w.Nickname) operation
+		  From Stock_User_Wallet w
+		 Where w.Nickname = #{nickname}
 	</select>
 </mapper>

@@ -57,6 +57,12 @@ public class StockTradeController {
 	}
 
 	@ResponseBody
+	@RequestMapping("operation/has")
+	public ApiResponse hasOperation(@RequestParam("nickname") String nickname) {
+		return ApiUtils.good(trade.hasOperation(nickname));
+	}
+
+	@ResponseBody
 	@RequestMapping("operation/info/store")
 	public ApiResponse storeOperationInfo(TradeForm tradeForm) {
 		return ApiUtils.good(trade.storeOperationInfo(tradeForm));

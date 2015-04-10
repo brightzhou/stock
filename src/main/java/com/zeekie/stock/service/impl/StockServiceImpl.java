@@ -22,6 +22,7 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AddGuaranteePageDO;
 import com.zeekie.stock.entity.CurrentOperationDO;
 import com.zeekie.stock.entity.EveningEndDO;
+import com.zeekie.stock.entity.HasOpertAndDebtDO;
 import com.zeekie.stock.entity.HistoryOperationDO;
 import com.zeekie.stock.entity.RuleDO;
 import com.zeekie.stock.entity.StockRadioDO;
@@ -109,14 +110,7 @@ public class StockServiceImpl implements TradeService {
 		}
 
 		try {
-			
-			// 0、判断是否有操盘
-			String has = trade.queryHasOperation(nickname);
-			if (StringUtils.isNotBlank(has)) {
-				currentOperate.put("flag", "4");
-				return currentOperate;
-			}
-			
+
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
 			if (null != radioDO) {
 				// 判断是否大于设置操盘额度的上线
@@ -153,12 +147,6 @@ public class StockServiceImpl implements TradeService {
 		}
 
 		try {
-			// 0、判断是否有操盘
-			String has = trade.queryHasOperation(tradeForm.getNickname());
-			if (StringUtils.isNotBlank(has)) {
-				currentOperateInfo.put("flag", "4");
-				return currentOperateInfo;
-			}
 
 			String nickname = tradeForm.getNickname();
 			String tradeFund = tradeForm.getTradeFund();
@@ -773,6 +761,28 @@ public class StockServiceImpl implements TradeService {
 			map.put("capital",
 					StringUtil.keepThreeDot(eveningEndDO.getCapital()));
 			map.put("stopPercent", eveningEndDO.getStopPercent());
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, String> hasOperation(String nickname) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("homesStatus", Constants.HOMES_STATUS);
+		try {
+			HasOpertAndDebtDO andDebtDO = trade.queryHasOperation(nickname);
+			if (null != andDebtDO) {
+				String flag = StringUtils.isNotBlank(andDebtDO.getOperation()) ? "1"
+						: "0";
+				map.put("flag", flag);
+				map.put("debt",
+						andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
+			} else {
+				map.put("flag", "0");
+				map.put("debt", "");
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
