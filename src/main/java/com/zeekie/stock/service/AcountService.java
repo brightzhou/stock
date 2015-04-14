@@ -25,10 +25,11 @@ public interface AcountService {
 	 * @param bank
 	 * @param number
 	 * @param bankCode
+	 * @param code 
 	 * @return
 	 */
 	public boolean bindCreditCard(String nickname, String telephone,
-			String bank, String number, String bankCode);
+			String bank, String number, String bankCode,String code);
 
 	/**
 	 * 修改/修改提款密码

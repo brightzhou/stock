@@ -212,6 +212,8 @@
 		<result column="CARD_NUMBER" property="cardNumber" jdbcType="VARCHAR"/>
 		<result column="BANK_CODE" property="bankCode" jdbcType="VARCHAR"/>
 		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+		<result column="LIMITE_EVERY_DEAL" property="limiteEveryDeal" jdbcType="VARCHAR"/>
+		<result column="LIMITE_EVERY_DAY" property="limiteEveryDay" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.RedpacketAndBalanceDO" id="resultRefereeRedPacket">
@@ -333,14 +335,14 @@
 			select SEQ_stock_bank_info_id.Nextval from dual
 		</selectKey>
 		INSERT INTO STOCK_BANK_INFO
-		  (ID, USER_ID, BANK, CARD_NUMBER,BANK_CODE,PHONE)
+		  (ID, USER_ID, BANK, CARD_NUMBER,BANK_CODE,PHONE,CODE)
 		VALUES
 		  (#{id},
 		   #{userId},
 		   #{bank},
 		   #{number},
 		   #{bankCode},
-		   #{phone})
+		   #{phone},#{code,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="setDepositPwd">
@@ -1193,7 +1195,9 @@
 	</select>
 	
 	<select id="getBankInfo" parameterType="string" resultMap="resultBankInfo">
-		SELECT T.BANK, T.CARD_NUMBER, T.BANK_CODE, T.PHONE
+		SELECT T.BANK, T.CARD_NUMBER, T.BANK_CODE, T.PHONE,
+		  (SELECT l.LIMITE_EVERY_DEAL FROM STOCK_BANK_LIMITATION l where l.code = t.code)LIMITE_EVERY_DEAL,
+		  (SELECT l.LIMITE_EVERY_DAY FROM STOCK_BANK_LIMITATION l where l.code = t.code)LIMITE_EVERY_DAY
 		  FROM STOCK_BANK_INFO T
 		 WHERE T.USER_ID = #{userId}
 	</select>

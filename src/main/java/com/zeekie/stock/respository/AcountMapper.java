@@ -55,8 +55,8 @@ public interface AcountMapper {
 
 	public void bindCreditCard(@Param("userId") String userId,
 			@Param("phone") String phone, @Param("bank") String bank,
-			@Param("number") String number, @Param("bankCode") String bankCode)
-			throws Exception;
+			@Param("number") String number, @Param("bankCode") String bankCode,
+			@Param("code") String code) throws Exception;
 
 	public void setDepositPwd(@Param("nickname") String nickname,
 			@Param("telephone") String telephone,

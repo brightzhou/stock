@@ -54,11 +54,13 @@ public class AcountController {
 			@RequestParam("telephone") String telephone,
 			@RequestParam("bank") String bank,
 			@RequestParam("number") String number,
-			@RequestParam("bankCode") String bankCode) {
+			@RequestParam("bankCode") String bankCode,
+			@RequestParam(value = "code", required = false) String code) {
 		return operator.bindCreditCard(userId, telephone, bank, number,
-				bankCode) ? Constants.CODE_SUCCESS : Constants.CODE_FAILURE;
+				bankCode, code) ? Constants.CODE_SUCCESS
+				: Constants.CODE_FAILURE;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("creditCard/get")
 	public ApiResponse getBindCreditCard(@RequestParam("userId") String userId) {

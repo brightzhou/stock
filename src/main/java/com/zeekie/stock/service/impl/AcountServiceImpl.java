@@ -229,9 +229,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	@Override
 	public boolean bindCreditCard(String userId, String telephone, String bank,
-			String number, String bankCode) {
+			String number, String bankCode,String code) {
 		try {
-			acounter.bindCreditCard(userId, telephone, bank, number, bankCode);
+			acounter.bindCreditCard(userId, telephone, bank, number, bankCode,code);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;

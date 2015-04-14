@@ -10,6 +10,40 @@ public class BankInfoDO {
 
 	private String phone;
 
+	private String limiteEveryDay;
+
+	private String limiteEveryDeal;
+
+	/**
+	 * @return the limiteEveryDay
+	 */
+	public String getLimiteEveryDay() {
+		return limiteEveryDay;
+	}
+
+	/**
+	 * @param limiteEveryDay
+	 *            the limiteEveryDay to set
+	 */
+	public void setLimiteEveryDay(String limiteEveryDay) {
+		this.limiteEveryDay = limiteEveryDay;
+	}
+
+	/**
+	 * @return the limiteEveryDeal
+	 */
+	public String getLimiteEveryDeal() {
+		return limiteEveryDeal;
+	}
+
+	/**
+	 * @param limiteEveryDeal
+	 *            the limiteEveryDeal to set
+	 */
+	public void setLimiteEveryDeal(String limiteEveryDeal) {
+		this.limiteEveryDeal = limiteEveryDeal;
+	}
+
 	/**
 	 * @return the bank
 	 */
