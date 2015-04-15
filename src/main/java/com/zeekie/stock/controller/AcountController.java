@@ -151,4 +151,14 @@ public class AcountController {
 		}
 		return ApiUtils.good();
 	}
+	
+	@ResponseBody
+	@RequestMapping("bankLimitation/get")
+	public ApiResponse getBankLimitation(@RequestParam("code") String code) {
+		JSONObject jo = operator.getBankLimitation(code);
+		if (null != jo) {
+			return ApiUtils.good(jo);
+		}
+		return ApiUtils.good();
+	}
 }

@@ -51,7 +51,8 @@ public interface StockMapper {
 	public void setBlankWallet(@Param("nickname") String nickname)
 			throws Exception;
 
-	public void updatePwdUserIsNull(@Param("telephone") String telephone,
+	public void updatePwdUserIsNull(@Param("nickname") String nickname,
+			@Param("telephone") String telephone,
 			@Param("newPassward") String newPassward) throws Exception;
 
 	public LoginDO figureLogin(@Param("nickname") String nickname,

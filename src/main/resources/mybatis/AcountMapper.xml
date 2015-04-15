@@ -263,6 +263,7 @@
 	
 	<resultMap type="com.zeekie.stock.entity.OperationInfoDO" id="resultOperationInfo">
 		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="truename" property="truename" jdbcType="VARCHAR"/>
 		<result column="Ticket" property="operationNo" jdbcType="VARCHAR"/>
 		<result column="Trade_Acount" property="operationAccount" jdbcType="VARCHAR"/>
 		<result column="Profit_Loss_Cash" property="profitAndLoss" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
@@ -271,6 +272,12 @@
 		<result column="Add_Management_Fee" property="managementFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Start_Date" property="startDate" jdbcType="VARCHAR"/>
 		<result column="End_Date" property="endDate" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.BankInfoDO" id="resultBankLimitation">
+		<result column="LIMITE_EVERY_DAY" property="limiteEveryDay" jdbcType="VARCHAR"/>
+		<result column="LIMITE_EVERY_DEAL" property="limiteEveryDeal" jdbcType="VARCHAR"/>
+		<result column="BANK" property="bank" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- user indentification -->
@@ -1325,6 +1332,8 @@
 	<select id="queryOperationInfo" parameterType="string" resultMap="resultOperationInfo">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
 		Select t.Nickname,
+			   (select c.truename from stock_id_card c 
+			     where exists (select 1 from stock_user u where u.nickname = t.nickname and c.user_id = u.id)) truename,
 		       t.Ticket,
 		       (Select k.Trade_Acount
 		          From Stock_User_Operate_Acount k
@@ -1345,7 +1354,10 @@
 		 </if>
 		 Order By t.start_date Desc
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
-		 
+	</select>
+	
+	<select id="getBankLimitation" parameterType="string" resultMap="resultBankLimitation">
+		select t.LIMITE_EVERY_DEAL ,t.LIMITE_EVERY_DAY,t.BANK from stock_bank_limitation t where t.code = #{code}
 	</select>
 </mapper>
 

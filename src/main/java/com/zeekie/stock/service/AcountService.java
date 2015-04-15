@@ -25,11 +25,11 @@ public interface AcountService {
 	 * @param bank
 	 * @param number
 	 * @param bankCode
-	 * @param code 
+	 * @param code
 	 * @return
 	 */
 	public boolean bindCreditCard(String nickname, String telephone,
-			String bank, String number, String bankCode,String code);
+			String bank, String number, String bankCode, String code);
 
 	/**
 	 * 修改/修改提款密码
@@ -187,4 +187,12 @@ public interface AcountService {
 	 * @return
 	 */
 	public Map<String, String> getBindCreditCard(String userId);
+
+	/**
+	 * 根据code获取银行限额
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public JSONObject getBankLimitation(String code);
 }

@@ -19,7 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 
 <body class="body_fit" >
-<div class="Place_text"><span>用户信息查询</span></div>
+<div class="Place_text"><span>用户操盘查询</span></div>
         <div style="width:1100px;">
 	        <div class="mini-toolbar" style="border-bottom:0;padding:2px;">
 	            <table style="width:100%;">
@@ -43,6 +43,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div type="indexcolumn" headerAlign="center" width="7%">序号</div>
                     <div width="15%" field="nickname" headerAlign="center" align="center">
                         用户昵称
+                    </div>
+                    <div width="15%" field="truename" headerAlign="center" align="center">
+                        真实姓名
                     </div>
                     <div  field="operationNo"  headerAlign="center" align="center">
                         操盘ID

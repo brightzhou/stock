@@ -131,7 +131,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 				}
 			} else {
 				// forget password
-				trade.updatePwdUserIsNull(telephone, newPassward);
+				trade.updatePwdUserIsNull(nickname, telephone, newPassward);
 			}
 
 		} catch (Exception e) {

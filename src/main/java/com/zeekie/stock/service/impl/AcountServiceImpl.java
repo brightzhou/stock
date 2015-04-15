@@ -229,9 +229,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	@Override
 	public boolean bindCreditCard(String userId, String telephone, String bank,
-			String number, String bankCode,String code) {
+			String number, String bankCode, String code) {
 		try {
-			acounter.bindCreditCard(userId, telephone, bank, number, bankCode,code);
+			acounter.bindCreditCard(userId, telephone, bank, number, bankCode,
+					code);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;
@@ -443,7 +444,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				}
 
 				// 1、1结束操盘将资金划到HOMES
-				if(!moveCashForEndStock(nickname)){
+				if (!moveCashForEndStock(nickname)) {
 					result.put("msg", "【9001】结束操盘时资金划转失败！");
 					return result;
 				}
@@ -539,9 +540,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					combineId, client.getManagerCombineId(), currentCash);
 			assetMove.callHomes(Fn_asset_move);
 			if (assetMove.visitSuccess(Fn_stock_current)) {
-				log.error("将操盘账号为：" + client.getTradeAcount()
-						+ " 的资金["+currentCash+"]划转到主单元!!!");
-			}else{
+				log.error("将操盘账号为：" + client.getTradeAcount() + " 的资金["
+						+ currentCash + "]划转到主单元!!!");
+			} else {
 				return false;
 			}
 		}
@@ -741,5 +742,18 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			log.error(e.getMessage(), e);
 		}
 		return map;
+	}
+
+	@Override
+	public JSONObject getBankLimitation(String code) {
+		try {
+			BankInfoDO bankInfo = acounter.getBankLimitation(code);
+			if (null != bankInfo) {
+				return JSONObject.fromObject(bankInfo);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
 	}
 }

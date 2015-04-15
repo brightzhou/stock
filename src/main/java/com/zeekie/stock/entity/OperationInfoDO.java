@@ -4,6 +4,8 @@ public class OperationInfoDO {
 
 	private String nickname;
 
+	private String truename;
+
 	private String operationNo;
 
 	private String operationAccount;
@@ -25,6 +27,21 @@ public class OperationInfoDO {
 	 */
 	public String getNickname() {
 		return nickname;
+	}
+
+	/**
+	 * @return the truename
+	 */
+	public String getTruename() {
+		return truename;
+	}
+
+	/**
+	 * @param truename
+	 *            the truename to set
+	 */
+	public void setTruename(String truename) {
+		this.truename = truename;
 	}
 
 	/**

@@ -490,4 +490,12 @@ public interface AcountMapper {
 	public List<OperationInfoDO> queryOperationInfo(OperationInfoPage infoPage)
 			throws Exception;
 
+	/**
+	 * 根据code获取银行限额
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public BankInfoDO getBankLimitation(@Param("code") String code);
+
 }

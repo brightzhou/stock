@@ -124,9 +124,9 @@
 		where nickname = #{nickname} <!-- and telephone = #{telephone} --> 
 	</update>
 	
-	<update id="updatePwdUserIsNull">
+	<update id="updatePwdUserIsNull" parameterType="string">
 		Update stock_user set password = #{newPassward} 
-		where telephone = #{telephone} 
+		where telephone = #{telephone} and nickname = #{nickname}
 	</update>
 	
 	<select id="isvalidPassword" resultType="String">
