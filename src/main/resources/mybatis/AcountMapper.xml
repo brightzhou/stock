@@ -200,6 +200,7 @@
 		<result column="ASSET_UNIT_NAME" property="assetName" jdbcType="VARCHAR"/>
 		<result column="MANAGER_ACCOUNT_ID" property="managerAccountId" jdbcType="VARCHAR"/>
 		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="FUND_ACOUNT" property="fundAcount" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.UserDO" id="resultUserInfo">
@@ -280,6 +281,11 @@
 		<result column="BANK" property="bank" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.OperateAccountDO" id="resultOperateAccountByFlag">
+		<result column="nums" property="nums" jdbcType="VARCHAR"/>
+		<result column="Fund_Account" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="Flag" property="flag" jdbcType="VARCHAR"/>
+	</resultMap>
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1180,6 +1186,7 @@
 		       (SELECT A.STATUS
 		          FROM STOCK_MANAGER_ACOUNT A
 		         WHERE S.FUND_ACOUNT = A.FUND_ACCOUNT) STATUS,
+		       S.FUND_ACOUNT,
 		       S.TOTAL,
 		       TRIM(TO_CHAR((S.TOTAL_FUND / S.TOTAL * 100), 'fm9999999990.99')) || '%' PERCENTS
 		  FROM STOCK_TOTAL_FUND S
@@ -1191,6 +1198,12 @@
 		         AND K.ASSET_UNIT_NAME = #{assetName})
          </if>
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<select id="queryOperateAccountByFlag" resultMap="resultOperateAccountByFlag">
+		Select Count(1) nums, t.Fund_Account, t.Flag
+		  From Stock_User_Acount_Assigned t
+		 Group By t.Fund_Account, t.Flag
 	</select>
 	
 	<update id="updateFundAccountStatus" parameterType="string">
@@ -1287,33 +1300,54 @@
 	
 	<select id="queryFundFlowInfoCount" parameterType="string" resultType="long">
 		SELECT COUNT(1)
-		  FROM STOCK_ID_CARD T
+		  FROM STOCK_FUND_FLOW f
 		 WHERE 1=1 
 		 <if test="nickname!=null and nickname!=''">
-		 	AND exists (select 1 from stock_user u where u.id = t.user_id and u.NICKNAME = #{nickname})
+		 	AND f.nickname = #{nickname}
 		 </if>
 	</select>
 	
 	<select id="queryFundFlowInfo" parameterType="string" resultMap="resultFundFlowInfo">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		SELECT (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = T.USER_ID) NICKNAME,
-		       TRUENAME,
-		       (SELECT B.PHONE FROM STOCK_BANK_INFO B WHERE B.USER_ID = T.USER_ID) PHONE,
-		       (SELECT B.BANK FROM STOCK_BANK_INFO B WHERE B.USER_ID = T.USER_ID) BANK,
-		       (SELECT B.OPENBANK FROM STOCK_BANK_INFO B WHERE B.USER_ID = T.USER_ID) OPENBANK,
-		       (SELECT B.CARD_NUMBER
-		          FROM STOCK_BANK_INFO B
-		         WHERE B.USER_ID = T.USER_ID) CARD_NUMBER,
-		       FUND,
-		       TRANSACTION_TYPE,f.decription,to_char(f.transaction_time,'yyyy-mm-dd HH24:MI:ss')transaction_time
-		  FROM STOCK_ID_CARD T, STOCK_FUND_FLOW F
-		 WHERE 1 = 1
-		   AND EXISTS (SELECT 1
-		          FROM STOCK_USER U
-		         WHERE U.ID = T.USER_ID
-		           AND F.NICKNAME = U.NICKNAME)
+			Select f.Nickname,
+			       (Select b.Truename
+			          From Stock_Id_Card b
+			         Where (Exists (Select 1
+			                          From Stock_User u
+			                         Where u.Nickname = f.Nickname
+			                           And u.Id = b.User_Id))) Truename,
+			       (Select b.Phone
+			          From Stock_Bank_Info b
+			         Where (Exists (Select 1
+			                          From Stock_User u
+			                         Where u.Nickname = f.Nickname
+			                           And u.Id = b.User_Id))) Phone,
+			       (Select b.Bank
+			          From Stock_Bank_Info b
+			         Where (Exists (Select 1
+			                          From Stock_User u
+			                         Where u.Nickname = f.Nickname
+			                           And u.Id = b.User_Id))) Bank,
+			       (Select b.Openbank
+			          From Stock_Bank_Info b
+			         Where (Exists (Select 1
+			                          From Stock_User u
+			                         Where u.Nickname = f.Nickname
+			                           And u.Id = b.User_Id))) Openbank,
+			       (Select b.Card_Number
+			          From Stock_Bank_Info b
+			         Where (Exists (Select 1
+			                          From Stock_User u
+			                         Where u.Nickname = f.Nickname
+			                           And u.Id = b.User_Id))) Card_Number,
+			       Fund,
+			       Transaction_Type,
+			       f.Decription,
+			       To_Char(f.Transaction_Time, 'yyyy-mm-dd HH24:MI:ss') Transaction_Time
+			  From Stock_Fund_Flow f
+			 Where 1 = 1
 		 <if test="nickname!=null and nickname!=''">
-		 	AND T.NICKNAME = #{nickname}
+		   AND f.nickname = #{nickname}
 		 </if>
 		 ORDER BY f.transaction_time DESC
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />

@@ -266,6 +266,16 @@ public class StringUtil {
 		return subZeroAndDot(Float.parseFloat(df.format(f)));
 	}
 
+	public static String keepFourDot(Float f) {
+		if (null == f)
+			return "";
+		DecimalFormat df = new DecimalFormat(".####");
+		df.setMaximumFractionDigits(3);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		df.applyPattern(".####");
+		return subZeroAndDot(Float.parseFloat(df.format(f)));
+	}
+	
 	public static String subZeroAndDot(Float s) {
 
 		String result = s + "";

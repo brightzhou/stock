@@ -21,6 +21,7 @@ import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.entity.ManagerDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OperateAccountDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
@@ -497,5 +498,10 @@ public interface AcountMapper {
 	 * @return
 	 */
 	public BankInfoDO getBankLimitation(@Param("code") String code);
+
+	/**
+	 * 获取可用操盘账号个数和暂用个数
+	 */
+	public List<OperateAccountDO> queryOperateAccountByFlag();
 
 }

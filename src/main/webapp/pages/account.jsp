@@ -53,7 +53,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
                     <div  field="leaveFundPercent"  headerAlign="center" align="center" dataType="float">
                         剩余资产比例
-                    </div>         
+                    </div>   
+                   <div  field="leaveCount"  headerAlign="center" align="center" dataType="float">
+                        剩余操盘账号
+                    </div>     
+                    <div  field="useCount"  headerAlign="center" align="center" dataType="float" renderer="handle">
+                        占用个数
+                    </div>     
                     <div field="status"   headerAlign="center" align="center" renderer="onHdRender">
                         状态
                     </div>                   
@@ -108,6 +114,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		return '<font color=green>正常</font>';
     	}else{
     		return '<font color=red>已禁止</font>';
+    	}
+    }
+    
+    function handle(e){
+    	var re = e.record;
+    	if(re.useCount){
+    		return re.useCount;
+    	}else{
+    		return 0;
     	}
     }
     

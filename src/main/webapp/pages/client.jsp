@@ -103,7 +103,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     iframe.contentWindow.SetData(data);
                 },
                 ondestroy: function (action) {
-                    grid.reload();
+                	if('cancel'!=action){
+	                    grid.reload();
+                	}
                 }
             });
         } else {

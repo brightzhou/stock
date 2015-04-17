@@ -542,6 +542,8 @@ public class StockServiceImpl implements TradeService {
 						StringUtil.keepThreeDot(pageDO.getStopCash()));
 				map.put("warnRadio",
 						StringUtil.keepThreeDot(pageDO.getWarnRadio()));
+				map.put("feeRadio",
+						StringUtil.keepFourDot(pageDO.getFeeRadio()));
 				map.put("stopRadio",
 						StringUtil.keepThreeDot(pageDO.getStopRadio()));
 				map.put("fundAccount", pageDO.getFundAccount());

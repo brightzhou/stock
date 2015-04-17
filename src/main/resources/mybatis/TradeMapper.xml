@@ -28,6 +28,7 @@
 		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
 		<result column="MANAGER_COMBINE_ID" property="managerCombineId" jdbcType="VARCHAR"/>
 		<result column="assign_cash" property="assignCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="fee_radio" property="feeRadio" jdbcType="FLOAT"/>
 	</resultMap>
 
 
@@ -280,6 +281,7 @@
 	       (Select r.stop_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) Stop_Radio, 
 		   (Select r.warn_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) Warn_Radio,
 		   (Select r.assign_cash From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) assign_cash,
+		   (Select r.fee_radio From Stock_Fund_Assign_Radio r Where r.nickname = O.NICKNAME) fee_radio,
 		   (SELECT A.FUND_ACCOUNT
 			  FROM STOCK_USER_OPERATE_ACOUNT A
 			 WHERE A.IS_CURRENT = '1'

@@ -9,11 +9,61 @@ public class PercentDO {
 	private String leaveFundPercent;
 
 	private String assetName;
-	
+
 	private String status;
-	
+
 	private String managerAccountId;
-	
+
+	private String leaveCount;
+
+	private String useCount;
+
+	private String fundAcount;
+
+	/**
+	 * @return the fundAcount
+	 */
+	public String getFundAcount() {
+		return fundAcount;
+	}
+
+	/**
+	 * @param fundAcount
+	 *            the fundAcount to set
+	 */
+	public void setFundAcount(String fundAcount) {
+		this.fundAcount = fundAcount;
+	}
+
+	/**
+	 * @return the leaveCount
+	 */
+	public String getLeaveCount() {
+		return leaveCount;
+	}
+
+	/**
+	 * @param leaveCount
+	 *            the leaveCount to set
+	 */
+	public void setLeaveCount(String leaveCount) {
+		this.leaveCount = leaveCount;
+	}
+
+	/**
+	 * @return the useCount
+	 */
+	public String getUseCount() {
+		return useCount;
+	}
+
+	/**
+	 * @param useCount
+	 *            the useCount to set
+	 */
+	public void setUseCount(String useCount) {
+		this.useCount = useCount;
+	}
 
 	/**
 	 * @return the status
@@ -23,7 +73,8 @@ public class PercentDO {
 	}
 
 	/**
-	 * @param status the status to set
+	 * @param status
+	 *            the status to set
 	 */
 	public void setStatus(String status) {
 		this.status = status;
@@ -37,7 +88,8 @@ public class PercentDO {
 	}
 
 	/**
-	 * @param managerAccountId the managerAccountId to set
+	 * @param managerAccountId
+	 *            the managerAccountId to set
 	 */
 	public void setManagerAccountId(String managerAccountId) {
 		this.managerAccountId = managerAccountId;

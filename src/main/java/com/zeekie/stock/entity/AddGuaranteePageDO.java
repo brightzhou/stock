@@ -30,6 +30,23 @@ public class AddGuaranteePageDO {
 
 	private String managerCombineId;
 
+	private Float feeRadio;
+
+	/**
+	 * @return the feeRadio
+	 */
+	public Float getFeeRadio() {
+		return feeRadio;
+	}
+
+	/**
+	 * @param feeRadio
+	 *            the feeRadio to set
+	 */
+	public void setFeeRadio(Float feeRadio) {
+		this.feeRadio = feeRadio;
+	}
+
 	/**
 	 * @return the assignCash
 	 */

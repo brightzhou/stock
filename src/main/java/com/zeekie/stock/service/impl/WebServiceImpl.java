@@ -24,6 +24,7 @@ import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DayDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
+import com.zeekie.stock.entity.OperateAccountDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
@@ -37,6 +38,7 @@ import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
+import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
@@ -284,6 +286,8 @@ public class WebServiceImpl implements WebService {
 			if (null != percentDO) {
 				JSONObject jo = JSONObject.fromObject(percentDO,
 						Constants.jsonConfig);
+				jo.put("managementFeePercent", StringUtil.keepFourDot(percentDO
+						.getManagementFeePercent()));
 				result = jo.toString();
 			}
 		} catch (Exception e) {
@@ -454,6 +458,27 @@ public class WebServiceImpl implements WebService {
 			total = account.queryTotal(page.getAssetName());
 			if (0 != total) {
 				result = account.queryList(page);
+
+				List<OperateAccountDO> operateAccountDO = account
+						.queryOperateAccountByFlag();
+
+				for (PercentDO item : result) {
+					for (OperateAccountDO each : operateAccountDO) {
+						if (StringUtils.equals(each.getFundAccount(),
+								item.getFundAcount())) {
+							String num = each.getNums();
+							if (StringUtils.equals(each.getFlag(), "1")) {
+								item.setUseCount(num);
+							} else {
+								item.setLeaveCount(num);
+							}
+						}
+						if (StringUtils.isNotBlank(item.getUseCount())
+								&& StringUtils.isNotBlank(item.getLeaveCount())) {
+							break;
+						}
+					}
+				}
 			}
 			return new DefaultPage<PercentDO>(total, result);
 		} catch (Exception e) {
