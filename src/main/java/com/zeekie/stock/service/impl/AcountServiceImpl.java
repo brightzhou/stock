@@ -314,6 +314,12 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			} else if (StringUtils.equals("120", type)) {//
 				jo.put("transactionType", desc);
 				jo.put("fund", "+" + fund);
+			} else if (StringUtils.equals("130", type)) {//
+				jo.put("transactionType", desc);
+				jo.put("fund", "+" + fund);
+			} else if (StringUtils.equals("140", type)) {//
+				jo.put("transactionType", desc);
+				jo.put("fund", "+" + fund);
 			}
 		}
 	}

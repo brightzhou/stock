@@ -150,11 +150,19 @@ public class ApiUtils {
 
 	public static boolean send(String fn, String phone, String... args) {
 		String template = Constants.MSG_MODEL.get(fn);
-		String content = "";
 		if (StringUtils.isBlank(template)) {
+			log.error("查询数据库发现功能号：" + fn + "所对应的模板并不存在，请检查");
 			return false;
 		}
-		content = MessageFormat.format(template, args);
+
+		if (StringUtils.isBlank(phone)) {
+			log.error("调用功能号【" + fn + "】发现电话号码为空，参数内容：" + args);
+			return false;
+		}
+
+		String content = StringUtils.equals(Constants.MODEL_CONTENT, template) ? Constants.MODEL_CONTENT
+				+ args[0]
+				: MessageFormat.format(template, args);
 
 		if (log.isDebugEnabled()) {
 			log.debug("推送的消息是：" + content);

@@ -1,6 +1,7 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -565,6 +566,12 @@ public class WebServiceImpl implements WebService {
 			} else if (StringUtils.equals("120", type)) {//
 				flowDO.setBussniessType(desc);
 				flowDO.setFundStr("+" + fund);
+			} else if (StringUtils.equals("130", type)) {
+				flowDO.setBussniessType(desc);
+				flowDO.setFundStr("+" + fund);
+			} else if (StringUtils.equals("140", type)){
+				flowDO.setBussniessType(desc);
+				flowDO.setFundStr("+" + fund);
 			}
 		}
 
@@ -586,5 +593,70 @@ public class WebServiceImpl implements WebService {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);
 		}
+	}
+
+	@Override
+	public String sendRedPacket(String data) throws ServiceInvokerException {
+		JSONObject jo = JSONObject.fromObject(data);
+		String nickname = jo.getString("nickname");
+		String telephone = jo.getString("telephone");
+		String fund = jo.getString("fund");
+		String message = jo.getString("message");
+		try {
+			if (StringUtils.isNotBlank(fund)) {
+				account.moveProfitToUserWallet(nickname, fund);
+
+				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, fund,
+						"平台财务优化");
+			}
+
+			if (StringUtils.isNotBlank(message)) {
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("nickname", nickname);
+				map.put("message", message);
+				map.put("telephone", telephone);
+				handler.handleOtherJob(Constants.TYPE_JOB_REDPACKET_NOTICE, map);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e.getMessage());
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
+	@Override
+	public String sendMsgToAll(String data) throws ServiceInvokerException {
+		JSONObject jo = JSONObject.fromObject(data);
+		String message = jo.getString("message");
+		try {
+			if (StringUtils.isNotBlank(message)) {
+				if (StringUtils.isNotBlank(message)) {
+					handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE,
+							message);
+				}
+			}
+
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e.getMessage());
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
+	@Override
+	public boolean undoWithDrawal(String id, String nickname, String cash)
+			throws ServiceInvokerException {
+		try {
+			account.deleteWithdral(id);
+
+			account.updateWithdrawCash(nickname, cash);
+
+			trade.recordFundflow(nickname, Constants.SEND_UNDO_WITHDRAWL, cash,
+					"用户撤销提现");
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return false;
+		}
+		return true;
 	}
 }

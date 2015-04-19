@@ -138,6 +138,8 @@ public class StockServiceImpl implements TradeService {
 	public Map<String, String> storeOperationInfo(TradeForm tradeForm)
 			throws RuntimeException {
 
+		long startTime = System.currentTimeMillis();
+
 		Map<String, String> currentOperateInfo = new HashMap<String, String>();
 		currentOperateInfo.put("flag", "0");
 
@@ -217,6 +219,12 @@ public class StockServiceImpl implements TradeService {
 			currentOperateInfo.put("profitAndLossRadio", "0");// 盈亏比例
 			currentOperateInfo.put("progressBar", "1");// 进度条
 			currentOperateInfo.put("flag", "1");
+
+			if (log.isDebugEnabled()) {
+				log.debug("执行保存操盘耗时："
+						+ ((System.currentTimeMillis() - startTime) / 1000)
+						+ "s");
+			}
 			return currentOperateInfo;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -562,6 +570,8 @@ public class StockServiceImpl implements TradeService {
 	@Override
 	public Map<String, String> addCuarantee(AddCuaranteeForm transferData)
 			throws RuntimeException {
+
+		long startTime = System.currentTimeMillis();
 		Map<String, String> map = new HashMap<String, String>();
 		String flag = "0";
 		try {
@@ -716,6 +726,11 @@ public class StockServiceImpl implements TradeService {
 						Constants.TYPE_JOB_DEDUCT_ADDGURANTEE, param);
 			}
 
+			if (log.isDebugEnabled()) {
+				log.debug("执行增加保证金操作耗时："
+						+ ((System.currentTimeMillis() - startTime) / 1000)
+						+ "s");
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			map.put("flag", Constants.CODE_FAILURE);

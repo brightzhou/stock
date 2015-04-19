@@ -118,7 +118,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function onOpRender(e){
     	var re = e.record;
     	if(re.status=='0'){
-    		return '<span class="link_2"><a  onclick="withdrawl(\''+re.id+'\',\''+re.nickname+'\',\''+re.cash+'\')">提现</a></span>';
+    		return '<span class="link_2"><a  onclick="withdrawl(\''+re.id+'\',\''+re.nickname+'\',\''+re.cash+'\')">提现</a></span>'
+    		+'&nbsp;&nbsp;<span class="link_2"><a  onclick="undo(\''+re.id+'\',\''+re.nickname+'\',\''+re.cash+'\')">撤销</a></span>';
     	}else{
     		return '已提现';
     	}
@@ -130,11 +131,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                if(action == "ok"){
 	                	 $.ajax({
 		     	                url: "<%=basePath%>api/stock/web/withdrawlToUser",
-		     	                data: {id:id,nickname : nickname,cash:cash},
+		     	                data: {id:id,nickname:nickname,cash:cash},
 		     	                type: "post",
 		     	                success: function (msg) {
 		     	                    if(msg == "1"){
 		     	                    	 mini.alert("提现成功！","",function(action){
+	     			                		if (action == "ok") {
+	     			                			grid.reload();
+	     			                		}
+     			                		 });
+		     	                    }
+		     	                },
+		     	                error: function(msg){
+		     	                	mini.alert("服务器异常，提现失败！");
+		     	                	return false;
+		     	                }			
+		     				});
+	                } 
+	            }
+	  ); 
+    }
+    
+    function undo(id,nickname,cash){
+    	mini.confirm("确定要撤销吗", "确定？",
+	            function (action) {            
+	                if(action == "ok"){
+	                	 $.ajax({
+		     	                url: "<%=basePath%>api/stock/web/undoWithDrawal",
+		     	                data: {id:id, nickname:nickname,cash:cash},
+		     	                type: "post",
+		     	                success: function (msg) {
+		     	                    if(msg == "1"){
+		     	                    	 mini.alert("撤销成功！","",function(action){
 	     			                		if (action == "ok") {
 	     			                			grid.reload();
 	     			                		}

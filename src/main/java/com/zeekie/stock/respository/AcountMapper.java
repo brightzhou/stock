@@ -504,4 +504,27 @@ public interface AcountMapper {
 	 */
 	public List<OperateAccountDO> queryOperateAccountByFlag();
 
+	/**
+	 * 查询所有人电话号码
+	 * 
+	 * @return
+	 */
+	public List<String> queryAllUserPhone();
+
+	/**
+	 * 删除提现表的记录
+	 * 
+	 * @param id
+	 */
+	public void deleteWithdral(@Param("id") String id);
+
+	/**
+	 * 撤销提现
+	 * 
+	 * @param nickname
+	 * @param cash
+	 */
+	public void updateWithdrawCash(@Param("nickname") String nickname,
+			@Param("cash") String cash) throws Exception;
+
 }

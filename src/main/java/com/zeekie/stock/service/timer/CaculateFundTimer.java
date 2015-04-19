@@ -94,10 +94,12 @@ public class CaculateFundTimer {
 
 		Float money = StringUtil.keepTwoDecimalFloat(Float
 				.parseFloat(currentCash));
+		Float market = StringUtil.keepTwoDecimalFloat(Float
+				.parseFloat(marketValue));
 
-		if (money == 0f) {
+		if (money == 0f && market==0f) {
 			if (log.isDebugEnabled()) {
-				log.debug("nickname:" + nickname + "当前资产为0，不更新盈亏金额");
+				log.debug("nickname:" + nickname + "当前资产和股票资产为0，不更新盈亏金额");
 			}
 			return;
 		}

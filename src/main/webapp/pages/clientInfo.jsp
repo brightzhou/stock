@@ -26,7 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                <tr>
 	                    <td style="white-space:nowrap;">
 	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>   
-	                        <a class="mini-button" onclick="search()">查询</a>
+	                        <a class="mini-button" onclick="search()">查询</a>&nbsp;&nbsp;<a class="mini-button" onclick="sendMsg()">短信群发</a>
 	                    </td>
 	                </tr>
 	            </table>           
@@ -54,7 +54,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
                     <div  field="upLine"  headerAlign="center" align="center">
                         上线
-                    </div>         
+                    </div>
+                    <div  field="operation"  headerAlign="center" align="center" renderer="operation">
+                        操作
+                    </div>               
                 </div>
             </div>
         </div>
@@ -83,6 +86,59 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	}else{
     		return re.actualFund;
     	}
+    }
+    
+    function operation(e){
+      	var re = e.record;
+    	return '<span class="link_2"><a  onclick="sendRedPacket(\''+re.nickname+'\',\''+re.phone+'\')">发红包</a></span>&nbsp;&nbsp;';
+    }
+    
+    function sendRedPacket(nickname,phone){
+    	var url = "<%=basePath%>pages/sendRedPacket.jsp";
+		mini.open({
+			url : url,
+			title : "发红包",
+			width : 500,
+			height : 350,
+			onload : function() {
+				var iframe = this.getIFrameEl();
+				var data = { telephone: phone,
+						      text: nickname};
+				iframe.contentWindow.SetData(data); 
+			},
+			currentWindow:true,
+			ondestroy : function(action) {
+				if('cancel'!=action){
+					grid.load({
+				          "nickname": nickname,
+				    });
+				}else{
+					
+				}
+			}
+		});
+    }
+    
+    function sendMsg(){
+    	var url = "<%=basePath%>pages/sendMsgPage.jsp";
+		mini.open({
+			url : url,
+			title : "发红包",
+			width : 500,
+			height : 350,
+			onload : function() {
+				var iframe = this.getIFrameEl();
+				var data = { telephone: phone,
+						      text: nickname};
+				iframe.contentWindow.SetData(data); 
+			},
+			currentWindow:true,
+			ondestroy : function(action) {
+				/* if('cancel'!=action){
+					grid.load();
+				} */
+			}
+		});
     }
 </script>
 </body>

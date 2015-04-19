@@ -183,6 +183,21 @@ public class StockWebController {
 	}
 
 	@ResponseBody
+	@RequestMapping("undoWithDrawal")
+	public String undoWithDrawal(
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "nickname", required = true) String nickname,
+			@RequestParam(value = "cash", required = true) String cash) {
+		try {
+			return webService.undoWithDrawal(id, nickname, cash) ? Constants.CODE_SUCCESS
+					: Constants.CODE_FAILURE;
+		} catch (ServiceInvokerException e) {
+			log.error("undoWithDrawal error happened:", e.getMessage());
+		}
+		return Constants.CODE_FAILURE;
+	}
+
+	@ResponseBody
 	@RequestMapping("manager/moveCashToReferee/get")
 	public DefaultPage<MovecashToRefereeDO> queryMoveCashToReferee(
 			HttpServletRequest request,
@@ -479,13 +494,25 @@ public class StockWebController {
 	}
 
 	@ResponseBody
-	@RequestMapping("saveFundAccount")
-	public String saveFundAccount(
+	@RequestMapping("manager/sendRedPacket")
+	public String sendRedPacket(
 			@RequestParam(value = "data", required = false) String data) {
 		try {
-			return webService.saveFundAccount(data);
+			return webService.sendRedPacket(data);
 		} catch (ServiceInvokerException e) {
-			log.error("saveFundAccount error happened:", e.getMessage());
+			log.error("sendRedPacket error happened:", e.getMessage());
+			return "0";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("manager/sendMsgToAll")
+	public String sendMsgToAll(
+			@RequestParam(value = "data", required = false) String data) {
+		try {
+			return webService.sendMsgToAll(data);
+		} catch (ServiceInvokerException e) {
+			log.error("sendRedPacket error happened:", e.getMessage());
 			return "0";
 		}
 	}
@@ -585,6 +612,18 @@ public class StockWebController {
 		} catch (ServiceInvokerException e) {
 			log.error("getOperationInfo error happened:", e.getMessage());
 			return new DefaultPage<OperationInfoDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("saveFundAccount")
+	public String saveFundAccount(
+			@RequestParam(value = "data", required = false) String data) {
+		try {
+			return webService.saveFundAccount(data);
+		} catch (ServiceInvokerException e) {
+			log.error("saveFundAccount error happened:", e.getMessage());
+			return "0";
 		}
 	}
 }

@@ -131,6 +131,10 @@ public class SyncHandler {
 				ApiUtils.send(Constants.MODEL_TO_BE_REFEREE_FN, telephone,
 						referee, nickname, nickname, packet);
 			}
+		} else if (StringUtils
+				.equals(Constants.TYPE_JOB_REDPACKET_NOTICE, type)) {
+			ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN,
+					param.get("telephone"), param.get("message"));
 		}
 	}
 
@@ -198,6 +202,12 @@ public class SyncHandler {
 			}
 			msg.setUserId("all");
 			XingePush.pushTags(msg);
+		} else if (StringUtils.equals(Constants.TYPE_JOB_SENDMSG_NOTICE, type)) {
+			List<String> phones = account.queryAllUserPhone();
+			for (String phone : phones) {
+				ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN, phone,
+						param);
+			}
 		}
 	}
 

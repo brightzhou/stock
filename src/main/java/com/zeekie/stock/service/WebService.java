@@ -224,4 +224,31 @@ public interface WebService {
 	public DefaultPage<OperationInfoDO> getOperationInfo(
 			OperationInfoPage infoPage) throws ServiceInvokerException;
 
+	/**
+	 * 给用户派发红包
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public String sendRedPacket(String data) throws ServiceInvokerException;
+
+	/**
+	 * 群发短信
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public String sendMsgToAll(String data) throws ServiceInvokerException;
+
+	/**
+	 * 撤销提现
+	 * 
+	 * @param id
+	 * @param nickname
+	 * @param cash
+	 * @return
+	 */
+	public boolean undoWithDrawal(String id, String nickname, String cash)
+			throws ServiceInvokerException;
+
 }

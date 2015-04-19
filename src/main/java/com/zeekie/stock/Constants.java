@@ -99,6 +99,10 @@ public class Constants {
 
 	public static final String REDPACKET_TO_CLIENT = "用户注册，获取平台红包";// 80
 
+	public static final String SEND_RED_PACKET = "130";// 管理端主动发红包
+
+	public static final String SEND_UNDO_WITHDRAWL = "140";// 用户撤销提现
+
 	public static final String REDPACKET_TO_CLIENT_REFEREE = "用户【nickname】注册，您获取推广红包";// 给推荐人派发红包
 
 	public static final String REDPACKET_TO_CLIENT_REFEREE_TO_USER = "用户【nickname】注册，您派发红包";// 推荐人给注册的人指定的红包
@@ -127,7 +131,7 @@ public class Constants {
 	// 当实际资产小于警戒线以下的时候发送短信给用户1316
 	public static final String MODEL_REACH_WARNLINE_REMIND_FN = "1316";
 	/**
-	 * 未成为推荐人 FN=1317
+	 * 成为推荐人 FN=1317
 	 */
 	public static final String MODEL_TO_BE_REFEREE_FN = "1317";
 
@@ -135,6 +139,12 @@ public class Constants {
 	 * 未成为推荐人 FN=1318
 	 */
 	public static final String MODEL_NOT_TO_BE_REFEREE_FN = "1318";
+	/**
+	 * 发红包给用户 FN=1319
+	 */
+	public static final String MODEL_REDPACKET_TO_USER_FN = "1319";
+
+	public static final String MODEL_CONTENT = "【哈哈宝】";
 
 	public static final String EVENING_UP = "1";
 
@@ -155,6 +165,10 @@ public class Constants {
 	public static String TYPE_JOB_CONTROL_APP = "closeOrOpenApp";
 
 	public static String TYPE_JOB_PAY_NOTICE = "payNotice";
+
+	public static String TYPE_JOB_REDPACKET_NOTICE = "redpacketNotice";
+
+	public static String TYPE_JOB_SENDMSG_NOTICE = "sendMessageToAll";
 
 	public static Map<String, String> MSG_MODEL = null;
 

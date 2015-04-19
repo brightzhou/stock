@@ -286,6 +286,7 @@
 		<result column="Fund_Account" property="fundAccount" jdbcType="VARCHAR"/>
 		<result column="Flag" property="flag" jdbcType="VARCHAR"/>
 	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -522,7 +523,7 @@
 		  From (Select Row_Number() Over(Order By t.Transaction_Time desc) As Num, t.*
 		          From Stock_Fund_Flow t
 		         Where t.Nickname = #{nickname}
-		           And t.Transaction_Type != '70') s
+		           And t.Transaction_Type not in ('70','140')) s
 		 Where Num &gt; = #{offset} + 1
 		   And Num &lt; = #{offset} + 20
 		  <!-- Order By s.Transaction_Time Desc
@@ -640,8 +641,18 @@
     	update STOCK_USER_WITHDRAWL_CASH set STATUS ='1' where id = #{id}
     </update>
     
+    <delete id="deleteWithdral" parameterType="string">
+    	delete from STOCK_USER_WITHDRAWL_CASH where id = #{id}
+    </delete>
+    
     <update id="deductWithdrawCahs" parameterType="string">
     	update Stock_User_Wallet set freeze_cash = freeze_cash - to_number(#{cash})
+    	where nickname = #{nickname}
+    </update>
+    
+    <update id="updateWithdrawCash" parameterType="string">
+    	update Stock_User_Wallet set freeze_cash = freeze_cash - to_number(#{cash}),
+    	balance = balance + to_number(#{cash})
     	where nickname = #{nickname}
     </update>
     
@@ -1392,6 +1403,10 @@
 	
 	<select id="getBankLimitation" parameterType="string" resultMap="resultBankLimitation">
 		select t.LIMITE_EVERY_DEAL ,t.LIMITE_EVERY_DAY,t.BANK from stock_bank_limitation t where t.code = #{code}
+	</select>
+	
+	<select id="queryAllUserPhone" resultType="string">
+		select u.telephone from stock_user u where u.telephone IS NOT NULL
 	</select>
 </mapper>
 
