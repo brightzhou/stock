@@ -195,4 +195,12 @@ public interface AcountService {
 	 * @return
 	 */
 	public JSONObject getBankLimitation(String code);
+
+	/**
+	 * 获取用户是否操盘、是否有盈亏，homes是否关闭
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public JSONObject getBasicInfo(String userId);
 }

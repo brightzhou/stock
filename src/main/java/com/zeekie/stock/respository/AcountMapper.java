@@ -8,6 +8,7 @@ import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BankInfoDO;
+import com.zeekie.stock.entity.BasicInfoDO;
 import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.ClientPercentDO;
@@ -526,5 +527,15 @@ public interface AcountMapper {
 	 */
 	public void updateWithdrawCash(@Param("nickname") String nickname,
 			@Param("cash") String cash) throws Exception;
+
+	/**
+	 * 获取用户基础信息{是否有欠款、是否有操盘、app状态是否正常}
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public BasicInfoDO getBasicInfo(@Param("userId") String userId)
+			throws Exception;
 
 }

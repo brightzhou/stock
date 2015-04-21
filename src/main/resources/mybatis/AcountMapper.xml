@@ -287,6 +287,11 @@
 		<result column="Flag" property="flag" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.BasicInfoDO" id="resultBasicInfo">
+		<result column="Hasdebt" property="hasDebt" jdbcType="VARCHAR"/>
+		<result column="Hasoperation" property="hasOperation" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1407,6 +1412,26 @@
 	
 	<select id="queryAllUserPhone" resultType="string">
 		select u.telephone from stock_user u where u.telephone IS NOT NULL
+	</select>
+	
+	<select id="getBasicInfo" parameterType="string" resultMap="resultBasicInfo">
+		Select Decode((Select 1
+		                From Stock_User_Operate_Maininfo m
+		               Where m.Nickname = u.Nickname
+		                 And m.Is_Current = '1'),
+		              1,
+		              '1',
+		              '0') Hasoperation,
+		       Decode((Select w.Debt
+		                From Stock_User_Wallet w
+		               Where w.Nickname = u.Nickname),
+		              0,
+		              '',
+		              (Select w.Debt
+		                 From Stock_User_Wallet w
+		                Where w.Nickname = u.Nickname)) Hasdebt
+		  From Stock_User u
+		  where u.id = #{userId}
 	</select>
 </mapper>
 

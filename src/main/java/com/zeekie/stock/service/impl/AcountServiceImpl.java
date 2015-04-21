@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BankInfoDO;
+import com.zeekie.stock.entity.BasicInfoDO;
 import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
@@ -757,6 +758,18 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			if (null != bankInfo) {
 				return JSONObject.fromObject(bankInfo);
 			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	@Override
+	public JSONObject getBasicInfo(String userId) {
+		try {
+			BasicInfoDO basicinfoDO = acounter.getBasicInfo(userId);
+			basicinfoDO.setAppStatus(Constants.HOMES_STATUS);
+			return JSONObject.fromObject(basicinfoDO);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
