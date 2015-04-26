@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.apache.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -804,5 +805,19 @@ public class StockServiceImpl implements TradeService {
 			log.error(e.getMessage(), e);
 		}
 		return map;
+	}
+
+	@Override
+	public String setPayInfo(String userId, String nickname, String merchantId,
+			String cash, String status, String respMsg, String merchantDate,
+			String refNo) {
+		try {
+			trade.setPayInfo(userId, nickname, merchantId, cash, status,
+					"【APP】:" + respMsg, merchantDate,refNo);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return Constants.CODE_FAILURE;
+		}
+		return Constants.CODE_SUCCESS;
 	}
 }

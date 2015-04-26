@@ -365,14 +365,17 @@ public class StockWebController {
 				if (log.isDebugEnabled()) {
 					log.debug("提取需要的参数：" + parasResult);
 				}
-
-				String respMsg = parasResult.get("respMsg");
-				String rechargeResult = StringUtils.equals(respMsg, "交易成功") ? Constants.CODE_SUCCESS
+				String respCode = parasResult.get("respCode");
+				String rechargeResult = StringUtils.equals(
+						Constants.PAY_SUCCESS, respCode) ? Constants.CODE_SUCCESS
 						: Constants.CODE_FAILURE;
 				parasResult.put("rechargeResult", rechargeResult);
-				parasResult.put("responseResult", respMsg);
+				parasResult.put("responseResult", parasResult.get("respMsg"));
+				
+				webService.updateReceiptStatus(parasResult);
 				handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
 						parasResult);
+
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

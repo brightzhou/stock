@@ -255,18 +255,34 @@
 	<bean id="caculateFundTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
 		<property name="jobDetail" ref="caculateFundJob" />
 		<property name="startDelay" value="10000" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
-		<property name="repeatInterval" value="300000" /><!-- 每10秒调度一次 -->
+		<property name="repeatInterval" value="10000" /><!-- 每10秒调度一次 -->
 	</bean>
 	<!-- 定时任务B 结束 -->
+
+
+	<!-- 定时任务C=获取支付结果-->
+	<bean id="receiptJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.pay.ReceiptsTimer" />
+		</property>
+		<property name="targetMethod" value="callApi" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+
+	<bean id="receiptJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="receiptJob" />
+		<property name="startDelay" value="20000" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
+		<property name="repeatInterval" value="10000" /><!-- 每10秒调度一次 -->
+	</bean>
 
 	<!--开始调度 -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<!-- 
-			 	<ref bean="deductManageFeeTrigger" />
+			<!--  	<ref bean="deductManageFeeTrigger" />
 				<ref bean="caculateFundTrigger"/>
-				 -->
+				<ref bean="receiptJobTrigger"/> -->
 			</list>
 		</property>
 	</bean>

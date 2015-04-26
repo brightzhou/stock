@@ -29,22 +29,38 @@
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select SEQ_USER.Nextval from dual
 		</selectKey>
-		Insert Into stock_user
+<!-- 		Insert Into stock_user
 		(Id,
 		nickname,
 		password,
-		<!-- telephone, -->
-		<!-- figure_pwd, -->
+		telephone,
+		figure_pwd,
 		REFEREE_ID,
 		registerDate)
 		Values
 		(#{id},
 		#{nickname},
 		#{password},
-		<!-- #{telephone}, -->
-		<!-- #{figurePwd,jdbcType=VARCHAR}, -->
+		#{telephone},
+		#{figurePwd,jdbcType=VARCHAR},
 		#{refereeId,jdbcType=VARCHAR},
-		Sysdate)
+		Sysdate) -->
+		
+		MERGE INTO STOCK_USER D 
+		USING (SELECT #{id} ID,
+		              #{nickname} NICKNAME,
+		              #{password} PASSWORD,
+		              #{refereeId,jdbcType=VARCHAR} REFEREE_ID,
+		              SYSDATE REGISTERDATE
+		         FROM DUAL) T
+		ON (D.NICKNAME = T.NICKNAME)
+		WHEN MATCHED THEN
+		  UPDATE SET D.REGISTERDATE = T.REGISTERDATE
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (D.ID, D.NICKNAME, D.PASSWORD, D.REFEREE_ID, D.REGISTERDATE)
+		  VALUES
+		    (T.ID, T.NICKNAME, T.PASSWORD, T.REFEREE_ID, T.REGISTERDATE)
 	</insert>
 
 	<!-- user login -->
@@ -181,8 +197,22 @@
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select seq_stock_user_wallet_id.Nextval from dual
 		</selectKey>
-		Insert Into Stock_User_Wallet(Id,Nickname,Balance)
-		Values(#{id},#{nickname},0)
+<!-- 		Insert Into Stock_User_Wallet(Id,Nickname,Balance)
+		Values(#{id},#{nickname},0) -->
+		MERGE INTO Stock_User_Wallet D 
+		USING (SELECT #{id} ID,
+		              #{nickname} NICKNAME,
+		              0 Balance
+		         FROM DUAL) T
+		ON (D.NICKNAME = T.NICKNAME)
+		WHEN MATCHED THEN
+		  UPDATE SET D.Balance = T.Balance
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (D.ID, D.NICKNAME, D.Balance)
+		  VALUES
+		    (T.ID, T.NICKNAME, T.Balance)
+		
 	</insert>
 	
 	<select id="queryLoginStatus" parameterType="string" resultType="string">

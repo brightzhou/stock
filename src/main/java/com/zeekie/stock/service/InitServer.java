@@ -1,7 +1,13 @@
 package com.zeekie.stock.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import net.sf.json.JsonConfig;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import com.hundsun.t2sdk.impl.client.T2Services;
 import com.hundsun.t2sdk.interfaces.T2SDKException;
@@ -73,20 +80,32 @@ public class InitServer implements InitializingBean {
 	@Value("${startHomes}")
 	private String startHomes;
 
+
 	@Autowired
 	private Mapper<String, String> dao;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+
 		initContants();
-		registerJsonConfig();
+		if (log.isDebugEnabled()) {
+			log.debug("初始化全局变量成功！！！");
+		}
+
 		Constants.sensitiveWordMap = sensitive.initKeyWord();
 		if (log.isDebugEnabled()) {
 			log.debug("初始化敏感词汇成功！！！");
 		}
+		// 初始化短信模板
 		initTemplate();
-		if (StringUtils.equals(Constants.CODE_SUCCESS, startHomes))
+
+		// 启动HOMES
+		if (StringUtils.equals(Constants.CODE_SUCCESS, startHomes)) {
 			startHomes();
+			if (log.isDebugEnabled()) {
+				log.debug("启动HOMES成功！！！");
+			}
+		}
 	}
 
 	private void initTemplate() {
@@ -96,7 +115,7 @@ public class InitServer implements InitializingBean {
 		}
 	}
 
-	private void initContants() {
+	private void initContants() throws IOException {
 		homes_server_name = StringUtils.trim(servername);
 		Constants.HOME_MANAGER_NO = StringUtils.trim(operatorNo);
 		Constants.HOME_MANAGER_PWD = StringUtils.trim(password);
@@ -111,6 +130,10 @@ public class InitServer implements InitializingBean {
 		Constants.accessId = StringUtils.trim(accessId);
 		Constants.secretkey = StringUtils.trim(secretkey);
 		Constants.environment = Integer.parseInt(StringUtils.trim(environment));
+
+		registerJsonConfig();
+		// 获取交易信息
+		initTransactionXml();
 	}
 
 	private void registerJsonConfig() {
@@ -129,6 +152,13 @@ public class InitServer implements InitializingBean {
 		} catch (T2SDKException e) {
 			log.error(e.getMessage(), e);
 		}
+	}
+
+	private void initTransactionXml() throws IOException {
+		File file = ResourceUtils.getFile("classpath:transactionInfo.xml");
+		String xml = FileUtils.readFileToString(file);
+		// 内容
+		Constants.XML = new String(xml.getBytes("utf-8"));
 	}
 
 }

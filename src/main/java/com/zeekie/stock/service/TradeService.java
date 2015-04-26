@@ -97,4 +97,27 @@ public interface TradeService {
 	 */
 	public Map<String, String> hasOperation(String nickname);
 
+	/**
+	 * 获取客户端交易信息
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param nickname
+	 *            用户昵称
+	 * @param merchantId
+	 *            商户订单号
+	 * @param cash
+	 *            交易金额
+	 * @param status
+	 *            交易状态 1：成功/0：失败
+	 * @param merchantDate
+	 *            交易时间
+	 * @param refNo
+	 *            回执号
+	 * @return 1:成功/0：失败
+	 */
+	public String setPayInfo(String userId, String nickname, String merchantId,
+			String cash, String status, String respMsg, String merchantDate,
+			String refNo);
+
 }

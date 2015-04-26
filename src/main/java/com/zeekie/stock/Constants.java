@@ -154,6 +154,7 @@ public class Constants {
 
 	public static String MSG_URL = "";
 
+	public static final String TYPE_JOB_RECEIPT = "receipt";
 	public static String TYPE_JOB_DEDUCT_ADDGURANTEE = "deductByAddGurantee";
 
 	public static String TYPE_JOB_DEDUCT = "deduct";
@@ -198,6 +199,18 @@ public class Constants {
 	// public static String HOMES_STATUS = "nomral";
 
 	public static String HOMES_STATUS = "open";
+
+	/**
+	 * 获取的xml信息
+	 */
+	public static String XML = "";
+
+	/**
+	 * 摘要
+	 */
+	public static String MAC = "";
+
+	public static String PAY_SUCCESS = "C000000000";
 
 	public static IClient getClient() {
 		return client;

@@ -73,12 +73,55 @@ public class SyncHandler {
 		new Thread() {
 			@Override
 			public void run() {
-				handle(type, param);
+				try {
+					handle(type, param);
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+				}
 			}
 		}.start();
 	}
 
-	private void handle(String type, Map<String, String> param) {
+	public void handleJobOfList(final String type,
+			final List<Map<String, String>> list) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					handle(type, list);
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+				}
+			}
+		}.start();
+
+	}
+
+	private void handle(String type, List<Map<String, String>> list)
+			throws Exception {
+		if (StringUtils.equals(Constants.TYPE_JOB_RECEIPT, type)) {
+			int index = 0;
+			for (; index < list.size(); index++) {
+				Map<String, String> param = list.get(index);
+				String nickname = param.get("nickname");
+				String amount = param.get("amount");
+				if (webService.payToUs("", nickname, amount)) {
+					if (log.isDebugEnabled()) {
+						log.debug("【9002】后台为用户:[" + nickname + "]充值成功,充值金额："
+								+ amount);
+					}
+					trade.setPayInfoByJob(param.get("userId"), nickname,
+							param.get("merchantId"), amount,
+							Constants.CODE_SUCCESS,
+							"【JOB】:" + param.get("respMsg"),
+							param.get("bankName"),param.get("refNo"));
+				}
+			}
+		}
+	}
+
+	private void handle(String type, Map<String, String> param)
+			throws Exception {
 
 		if (StringUtils.equals(Constants.TYPE_JOB_EVENING_UP_REMIND, type)) {
 			eveningUpRemind(param);
@@ -92,14 +135,10 @@ public class SyncHandler {
 			String respResult = param.get("responseResult");
 			String userId = param.get("userId");
 			if (StringUtils.equals(Constants.CODE_SUCCESS, rechargeResult)) {
-				try {
-					nickname = account.queryNickname(param.get("userId"));
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
-				}
+				nickname = account.queryNickname(param.get("userId"));
 				if (webService.payToUs("", nickname, param.get("amount"))) {
 					if (log.isDebugEnabled()) {
-						log.debug("用户:" + nickname + "充值成功，开始向APP对宋消息");
+						log.debug("用户:" + nickname + "充值成功，开始向APP推送消息");
 					}
 				}
 			} else {
@@ -118,12 +157,7 @@ public class SyncHandler {
 			String referee = param.get("referee");
 			String packet = param.get("packet");
 			String nickname = param.get("nickname");
-			String telephone = "";
-			try {
-				telephone = account.getUserPhone(referee).getPhone();
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
+			String telephone = account.getUserPhone(referee).getPhone();
 			if (StringUtils.equals("insufficient", flag)) {
 				ApiUtils.send(Constants.MODEL_NOT_TO_BE_REFEREE_FN, telephone,
 						referee, nickname, packet);
@@ -135,6 +169,7 @@ public class SyncHandler {
 				.equals(Constants.TYPE_JOB_REDPACKET_NOTICE, type)) {
 			ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN,
 					param.get("telephone"), param.get("message"));
+
 		}
 	}
 
@@ -328,4 +363,5 @@ public class SyncHandler {
 			log.error(e.getMessage(), e);
 		}
 	}
+
 }

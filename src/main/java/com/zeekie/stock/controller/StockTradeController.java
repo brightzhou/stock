@@ -167,4 +167,18 @@ public class StockTradeController {
 	public ApiResponse getEveningFlag(@RequestParam("nickname") String nickname) {
 		return ApiUtils.good(trade.getEveningFlag(nickname));
 	}
+
+	@ResponseBody
+	@RequestMapping("payInfo/set")
+	public String setPayInfo(@RequestParam("userId") String userId,
+			@RequestParam("nickname") String nickname,
+			@RequestParam("merchantId") String merchantId,
+			@RequestParam("cash") String cash,
+			@RequestParam("status") String status,
+			@RequestParam("respMsg") String respMsg,
+			@RequestParam("merchantDate") String merchantDate,
+			@RequestParam("refNo") String refNo) {
+		return trade.setPayInfo(userId, nickname, merchantId, cash, status,
+				respMsg,merchantDate,refNo);
+	}
 }

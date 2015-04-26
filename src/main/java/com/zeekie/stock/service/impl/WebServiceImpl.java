@@ -180,7 +180,7 @@ public class WebServiceImpl implements WebService {
 			trade.recharge(nickname, fund);
 
 			trade.recordFundflow(nickname,
-					Constants.TRANS_FROM_CLIENT_TO_WALET, fund, "");
+					Constants.TRANS_FROM_CLIENT_TO_WALET, fund, "用戶充值");
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -569,7 +569,7 @@ public class WebServiceImpl implements WebService {
 			} else if (StringUtils.equals("130", type)) {
 				flowDO.setBussniessType(desc);
 				flowDO.setFundStr("+" + fund);
-			} else if (StringUtils.equals("140", type)){
+			} else if (StringUtils.equals("140", type)) {
 				flowDO.setBussniessType(desc);
 				flowDO.setFundStr("+" + fund);
 			}
@@ -658,5 +658,18 @@ public class WebServiceImpl implements WebService {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void updateReceiptStatus(Map<String, String> param)
+			throws ServiceInvokerException {
+		String nickname = "";
+		try {
+			nickname = account.queryNickname(param.get("userId"));
+		} catch (Exception e) {
+			throw new ServiceInvokerException(e.getMessage());
+		}
+		param.put("nickname", nickname);
+		trade.updateReceiptStatus(param);
 	}
 }

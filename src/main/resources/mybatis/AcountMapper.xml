@@ -292,6 +292,14 @@
 		<result column="Hasoperation" property="hasOperation" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	
+	<resultMap type="com.zeekie.stock.entity.PayInfoDO" id="resultPayInfo">
+		<result column="TRANSACTION_TIME" property="transactionDate" jdbcType="VARCHAR"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR"/>
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="MERCHANT_ID" property="merchantNo" jdbcType="VARCHAR"/>
+		<result column="REF_NO" property="refNo" jdbcType="VARCHAR"/>
+	</resultMap>
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1432,6 +1440,16 @@
 		                Where w.Nickname = u.Nickname)) Hasdebt
 		  From Stock_User u
 		  where u.id = #{userId}
+	</select>
+	
+	<select id="queryPayInfo" resultMap="resultPayInfo" >
+		SELECT T.TRANSACTION_TIME, T.USER_ID, T.NICKNAME,T.MERCHANT_ID,T.REF_NO
+		  FROM STOCK_TRANSACTION_INFO T
+		 WHERE 1 = 1
+		   AND ROUND(TO_NUMBER(SYSDATE -
+		                       TO_DATE(T.TRANSACTION_TIME, 'yyyy-mm-dd HH24:MI:ss')) * 24 * 60 * 60) > 120
+		   AND T.STATUS_APP_TRANSACTION = '1'
+		   AND T.STATUS_ACCEPT = '2'
 	</select>
 </mapper>
 

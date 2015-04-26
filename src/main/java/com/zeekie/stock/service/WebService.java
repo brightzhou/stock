@@ -1,5 +1,7 @@
 package com.zeekie.stock.service;
 
+import java.util.Map;
+
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
 
@@ -249,6 +251,12 @@ public interface WebService {
 	 * @return
 	 */
 	public boolean undoWithDrawal(String id, String nickname, String cash)
+			throws ServiceInvokerException;
+
+	/*
+	 * 更新支付信息状态
+	 */
+	public void updateReceiptStatus(Map<String,String> parasResult)
 			throws ServiceInvokerException;
 
 }

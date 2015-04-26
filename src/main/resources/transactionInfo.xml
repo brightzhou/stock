@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <head>
+    <version>01</version>
+	<msgType>0001</msgType>
+    <merchantNo>1147</merchantNo>
+	<chanId>99</chanId>
+    <tranCode>QP0006</tranCode>
+    <clientDate></clientDate>
+	<serverDate></serverDate>
+    <tranFlow>1147@TransactionDate</tranFlow>	
+	<respCode></respCode>	
+	<respMsg></respMsg>		
+  </head>
+  <body>
+    <refNo>@refId</refNo>
+    <merTransDate>@DealDate</merTransDate>	
+    <merOderNo>@merchantNo</merOderNo>
+    <txnType>QP0001</txnType>
+  </body>
+</message>

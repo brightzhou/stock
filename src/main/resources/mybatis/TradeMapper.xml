@@ -522,4 +522,121 @@
 		  From Stock_User_Wallet w
 		 Where w.Nickname = #{nickname}
 	</select>
+	
+	<insert id="setPayInfo" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_TRANSACTION_INFO_ID.Nextval from dual
+		</selectKey>
+		MERGE INTO STOCK_TRANSACTION_INFO P
+		USING (SELECT #{id}         ID,
+		              #{userId}     USER_ID,
+		              #{nickname}   NICKNAME,
+		              #{merchantId} MERCHANT_ID,
+		              #{cash}       CASH,
+		              #{status}     STATUS_APP_TRANSACTION,
+		              #{respMsg}    DESCRIPTION,
+		              #{merchantDate}  TRANSACTION_TIME,
+		              #{refNo} REF_NO
+		         FROM DUAL) T
+		ON (TRIM(P.MERCHANT_ID) = TRIM(T.MERCHANT_ID) and p.USER_ID = t.USER_ID)
+		WHEN MATCHED THEN
+		  UPDATE SET P.TRANSACTION_TIME = T.TRANSACTION_TIME,P.STATUS_APP_TRANSACTION = T.STATUS_APP_TRANSACTION
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (P.ID,
+		     P.MERCHANT_ID,
+		     P.USER_ID,
+		     P.NICKNAME,P.CASH,
+		     P.STATUS_APP_TRANSACTION,
+		     P.TRANSACTION_TIME,
+		     P.DESCRIPTION,
+		     P.REF_NO)
+		  VALUES
+		    (T.ID,
+		     T.MERCHANT_ID,
+		     T.USER_ID,
+		     T.NICKNAME,T.CASH,
+		     T.STATUS_APP_TRANSACTION,
+		     T.TRANSACTION_TIME,
+		     T.DESCRIPTION,
+		     T.REF_NO)
+	</insert>
+	
+	<insert id="setPayInfoByJob" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_TRANSACTION_INFO_ID.Nextval from dual
+		</selectKey>
+		MERGE INTO STOCK_TRANSACTION_INFO P
+		USING (SELECT #{id}         ID,
+		              #{userId}     USER_ID,
+		              #{nickname}   NICKNAME,
+		              #{merchantId} MERCHANT_ID,
+		              #{cash}       CASH,
+		              #{respMsg}    DESCRIPTION,
+		              sysdate       ACCEPT_TIME,
+		              #{acceptStatus} STATUS_ACCEPT,
+		              #{bankName} bankName,
+		              #{refNo} REF_NO
+		         FROM DUAL) T
+		ON (TRIM(P.MERCHANT_ID) = TRIM(T.MERCHANT_ID) and p.USER_ID = t.USER_ID)
+		WHEN MATCHED THEN
+		  UPDATE SET P.ACCEPT_TIME = T.ACCEPT_TIME,P.STATUS_ACCEPT = T.STATUS_ACCEPT,P.bankName = T.bankName,P.DESCRIPTION = T.DESCRIPTION
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (P.ID,
+		     P.MERCHANT_ID,
+		     P.USER_ID,
+		     P.NICKNAME,
+		     P.STATUS_ACCEPT,
+		     P.ACCEPT_TIME,
+		     P.DESCRIPTION,P.bankName,P.REF_NO)
+		  VALUES
+		    (T.ID,
+		     T.MERCHANT_ID,
+		     T.USER_ID,
+		     T.NICKNAME,
+		     T.STATUS_ACCEPT,
+		     T.ACCEPT_TIME,
+		     T.DESCRIPTION,T.bankName,T.REF_NO)
+	</insert>
+	
+	
+ <insert id="updateReceiptStatus" parameterType="java.util.Map">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_TRANSACTION_INFO_ID.Nextval from dual
+		</selectKey>
+		MERGE INTO STOCK_TRANSACTION_INFO P
+		USING (SELECT #{id}         ID,
+		              #{userId}     USER_ID,
+		              #{nickname}   NICKNAME,
+		              #{merchantId} MERCHANT_ID,
+		              #{amount}       CASH,
+		              #{rechargeResult}     STATUS_APP_TRANSACTION,
+		              #{responseResult}    DESCRIPTION,
+		              #{merchantDate}  TRANSACTION_TIME
+		         FROM DUAL) T
+		ON (TRIM(P.MERCHANT_ID) = TRIM(T.MERCHANT_ID) and p.USER_ID = t.USER_ID)
+		WHEN MATCHED THEN
+		  UPDATE SET P.TRANSACTION_TIME = T.TRANSACTION_TIME,P.STATUS_APP_TRANSACTION = T.STATUS_APP_TRANSACTION,
+		  P.STATUS_ACCEPT = T.STATUS_APP_TRANSACTION,P.DESCRIPTION = T.DESCRIPTION
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (P.ID,
+		     P.MERCHANT_ID,
+		     P.USER_ID,
+		     P.NICKNAME,
+		     P.STATUS_APP_TRANSACTION,
+		     P.STATUS_ACCEPT,
+		     P.TRANSACTION_TIME,
+		     P.DESCRIPTION)
+		  VALUES
+		    (T.ID,
+		     T.MERCHANT_ID,
+		     T.USER_ID,
+		     T.NICKNAME,
+		     T.STATUS_APP_TRANSACTION,
+		     T.STATUS_APP_TRANSACTION,
+		     T.TRANSACTION_TIME,
+		     T.DESCRIPTION)
+	</insert>
 </mapper>

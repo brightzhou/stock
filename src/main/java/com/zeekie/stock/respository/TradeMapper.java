@@ -1,6 +1,7 @@
 package com.zeekie.stock.respository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -160,5 +161,58 @@ public interface TradeMapper {
 	 */
 	HasOpertAndDebtDO queryHasOperation(@Param("nickname") String nickname)
 			throws Exception;
+
+	/**
+	 * 设置交易信息
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param nickname
+	 *            用户昵称
+	 * @param merchantId
+	 *            商户订单号
+	 * @param cash
+	 *            交易金额
+	 * @param status
+	 *            交易状态 1：成功/0：失败
+	 * @param respMsg
+	 *            交易信息
+	 * @param merchantDate
+	 * @param refNo
+	 */
+	void setPayInfo(@Param("userId") String userId,
+			@Param("nickname") String nickname,
+			@Param("merchantId") String merchantId, @Param("cash") String cash,
+			@Param("status") String status, @Param("respMsg") String respMsg,
+			@Param("merchantDate") String merchantDate,
+			@Param("refNo") String refNo) throws Exception;
+
+	/**
+	 * 设置交易信息
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param nickname
+	 *            用户昵称
+	 * @param merchantId
+	 *            商户订单号
+	 * @param cash
+	 *            交易金额
+	 * @param status
+	 *            交易状态 1：成功/0：失败
+	 * @param respMsg
+	 *            交易信息
+	 * @param bankName
+	 * @param refNo
+	 */
+	void setPayInfoByJob(@Param("userId") String userId,
+			@Param("nickname") String nickname,
+			@Param("merchantId") String merchantId, @Param("cash") String cash,
+			@Param("acceptStatus") String acceptStatus,
+			@Param("respMsg") String respMsg,
+			@Param("bankName") String bankName, @Param("refNo") String refNo)
+			throws Exception;
+
+	void updateReceiptStatus(Map<String, String> param);
 
 }

@@ -27,6 +27,7 @@ import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
+import com.zeekie.stock.entity.PayInfoDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.PhoneAndTIcketDO;
 import com.zeekie.stock.entity.RedPacketDO;
@@ -537,5 +538,10 @@ public interface AcountMapper {
 	 */
 	public BasicInfoDO getBasicInfo(@Param("userId") String userId)
 			throws Exception;
+
+	/*
+	 * 查询获取回执失败的交易信息
+	 */
+	public List<PayInfoDO> queryPayInfo() throws Exception;
 
 }
