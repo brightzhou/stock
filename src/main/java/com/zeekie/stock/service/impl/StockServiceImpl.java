@@ -97,7 +97,7 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${stock.operation.number}")
 	private String operationNo;
-
+	
 	private Set<String> fundAccountSet = new HashSet<String>();
 
 	@Override
@@ -111,7 +111,6 @@ public class StockServiceImpl implements TradeService {
 		}
 
 		try {
-
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
 			if (null != radioDO) {
 				// 判断是否大于设置操盘额度的上线
@@ -152,6 +151,15 @@ public class StockServiceImpl implements TradeService {
 		try {
 
 			String nickname = tradeForm.getNickname();
+
+			HasOpertAndDebtDO andDebtDO = trade.queryHasOperation(nickname);
+			if (null != andDebtDO) {
+				if (StringUtils.isNotBlank(andDebtDO.getOperation())) {
+					currentOperateInfo.put("flag", "4");
+					return currentOperateInfo;
+				}
+			}
+
 			String tradeFund = tradeForm.getTradeFund();
 			String guaranteeCash = tradeForm.getGuaranteeCash();
 
@@ -813,7 +821,7 @@ public class StockServiceImpl implements TradeService {
 			String refNo) {
 		try {
 			trade.setPayInfo(userId, nickname, merchantId, cash, status,
-					"【APP】:" + respMsg, merchantDate,refNo);
+					"【APP】:" + respMsg, merchantDate, refNo);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Constants.CODE_FAILURE;

@@ -114,7 +114,7 @@ public class SyncHandler {
 							param.get("merchantId"), amount,
 							Constants.CODE_SUCCESS,
 							"【JOB】:" + param.get("respMsg"),
-							param.get("bankName"),param.get("refNo"));
+							param.get("bankName"), param.get("refNo"));
 				}
 			}
 		}
@@ -261,7 +261,7 @@ public class SyncHandler {
 				ApiUtils.send(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
 						lineDO.getPhone(), lineDO.getNickname(),
 						lineDO.getTicket(), lineDO.getActualAsset(),
-						lineDO.getWarnFund());
+						lineDO.getWarnFund(), lineDO.getStopFund());
 			}
 			batchMapper.batchInsert(TradeMapper.class, "updateWarnFlagToOne",
 					result);

@@ -62,6 +62,7 @@
 		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
 		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
 		<result column="ACTUAL_CASH" property="actualAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="STOP_CASH" property="stopFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="WARN_CASH" property="warnFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
 		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
@@ -340,7 +341,7 @@
 	
 	<update id="updateCurrentAccountMayUse" parameterType="string">
 	    Update Stock_User_Acount_Assigned a
-		   Set a.Flag = '0'
+		   Set a.Flag = '0' , a.LAST_USE_DATE = sysdate
 		 Where Exists (Select 1
 		          From Stock_User_Operate_Acount o
 		         Where o.Trade_Acount = a.Operator_Acount
@@ -474,6 +475,7 @@
 		       M.ACTUAL_CASH,
 		       M.WARN_CASH,
 		       M.TICKET,
+		       M.STOP_CASH,
 		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = M.NICKNAME) PHONE
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'

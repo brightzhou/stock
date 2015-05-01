@@ -466,15 +466,17 @@
 	</select> -->
 	
 	<select id="getAllUserInfo" resultMap="resultAllClientAcount">
-		SELECT OPERATOR_ACOUNT,
-		       U.OPERATOR_PWD,
-		       U.COMBINE_ID,
-		       A.FUND_ACCOUNT,
-		       A.COMBINE_ID MANAGER_COMBINE_ID
-		  FROM STOCK_USER_ACOUNT_ASSIGNED U, STOCK_MANAGER_ACOUNT A
-		 WHERE FLAG = '0'
-		   AND U.FUND_ACCOUNT = A.FUND_ACCOUNT
-		   AND A.STATUS = '1'
+			Select Operator_Acount,
+			       u.Operator_Pwd,
+			       u.Combine_Id,
+			       a.Fund_Account,
+			       a.Combine_Id Manager_Combine_Id,
+			       (Round(To_Number(Sysdate - u.Last_Use_Date))) s
+			  From Stock_User_Acount_Assigned u, Stock_Manager_Acount a
+			 Where Flag = '0'
+			   And u.Fund_Account = a.Fund_Account
+			   And a.Status = '1'
+			 Order By s Desc
 	</select>
 	
 	<select id="getAccount" parameterType="string" resultMap="resultGetAccount">

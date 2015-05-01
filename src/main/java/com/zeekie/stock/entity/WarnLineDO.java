@@ -10,9 +10,26 @@ public class WarnLineDO {
 
 	private Float warnFund;
 
+	private Float stopFund;
+
 	private String phone;
 
 	private String ticket;
+
+	/**
+	 * @return the stopFund
+	 */
+	public String getStopFund() {
+		return stopFund + "";
+	}
+
+	/**
+	 * @param stopFund
+	 *            the stopFund to set
+	 */
+	public void setStopFund(Float stopFund) {
+		this.stopFund = stopFund;
+	}
 
 	/**
 	 * @return the ticket
