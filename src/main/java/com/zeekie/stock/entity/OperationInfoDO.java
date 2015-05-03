@@ -14,6 +14,8 @@ public class OperationInfoDO {
 
 	private Float profitAndLoss;
 
+	private String profitPercent;
+
 	private Float guranteeFund;
 
 	private Float managementFee;
@@ -21,6 +23,21 @@ public class OperationInfoDO {
 	private String startDate;
 
 	private String endDate;
+
+	/**
+	 * @return the profitPercent
+	 */
+	public String getProfitPercent() {
+		return profitPercent;
+	}
+
+	/**
+	 * @param profitPercent
+	 *            the profitPercent to set
+	 */
+	public void setProfitPercent(String profitPercent) {
+		this.profitPercent = profitPercent;
+	}
 
 	/**
 	 * @return the nickname

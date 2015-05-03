@@ -6,7 +6,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>操盘记录</title>
+<title>充值明细</title>
 	<base href="<%=basePath%>"/>
 	<script src="scripts/base/jquery-1.8.3.min.js" type="text/javascript"></script>
 	<script src="scripts/sui/mini-all-min.js" type="text/javascript"></script>
@@ -19,17 +19,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 
 <body class="body_fit" >
-<div class="Place_text"><span>用户操盘查询</span></div>
+<div class="Place_text"><span>用户列表查询</span></div>
         <div style="width:1100px;">
 	        <div class="mini-toolbar" style="border-bottom:0;padding:2px;">
 	            <table style="width:100%;">
 	                <tr>
 	                    <td style="white-space:nowrap;">
 	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>   
-	                        <input name="range" id="range" class="mini-combobox" valueField="id" textField="text" 
-	                            data="[{'id': '1', 'text': '当前操盘'},{'id': '0', 'text': '历史操盘'}]"
-	                             
-	                            />
 	                        <a class="mini-button" onclick="search()">查询</a>
 	                    </td>
 	                </tr>
@@ -38,40 +34,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
-        			url="<%=basePath%>api/stock/web/getOperationInfo"  idField="id" multiSelect="false">
+        			url="api/stock/web/getTransactionInfo"  idField="id" multiSelect="false">
                 <div property="columns">
-                    <div width="10%" field="nickname" headerAlign="center" align="center">
+                    <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
+                    <div  field="nickname" headerAlign="center" align="center" width="10%">
                         用户昵称
                     </div>
-                    <div field="truename" headerAlign="center" align="center" width="10%">
+                    <div  field="trueName"  headerAlign="center" align="center" width="6%">
                         真实姓名
                     </div>
-                    <div  field="operationNo"  headerAlign="center" align="center" width="11%">
-                        操盘ID
+                    <div  field="phone"  headerAlign="center" align="center">
+                        手机
                     </div>
-                    <div  field="operationAccount"  headerAlign="center" align="center" width="11%"> 
-                        操盘账号
+                    <div field="refNo" width="10%"  headerAlign="center" align="center" >
+                        回执号
                     </div>
-                    <div  field="operationFund"  headerAlign="center" align="center" width="8%">
-                        操盘金额
-                    </div>       
-					<div  field="profitAndLoss"  headerAlign="center" align="center" width="8%">
-                       盈亏金额
+                    <div  field="merchantId" headerAlign="center" align="center">
+                        订单号
                     </div>
-					<div  field="profitPercent"  headerAlign="center" align="center" width="8%">
-                       盈亏率
+                    <div field="cash"   headerAlign="center" align="center" width="8%">
+                        交易金额
+                    </div>                   
+                    <div  field="statusAppTrans"  headerAlign="center" align="center" >
+                        受理状态
+                    </div>         
+                    <div field="transactionDate" width="15%"  headerAlign="center" align="center" renderer="onBirthdayRenderer" >
+                        处理时间
                     </div>
-					<div  field="guranteeFund"  headerAlign="center" align="center" width="8%">
-                        保证金
-                    </div>
-					<div  field="managementFee"  headerAlign="center" align="center" width="8%">
-                        管理费
-                    </div>
-                    <div field="startDate"  headerAlign="center" align="center" renderer="onBirthdayRenderer">
-                        开始时间
-                    </div>
-                    <div  field="endDate" headerAlign="center" align="center" renderer="onBirthdayRenderer">
-                        结束操盘时间
+                    <div field="description" width="15%"  headerAlign="center"  align="center" >
+                        描述
                     </div>
                 </div>
             </div>
@@ -81,15 +72,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     $(function(){
 	    grid = mini.get("datagrid1");
-	    mini.get("range").setValue('1');
         grid.load();
 	});
     
-	
 	function search() {
         var nickname = mini.get("key").getValue();
-        var range = mini.get("range").getValue();
-        grid.load({ nickname: nickname,range:range });
+        grid.load({ nickname: nickname });
     }
 	
     function onKeyEnter(e) {
@@ -101,7 +89,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         if (value) return mini.formatDate(value, 'yyyy-MM-dd HH:mm:ss');
         return "";
     }
-    
 </script>
 </body>
 </html>

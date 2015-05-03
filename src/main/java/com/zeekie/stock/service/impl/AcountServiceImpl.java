@@ -83,13 +83,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Override
 	public boolean indentify(String nickname, String truename, String idCard)
 			throws RuntimeException {
-		// TODO:indentify can't be finish. do it after i am happy .
 		try {
-
 			if (log.isDebugEnabled()) {
 				log.debug("用户" + nickname + "开始认证...");
 			}
-
 			if (StringUtils.equals(Constants.CODE_SUCCESS,
 					acounter.queryIdentifyFlag(nickname))) {
 				if (log.isDebugEnabled()) {
@@ -259,12 +256,16 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		try {
 			List<FundFlowDO> flow = acounter.getFundFlow(nickname, offset);
 			if (null != flow) {
-				jo = JSONArray.fromObject(flow, Constants.jsonConfig);
-				covertToCHA(jo);
-			}
-			if (log.isDebugEnabled()) {
-				log.debug("用户[" + nickname + "]获取资金流水，传递偏移量：[" + offset
-						+ "] 返回的结果：" + jo);
+				for (FundFlowDO item : flow) {
+					Float fund = StringUtil.keepTwoDecimalFloat(Float
+							.parseFloat(item.getFund()));
+					item.setFund(String.valueOf(fund));
+				}
+				if (log.isDebugEnabled()) {
+					log.debug("用户[" + nickname + "]获取资金流水，传递偏移量：[" + offset
+							+ "] 返回的结果：" + jo);
+				}
+				return jo.fromObject(flow);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -474,7 +475,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					String type = StringUtils
 							.equals(Constants.EVENING_UP, flag) ? Constants.TIPS_RETURN_GURANTEE_CASH
 							: Constants.TRANS_FROM_HOMES_TO_CLIENT;
-					trade.recordFundflow(nickname, type, userCash, "");
+					userCash = StringUtils.startsWith(userCash, "-") ? userCash
+							: "+" + userCash;
+					String description = "";
+					if (!StringUtils.startsWith(userCash, "-")) {
+						description = "返还保证金";
+					} else {
+						description = "亏损(扣除保证金)";
+					}
+					trade.recordFundflow(nickname, type, userCash, description);
 				}
 
 				String assginCash = StringUtil.keepThreeDot(cashDO

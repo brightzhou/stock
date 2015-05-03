@@ -55,10 +55,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="cardNo"  headerAlign="center" align="center">
                         卡号
                     </div>      
-                    <div  field="fundStr"  headerAlign="center" align="center">
+                    <div  field="fund"  headerAlign="center" align="center">
                         金额
                     </div>  
-                    <div  field="bussniessType"  headerAlign="center" align="center">
+                    <div  field="desc"  headerAlign="center" align="center">
                         交易类型
                     </div>
                     <div  field="transactionDate"  headerAlign="center" align="center" renderer="onBirthdayRenderer">

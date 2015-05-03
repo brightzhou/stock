@@ -6,19 +6,36 @@ public class FundFlowDO {
 
 	private String transactionTime;
 
-	private Float fund;
+	private String fund;
 
 	private Long id;
 
 	private String desc = "";
 
 	private String nickname;
-	
+
+	private Float fundFloat;
+
+	/**
+	 * @return the fundFloat
+	 */
+	public Float getFundFloat() {
+		return fundFloat;
+	}
+
+	/**
+	 * @param fundFloat
+	 *            the fundFloat to set
+	 */
+	public void setFundFloat(Float fundFloat) {
+		this.fundFloat = fundFloat;
+	}
+
 	public FundFlowDO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public FundFlowDO(String nickname, String transactionType, Float fund,
+	public FundFlowDO(String nickname, String transactionType, String fund,
 			String desc) {
 		super();
 		this.nickname = nickname;
@@ -105,7 +122,7 @@ public class FundFlowDO {
 	/**
 	 * @return the fund
 	 */
-	public Float getFund() {
+	public String getFund() {
 		return fund;
 	}
 
@@ -113,7 +130,7 @@ public class FundFlowDO {
 	 * @param fund
 	 *            the fund to set
 	 */
-	public void setFund(Float fund) {
+	public void setFund(String fund) {
 		this.fund = fund;
 	}
 

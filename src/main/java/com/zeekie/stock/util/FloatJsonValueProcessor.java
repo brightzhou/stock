@@ -27,7 +27,7 @@ public class FloatJsonValueProcessor implements JsonValueProcessor {
 			float[] nums = (float[]) value;
 
 			for (int i = 0; i < nums.length; i++) {
-				obj[i] = roundHalfUp(nums[i], 3);
+				obj[i] = roundHalfUp(nums[i]);
 			}
 
 			return obj;
@@ -52,7 +52,7 @@ public class FloatJsonValueProcessor implements JsonValueProcessor {
 			JsonConfig jsonConfig) {
 
 		if (value instanceof Float) {
-			return roundHalfUp((Float) value, 3);
+			return roundHalfUp((Float) value);
 		}
 
 		return value;
@@ -68,13 +68,23 @@ public class FloatJsonValueProcessor implements JsonValueProcessor {
 	 */
 	public String roundHalfUp(double number, int frac) {
 		NumberFormat fmt = NumberFormat.getInstance(Locale.CHINA);
-//		fmt.setMaximumFractionDigits(frac);
-//		fmt.setRoundingMode(RoundingMode.HALF_UP);
+		// fmt.setMaximumFractionDigits(frac);
+		// fmt.setRoundingMode(RoundingMode.HALF_UP);
 		DecimalFormat df = (DecimalFormat) fmt;
 		df.applyPattern("#,#######.###");
 		df.setMaximumFractionDigits(frac);
 		df.setRoundingMode(RoundingMode.HALF_UP);
 		return fmt.format(number);
+	}
+
+	public static String roundHalfUp(Float f) {
+		if (null == f)
+			return "";
+		DecimalFormat df = new DecimalFormat("#.00");
+		df.setMaximumFractionDigits(3);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		Float ss = Float.parseFloat(df.format(f));
+		return String.valueOf(ss);
 	}
 
 }

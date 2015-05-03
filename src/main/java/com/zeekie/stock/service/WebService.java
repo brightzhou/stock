@@ -14,6 +14,7 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
+import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.web.ClientPage;
@@ -256,7 +257,24 @@ public interface WebService {
 	/*
 	 * 更新支付信息状态
 	 */
-	public void updateReceiptStatus(Map<String,String> parasResult)
+	public void updateReceiptStatus(Map<String, String> parasResult)
 			throws ServiceInvokerException;
 
+	/**
+	 * 设置免费日期
+	 * 
+	 * @param yearMonth
+	 * @param days
+	 */
+	public void setFreeDays(String yearMonth, String days)
+			throws ServiceInvokerException;
+
+	/**
+	 * 获取交易流水信息
+	 * 
+	 * @param clientPage
+	 * @return
+	 */
+	public DefaultPage<TransactionDO> getTransactionInfo(ClientPage clientPage)
+			throws ServiceInvokerException;
 }

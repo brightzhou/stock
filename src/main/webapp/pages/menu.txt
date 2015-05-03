@@ -1,12 +1,12 @@
 [
 	{id: "user", text: "用户管理"},
 	{id: "wallet", text: "钱包管理", pid: "user" },
-	{id: "pay", text: "支付", pid: "wallet"},			
 	{id: "withdraw", text: "提现" , pid: "wallet"},
 	{id: "recharge", text: "账户充值" , pid: "wallet"},
 	{id: "fee", text: "管理费收取日期" , pid: "wallet"},
 	{id: "clientInfo", text: "用户基本信息" , pid: "wallet"},
 	{id: "fundFlow", text: "资金流水信息" , pid: "wallet"},
+	{id: "transaction", text: "交易明细" , pid: "wallet"},
 	{id: "operation", text: "实盘信息" , pid: "wallet"},
 	
 	{id: "operation", text: "操盘管理"},

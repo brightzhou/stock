@@ -3,8 +3,8 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 Calendar rightNow = Calendar.getInstance();
-String yearMonth = rightNow.get(Calendar.YEAR)+"-"+rightNow.get(Calendar.MONTH)+1;
-
+String yearMonth = rightNow.get(Calendar.YEAR)+"-"+(rightNow.get(Calendar.MONTH)+1);
+System.out.println(yearMonth);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -43,6 +43,7 @@ String yearMonth = rightNow.get(Calendar.YEAR)+"-"+rightNow.get(Calendar.MONTH)+
 	<div align="center" style="padding-top: 40px;">
 		<a class="mini-button" iconCls="icon-edit" id="selectAll" onclick="selectAll">全选</a>
 		<a class="mini-button" iconCls="icon-edit" id="reverse" onclick="deselectAll">全不选</a>
+		<a class="mini-button" iconCls="icon-edit" id="reverse" onclick="setFreeDays">取消设置</a>
 		<a class="mini-button" iconCls="icon-edit" onclick="setFeeDays">设置</a>
 	</div> 
     
@@ -52,6 +53,41 @@ String yearMonth = rightNow.get(Calendar.YEAR)+"-"+rightNow.get(Calendar.MONTH)+
 	    function setMonthValue() {
 	        var t = mini.get("date1");
 	        t.setValue(new Date());
+	    }
+	    
+	    function setFreeDays() {
+	    	var cbl1 = mini.get("cbl1");
+	    	var t = mini.get("date1");
+	    	var yearMonth = t.getFormValue();
+	    	var days = cbl1.getValue();
+	    	if(days==null||days==''){
+	    		mini.alert("请先选择至少一个日期");
+	    		return false;
+	    	}
+	    	mini.confirm("确定要设置当前日历", "确定？",
+		            function (action) {            
+		                if(action == "ok"){
+		                	 $.ajax({
+			     	                url: "api/stock/web/setFreeDays",
+			     	                data: {yearMonth:yearMonth,days:days},
+			     	                type: "post",
+			     	                success: function (msg) {
+			     	                    if(msg == "1"){
+			     	                    	 mini.alert("设置成功！");
+			     	                    	cal();
+			     	                    }else{
+			     	                    	 mini.alert("设置失败！");
+			     	                    }
+			     	                },
+			     	                error: function(msg){
+			     	                	mini.alert("服务器异常，提现失败！");
+			     	                	return false;
+			     	                }			
+			     				});
+		                } 
+		            }
+		  ); 
+	    	
 	    }
 	    
 	    function setFeeDays() {
@@ -67,8 +103,8 @@ String yearMonth = rightNow.get(Calendar.YEAR)+"-"+rightNow.get(Calendar.MONTH)+
 		            function (action) {            
 		                if(action == "ok"){
 		                	 $.ajax({
-			     	                url: "<%=basePath%>api/stock/web/setFeeCalendar",
-			     	                data: {yearMonth : yearMonth, days:days},
+			     	                url: "api/stock/web/setFeeCalendar",
+			     	                data: {yearMonth:yearMonth,days:days},
 			     	                type: "post",
 			     	                success: function (msg) {
 			     	                    if(msg == "1"){
@@ -93,7 +129,7 @@ String yearMonth = rightNow.get(Calendar.YEAR)+"-"+rightNow.get(Calendar.MONTH)+
 	    	var t = mini.get("date1");
 	    	var month = t.getFormValue();
 	    	$.ajax({
-	                url: "<%=basePath%>api/stock/web/setDays",
+	                url: "api/stock/web/setDays",
 	                data: {month:month},
 	                type: "post",
 	                success: function (json) {

@@ -45,7 +45,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                               短信描述：
                     </td>
                     <td class="mini-content_32">
-                 	  <textarea class="mini-textarea" name="message" emptyText="请输入短信内容，长度不超过70个字.内容为空将不发送短信" id="message" maxLength="70" validateOnLeave="true" width="300px" height="100px"></textarea>
+                 	  <textarea class="mini-textarea" name="message" emptyText="请输入短信内容，长度不超过80个字.内容为空将不发送短信" id="message" maxLength="80" validateOnLeave="true" width="300px" height="100px"></textarea>
                     </td>
                 </tr>
 				<tr></tr>

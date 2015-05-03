@@ -35,6 +35,7 @@ import com.zeekie.stock.entity.RedpacketAndBalanceDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TradeDO;
+import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
@@ -543,5 +544,29 @@ public interface AcountMapper {
 	 * 查询获取回执失败的交易信息
 	 */
 	public List<PayInfoDO> queryPayInfo() throws Exception;
+
+	/*
+	 * 获取手机号
+	 */
+	public String getPhone(@Param("nickname") String referee) throws Exception;
+
+	/**
+	 * 获取交易流水条数
+	 * 
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	public long queryTransactionInfoCount(@Param("nickname") String nickname)
+			throws Exception;
+
+	/**
+	 * 获取列表
+	 * 
+	 * @param clientPage
+	 * @return
+	 */
+	public List<TransactionDO> queryTransactionInfo(ClientPage clientPage)
+			throws Exception;
 
 }
