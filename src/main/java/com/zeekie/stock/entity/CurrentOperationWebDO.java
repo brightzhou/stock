@@ -12,6 +12,8 @@ public class CurrentOperationWebDO {
 
 	private Float stopLine;
 
+	private String profitPercent;
+
 	private Float warnLine;
 
 	private Float actualCash;
@@ -20,6 +22,21 @@ public class CurrentOperationWebDO {
 
 	public CurrentOperationWebDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the profitPercent
+	 */
+	public String getProfitPercent() {
+		return profitPercent;
+	}
+
+	/**
+	 * @param profitPercent
+	 *            the profitPercent to set
+	 */
+	public void setProfitPercent(String profitPercent) {
+		this.profitPercent = profitPercent;
 	}
 
 	/**

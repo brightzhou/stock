@@ -59,6 +59,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="10%" field="actualCash"  headerAlign="center" align="center">
                         实际资产
                     </div>
+                    <div width="10%" field="profitPercent"  headerAlign="center" align="center">
+                        盈亏率
+                    </div>
                     <div width="10%" field="stopLine"  headerAlign="center" align="center">
                         平仓线
                     </div>
@@ -77,7 +80,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <audio  autoplay="true" playcount="-1" id="bg"></audio>
 <script type="text/javascript">
     mini.parse();
-    var gridUrl = "<%=basePath%>/api/stock/web/eveningUp/get";
+    var gridUrl = "api/stock/web/eveningUp/get";
     var grid = mini.get("datagrid1");
     //search();
     var si;
@@ -124,7 +127,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     function sing(){
-    	document.getElementById("bg").src="<%=basePath%>files/dd.mp3"; 
+    	document.getElementById("bg").src="files/dd.mp3"; 
     }
     
     function reset(){
@@ -146,7 +149,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            function (action) {            
 	                if(action == "ok"){
 	                	 $.ajax({
-		     	                url: "<%=basePath%>api/stock/web/eveningUp",
+		     	                url: "api/stock/web/eveningUp",
 		     	                data: {id : id,nickname : nickname,userId:userId},
 		     	                type: "post",
 		     	                success: function (msg) {

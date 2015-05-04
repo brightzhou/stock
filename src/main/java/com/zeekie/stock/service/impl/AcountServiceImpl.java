@@ -160,8 +160,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 								referee);
 
 						type = Fund.REFEREE_PRAISE.getType();
-						trade.recordFundflow(referee, type, refereeRedPacket
-								+ "", Fund.getDesc(nickname, type));
+						trade.recordFundflow(referee, type, "-"
+								+ refereeRedPacket,
+								Fund.getDesc(nickname, type));
 
 						if (log.isDebugEnabled()) {
 							log.debug("用户[" + referee + "]指定了一个红包["
