@@ -466,7 +466,7 @@
      <select id="selectFeeDay" parameterType="string" resultType="String" >
     	Select 1
 		  From Stock_Fee_Calendar m
-		 Where trim(M.Fee_Date) = #{feeDate}
+		 Where trim(M.Fee_Date) = #{feeDate} and m.FLAG='1'
     </select>
     
     <select id="queryNeedNoticeUser" resultMap="resultWarnLineUser">
