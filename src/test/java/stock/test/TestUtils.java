@@ -1,6 +1,7 @@
 package stock.test;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.net.URLDecoder;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,11 +27,13 @@ import javax.xml.xpath.XPathFactory;
 import net.sf.json.JSONException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -39,10 +43,15 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.commons.httpclient.HttpClient;  
+import org.apache.commons.httpclient.methods.PostMethod;  
+import org.apache.commons.httpclient.params.HttpClientParams;
+import com.oreilly.servlet.MultipartRequest;
 import com.tencent.xinge.Message;
 import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.CryptoUtils;
+import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.util.http.HandleHttpRequest;
 
@@ -87,26 +96,25 @@ public class TestUtils {
 
 		// ts();
 
+		// getMaxBytes();
 
-
-		getMaxBytes();
+		testAcceptCall();
 
 	}
 
 
 	public static void testAcceptCall() {
-		// InputStream in = new FileInputStream(new File(
-		// "C:\\Users\\liz\\Desktop\\result.xml"));
-		// HandleHttpRequest request = new HandleHttpRequest();
-		// Map<String, String> map = new HashMap<String, String>();
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://localhost:8080/stock/api/stock/acceptCall");
-		FileBody fileBody = new FileBody(new File(
-				"C:\\Users\\liz\\Desktop\\result.xml"));
+		HttpPost post = new HttpPost(
+				"http://localhost:8080/stock/api/stock/web/acceptCall");
+		FileBody fileBody = new FileBody(
+				new File(
+						"C:\\Users\\Administrator.PC-20111014DELE\\Desktop\\result.xml"));
 		MultipartEntity entity = new MultipartEntity();
 		entity.addPart("file", fileBody);
 		post.setEntity(entity);
 		HttpResponse response = null;
+
 		try {
 			response = httpclient.execute(post);
 		} catch (ClientProtocolException e) {
@@ -118,7 +126,6 @@ public class TestUtils {
 			System.out.println("ddd");
 		}
 		httpclient.getConnectionManager().shutdown();
-
 
 	}
 
@@ -207,21 +214,20 @@ public class TestUtils {
 
 	}
 
-
 	public static void getMaxBytes() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 		item.put("authType", "2");
-//		try {
-//			item.put("token", TokenUtils.encryptToken(
-//					"02,6338673674855554,20150327155536,100015",
-//					"servyou_sitong_s"));
-//		} catch (JSONException e1) {
-//			e1.printStackTrace();
-//		} catch (CodecException e1) {
-//			e1.printStackTrace();
-//		}
+		// try {
+		// item.put("token", TokenUtils.encryptToken(
+		// "02,6338673674855554,20150327155536,100015",
+		// "servyou_sitong_s"));
+		// } catch (JSONException e1) {
+		// e1.printStackTrace();
+		// } catch (CodecException e1) {
+		// e1.printStackTrace();
+		// }
 		headers.put("user_auth", item.toString());
 		req.setHeaders(headers);
 		try {
@@ -233,7 +239,6 @@ public class TestUtils {
 			e.printStackTrace();
 		}
 	}
-
 
 	public static void getString() {
 		System.out.println(CryptoUtils.encryptKeyData("175", Calendar
