@@ -74,15 +74,15 @@ public class DeductManageFeeTimer {
 			for (DeductDO each : result) {
 
 				FundFlowDO flowDO = new FundFlowDO(each.getNickname(),
-						Constants.MANAGEMENT_FEE, each.getFee(), "技术服务费");
+						Constants.MANAGEMENT_FEE, "-" + each.getFee(), "技术服务费");
 				fee.add(flowDO);
 				String nickname = each.getNickname();
 				String referee = acount.queryRefereeNickname(nickname);
 				if (StringUtils.isNotBlank(referee)) {
 					// 2015.2.12 23:09 记录推广人服务费提成
 					String type = Fund.AMORTIZATION.getType();
-					FundFlowDO drawFeeDO = new FundFlowDO(referee, type,
-							each.getDrawFee(), Fund.getDesc(nickname, type));
+					FundFlowDO drawFeeDO = new FundFlowDO(referee, type, "+"
+							+ each.getDrawFee(), Fund.getDesc(nickname, type));
 					drawFeeJh.add(drawFeeDO);
 				}
 			}

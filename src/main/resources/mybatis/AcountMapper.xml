@@ -52,7 +52,7 @@
 		<result column="Transaction_time" property="transactionTime" jdbcType="VARCHAR"/>
 		<result column="id" property="id" jdbcType="VARCHAR"/>
 		<result column="DECRIPTION" property="desc" jdbcType="VARCHAR"/>
-		<result column="FUND" property="fund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FUND" property="fund" jdbcType="VARCHAR"/>
 	</resultMap>
 
 	<resultMap type="com.zeekie.stock.entity.CurrentAccountDO" id="resultCurrentAccount">
@@ -271,6 +271,7 @@
 		<result column="Trade_Fund" property="operationFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Guarantee_Cash" property="guranteeFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Add_Management_Fee" property="managementFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="profit_loss_radio" property="profitPercent" jdbcType="VARCHAR"/>
 		<result column="Start_Date" property="startDate" jdbcType="VARCHAR"/>
 		<result column="End_Date" property="endDate" jdbcType="VARCHAR"/>
 	</resultMap>
@@ -300,6 +301,19 @@
 		<result column="MERCHANT_ID" property="merchantNo" jdbcType="VARCHAR"/>
 		<result column="REF_NO" property="refNo" jdbcType="VARCHAR"/>
 	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.TransactionDO" id="resultTransactionInfo">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="MERCHANT_ID" property="merchantId" jdbcType="VARCHAR"/>
+		<result column="REF_NO" property="refNo" jdbcType="VARCHAR"/>
+		<result column="TRUENAME" property="trueName" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="statusAppTrans" jdbcType="VARCHAR"/>
+		<result column="CASH" property="cash" jdbcType="VARCHAR"/>
+		<result column="TRANSACTION_TIME" property="transactionDate" jdbcType="VARCHAR"/>
+		<result column="DESCRIPTION" property="description" jdbcType="VARCHAR"/>
+		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -532,9 +546,10 @@
 	
 	<select id="getFundFlow" resultMap="resultFlowFund" parameterType="string">
 		Select s.id,s.Fund,
-		       s.Transaction_Type,
+		      <!--  trim(s.Transaction_Type), -->
 		       To_Char(s.Transaction_Time, 'yyyy-mm-dd HH24:MI:ss') Transaction_Time,
-		       s.DECRIPTION
+		       s.DECRIPTION Transaction_type,
+		       s.DECRIPTION 
 		  From (Select Row_Number() Over(Order By t.Transaction_Time desc) As Num, t.*
 		          From Stock_Fund_Flow t
 		         Where t.Nickname = #{nickname}
@@ -1150,7 +1165,12 @@
 	
 	<select id="getUserPhone" parameterType="string" resultMap="ResultUserPhone">
 		select telephone,
-			   (select M.ticket from Stock_User_Operate_Maininfo m where m.nickname = u.nickname) ticket
+			   (select M.ticket from Stock_User_Operate_Maininfo m where m.nickname = u.nickname and m.is_current='1') ticket
+		 from stock_user u where u.nickname = #{nickname}
+	</select>
+	
+	<select id="getPhone" parameterType="string" resultType="string">
+		select telephone
 		 from stock_user u where u.nickname = #{nickname}
 	</select>
 	
@@ -1335,43 +1355,19 @@
 	
 	<select id="queryFundFlowInfo" parameterType="string" resultMap="resultFundFlowInfo">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-			Select f.Nickname,
-			       (Select b.Truename
-			          From Stock_Id_Card b
-			         Where (Exists (Select 1
-			                          From Stock_User u
-			                         Where u.Nickname = f.Nickname
-			                           And u.Id = b.User_Id))) Truename,
-			       (Select b.Phone
-			          From Stock_Bank_Info b
-			         Where (Exists (Select 1
-			                          From Stock_User u
-			                         Where u.Nickname = f.Nickname
-			                           And u.Id = b.User_Id))) Phone,
-			       (Select b.Bank
-			          From Stock_Bank_Info b
-			         Where (Exists (Select 1
-			                          From Stock_User u
-			                         Where u.Nickname = f.Nickname
-			                           And u.Id = b.User_Id))) Bank,
-			       (Select b.Openbank
-			          From Stock_Bank_Info b
-			         Where (Exists (Select 1
-			                          From Stock_User u
-			                         Where u.Nickname = f.Nickname
-			                           And u.Id = b.User_Id))) Openbank,
-			       (Select b.Card_Number
-			          From Stock_Bank_Info b
-			         Where (Exists (Select 1
-			                          From Stock_User u
-			                         Where u.Nickname = f.Nickname
-			                           And u.Id = b.User_Id))) Card_Number,
-			       Fund,
-			       Transaction_Type,
-			       f.Decription,
-			       To_Char(f.Transaction_Time, 'yyyy-mm-dd HH24:MI:ss') Transaction_Time
-			  From Stock_Fund_Flow f
-			 Where 1 = 1
+			SELECT F.NICKNAME,
+	       (SELECT B.TRUENAME FROM STOCK_ID_CARD B WHERE B.USER_ID = U.ID) TRUENAME,
+	       (SELECT B.PHONE FROM STOCK_BANK_INFO B WHERE B.USER_ID = U.ID) PHONE,
+	       (SELECT B.BANK FROM STOCK_BANK_INFO B WHERE B.USER_ID = U.ID) BANK,
+	       (SELECT B.OPENBANK FROM STOCK_BANK_INFO B WHERE B.USER_ID = U.ID) OPENBANK,
+	       (SELECT B.CARD_NUMBER FROM STOCK_BANK_INFO B WHERE B.USER_ID = U.ID) CARD_NUMBER,
+	       FUND,
+	       TRANSACTION_TYPE,
+	       F.DECRIPTION,
+	       TO_CHAR(F.TRANSACTION_TIME, 'yyyy-mm-dd HH24:MI:ss') TRANSACTION_TIME
+	  FROM STOCK_FUND_FLOW F, STOCK_USER U
+	 WHERE 1 = 1
+	   AND F.NICKNAME = U.NICKNAME
 		 <if test="nickname!=null and nickname!=''">
 		   AND f.nickname = #{nickname}
 		 </if>
@@ -1402,6 +1398,7 @@
 		       t.Profit_Loss_Cash,
 		       t.Guarantee_Cash,
 		       t.Add_Management_Fee,
+		       t.profit_loss_radio*100.00||'%' profit_loss_radio,
 		       to_char(t.Start_Date,'yyyy-mm-dd HH24:MI:ss')Start_Date,
 		       to_char(t.End_Date,'yyyy-mm-dd HH24:MI:ss')End_Date
 		  From Stock_User_Operate_Maininfo t
@@ -1452,6 +1449,41 @@
 		                       TO_DATE(T.TRANSACTION_TIME, 'yyyy-mm-dd HH24:MI:ss')) * 24 * 60 * 60) > 120
 		   AND T.STATUS_APP_TRANSACTION = '1'
 		   AND T.STATUS_ACCEPT = '2'
+	</select>
+	
+	<select id="queryTransactionInfoCount" parameterType="string" resultType="long">
+		SELECT COUNT(1) FROM STOCK_TRANSACTION_INFO t
+		where 1=1
+		<if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+<select id="queryTransactionInfo" parameterType="string" resultMap="resultTransactionInfo">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT T.REF_NO,
+		       T.NICKNAME,
+		       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = T.USER_ID) TRUENAME,
+		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.ID = T.USER_ID) PHONE,
+		       T.MERCHANT_ID,
+		       (CASE
+		         WHEN T.STATUS_APP_TRANSACTION = '0' THEN
+		          '交易失败'
+		         WHEN T.STATUS_APP_TRANSACTION = '2' THEN
+		          '待受理'
+		         WHEN T.STATUS_APP_TRANSACTION = '1' THEN
+		          '处理成功'
+		       END) STATUS,
+		       T.CASH,
+		       to_char(TO_DATE(T.TRANSACTION_TIME, 'yyyy-mm-dd HH24:MI:ss'),'yyyy-mm-dd HH24:MI:ss') TRANSACTION_TIME,
+		       T.DESCRIPTION
+		  FROM STOCK_TRANSACTION_INFO T
+		  WHERE 1=1
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+		 Order By t.transaction_time DESC
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
 </mapper>
 

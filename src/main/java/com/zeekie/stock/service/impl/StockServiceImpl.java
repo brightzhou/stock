@@ -149,9 +149,7 @@ public class StockServiceImpl implements TradeService {
 		}
 
 		try {
-
 			String nickname = tradeForm.getNickname();
-
 			HasOpertAndDebtDO andDebtDO = trade.queryHasOperation(nickname);
 			if (null != andDebtDO) {
 				if (StringUtils.isNotBlank(andDebtDO.getOperation())) {
@@ -213,12 +211,13 @@ public class StockServiceImpl implements TradeService {
 
 			// 5、记录资金流水
 			trade.recordFundflow(tradeForm.getNickname(),
-					Constants.CLIENTWALLET_TO_MAINACOUNT, guaranteeCash, "");
+					Constants.CLIENTWALLET_TO_MAINACOUNT, "-" + guaranteeCash,
+					"支付保证金");
 
 			// 第一次更新当前资产
 			stock.updateOperateMainInfo(tradeFund, "0", nickname);
 
-			// 如果为14:59分之前，则立即扣除当天服务费；如为14:59分之后，则当天服务费不扣除
+			// 如果为8:45~14:59分之间，则立即扣除当天服务费；如为14:59分之后，则当天服务费不扣除
 			jobHandler.handleJob(Constants.TYPE_JOB_DEDUCT, nickname);
 
 			// 返回当前操盘信息
@@ -717,8 +716,8 @@ public class StockServiceImpl implements TradeService {
 
 			// 6、记录流水新增配资
 			trade.recordFundflow(nickname,
-					Constants.CLIENTWALLET_TO_MAINACOUNT, addedGuaranteeCash,
-					"");
+					Constants.CLIENTWALLET_TO_MAINACOUNT, "-"+addedGuaranteeCash,
+					"增加保证金");
 			map.put("flag", flag);
 
 			if (log.isDebugEnabled()) {

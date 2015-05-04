@@ -455,6 +455,9 @@
 		    (T.FEE_DATE, T.YEAR_MONTH, T.DAY)
 	</update>
 
+	<update id="setFeeCalendarFreeBatch"  parameterType="com.zeekie.stock.entity.DayDO">
+		update STOCK_FEE_CALENDAR set flag='0' where FEE_DATE = #{feeDate} and YEAR_MONTH=#{yearMonth} and DAY = #{day}
+	</update>
 
     <select id="initFeeDays" parameterType="string" resultType="String">
     	Select trim(m.Day)

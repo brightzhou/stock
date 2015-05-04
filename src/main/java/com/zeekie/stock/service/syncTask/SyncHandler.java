@@ -157,7 +157,7 @@ public class SyncHandler {
 			String referee = param.get("referee");
 			String packet = param.get("packet");
 			String nickname = param.get("nickname");
-			String telephone = account.getUserPhone(referee).getPhone();
+			String telephone = account.getPhone(referee);
 			if (StringUtils.equals("insufficient", flag)) {
 				ApiUtils.send(Constants.MODEL_NOT_TO_BE_REFEREE_FN, telephone,
 						referee, nickname, packet);
@@ -299,7 +299,7 @@ public class SyncHandler {
 						* radioDO.getAssignRadio() * radioDO
 						.getManageFeeRadio());
 				trade.recharge(nickname, "-" + deductFee);
-				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, ""
+				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, "-"
 						+ deductFee + "", "技术服务费");
 				if (log.isDebugEnabled()) {
 					log.debug("用户增加保证金，收取服务费：" + deductFee);
@@ -340,8 +340,8 @@ public class SyncHandler {
 					trade.updateManageFeeByUser(nickname);
 					DeductDO fee = trade.queryNewStocker(nickname);
 					trade.deductManageFee(fee);
-					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,
-							fee.getFee() + "", "技术服务费");
+					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,"-"+
+							fee.getFee(), "技术服务费");
 
 					String referee = account.queryRefereeNickname(nickname);
 					if (StringUtils.isNotBlank(referee)) {

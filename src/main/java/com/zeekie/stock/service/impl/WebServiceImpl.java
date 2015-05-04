@@ -32,6 +32,7 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
+import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.respository.AcountMapper;
@@ -95,7 +96,7 @@ public class WebServiceImpl implements WebService {
 			account.deductWithdrawCahs(nickname, cash);
 
 			trade.recordFundflow(nickname,
-					Constants.TRANS_FROM_WALET_TO_CLIENT, cash, "用户提现");
+					Constants.TRANS_FROM_WALET_TO_CLIENT, "-" + cash, "用户提现");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;
@@ -180,7 +181,7 @@ public class WebServiceImpl implements WebService {
 			trade.recharge(nickname, fund);
 
 			trade.recordFundflow(nickname,
-					Constants.TRANS_FROM_CLIENT_TO_WALET, fund, "用戶充值");
+					Constants.TRANS_FROM_CLIENT_TO_WALET, "+" + fund, "用戶充值");
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -228,15 +229,18 @@ public class WebServiceImpl implements WebService {
 
 	@Override
 	public void setFeeCalendar(String yearMonth, String days) {
+		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarBatch",
+				parseDays(yearMonth, days));
+	}
+
+	private List<DayDO> parseDays(String yearMonth, String days) {
 		String[] day = days.split(",");
 		List<DayDO> ret = new ArrayList<DayDO>();
 		for (String item : day) {
-			// int num = Integer.parseInt(item);
-			// String eachDay = (num < 10) ? "0" + item : item;
 			DayDO dayDO = new DayDO(item, yearMonth);
 			ret.add(dayDO);
 		}
-		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarBatch", ret);
+		return ret;
 	}
 
 	@Override
@@ -514,7 +518,7 @@ public class WebServiceImpl implements WebService {
 			total = account.queryFundFlowInfoCount(clientPage.getNickname());
 			if (0 != total) {
 				result = account.queryFundFlowInfo(clientPage);
-				convertBussinessType(result);
+				// convertBussinessType(result);
 			}
 			return new DefaultPage<OtherFundFlowDO>(total, result);
 		} catch (Exception e) {
@@ -606,8 +610,8 @@ public class WebServiceImpl implements WebService {
 			if (StringUtils.isNotBlank(fund)) {
 				account.moveProfitToUserWallet(nickname, fund);
 
-				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, fund,
-						"平台财务优化");
+				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, "+"
+						+ fund, "平台财务优化");
 			}
 
 			if (StringUtils.isNotBlank(message)) {
@@ -671,5 +675,29 @@ public class WebServiceImpl implements WebService {
 		}
 		param.put("nickname", nickname);
 		trade.updateReceiptStatus(param);
+	}
+
+	@Override
+	public void setFreeDays(String yearMonth, String days)
+			throws ServiceInvokerException {
+		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarFreeBatch",
+				parseDays(yearMonth, days));
+	}
+
+	@Override
+	public DefaultPage<TransactionDO> getTransactionInfo(ClientPage clientPage)
+			throws ServiceInvokerException {
+		List<TransactionDO> result = new ArrayList<TransactionDO>();
+		long total = 0;
+		try {
+			total = account.queryTransactionInfoCount(clientPage.getNickname());
+			if (0 != total) {
+				result = account.queryTransactionInfo(clientPage);
+			}
+			return new DefaultPage<TransactionDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
 	}
 }

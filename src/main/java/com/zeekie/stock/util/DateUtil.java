@@ -173,15 +173,17 @@ public class DateUtil {
 		return new SimpleDateFormat(format).format(date);
 	}
 
-	
 	public static boolean compareDate() throws ParseException {
 		Date date = new Date();
 		String now = formatDate(date, DATE_FORMATS[0]);
-		String anther = formatDate(date, DATE_FORMATS[1]) + " 14:59:00";
+		String begin = formatDate(date, DATE_FORMATS[1]) + " 08:45:00";
+		String end = formatDate(date, DATE_FORMATS[1]) + " 14:59:00";
 		try {
 			Date d1 = df.parse(now);
-			Date d2 = df.parse(anther);
-			return ((d2.getTime() - d1.getTime()) > 0l);
+			Date d2 = df.parse(end);
+			Date d3 = df.parse(begin);
+			return ((d2.getTime() - d1.getTime()) > 0l)
+					&& ((d1.getTime() - d3.getTime()) > 0l);
 		} catch (ParseException e) {
 			throw new ParseException(e.getMessage(), 0);
 		}

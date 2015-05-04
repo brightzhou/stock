@@ -1,12 +1,10 @@
 package com.zeekie.stock.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import net.sf.json.JsonConfig;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

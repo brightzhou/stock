@@ -38,6 +38,7 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
+import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.WebService;
@@ -343,6 +344,21 @@ public class StockWebController {
 
 	}
 
+	
+	@ResponseBody
+	@RequestMapping("setFreeDays")
+	public String setFreeDays(
+			@RequestParam(value = "yearMonth", required = true) String yearMonth,
+			@RequestParam(value = "days", required = true) String days) {
+		try {
+			webService.setFreeDays(yearMonth, days);
+		} catch (ServiceInvokerException e) {
+			return "0";
+		}
+		return "1";
+
+	}
+	
 	@ResponseBody
 	@RequestMapping("setDays")
 	public String setDays(
@@ -627,6 +643,29 @@ public class StockWebController {
 		} catch (ServiceInvokerException e) {
 			log.error("saveFundAccount error happened:", e.getMessage());
 			return "0";
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping("getTransactionInfo")
+	public DefaultPage<TransactionDO> getTransactionInfo(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+
+			ClientPage clientPage = new ClientPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, nickname);
+
+			return webService.getTransactionInfo(clientPage);
+		} catch (ServiceInvokerException e) {
+			log.error("getTransactionInfo error happened:", e.getMessage());
+			return new DefaultPage<TransactionDO>();
 		}
 	}
 }
