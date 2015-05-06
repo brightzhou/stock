@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
-        			url="<%=basePath%>api/stock/web/getOwingFee"  idField="id" multiSelect="false">
+        			url="api/stock/web/getOwingFee"  idField="id" multiSelect="false">
                 <div property="columns">
                     <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
                     <div width="10%" field="nickname" renderer="onHdRender" headerAlign="center" align="center">

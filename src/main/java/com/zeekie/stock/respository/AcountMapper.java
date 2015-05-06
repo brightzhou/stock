@@ -569,4 +569,14 @@ public interface AcountMapper {
 	public List<TransactionDO> queryTransactionInfo(ClientPage clientPage)
 			throws Exception;
 
+	/**
+	 * 更新版本
+	 * 
+	 * @param nickname
+	 * @param version
+	 * @throws Exception
+	 */
+	public void updateUserAppVersion(@Param("nickname") String nickname,
+			@Param("version") String version) throws Exception;
+
 }

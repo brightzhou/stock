@@ -328,7 +328,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public Map<String, String> getCurrentAccount(String nickname) {
+	public Map<String, String> getCurrentAccount(String nickname,String version) {
 		Map<String, String> map = new HashMap<String, String>();
 		try {
 			CurrentAccountDO account = acounter.getCurrentAccount(nickname);
@@ -354,6 +354,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("stockCapital", "0.00");
 				map.put("freezeCash", "0.00");
 				map.put("fee", "");
+			}
+			if(StringUtils.isNotBlank(version)){
+				acounter.updateUserAppVersion(nickname,version);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

@@ -46,6 +46,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="phone"  headerAlign="center" align="center">
                         手机
                     </div>
+                    <div  field="version"  headerAlign="center" align="center">
+                        版本信息
+                    </div>
                     <div field="balance" width="10%"  headerAlign="center" align="center" >
                         账户余额
                     </div>

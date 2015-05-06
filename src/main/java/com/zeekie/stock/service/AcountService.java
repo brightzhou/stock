@@ -54,9 +54,10 @@ public interface AcountService {
 	 * 获取当前账户
 	 * 
 	 * @param nickname
+	 * @param version
 	 * @return
 	 */
-	public Map<String, String> getCurrentAccount(String nickname);
+	public Map<String, String> getCurrentAccount(String nickname, String version);
 
 	/**
 	 * 客户端充值成功后记录流水

@@ -37,7 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
-        			url="<%=basePath%>api/stock/web/getClient"  idField="id" multiSelect="false">
+        			url="api/stock/web/getClient"  idField="id" multiSelect="false">
                 <div property="columns">
                     <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
                     <div type="checkcolumn" >#</div>

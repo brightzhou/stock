@@ -245,6 +245,7 @@
 		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
 		<result column="telephone" property="phone" jdbcType="VARCHAR"/>
 		<result column="truename" property="trueName" jdbcType="VARCHAR"/>
+		<result column="version" property="version" jdbcType="VARCHAR"/>
 		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="ACTUAL_CASH" property="actualFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="referee" property="upLine" jdbcType="VARCHAR"/>
@@ -1335,7 +1336,8 @@
 		         WHERE M.NICKNAME = T.NICKNAME
 		           AND M.IS_CURRENT = '1') ACTUAL_CASH,
 		       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = T.ID) TRUENAME,
-		       (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = T.REFEREE_ID) REFEREE
+		       (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = T.REFEREE_ID) REFEREE,
+		       t.version
 		  FROM STOCK_USER T
 		 WHERE 1 = 1
 		 <if test="nickname!=null and nickname!=''">
@@ -1487,5 +1489,11 @@
 		 Order By t.transaction_time DESC
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
+
+	<update id="updateUserAppVersion" parameterType="string">
+		UPDATE STOCK_USER C
+	       SET version = #{version,jdbcType=VARCHAR}
+	     WHERE c.NICKNAME = #{nickname}
+	</update>
 </mapper>
 

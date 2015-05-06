@@ -78,7 +78,7 @@
        	 	  (SELECT ASSIGN_CASH FROM stock_fund_assign_radio a WHERE s.nickname = a.nickname) ASSIGN_CASH,
        	 	  (SELECT debt FROM STOCK_USER_WALLET a WHERE s.nickname = a.nickname) debt
 		  FROM STOCK_USER S
-		 WHERE (S.NICKNAME = #{nickname} OR S.TELEPHONE = #{nickname})
+		 WHERE S.NICKNAME = #{nickname} 
 		   AND S.PASSWORD = #{password}
 	</select>
 

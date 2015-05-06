@@ -98,8 +98,9 @@ public class AcountController {
 	@ResponseBody
 	@RequestMapping("currentAccount/get")
 	public ApiResponse getCurrentAccount(
-			@RequestParam("nickname") String nickname) {
-		return ApiUtils.good(operator.getCurrentAccount(nickname));
+			@RequestParam("nickname") String nickname,
+			@RequestParam(value = "version", required = false) String version) {
+		return ApiUtils.good(operator.getCurrentAccount(nickname,version));
 	}
 
 	@ResponseBody

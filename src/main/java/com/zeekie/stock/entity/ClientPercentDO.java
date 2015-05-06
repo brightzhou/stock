@@ -30,6 +30,23 @@ public class ClientPercentDO {
 
 	private String trueName;
 
+	private String version;
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version
+	 *            the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
 	/**
 	 * @return the phone
 	 */
