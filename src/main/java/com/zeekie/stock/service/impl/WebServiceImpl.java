@@ -438,9 +438,20 @@ public class WebServiceImpl implements WebService {
 		List<OwingFeeDO> result = new ArrayList<OwingFeeDO>();
 		long total = 0;
 		try {
-			total = account.queryOwingFeeCount(clientPage.getNickname());
+			total = account.queryOwingFeeCount(clientPage.getNickname(),
+					clientPage.getLoss());
 			if (0 != total) {
 				result = account.queryOwingFee(clientPage);
+				// 查询亏损欠款的人
+				if (StringUtils.equals(clientPage.getLoss(), "2")) {
+					for (int i = result.size() - 1; i >= 0; i--) {
+						OwingFeeDO item = result.get(i);
+						if (StringUtils.isBlank(item.getProfitAndLoss() + "")
+								|| item.getProfitAndLoss() >= 0f) {
+							result.remove(i);
+						}
+					}
+				}
 			}
 			return new DefaultPage<OwingFeeDO>(total, result);
 		} catch (Exception e) {

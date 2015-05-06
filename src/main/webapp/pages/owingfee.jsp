@@ -25,7 +25,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            <table style="width:100%;">
 	                <tr>
 	                    <td style="white-space:nowrap;">
-	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>   
+	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>
+	                        <input name="loss" id="loss" class="mini-combobox" valueField="id" textField="text" 
+	                            data="[{'id': '1', 'text': '余额小于0'},{'id': '2', 'text': '亏损'}]"/>   
 	                        <a class="mini-button" onclick="search()">查询</a>
 	                    </td>
 	                </tr>
@@ -49,6 +51,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="oweFee" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
                         欠费情况
                     </div>
+                    <div  field="loss" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
+                        支付亏损
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,7 +62,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     $(function(){
 	    grid = mini.get("datagrid1");
-        grid.load();
+	    mini.get("loss").setValue('1');
+        grid.load({
+        	loss : mini.get("loss").getValue()
+        });
 	});
     
 	function feeRender(e) {
@@ -68,7 +76,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	function search() {
         var nickname = mini.get("key").getValue();
-        grid.load({ nickname: nickname });
+        var loss = mini.get("loss").getValue();
+        grid.load({ nickname: nickname,loss:loss });
     }
 	
     function onKeyEnter(e) {

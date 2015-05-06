@@ -344,7 +344,6 @@ public class StockWebController {
 
 	}
 
-	
 	@ResponseBody
 	@RequestMapping("setFreeDays")
 	public String setFreeDays(
@@ -358,7 +357,7 @@ public class StockWebController {
 		return "1";
 
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("setDays")
 	public String setDays(
@@ -387,7 +386,7 @@ public class StockWebController {
 						: Constants.CODE_FAILURE;
 				parasResult.put("rechargeResult", rechargeResult);
 				parasResult.put("responseResult", parasResult.get("respMsg"));
-				
+
 				webService.updateReceiptStatus(parasResult);
 				handler.handleOtherJob(Constants.TYPE_JOB_PAY_NOTICE,
 						parasResult);
@@ -544,13 +543,15 @@ public class StockWebController {
 			@RequestParam(value = "pageSize", required = false) String pageSize,
 			@RequestParam(value = "sortField", required = false) String sortField,
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
-			@RequestParam(value = "nickname", required = false) String nickname) {
+			@RequestParam(value = "nickname", required = false) String nickname,
+			@RequestParam(value = "loss", required = false) String loss) {
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
 
 			ClientPage clientPage = new ClientPage(Long.valueOf(pageIndex),
-					Long.valueOf(pageSize), sortField, sortOrder, nickname);
+					Long.valueOf(pageSize), sortField, sortOrder, nickname,
+					loss);
 
 			return webService.getOwingFee(clientPage);
 		} catch (ServiceInvokerException e) {
@@ -645,7 +646,7 @@ public class StockWebController {
 			return "0";
 		}
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("getTransactionInfo")
 	public DefaultPage<TransactionDO> getTransactionInfo(

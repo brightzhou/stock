@@ -12,8 +12,42 @@ public class OwingFeeDO {
 
 	private Float oweFee;
 
+	private String truename;
+
+	private Float profitAndLoss;
+
 	public OwingFeeDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the truename
+	 */
+	public String getTruename() {
+		return truename;
+	}
+
+	/**
+	 * @param truename
+	 *            the truename to set
+	 */
+	public void setTruename(String truename) {
+		this.truename = truename;
+	}
+
+	/**
+	 * @return the profitAndLoss
+	 */
+	public Float getProfitAndLoss() {
+		return profitAndLoss;
+	}
+
+	/**
+	 * @param profitAndLoss
+	 *            the profitAndLoss to set
+	 */
+	public void setProfitAndLoss(Float profitAndLoss) {
+		this.profitAndLoss = profitAndLoss;
 	}
 
 	/**

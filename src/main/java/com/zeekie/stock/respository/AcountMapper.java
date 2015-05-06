@@ -285,8 +285,8 @@ public interface AcountMapper {
 	public PhoneAndTIcketDO getUserPhone(@Param("nickname") String nickname)
 			throws Exception;
 
-	public long queryOwingFeeCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryOwingFeeCount(@Param("nickname") String nickname,
+			@Param("loss") String loss) throws Exception;
 
 	public List<OwingFeeDO> queryOwingFee(ClientPage clientPage)
 			throws Exception;
