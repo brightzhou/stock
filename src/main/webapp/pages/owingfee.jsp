@@ -42,17 +42,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="10%" field="nickname" renderer="onHdRender" headerAlign="center" align="center">
                         用户昵称
                     </div>
-                    <div field="operationAccount"   headerAlign="center" align="center" renderer="feeRender">
+                    <div field="operationAccount" width="10%"   headerAlign="center" align="center" renderer="feeRender">
                         操盘账户
                     </div>                   
                     <div field="phone" width="10%"  headerAlign="center" align="center" >
                         手机
                     </div>
-                    <div  field="oweFee" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
+                    <div  field="oweFee" headerAlign="center" align="center" width="10%" dataType="float" decimalPlaces="2">
                         欠费情况
                     </div>
-                    <div  field="profitAndLoss" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
+                    <div  field="profitAndLoss" headerAlign="center" align="center" width="10%" dataType="float" decimalPlaces="2">
                         支付亏损
+                    </div>
+                    <div  field="startAndEndDate" headerAlign="center" align="center" width="15%">
+                        时间
                     </div>
                 </div>
             </div>
