@@ -1180,12 +1180,9 @@
 	</select>
 	
 	<select id="queryOwingFeeCount" resultType="long" parameterType="string">
-		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE 1=1
+		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE T.BALANCE &lt; 0 
 		 <if test="nickname!=null and nickname!=''">
 		 	AND T.NICKNAME = #{nickname}
-		 </if>
-		 <if test="loss==1">
-		 	AND T.balance &lt;0
 		 </if>
 	</select>
 	
@@ -1194,29 +1191,73 @@
 		SELECT T.NICKNAME,
 		       T.BALANCE,
 		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = T.NICKNAME) PHONE,
-		      <!--  (SELECT c.truename FROM STOCK_id_card c WHERE exists
-		       (select 1 from stock_user u where u.id = c.user_id and u.nickname = t.nickname)) truename, -->
 		       (SELECT O.TRADE_ACOUNT
 		          FROM STOCK_USER_OPERATE_ACOUNT O
 		         WHERE O.NICKNAME = T.NICKNAME
 		           AND O.IS_CURRENT = '1') TRADE_ACOUNT,
-		        (SELECT (case when O.PROFIT_LOSS_CASH >=0 then 0 
-		               when O.PROFIT_LOSS_CASH &lt;0 then (O.GUARANTEE_CASH+O.PROFIT_LOSS_CASH)
-		               end) profitAndLoss
-		          FROM STOCK_USER_OPERATE_MAININFO O
-		         WHERE O.NICKNAME = T.NICKNAME
-		           AND O.IS_CURRENT = '1') PROFITANDLOSS
+		        '' PROFITANDLOSS
 		 FROM STOCK_USER_WALLET T
-		 WHERE <!-- T.BALANCE &lt; 0 -->1=1
+		 WHERE T.BALANCE &lt; 0 
 		 <if test="nickname!=null and nickname!=''">
 		 	and T.NICKNAME = #{nickname}
-		 </if>
-		 <if test="loss==1">
-		 	AND T.balance &lt;0
 		 </if>
 		 ORDER BY ID DESC
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
+	
+	<select id="queryOwingLossCount" resultType="long" parameterType="string">
+		Select Count(1)
+		  From (Select (Case
+		                 When o.Profit_Loss_Cash >= 0 Then
+		                  0
+		                 When o.Profit_Loss_Cash &lt; 0 Then
+		                  (o.Guarantee_Cash + o.Profit_Loss_Cash)
+		               End) Profitandloss,
+		               o.Nickname,
+		               s.Trade_Acount,
+		               (Select u.Telephone
+		                  From Stock_User u
+		                 Where u.Nickname = o.Nickname) Phone,
+		               (Select w.Balance
+		                  From Stock_User_Wallet w
+		                 Where w.Nickname = o.Nickname) Balance
+		          From Stock_User_Operate_Maininfo o, Stock_User_Operate_Acount s
+		         Where o.Operate_Account_Id = s.Id) s
+		 Where s.Profitandloss &lt; 0
+		 <if test="nickname!=null and nickname!=''">
+		 	AND T.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+	<select id="queryOwingLoss" resultMap="resultOwingFee" parameterType="com.zeekie.stock.web.ClientPage">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		Select Nickname,Trade_Acount,Phone,Profitandloss,Balance,End_Date
+		  From (Select (Case
+		                 When o.Profit_Loss_Cash >= 0 Then
+		                  0
+		                 When o.Profit_Loss_Cash &lt; 0 Then
+		                  (o.Guarantee_Cash + o.Profit_Loss_Cash)
+		               End) Profitandloss,
+		               o.Nickname,
+		               s.Trade_Acount,
+		               (Select u.Telephone
+		                  From Stock_User u
+		                 Where u.Nickname = o.Nickname) Phone,
+		               (Select case when w.Balance > 0 then 0
+		                       else w.Balance end
+		                  From Stock_User_Wallet w
+		                 Where w.Nickname = o.Nickname) Balance,
+		                 o.End_Date
+		          From Stock_User_Operate_Maininfo o, Stock_User_Operate_Acount s
+		         Where o.Operate_Account_Id = s.Id) s
+		 Where s.Profitandloss &lt; 0
+		 <if test="nickname!=null and nickname!=''">
+		 	and T.NICKNAME = #{nickname}
+		 </if>
+		 Order By s.End_Date Desc
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
 	
 	<select id="queryTrueName" parameterType="string" resultType="string">
 			Select c.Truename

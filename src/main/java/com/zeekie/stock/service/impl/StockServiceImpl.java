@@ -583,11 +583,10 @@ public class StockServiceImpl implements TradeService {
 		Map<String, String> map = new HashMap<String, String>();
 		String flag = "0";
 		try {
-
-			log.info("开始增加保证金...");
+			String nickname = transferData.getNickname();
+			log.info("用户[" + nickname + "]开始增加保证金...");
 			// 判断当前账户是否有足够的钱
 			String addedGuaranteeCash = transferData.getAddedGuaranteeCash();
-			String nickname = transferData.getNickname();
 			String isEnough = trade.isEnoughCashForClient(nickname,
 					addedGuaranteeCash);
 			if (!StringUtils.equals("1", isEnough)) {
@@ -683,6 +682,7 @@ public class StockServiceImpl implements TradeService {
 							clientCombineId, result.get("fundAccount"),
 							result.get("managerCombineId"));
 					if (!moveSuccess) {
+						log.error("向用户"+nickname+"资金划转失败");
 						throw new RuntimeException("向用户" + nickname + "资金划转失败");
 					}
 					if (log.isDebugEnabled()) {
@@ -744,7 +744,7 @@ public class StockServiceImpl implements TradeService {
 			map.put("flag", Constants.CODE_FAILURE);
 			throw new RuntimeException(e);
 		} finally {
-			log.info("退出HOMES服务");
+			log.info("操作增加保证金结束");
 		}
 		return map;
 	}

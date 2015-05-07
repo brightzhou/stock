@@ -285,8 +285,8 @@ public interface AcountMapper {
 	public PhoneAndTIcketDO getUserPhone(@Param("nickname") String nickname)
 			throws Exception;
 
-	public long queryOwingFeeCount(@Param("nickname") String nickname,
-			@Param("loss") String loss) throws Exception;
+	public long queryOwingFeeCount(@Param("nickname") String nickname)
+			throws Exception;
 
 	public List<OwingFeeDO> queryOwingFee(ClientPage clientPage)
 			throws Exception;
@@ -578,5 +578,18 @@ public interface AcountMapper {
 	 */
 	public void updateUserAppVersion(@Param("nickname") String nickname,
 			@Param("version") String version) throws Exception;
+
+	/**
+	 * 查询亏损
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public long queryOwingLossCount(@Param("nickname") String nickname);
+
+	/*
+	 * 查询亏损
+	 */
+	public List<OwingFeeDO> queryOwingLoss(ClientPage clientPage);
 
 }

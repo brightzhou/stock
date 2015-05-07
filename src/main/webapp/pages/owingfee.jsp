@@ -51,7 +51,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="oweFee" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
                         欠费情况
                     </div>
-                    <div  field="loss" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
+                    <div  field="profitAndLoss" headerAlign="center" align="center"  dataType="float" decimalPlaces="2">
                         支付亏损
                     </div>
                 </div>
