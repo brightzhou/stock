@@ -438,16 +438,9 @@ public class WebServiceImpl implements WebService {
 		List<OwingFeeDO> result = new ArrayList<OwingFeeDO>();
 		long total = 0;
 		try {
-			if (StringUtils.equals(clientPage.getLoss(), "1")) {
-				total = account.queryOwingFeeCount(clientPage.getNickname());
-				if (0 != total) {
-					result = account.queryOwingFee(clientPage);
-				}
-			} else {
-				total = account.queryOwingLossCount(clientPage.getNickname());
-				if (0 != total) {
-					result = account.queryOwingLoss(clientPage);
-				}
+			total = account.queryOwingFeeCount(clientPage.getNickname());
+			if (0 != total) {
+				result = account.queryOwingFee(clientPage);
 			}
 			return new DefaultPage<OwingFeeDO>(total, result);
 		} catch (Exception e) {

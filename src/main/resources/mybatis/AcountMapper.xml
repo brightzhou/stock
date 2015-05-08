@@ -1180,7 +1180,7 @@
 	</select>
 	
 	<select id="queryOwingFeeCount" resultType="long" parameterType="string">
-		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE T.BALANCE &lt; 0 
+		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE T.BALANCE &lt; 0 or T.debt &lt;0 
 		 <if test="nickname!=null and nickname!=''">
 		 	AND T.NICKNAME = #{nickname}
 		 </if>
@@ -1195,9 +1195,9 @@
 		          FROM STOCK_USER_OPERATE_ACOUNT O
 		         WHERE O.NICKNAME = T.NICKNAME
 		           AND O.IS_CURRENT = '1') TRADE_ACOUNT,
-		        '' PROFITANDLOSS
+		        T.debt PROFITANDLOSS
 		 FROM STOCK_USER_WALLET T
-		 WHERE T.BALANCE &lt; 0 
+		 WHERE T.BALANCE &lt; 0 or T.debt &lt;0 
 		 <if test="nickname!=null and nickname!=''">
 		 	and T.NICKNAME = #{nickname}
 		 </if>

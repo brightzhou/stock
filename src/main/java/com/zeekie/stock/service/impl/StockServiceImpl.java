@@ -802,11 +802,12 @@ public class StockServiceImpl implements TradeService {
 				String flag = StringUtils.isNotBlank(andDebtDO.getOperation()) ? "1"
 						: "0";
 				map.put("flag", flag);
-				map.put("debt",
-						andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
+				map.put("debt",andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
+				map.put("balance",andDebtDO.getBalance()+"");
 			} else {
 				map.put("flag", "0");
 				map.put("debt", "");
+				map.put("balance","");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

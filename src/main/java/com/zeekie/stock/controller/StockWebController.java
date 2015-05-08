@@ -543,15 +543,13 @@ public class StockWebController {
 			@RequestParam(value = "pageSize", required = false) String pageSize,
 			@RequestParam(value = "sortField", required = false) String sortField,
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
-			@RequestParam(value = "nickname", required = false) String nickname,
-			@RequestParam(value = "loss", required = false) String loss) {
+			@RequestParam(value = "nickname", required = false) String nickname) {
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
 
 			ClientPage clientPage = new ClientPage(Long.valueOf(pageIndex),
-					Long.valueOf(pageSize), sortField, sortOrder, nickname,
-					loss);
+					Long.valueOf(pageSize), sortField, sortOrder, nickname);
 
 			return webService.getOwingFee(clientPage);
 		} catch (ServiceInvokerException e) {

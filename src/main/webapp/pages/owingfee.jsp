@@ -26,8 +26,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                <tr>
 	                    <td style="white-space:nowrap;">
 	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>
-	                        <input name="loss" id="loss" class="mini-combobox" valueField="id" textField="text" 
-	                            data="[{'id': '1', 'text': '余额小于0'},{'id': '2', 'text': '亏损'}]"/>   
 	                        <a class="mini-button" onclick="search()">查询</a>
 	                    </td>
 	                </tr>
@@ -62,10 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     $(function(){
 	    grid = mini.get("datagrid1");
-	    mini.get("loss").setValue('1');
-        grid.load({
-        	loss : mini.get("loss").getValue()
-        });
+        grid.load();
 	});
     
 	function feeRender(e) {

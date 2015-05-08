@@ -6,6 +6,23 @@ public class HasOpertAndDebtDO {
 
 	private String operation;
 
+	private Float balance;
+
+	/**
+	 * @return the balance
+	 */
+	public Float getBalance() {
+		return balance;
+	}
+
+	/**
+	 * @param balance
+	 *            the balance to set
+	 */
+	public void setBalance(Float balance) {
+		this.balance = balance;
+	}
+
 	/**
 	 * @return the debt
 	 */
