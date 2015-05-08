@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
 
@@ -43,6 +44,7 @@ import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
+import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.util.XmlUtil;
 import com.zeekie.stock.web.ClientPage;
@@ -666,5 +668,15 @@ public class StockWebController {
 			log.error("getTransactionInfo error happened:", e.getMessage());
 			return new DefaultPage<TransactionDO>();
 		}
+	}
+
+	@ResponseBody
+	@RequestMapping("getRanking")
+	public ApiResponse<?> getRanking() {
+		JSONObject jo = new JSONObject();
+		jo.put("Lee**", "217.6%");
+		jo.put("blusenice**", "178.42%");
+		jo.put("高富帅**", "145.33%");
+		return ApiUtils.good(jo);
 	}
 }

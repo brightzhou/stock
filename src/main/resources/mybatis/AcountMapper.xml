@@ -193,6 +193,7 @@
 		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
 		<result column="TRADE_ACOUNT" property="operationAccount" jdbcType="VARCHAR"/>
 		<result column="truename" property="truename" jdbcType="VARCHAR"/>
+		<result column="startAndEndDate" property="startAndEndDate" jdbcType="VARCHAR"/>
 		<result column="PROFITANDLOSS" property="profitAndLoss" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
@@ -1231,7 +1232,7 @@
 	
 	<select id="queryOwingLoss" resultMap="resultOwingFee" parameterType="com.zeekie.stock.web.ClientPage">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		Select Nickname,Trade_Acount,Phone,Profitandloss,Balance,End_Date
+		Select Nickname,Trade_Acount,Phone,Profitandloss,Balance,End_Date,startAndEndDate
 		  From (Select (Case
 		                 When o.Profit_Loss_Cash >= 0 Then
 		                  0
@@ -1247,7 +1248,9 @@
 		                       else w.Balance end
 		                  From Stock_User_Wallet w
 		                 Where w.Nickname = o.Nickname) Balance,
-		                 o.End_Date
+		                 o.End_Date,
+		                 (TO_CHAR(O.START_DATE, 'yyyy-mm-dd') || ' 至 ' ||
+                         TO_CHAR(O.END_DATE, 'yyyy-mm-dd hh24:mi:ss')) STARTANDENDDATE
 		          From Stock_User_Operate_Maininfo o, Stock_User_Operate_Acount s
 		         Where o.Operate_Account_Id = s.Id) s
 		 Where s.Profitandloss &lt; 0

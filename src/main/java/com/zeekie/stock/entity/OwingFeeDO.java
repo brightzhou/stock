@@ -15,10 +15,33 @@ public class OwingFeeDO {
 	private String truename;
 
 	private Float profitAndLoss;
+	
+	private String startAndEndDate;
+	
 
 	public OwingFeeDO() {
 		// TODO Auto-generated constructor stub
 	}
+
+	
+	
+	/**
+	 * @return the startAndEndDate
+	 */
+	public String getStartAndEndDate() {
+		return startAndEndDate;
+	}
+
+
+
+	/**
+	 * @param startAndEndDate the startAndEndDate to set
+	 */
+	public void setStartAndEndDate(String startAndEndDate) {
+		this.startAndEndDate = startAndEndDate;
+	}
+
+
 
 	/**
 	 * @return the truename
