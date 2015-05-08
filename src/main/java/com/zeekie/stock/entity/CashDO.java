@@ -6,6 +6,23 @@ public class CashDO {
 
 	private Float orginCash;
 
+	private Float debt;
+
+	/**
+	 * @return the debt
+	 */
+	public Float getDebt() {
+		return debt;
+	}
+
+	/**
+	 * @param debt
+	 *            the debt to set
+	 */
+	public void setDebt(Float debt) {
+		this.debt = debt;
+	}
+
 	/**
 	 * @return the residueCash
 	 */

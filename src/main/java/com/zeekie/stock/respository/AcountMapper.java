@@ -579,17 +579,5 @@ public interface AcountMapper {
 	public void updateUserAppVersion(@Param("nickname") String nickname,
 			@Param("version") String version) throws Exception;
 
-	/**
-	 * 查询亏损
-	 * 
-	 * @param nickname
-	 * @return
-	 */
-	public long queryOwingLossCount(@Param("nickname") String nickname);
-
-	/*
-	 * 查询亏损
-	 */
-	public List<OwingFeeDO> queryOwingLoss(ClientPage clientPage);
 
 }

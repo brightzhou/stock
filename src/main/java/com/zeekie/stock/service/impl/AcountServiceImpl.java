@@ -328,7 +328,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public Map<String, String> getCurrentAccount(String nickname,String version) {
+	public Map<String, String> getCurrentAccount(String nickname, String version) {
 		Map<String, String> map = new HashMap<String, String>();
 		try {
 			CurrentAccountDO account = acounter.getCurrentAccount(nickname);
@@ -355,8 +355,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("freezeCash", "0.00");
 				map.put("fee", "");
 			}
-			if(StringUtils.isNotBlank(version)){
-				acounter.updateUserAppVersion(nickname,version);
+			if (StringUtils.isNotBlank(version)) {
+				acounter.updateUserAppVersion(nickname, version);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -660,12 +660,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	@Override
 	public String deductDebt(String nickname) {
-
 		try {
 			CashDO cashDO = acounter.selectCash(nickname);
 			if (cashDO.getResidueCash() > 0) {
 				acounter.deductDebt(cashDO.getResidueCash(), nickname);
 			}
+			trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
+					"-" + cashDO.getDebt(), "支付亏损");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Constants.CODE_FAILURE;

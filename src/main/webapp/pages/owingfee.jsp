@@ -52,9 +52,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div  field="profitAndLoss" headerAlign="center" align="center" width="10%" dataType="float" decimalPlaces="2">
                         支付亏损
                     </div>
-                    <div  field="startAndEndDate" headerAlign="center" align="center" width="15%">
-                        时间
-                    </div>
                 </div>
             </div>
         </div>
@@ -74,8 +71,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	function search() {
         var nickname = mini.get("key").getValue();
-        var loss = mini.get("loss").getValue();
-        grid.load({ nickname: nickname,loss:loss });
+        grid.load({ nickname: nickname});
     }
 	
     function onKeyEnter(e) {

@@ -130,6 +130,7 @@
 	<resultMap type="com.zeekie.stock.entity.CashDO" id="resultMoney">
 		<result column="residue" property="residueCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="BALANCE" property="orginCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="debt" property="debt" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.DebtDO" id="restultWallet">
@@ -937,7 +938,7 @@
 	</select>
 	
 	<select id="userWalletIsFull" parameterType="string" resultType="string">
-		select 1 from Stock_User_Wallet w where w.nickname = #{nickname} and w.balance>#{guaranteeCash}
+		select 1 from Stock_User_Wallet w where w.nickname = #{nickname} and w.balance>=#{guaranteeCash}
 	</select>
 	
 	<select id="checkDepoist" parameterType="string" resultType="string">
@@ -976,7 +977,7 @@
 	</update>
 	
 	<select id="selectCash" parameterType="string" resultMap="resultMoney">
-		SELECT (W.BALANCE + W.DEBT) residue, W.BALANCE FROM STOCK_USER_WALLET W
+		SELECT (W.BALANCE + W.DEBT) residue, W.BALANCE,w.DEBT FROM STOCK_USER_WALLET W
  		WHERE W.NICKNAME = #{nickname}
 	</select>
 	
@@ -1181,7 +1182,7 @@
 	</select>
 	
 	<select id="queryOwingFeeCount" resultType="long" parameterType="string">
-		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE T.BALANCE &lt; 0 or T.debt &lt;0 
+		SELECT COUNT(1) FROM STOCK_USER_WALLET T WHERE (t.Balance &lt; 0 Or t.Debt &lt; 0)
 		 <if test="nickname!=null and nickname!=''">
 		 	AND T.NICKNAME = #{nickname}
 		 </if>
@@ -1198,7 +1199,7 @@
 		           AND O.IS_CURRENT = '1') TRADE_ACOUNT,
 		        T.debt PROFITANDLOSS
 		 FROM STOCK_USER_WALLET T
-		 WHERE T.BALANCE &lt; 0 or T.debt &lt;0 
+		 WHERE (t.Balance &lt; 0 Or t.Debt &lt; 0)
 		 <if test="nickname!=null and nickname!=''">
 		 	and T.NICKNAME = #{nickname}
 		 </if>
@@ -1206,7 +1207,7 @@
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
 	</select>
 	
-	<select id="queryOwingLossCount" resultType="long" parameterType="string">
+	<!-- <select id="queryOwingLossCount" resultType="long" parameterType="string">
 		Select Count(1)
 		  From (Select (Case
 		                 When o.Profit_Loss_Cash >= 0 Then
@@ -1259,7 +1260,7 @@
 		 </if>
 		 Order By s.End_Date Desc
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
-	</select>
+	</select> -->
 	
 	
 	<select id="queryTrueName" parameterType="string" resultType="string">
