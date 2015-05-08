@@ -674,9 +674,9 @@ public class StockWebController {
 	@RequestMapping("getRanking")
 	public ApiResponse<?> getRanking() {
 		JSONObject jo = new JSONObject();
-		jo.put("Lee**", "217.6%");
-		jo.put("blusenice**", "178.42%");
-		jo.put("高富帅**", "145.33%");
+		jo.put("Leed**", "357.6%");
+		jo.put("blus**", "316.42%");
+		jo.put("高富帅**", "298.33%");
 		return ApiUtils.good(jo);
 	}
 }
