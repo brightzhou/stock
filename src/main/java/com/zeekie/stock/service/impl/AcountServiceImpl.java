@@ -666,7 +666,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				acounter.deductDebt(cashDO.getResidueCash(), nickname);
 			}
 			trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
-					"-" + cashDO.getDebt(), "支付亏损");
+					cashDO.getDebt() + "", "支付亏损");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Constants.CODE_FAILURE;

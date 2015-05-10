@@ -17,6 +17,7 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.PhoneAndTIcketDO;
 import com.zeekie.stock.entity.StockRadioDO;
+import com.zeekie.stock.entity.StopDealStockDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.enums.PicEnum;
@@ -24,11 +25,11 @@ import com.zeekie.stock.enums.XingeEnum;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.WebService;
+import com.zeekie.stock.service.homes.StockRestrictBuyStock;
 import com.zeekie.stock.service.xinge.StockMsg;
 import com.zeekie.stock.service.xinge.XingePush;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.DateUtil;
-import com.zeekie.stock.util.StringUtil;
 
 @Service
 public class SyncHandler {
@@ -56,8 +57,16 @@ public class SyncHandler {
 	private String operationNo;
 
 	@Autowired
+	@Value("${func_am_change_operator_info}")
+	private String changeInfoNo;
+
+	@Autowired
 	@Value("${xinge.tag.all}")
 	private String tag;
+
+	@Autowired
+	@Value("${stopDeal}")
+	private String stopDeal;
 
 	public void handleJob(final String type, final String param) {
 		new Thread() {
@@ -210,6 +219,11 @@ public class SyncHandler {
 				type)) {
 			try {
 				sendWarnLineMsg();
+
+				if (StringUtils.equals(Constants.CODE_SUCCESS, stopDeal)) {
+					// 禁止或戒除买股票
+					stopDealStock();
+				}
 				updateSwingUser();
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
@@ -246,6 +260,43 @@ public class SyncHandler {
 		}
 	}
 
+	private void stopDealStock() throws Exception {
+		List<StopDealStockDO> result = trade.queryStopDealResult();
+		if (null != result) {
+			for (StopDealStockDO item : result) {
+				String flag = item.getStopBuy();
+				Float warnFund = Float.valueOf(item.getWarnFund());
+				Float assetFund = Float.valueOf(item.getActualAsset());
+				if (StringUtils.equals(Constants.CODE_FAILURE, flag)) {
+					// 未限制买入，且实际资产小于警戒金额，控制買入
+					if (warnFund > assetFund) {
+						visitHomes(item, Constants.OPERATE_RIGHT_ONE, "1");
+					}
+				} else {
+					// 如果已經限制買入，那麼當实际资产大于警戒金额的时候，需要修改标志，并允许他买入
+					if (warnFund < assetFund) {
+						visitHomes(item, Constants.OPERATE_RIGHT_ZERO, "0");
+					}
+				}
+			}
+		}
+	}
+
+	private void visitHomes(StopDealStockDO item, String operateRight,
+			String flag) throws Exception {
+		StockRestrictBuyStock restrictBuyStock = new StockRestrictBuyStock(
+				item.getOperateNO(), operateRight, Constants.OPERATE_TYPE);
+		restrictBuyStock.callHomes(changeInfoNo);
+		if (restrictBuyStock.visitSuccess(changeInfoNo)) {
+			trade.updateStopBuyFlag(item.getOperateId(), flag);
+			if (log.isDebugEnabled()) {
+				log.debug("用户【" + item.getNickname() + "】实际资产低于警戒金额，限制其买入股票!");
+			}
+		} else {
+			log.error("用户【" + item.getNickname() + "】实际资产低于警戒金额，限制其买入股票,操作失败！");
+		}
+	}
+
 	private void updateSwingUser() throws Exception {
 		trade.updateWarnFlagToZero(swingPercent);
 	}
@@ -257,11 +308,11 @@ public class SyncHandler {
 				log.debug("Start send warnLine msg,send users total:"
 						+ result.size());
 			}
-			for (WarnLineDO lineDO : result) {
+			for (WarnLineDO warnLine : result) {
 				ApiUtils.send(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
-						lineDO.getPhone(), lineDO.getNickname(),
-						lineDO.getTicket(), lineDO.getActualAsset(),
-						lineDO.getWarnFund(), lineDO.getStopFund());
+						warnLine.getPhone(), warnLine.getNickname(),
+						warnLine.getTicket(), warnLine.getActualAsset(),
+						warnLine.getWarnFund(), warnLine.getStopFund());
 			}
 			batchMapper.batchInsert(TradeMapper.class, "updateWarnFlagToOne",
 					result);
@@ -277,13 +328,12 @@ public class SyncHandler {
 		try {
 			String operationId = param.get("operationId");
 			if (log.isDebugEnabled()) {
-				log.debug("後台為操盘号为[" + operationId + "]平倉，發短信提醒用戶");
+				log.debug("操盘ID为[" + operationId + "]平倉，发短信提醒用户");
 			}
-			String nickname = param.get("nickname");
-			PhoneAndTIcketDO andTIcketDO = account.getUserPhone(nickname);
+			// PhoneAndTIcketDO ticket = account.getUserPhone(nickname);
 			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN,
-					andTIcketDO.getPhone(), nickname, andTIcketDO.getTicket());
-
+					param.get("phone"), param.get("nickname"),
+					param.get("ticket"));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
@@ -340,8 +390,8 @@ public class SyncHandler {
 					trade.updateManageFeeByUser(nickname);
 					DeductDO fee = trade.queryNewStocker(nickname);
 					trade.deductManageFee(fee);
-					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,"-"+
-							fee.getFee(), "技术服务费");
+					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,
+							"-" + fee.getFee(), "技术服务费");
 
 					String referee = account.queryRefereeNickname(nickname);
 					if (StringUtils.isNotBlank(referee)) {
@@ -358,7 +408,6 @@ public class SyncHandler {
 					}
 				}
 			}
-
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

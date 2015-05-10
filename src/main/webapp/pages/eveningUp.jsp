@@ -138,19 +138,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function onOpRender(e){
     	var re = e.record;
     	if(re.status=='1'){
-    		return '<span class="link_2"><a  onclick="pay(\''+re.id+'\',\''+re.nickname+'\',\''+re.userId+'\')">平仓</a></span>';
+    		return '<span class="link_2"><a  onclick="pay(\''+re.id+'\',\''+re.nickname+'\',\''+re.userId+'\',\''+re.ticket+'\',\''+re.phone+'\')">平仓</a></span>';
     	}else{
     		return '已平仓';
     	}
     }
 
-    function pay(id,nickname,userId){
+    function pay(id,nickname,userId,ticket,phone){
     	mini.confirm("确定平仓吗", "确定？",
 	            function (action) {            
 	                if(action == "ok"){
 	                	 $.ajax({
 		     	                url: "api/stock/web/eveningUp",
-		     	                data: {id : id,nickname : nickname,userId:userId},
+		     	                data: {id:id,nickname:nickname,userId:userId,ticket:ticket,phone:phone},
 		     	                type: "post",
 		     	                success: function (msg) {
 		     	                    if(msg == "1"){

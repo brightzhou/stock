@@ -68,6 +68,15 @@
 		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.StopDealStockDO" id="resultStopDealResult">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
+		<result column="ACTUAL_CASH" property="actualAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="WARN_CASH" property="warnFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="STOP_BUY" property="stopBuy" jdbcType="VARCHAR"/>
+		<result column="TRADE_ACOUNT" property="operateNO" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<resultMap type="com.zeekie.stock.entity.HasOpertAndDebtDO" id="resultHasSth">
 		<result column="Debt" property="debt" jdbcType="VARCHAR"/>
 		<result column="operation" property="operation" jdbcType="VARCHAR"/>
@@ -486,6 +495,23 @@
 		   AND M.ACTUAL_CASH &lt;= M.WARN_CASH
 		   AND M.WARN_FLAG = '0'
     </select>
+    
+    <select id="queryStopDealResult" resultMap="resultStopDealResult">
+		SELECT M.NICKNAME,M.ID,
+		       M.ACTUAL_CASH,
+		       M.WARN_CASH,
+		       (SELECT TRADE_ACOUNT
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE A.ID = M.OPERATE_ACCOUNT_ID
+		           AND A.IS_CURRENT = '1') TRADE_ACOUNT,
+		       M.STOP_BUY
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.IS_CURRENT = '1' 
+    </select>
+    
+    <update id="updateStopBuyFlag" parameterType="string">
+    	update STOCK_USER_OPERATE_MAININFO set STOP_BUY = #{flag} where id = #{operateId}
+    </update>
     
     <update id="updateWarnFlagToOne" parameterType="com.zeekie.stock.entity.WarnLineDO">
     	update STOCK_USER_OPERATE_MAININFO set WARN_FLAG = '1' where id = #{operateId,jdbcType=VARCHAR}

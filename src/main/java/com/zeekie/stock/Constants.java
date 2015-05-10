@@ -102,7 +102,7 @@ public class Constants {
 	public static final String SEND_RED_PACKET = "130";// 管理端主动发红包
 
 	public static final String SEND_UNDO_WITHDRAWL = "140";// 用户撤销提现
-	
+
 	public static final String PAY_OFF_LOSS = "150";// 付清欠款
 
 	public static final String REDPACKET_TO_CLIENT_REFEREE = "用户【nickname】注册，您获取推广红包";// 给推荐人派发红包
@@ -174,6 +174,15 @@ public class Constants {
 	public static String TYPE_JOB_SENDMSG_NOTICE = "sendMessageToAll";
 
 	public static Map<String, String> MSG_MODEL = null;
+
+	// 修改
+	public static final String OPERATE_TYPE = "3";
+
+	// 限制买入股票
+	public static final String OPERATE_RIGHT_ONE = "1";
+
+	// 戒除限制买入股票
+	public static final String OPERATE_RIGHT_ZERO = "0";
 
 	/**
 	 * 发给推荐人的信息，告知是否成为推荐人

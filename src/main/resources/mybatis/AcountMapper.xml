@@ -148,6 +148,8 @@
 		<result column="TRADE_ACOUNT" property="tradeAccount" jdbcType="FLOAT"/>
 		<result column="PROFIT_LOSS_RADIO" property="profitPercent" jdbcType="VARCHAR"/>
 		<result column="userId" property="userId" jdbcType="VARCHAR"/>
+		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
+		<result column="phone" property="phone" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.AccountDO" id="resultGetAccount">
@@ -1019,7 +1021,9 @@
 				  (SELECT T.TRADE_ACOUNT
 				          FROM STOCK_USER_OPERATE_ACOUNT T
 				         WHERE T.NICKNAME = M.NICKNAME
-				           AND T.IS_CURRENT = '1') TRADE_ACOUNT
+				           AND T.IS_CURRENT = '1') TRADE_ACOUNT,
+				   M.TICKET,
+				   (Select telephone From Stock_User u Where u.Nickname = m.Nickname) phone    
 			  FROM STOCK_USER_OPERATE_MAININFO M
 			 WHERE 1=1
 			 	AND M.ACTUAL_CASH &lt;= M.STOP_CASH

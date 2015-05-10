@@ -49,7 +49,7 @@ public class AStockTrade {
 			dataset.updateString("operator_no", Constants.HOME_MANAGER_NO);
 			dataset.updateString("password", Constants.HOME_MANAGER_PWD);
 			resp.putEventData(dataset);
-			resp = client.sendReceive(resp, 10000);
+			resp = client.sendReceive(resp, 60000);
 			// 获得结果集
 			if (null == callApi())
 				throw new Exception();

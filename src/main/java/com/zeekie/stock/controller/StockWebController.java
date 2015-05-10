@@ -287,7 +287,9 @@ public class StockWebController {
 	public String eveningUp(
 			@RequestParam(value = "id", required = true) String id,
 			@RequestParam(value = "nickname", required = true) String nickname,
-			@RequestParam(value = "userId", required = true) String userId) {
+			@RequestParam(value = "userId", required = true) String userId,
+			@RequestParam(value = "ticket", required = true) String ticket,
+			@RequestParam(value = "phone", required = true) String phone) {
 		String flag = webService.eveningUp(id, nickname) ? Constants.CODE_SUCCESS
 				: Constants.CODE_FAILURE;
 		if (StringUtils.equals(Constants.CODE_SUCCESS, flag)) {
@@ -295,6 +297,8 @@ public class StockWebController {
 			param.put("operationId", id);
 			param.put("nickname", nickname);
 			param.put("userId", userId);
+			param.put("ticket", ticket);
+			param.put("phone", phone);
 			handler.handleOtherJob(Constants.TYPE_JOB_EVENING_UP_REMIND, param);
 		}
 		return flag;
@@ -674,9 +678,9 @@ public class StockWebController {
 	@RequestMapping("getRanking")
 	public ApiResponse<?> getRanking() {
 		JSONObject jo = new JSONObject();
-		jo.put("Leed**", "357.6%");
-		jo.put("blus**", "316.42%");
-		jo.put("高富帅**", "298.33%");
+		jo.put("Leed**", "357%");
+		jo.put("blus**", "316%");
+		jo.put("高富帅**", "298%");
 		return ApiUtils.good(jo);
 	}
 }

@@ -1,12 +1,10 @@
 package com.zeekie.stock.entity;
 
-public class CurrentOperationWebDO {
+public class CurrentOperationWebDO extends BaseUserDO{
 
 	private String id;
 
 	private String userId;
-
-	private String nickname;
 
 	private String status;
 
@@ -20,8 +18,25 @@ public class CurrentOperationWebDO {
 
 	private String tradeAccount;
 
+	private String ticket;
+
 	public CurrentOperationWebDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the ticket
+	 */
+	public String getTicket() {
+		return ticket;
+	}
+
+	/**
+	 * @param ticket
+	 *            the ticket to set
+	 */
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
 	}
 
 	/**
@@ -142,21 +157,6 @@ public class CurrentOperationWebDO {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the nickname
-	 */
-	public String getNickname() {
-		return nickname;
-	}
-
-	/**
-	 * @param nickname
-	 *            the nickname to set
-	 */
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
 	}
 
 }

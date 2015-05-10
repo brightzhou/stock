@@ -14,6 +14,7 @@ import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.HasOpertAndDebtDO;
 import com.zeekie.stock.entity.HistoryOperationDO;
 import com.zeekie.stock.entity.RuleDO;
+import com.zeekie.stock.entity.StopDealStockDO;
 import com.zeekie.stock.entity.TradeDO;
 import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.entity.form.AddCuaranteeForm;
@@ -214,5 +215,21 @@ public interface TradeMapper {
 			throws Exception;
 
 	void updateReceiptStatus(Map<String, String> param);
+
+	/**
+	 * 查询需要禁止买入的用户
+	 * 
+	 * @return
+	 */
+	List<StopDealStockDO> queryStopDealResult();
+
+	/**
+	 * 更新买卖标志
+	 * 
+	 * @param operateId
+	 * @param flag
+	 */
+	void updateStopBuyFlag(@Param("operateId") String operateId,
+			@Param("flag") String flag);
 
 }
