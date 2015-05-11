@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity;
 
+import com.zeekie.stock.Constants;
+
 /**
  * 资金划转
  * 
@@ -25,6 +27,23 @@ public class TradeDO {
 	private String combineName;
 
 	private String managerCombineId;
+
+	private String flag = Constants.CODE_FAILURE;
+
+	/**
+	 * @return the flag
+	 */
+	public String getFlag() {
+		return flag;
+	}
+
+	/**
+	 * @param flag
+	 *            the flag to set
+	 */
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 
 	/**
 	 * @return the managerCombineId

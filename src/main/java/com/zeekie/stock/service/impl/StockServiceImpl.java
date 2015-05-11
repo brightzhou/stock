@@ -97,7 +97,7 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${stock.operation.number}")
 	private String operationNo;
-	
+
 	private Set<String> fundAccountSet = new HashSet<String>();
 
 	@Override
@@ -182,34 +182,57 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			// 1、保存操盘账号信息 资金划转
-			String id = saveOperateAcount(nickname, tradeFund);
-			if (StringUtils.isBlank(id)) {
+			TradeDO tradeDO = callHomesInterface(nickname, tradeFund);
+			if (null == tradeDO) {
 				currentOperateInfo.put("flag", "2");
 				return currentOperateInfo;
-			} else if (StringUtils.equals(id, "3#")) {
+			}
+			String flag = tradeDO.getFlag();
+			if (StringUtils.equals(Constants.CODE_FAILURE, flag)) {
+				currentOperateInfo.put("flag", "2");
+				return currentOperateInfo;
+			} else if (StringUtils.equals(flag, "3#")) {
 				// 管理账户资金不足
 				currentOperateInfo.put("flag", "3");
 				return currentOperateInfo;
 			}
-			// 2、保存操盘信息
-			tradeForm.setOperateAccountId(id);
+
+			// 3.0 更新该账户状态为已经被使用
+			String operateNO = tradeDO.getOperatorNo();
+			String operatePwd = tradeDO.getOperatorPwd();
+			acount.updateAccountStatus(operateNO, operatePwd);
+			if (log.isDebugEnabled()) {
+				log.debug("用户【" + nickname + "】开始使用操盘账户【" + operateNO
+						+ "】,新密码为【" + operatePwd + "】");
+			}
+
+			// 4、操盘账户信息入库
+			Long id = trade.getSeqId("Seq_User_Operate_Acount_Id.Nextval");
+			tradeDO.setId(id);
+			tradeDO.setNickname(nickname);
+			trade.storeOperatorAcountInfo(tradeDO);
+			if (log.isDebugEnabled()) {
+				log.debug("用户操盘账号【" + operateNO + "】当前操盘信息入库");
+			}
+
+			// 5、保存操盘信息
+			tradeForm.setOperateAccountId(id + "");
 			acount.storeOperatorCash(tradeForm);
 
-			// 3、从客户账户扣除保证金
+			// 6、从客户账户扣除保证金
 			trade.deductGuaranteeCash(guaranteeCash, nickname);
 
-			String fundAccount = acount.queryFundAccount(nickname);
-			// 4、主账户减去配资的钱
-			// trade.deductTradeFund(Float.parseFloat(tradeFund));
-			acount.addTotalFund("0", "-" + tradeFund, fundAccount, "主账户扣除配资的钱",
-					"recharge");
+			String fundAccount = tradeDO.getFundAccount();
+			// 7、主账户减去配资的钱
+			acount.addTotalFund("0", "-" + tradeFund, tradeDO.getFundAccount(),
+					"主账户扣除配资的钱", "recharge");
 
 			// 更新历史金额状态为N
 			acount.updateStatusToN(fundAccount);
 			// 更新当前金额状态为Y
 			acount.updateStatusToY(fundAccount);
 
-			// 5、记录资金流水
+			// 8、记录资金流水
 			trade.recordFundflow(tradeForm.getNickname(),
 					Constants.CLIENTWALLET_TO_MAINACOUNT, "-" + guaranteeCash,
 					"支付保证金");
@@ -223,10 +246,11 @@ public class StockServiceImpl implements TradeService {
 			// 返回当前操盘信息
 			currentOperateInfo.put("currentAsset", guaranteeCash);// 当前资产
 			currentOperateInfo.put("actualFund", tradeFund);// 实盘金额
-			currentOperateInfo.put("profitAndLossCash", "0");// 盈亏金额
-			currentOperateInfo.put("profitAndLossRadio", "0");// 盈亏比例
-			currentOperateInfo.put("progressBar", "1");// 进度条
-			currentOperateInfo.put("flag", "1");
+			currentOperateInfo.put("profitAndLossCash", Constants.CODE_FAILURE);// 盈亏金额
+			currentOperateInfo
+					.put("profitAndLossRadio", Constants.CODE_FAILURE);// 盈亏比例
+			currentOperateInfo.put("progressBar", Constants.CODE_SUCCESS);// 进度条
+			currentOperateInfo.put("flag", Constants.CODE_SUCCESS);
 
 			if (log.isDebugEnabled()) {
 				log.debug("执行保存操盘耗时："
@@ -289,94 +313,93 @@ public class StockServiceImpl implements TradeService {
 		return operateAcount;
 	}
 
-	private synchronized String saveOperateAcount(String nickname,
-			String moveFund) throws Exception {
+	private synchronized TradeDO callHomesInterface(String nickname,
+			String moveFund) {
 		// 2.2、查詢数据库获取密码
 		String operatorPwd = "";
 		String operator = "";
 		String combineId = "";
 		String fundAccount = "";
 		String managerCombineId = "";
-		List<TradeDO> li = null;
+		Integer total;
 		TradeDO client = null;
-		// ManagerDO manager = acount.getStockManager();
-		Integer total = acount.queryTotalFundAccount();
-		boolean haveOperator = false;
-		// 判断该账号是否已经结束但是在HOMES却还有资金
-		li = acount.getAllUserInfo();
-		if (null == li || li.isEmpty()) {
-			if (log.isDebugEnabled()) {
-				log.debug("已经无可用的资金账号，请管理员注意了");
+		try {
+			total = acount.queryTotalFundAccount();
+			boolean haveOperator = false;
+			// 判断该账号是否已经结束但是在HOMES却还有资金
+			List<TradeDO> item = acount.getAllUserInfo();
+			if (null == item || item.isEmpty()) {
+				if (log.isDebugEnabled()) {
+					log.debug("已经无可用的资金账号，请管理员注意了");
+				}
+				return client;
 			}
-			return "";
-		}
-		for (int i = 0; i < li.size(); i++) {
-			client = li.get(i);
-			fundAccount = client.getFundAccount();
-			if (fundAccountSet.contains(fundAccount)) {
-				continue;
-			}
-			if (total == fundAccountSet.size()) {
-				fundAccountSet.clear();
-				return "3#";
-			}
-			operatorPwd = client.getOperatorPwd();
-			operator = client.getOperatorNo();
-			combineId = client.getCombineId();
-			managerCombineId = client.getManagerCombineId();
-			if (canUse(operator, combineId, fundAccount)) {
-				if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
-					haveOperator = true;
-					break;
+			for (int i = 0; i < item.size(); i++) {
+				client = item.get(i);
+				fundAccount = client.getFundAccount();
+				if (fundAccountSet.contains(fundAccount)) {
+					continue;
+				}
+				if (total == fundAccountSet.size()) {
+					fundAccountSet.clear();
+					client.setFlag(Constants.CODE_FAILURE_NO_ACCOUNT);
+					return client;
+				}
+				operatorPwd = client.getOperatorPwd();
+				operator = client.getOperatorNo();
+				combineId = client.getCombineId();
+				managerCombineId = client.getManagerCombineId();
+				if (canUse(operator, combineId, fundAccount)) {
+					if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
+						haveOperator = true;
+						break;
+					}
 				}
 			}
+			fundAccountSet.clear();
+			if (!haveOperator) {
+				return client;
+			}
+			// 2.3 生成新密码更新到homes
+			String newOperatePwd = genNewPassword();
+			if (!modifyClientPwd(client, operatorPwd, operator, newOperatePwd)) {
+				log.error("modify homes password failure for user[" + nickname
+						+ "],operation NO:" + operator);
+				return client;
+			}
+			if (log.isDebugEnabled()) {
+				log.debug("访问HOMES服务，修改用户密码成功");
+			}
+			client.setOperatorPwd(newOperatePwd);
+			// 2.3.1修改用户名称
+			if (!modifyUserName(nickname, fundAccount, combineId)) {
+				log.error("modify homes name failure for user" + nickname
+						+ ",operation NO:" + operator);
+				client.setFlag(Constants.CODE_FAILURE);
+				return client;
+			}
+			if (log.isDebugEnabled()) {
+				log.debug("访问HOMES服务，修改用户名称成功");
+			}
+			// 2.4 获取单号相关信息
+			if (!setCombineInfo(client, fundAccount)) {
+				return client;
+			}
+			// 2.5资金划转
+			if (!moveFund(moveFund, combineId, fundAccount, managerCombineId)) {
+				return client;
+			}
+			if (log.isDebugEnabled()) {
+				log.debug("访问HOMES服务，进行资金划转成功");
+				log.debug("访问HOMES服务结束,处理过程正常，成功推出！！！");
+			}
+			client.setFlag(Constants.CODE_SUCCESS);
+			return client;
+		} catch (Exception e) {
+			log.error("访问HOMES发生错误：");
+			log.error(e.getMessage(), e);
+			return client;
 		}
-		fundAccountSet.clear();
-		if (!haveOperator) {
-			return "";
-		}
-
-		// 2.3 生成新密码更新到homes
-		String newOperatePwd = genNewPassword();
-		if (!modifyClientPwd(client, operatorPwd, operator, newOperatePwd)) {
-			log.error("modify homes password failure for user[" + nickname
-					+ "],operation NO:" + operator);
-			return "";
-		}
-
-		// 2.3.1修改用户名称
-		if (!modifyUserName(nickname, fundAccount, combineId)) {
-			log.error("modify homes name failure for user" + nickname
-					+ ",operation NO:" + operator);
-			return "";
-		}
-
-		// 2.4 获取单号相关信息
-		if (!setCombineInfo(client, fundAccount)) {
-			return "";
-		}
-
-		// 2.5资金划转
-		log.info("【开始操盘saveOperateAcount】访问HOMES服务，进行资金划转操作");
-		if (!moveFund(moveFund, combineId, fundAccount, managerCombineId)) {
-			return "";
-		}
-		log.info("登出HOMES服务，资金划转成功");
-
-		// 3.0 更新该账户状态为已经被使用
-		acount.updateAccountStatus(operator, newOperatePwd);
-		log.info("账户【" + operator + "】开始使用,新密码为【" + newOperatePwd + "】");
-
-		// 4、操盘账户信息入库
-		client.setNickname(nickname);
-		// client.setFundAccount(manager.getFundAccount());
-
-		Long id = trade.getSeqId("Seq_User_Operate_Acount_Id.Nextval");
-		client.setId(id);
-		trade.storeOperatorAcountInfo(client);
-		log.info("用户【" + operator + "】当前操盘信息入库\n");
-
-		return id + "";
 
 	}
 
@@ -399,7 +422,7 @@ public class StockServiceImpl implements TradeService {
 	private boolean modifyUserName(String nickname, String fundAccount,
 			String combineId) throws Exception {
 		String trueName = StringUtils.defaultIfBlank(
-				acount.queryTrueName(nickname), "匿名用户");
+				acount.queryTrueName(nickname), "匿名用户XX");
 		StockModifyUserName user = new StockModifyUserName(fundAccount,
 				combineId, trueName);
 		user.callHomes(fn_change_assetName);
@@ -682,7 +705,7 @@ public class StockServiceImpl implements TradeService {
 							clientCombineId, result.get("fundAccount"),
 							result.get("managerCombineId"));
 					if (!moveSuccess) {
-						log.error("向用户"+nickname+"资金划转失败");
+						log.error("向用户" + nickname + "资金划转失败");
 						throw new RuntimeException("向用户" + nickname + "资金划转失败");
 					}
 					if (log.isDebugEnabled()) {
@@ -716,8 +739,8 @@ public class StockServiceImpl implements TradeService {
 
 			// 6、记录流水新增配资
 			trade.recordFundflow(nickname,
-					Constants.CLIENTWALLET_TO_MAINACOUNT, "-"+addedGuaranteeCash,
-					"增加保证金");
+					Constants.CLIENTWALLET_TO_MAINACOUNT, "-"
+							+ addedGuaranteeCash, "增加保证金");
 			map.put("flag", flag);
 
 			if (log.isDebugEnabled()) {
@@ -802,12 +825,13 @@ public class StockServiceImpl implements TradeService {
 				String flag = StringUtils.isNotBlank(andDebtDO.getOperation()) ? "1"
 						: "0";
 				map.put("flag", flag);
-				map.put("debt",andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
-				map.put("balance",andDebtDO.getBalance()+"");
+				map.put("debt",
+						andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
+				map.put("balance", andDebtDO.getBalance() + "");
 			} else {
 				map.put("flag", "0");
 				map.put("debt", "");
-				map.put("balance","");
+				map.put("balance", "");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
