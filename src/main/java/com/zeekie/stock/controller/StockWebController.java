@@ -40,6 +40,7 @@ import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
+import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.WebService;
@@ -671,6 +672,53 @@ public class StockWebController {
 		} catch (ServiceInvokerException e) {
 			log.error("getTransactionInfo error happened:", e.getMessage());
 			return new DefaultPage<TransactionDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("userbank/get")
+	public DefaultPage<UserBankDO> getUserbank(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+
+			ClientPage clientPage = new ClientPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, nickname);
+
+			return webService.getUserbank(clientPage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getUserbank error happened:", e.getMessage());
+			return new DefaultPage<UserBankDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("userBank/save")
+	public String saveUserbank(@RequestParam(value = "data") String data) {
+		JSONArray jo = JSONArray.fromObject(data);
+		try {
+			return webService.saveUserbank(jo);
+		} catch (ServiceInvokerException e) {
+			log.error("query getUserbank error happened:", e.getMessage());
+			return "0";
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping("userBank/kill")
+	public String deleteUserbank(@RequestParam(value = "id") String id) {
+		try {
+			return webService.deleteUserbank(id);
+		} catch (ServiceInvokerException e) {
+			log.error("operation [deleteUserbank] error happened:",
+					e.getMessage());
+			return "0";
 		}
 	}
 

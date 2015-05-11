@@ -90,12 +90,12 @@ public class InitServer implements InitializingBean {
 			log.debug("初始化全局变量成功！！！");
 		}
 
-		Constants.sensitiveWordMap = sensitive.initKeyWord();
+//		Constants.sensitiveWordMap = sensitive.initKeyWord();
 		if (log.isDebugEnabled()) {
 			log.debug("初始化敏感词汇成功！！！");
 		}
 		// 初始化短信模板
-		initTemplate();
+//		initTemplate();
 
 		// 启动HOMES
 		if (StringUtils.equals(Constants.CODE_SUCCESS, startHomes)) {

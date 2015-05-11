@@ -36,6 +36,7 @@ import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TradeDO;
 import com.zeekie.stock.entity.TransactionDO;
+import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
@@ -579,5 +580,41 @@ public interface AcountMapper {
 	public void updateUserAppVersion(@Param("nickname") String nickname,
 			@Param("version") String version) throws Exception;
 
+	/**
+	 * 获取银行信息记录数
+	 * 
+	 * @param nickname
+	 * @return long
+	 * @throws Exception
+	 */
+	public long queryUserbankCount(@Param("nickname") String nickname)
+			throws Exception;
+
+	/**
+	 * 获取记录数
+	 * 
+	 * @param clientPage
+	 * @return List<UserBankDO>
+	 * @throws Exception
+	 */
+	public List<UserBankDO> queryUserbankInfo(ClientPage clientPage)
+			throws Exception;
+
+	/**
+	 * 保存银行卡信息
+	 * 
+	 * @param id
+	 * @param cardNumber
+	 * @throws Exception
+	 */
+	public void updateUserbank(@Param("id") String id,
+			@Param("cardNumber") String cardNumber) throws Exception;
+
+	/**
+	 * 删除银行卡
+	 * 
+	 * @param id
+	 */
+	public void deleteUserbank(@Param("id") String id) throws Exception;
 
 }
