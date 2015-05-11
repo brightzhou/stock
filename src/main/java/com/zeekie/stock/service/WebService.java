@@ -2,6 +2,7 @@ package com.zeekie.stock.service;
 
 import java.util.Map;
 
+import net.sf.json.JSONArray;
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
 
@@ -15,6 +16,7 @@ import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
+import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.web.ClientPage;
@@ -277,4 +279,32 @@ public interface WebService {
 	 */
 	public DefaultPage<TransactionDO> getTransactionInfo(ClientPage clientPage)
 			throws ServiceInvokerException;
+
+	/**
+	 * 获取银行信息用于维护
+	 * 
+	 * @param clientPage
+	 * @return
+	 */
+	public DefaultPage<UserBankDO> getUserbank(ClientPage clientPage)
+			throws ServiceInvokerException;
+
+	/**
+	 * 保存银行卡信息
+	 * 
+	 * @param id
+	 * @param cardNumber
+	 * @return
+	 */
+	public String saveUserbank(JSONArray ja) throws ServiceInvokerException;
+
+	/**
+	 * 删除银行卡信息
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public String deleteUserbank(String id) throws ServiceInvokerException;
+
 }

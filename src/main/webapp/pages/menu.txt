@@ -8,6 +8,7 @@
 	{id: "fundFlow", text: "资金流水信息" , pid: "wallet"},
 	{id: "transaction", text: "交易明细" , pid: "wallet"},
 	{id: "operation", text: "实盘信息" , pid: "wallet"},
+	{id: "bankEdit", text: "银行卡维护" , pid: "wallet"},
 	
 	{id: "operation", text: "操盘管理"},
 	{id: "eveningUp", text: "结束操盘" , pid: "operation"},

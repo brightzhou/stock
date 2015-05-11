@@ -33,6 +33,7 @@ import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
+import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.respository.AcountMapper;
@@ -695,6 +696,47 @@ public class WebServiceImpl implements WebService {
 				result = account.queryTransactionInfo(clientPage);
 			}
 			return new DefaultPage<TransactionDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public DefaultPage<UserBankDO> getUserbank(ClientPage clientPage)
+			throws ServiceInvokerException {
+		List<UserBankDO> result = new ArrayList<UserBankDO>();
+		long total = 0;
+		try {
+			total = account.queryUserbankCount(clientPage.getNickname());
+			if (0 != total) {
+				result = account.queryUserbankInfo(clientPage);
+			}
+			return new DefaultPage<UserBankDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public String saveUserbank(JSONArray ja)
+			throws ServiceInvokerException {
+		try {
+			List<UserBankDO> list = JSONArray.toList(ja, UserBankDO.class);
+			batchMapper.batchInsert(AcountMapper.class, "updateUserbank", list);
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public String deleteUserbank(String id) throws ServiceInvokerException {
+		try {
+			account.deleteUserbank(id);
+			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);

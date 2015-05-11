@@ -299,6 +299,7 @@
 	<resultMap type="com.zeekie.stock.entity.BasicInfoDO" id="resultBasicInfo">
 		<result column="Hasdebt" property="hasDebt" jdbcType="VARCHAR"/>
 		<result column="Hasoperation" property="hasOperation" jdbcType="VARCHAR"/>
+		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
 	
@@ -320,6 +321,15 @@
 		<result column="TRANSACTION_TIME" property="transactionDate" jdbcType="VARCHAR"/>
 		<result column="DESCRIPTION" property="description" jdbcType="VARCHAR"/>
 		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.UserBankDO" id="resultUserbankInfo">
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="truename" property="truename" jdbcType="VARCHAR"/>
+		<result column="phone" property="phone" jdbcType="VARCHAR"/>
+		<result column="card_number" property="cardNumber" jdbcType="VARCHAR"/>
+		<result column="bank" property="bank" jdbcType="VARCHAR"/>
+		<result column="id" property="id" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- user indentification -->
@@ -1505,7 +1515,8 @@
 		              '',
 		              (Select w.Debt
 		                 From Stock_User_Wallet w
-		                Where w.Nickname = u.Nickname)) Hasdebt
+		                Where w.Nickname = u.Nickname)) Hasdebt,
+		        (select w.balance from stock_user_wallet w where w.Nickname = u.Nickname) balance        
 		  From Stock_User u
 		  where u.id = #{userId}
 	</select>
@@ -1560,5 +1571,37 @@
 	       SET version = #{version,jdbcType=VARCHAR}
 	     WHERE c.NICKNAME = #{nickname}
 	</update>
+	
+	<select id="queryUserbankCount" parameterType="string" resultType="long">
+		Select Count(1) From Stock_Bank_Info t,stock_user u Where t.user_id = u.id
+		 <if test="nickname!=null and nickname!=''">
+		 	AND u.NICKNAME = #{nickname}
+		 </if>
+	</select>
+	
+	<select id="queryUserbankInfo" parameterType="string" resultMap="resultUserbankInfo">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT t.id,
+		       u.nickname,
+		       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = T.USER_ID) TRUENAME,
+		       phone,
+		       card_number,
+		       bank
+		  FROM Stock_Bank_Info T,stock_user u
+		  WHERE t.user_id = u.id
+		 <if test="nickname!=null and nickname!=''">
+		 	AND u.NICKNAME = #{nickname}
+		 </if>
+		 Order By t.id DESC
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select>
+	
+	<update id="updateUserbank" parameterType="com.zeekie.stock.entity.UserBankDO">
+		update Stock_Bank_Info set card_number =#{cardNumber} where id = #{id}
+	</update>
+	
+	<delete id="deleteUserbank" parameterType="string">
+		delete from Stock_Bank_Info where id = #{id}
+	</delete>
 </mapper>
 

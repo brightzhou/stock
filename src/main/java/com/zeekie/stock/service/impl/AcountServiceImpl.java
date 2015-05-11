@@ -783,7 +783,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		try {
 			BasicInfoDO basicinfoDO = acounter.getBasicInfo(userId);
 			basicinfoDO.setAppStatus(Constants.HOMES_STATUS);
-			return JSONObject.fromObject(basicinfoDO);
+			return JSONObject.fromObject(basicinfoDO,Constants.jsonConfig);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
