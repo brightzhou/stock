@@ -20,7 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <body class="body_fit" >
 <div class="Place_text"><span>用户列表查询</span></div>
-        <div style="width:1100px;">
+        <div style="width:100%;">
 	        <div class="mini-toolbar" style="border-bottom:0;padding:2px;">
 	            <table style="width:100%;">
 	                <tr>
@@ -36,48 +36,48 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        </div>
     	</div>
         <div >
-            <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
+            <div id="datagrid1" class="mini-datagrid" style="width:100%;height:400px;" allowResize="true"
         			url="api/stock/web/getClient"  idField="id" multiSelect="false">
                 <div property="columns">
-                    <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
-                    <div type="checkcolumn" >#</div>
-                    <div width="25%" field="nickname" renderer="onHdRender" headerAlign="center" align="center">
+                    <!-- <div type="indexcolumn" headerAlign="center" width="5%">序号</div> -->
+                    <div type="checkcolumn" width="3%">#</div>
+                    <div width="8%" field="nickname" renderer="onHdRender" headerAlign="center" align="center" >
                         用户昵称
                     </div>
-                    <div  field="trueName"  headerAlign="center" align="center">
+                    <div  field="trueName"  headerAlign="center" align="center" width="7%">
                         真实姓名
                     </div>
-                    <div  field="phone"  headerAlign="center" align="center">
+                    <div  field="phone"  headerAlign="center" align="center" width="7%">
                         手机
                     </div>
-                    <div field="range" width="10%"  headerAlign="center" align="center" >
+                    <div field="range" width="5%"  headerAlign="center" align="center" >
                         用户等级
                     </div>
-                    <div  field="stopLine" headerAlign="center" align="center">
+                    <div  field="stopLine" headerAlign="center" align="center" width="5%">
                         平仓线
                     </div>
-                    <div  field="warnLine"  headerAlign="center" align="center">
+                    <div  field="warnLine"  headerAlign="center" align="center" width="5%">
                         止损线
                     </div>         
-                    <div field="assignPercent"   headerAlign="center" align="center" >
+                    <div field="assignPercent"   headerAlign="center" align="center" width="5%">
                         配资比例
                     </div>                   
-                    <div  field="toRefereePacket" width="15%"  headerAlign="center" align="center">
+                    <div  field="toRefereePacket" width="4%"  headerAlign="center" align="center" width="10%">
                         给推荐人红包
                     </div>
-                    <div field="registerPacket" width="10%"  headerAlign="center" align="center" >
+                    <div field="registerPacket" width="4%"  headerAlign="center" align="center" >
                         注册红包
                     </div>
-                    <div field="managementFeePercent" width="15%"  headerAlign="center"  align="center" >
+                    <div field="managementFeePercent" width="6%"  headerAlign="center"  align="center" >
                         技术服务费比例
                     </div>
-                    <div field="assignCash" width="10%"  headerAlign="center"  align="center" >
+                    <div field="assignCash" width="6%"  headerAlign="center"  align="center" >
                         配资额度
                     </div>
-                    <div field="upLinePercent" width="10%"  headerAlign="center"  align="center" >
+                    <div field="upLinePercent" width="5%"  headerAlign="center"  align="center" >
                         上线比例
                     </div>
-                    <div field="downLinePercent" width="10%"  headerAlign="center"  align="center" >
+                    <div field="downLinePercent" width="5%"  headerAlign="center"  align="center" >
                         下线比例
                     </div>
                 </div>
