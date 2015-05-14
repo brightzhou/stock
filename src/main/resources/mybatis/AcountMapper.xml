@@ -299,6 +299,7 @@
 	<resultMap type="com.zeekie.stock.entity.BasicInfoDO" id="resultBasicInfo">
 		<result column="Hasdebt" property="hasDebt" jdbcType="VARCHAR"/>
 		<result column="Hasoperation" property="hasOperation" jdbcType="VARCHAR"/>
+		<result column="PROGRESSBAR" property="progressbar" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
@@ -1074,8 +1075,8 @@
 	
 	<select id="queryClientCount" resultType="long" parameterType="string">
 		SELECT COUNT(1)
-		  FROM STOCK_FUND_ASSIGN_RADIO T
-		 WHERE 1=1 
+		  FROM STOCK_FUND_ASSIGN_RADIO T, STOCK_USER U
+		 WHERE U.NICKNAME = T.NICKNAME 
 		 <if test="nickname!=null and nickname!=''">
 		 	AND T.NICKNAME = #{nickname}
 		 </if>
@@ -1083,37 +1084,33 @@
 	
 	<select id="queryClient" resultMap="resultClient" parameterType="com.zeekie.stock.web.ClientPage">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		select T.ID,
-		       T.NICKNAME,
-		       (CASE
-		         WHEN T.USER_RANGE = '1' THEN
-		          '小生'
-		         WHEN T.USER_RANGE = '2' THEN
-		          '秀才'
-		         WHEN T.USER_RANGE = '3' THEN
-		          '探花'
-		         WHEN T.USER_RANGE = '5' THEN
-		          '榜眼'
-		         ELSE
-		          '状元'
-		       END) USER_RANGE,
-		       T.STOP_RADIO,
-		       T.WARN_RADIO,
-		       T.ASSIGN_RADIO,
-		       T.ASSIGN_REFEREE_RED_PACKET,
-		       T.ASSIGN_REGISTER_RED_PACKET,
-		       T.FEE_RADIO,
-		       T.ASSIGN_CASH,
-		       T.UP_LINE_PERCENT,
-		       T.DOWN_LINE_PERCENT,
-		       (Select u.Telephone From Stock_User u Where u.Nickname = t.Nickname) Phone,
-		       (Select c.Truename
-		          From Stock_Id_Card c
-		         Where Exists (Select 1
-		                  From Stock_User u
-		                 Where u.Id = c.User_Id
-		                   And u.Nickname = t.Nickname)) Truename
- 		  FROM STOCK_FUND_ASSIGN_RADIO T
+			SELECT T.ID,
+			       T.NICKNAME,
+			       (CASE
+			         WHEN T.USER_RANGE = '1' THEN
+			          '小生'
+			         WHEN T.USER_RANGE = '2' THEN
+			          '秀才'
+			         WHEN T.USER_RANGE = '3' THEN
+			          '探花'
+			         WHEN T.USER_RANGE = '5' THEN
+			          '榜眼'
+			         ELSE
+			          '状元'
+			       END) USER_RANGE,
+			       T.STOP_RADIO,
+			       T.WARN_RADIO,
+			       T.ASSIGN_RADIO,
+			       T.ASSIGN_REFEREE_RED_PACKET,
+			       T.ASSIGN_REGISTER_RED_PACKET,
+			       T.FEE_RADIO,
+			       T.ASSIGN_CASH,
+			       T.UP_LINE_PERCENT,
+			       T.DOWN_LINE_PERCENT,
+			       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = T.NICKNAME) PHONE,
+			       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE U.ID = C.USER_ID) TRUENAME
+			  FROM STOCK_FUND_ASSIGN_RADIO T, STOCK_USER U
+			 WHERE U.NICKNAME = T.NICKNAME
 		 <if test="nickname!=null and nickname!=''">
 		 	where T.NICKNAME = #{nickname}
 		 </if>
@@ -1508,6 +1505,8 @@
 		              1,
 		              '1',
 		              '0') Hasoperation,
+		       (select (1 + m.PROFIT_LOSS_CASH / m.GUARANTEE_CASH) from Stock_User_Operate_Maininfo m where m.Nickname = u.Nickname
+		                 And m.Is_Current = '1') PROGRESSBAR,
 		       Decode((Select w.Debt
 		                From Stock_User_Wallet w
 		               Where w.Nickname = u.Nickname),

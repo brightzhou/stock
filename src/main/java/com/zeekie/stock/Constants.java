@@ -44,6 +44,8 @@ public class Constants {
 	public static final String CODE_FAILURE = "0";
 
 	public static final String CODE_SUCCESS = "1";
+	
+	public static final String CODE_FAILURE_NO_ACCOUNT = "3#";
 
 	public static final String CODE_HOMES_SUCCESS = "0";
 

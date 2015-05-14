@@ -10,8 +10,25 @@ public class BasicInfoDO {
 
 	private Float balance;
 
+	private Float progressbar;
+
 	public BasicInfoDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the progressbar
+	 */
+	public Float getProgressbar() {
+		return progressbar;
+	}
+
+	/**
+	 * @param progressbar
+	 *            the progressbar to set
+	 */
+	public void setProgressbar(Float progressbar) {
+		this.progressbar = progressbar;
 	}
 
 	/**
