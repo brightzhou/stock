@@ -37,6 +37,7 @@ import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
 import com.zeekie.stock.service.homes.StockModifyUserName;
+import com.zeekie.stock.service.homes.StockRestrictBuyStock;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
@@ -76,6 +77,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Autowired
 	@Value("${func_am_change_asset_info}")
 	private String fn_change_assetName;// 769952-修改homse用户名
+
+	@Autowired
+	@Value("${func_am_change_operator_info}")
+	private String changeInfoNo;
 
 	@Autowired
 	private SyncHandler handler;
@@ -518,7 +523,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				if (log.isDebugEnabled()) {
 					log.debug("更新用户" + nickname + "的操盘为历史操盘，结束操盘结束");
 				}
-
+				// 结束操盘，如果有限制买入的操盘账号，要恢复可以买入股票
+				relieve(cashDO.getOperateNO(), cashDO.getStopBuy());
 			} else {
 				msg = "您还有未卖出的股票，请平仓后再结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
@@ -530,6 +536,22 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			throw new RuntimeException();
 		}
 		return result;
+	}
+
+	private void relieve(String operateNo, String stopBuy) throws Exception {
+		if (StringUtils.equals(Constants.CODE_SUCCESS, stopBuy)) {
+			StockRestrictBuyStock buyStock = new StockRestrictBuyStock(
+					operateNo, Constants.OPERATE_RIGHT_ZERO, "0");
+			buyStock.callHomes(changeInfoNo);
+
+			if (!buyStock.visitSuccess(operateNo)) {
+				log.error("修改当前用户所对应的操盘账号【" + operateNo + "】可以买入股票失败");
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("修改当前用户所对应的操盘账号【" + operateNo + "】可以买入股票成功");
+				}
+			}
+		}
 	}
 
 	private void recordFlow(String nickname, String flag, String userCash)

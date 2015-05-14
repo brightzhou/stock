@@ -93,6 +93,8 @@
 		<result column="USERCASH" property="userCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="ASSIGNCASH" property="assginCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="STOP_BUY" property="stopBuy" jdbcType="VARCHAR"/>
+		<result column="TRADE_ACOUNT" property="operateNO" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.RedPacketDO" id="resultRedPacket">
@@ -771,7 +773,9 @@
 		SELECT (M.GUARANTEE_CASH + M.PROFIT_LOSS_CASH) USERCASH,
 		      <!--  (M.TRADE_FUND  - m.guarantee_cash ) ASSIGNCASH, -->
 		       M.Actual_Cash ASSIGNCASH,
-		       (SELECT A.FUND_ACCOUNT FROM STOCK_USER_OPERATE_ACOUNT A WHERE A.ID = M.OPERATE_ACCOUNT_ID) FUND_ACCOUNT
+		       (SELECT A.FUND_ACCOUNT FROM STOCK_USER_OPERATE_ACOUNT A WHERE A.ID = M.OPERATE_ACCOUNT_ID) FUND_ACCOUNT,
+		       m.stop_buy,
+		       (select a.TRADE_ACOUNT from STOCK_USER_OPERATE_ACOUNT a where a.id= m.OPERATE_ACCOUNT_ID )TRADE_ACOUNT
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'
 		   AND M.NICKNAME = #{nickname}

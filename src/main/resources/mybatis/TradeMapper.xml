@@ -345,7 +345,7 @@
 	</select>
 	
 	<update id="currentOperationOver" parameterType="string">
-		update STOCK_USER_OPERATE_MAININFO set IS_CURRENT = '0',END_DATE = sysdate
+		update STOCK_USER_OPERATE_MAININFO set IS_CURRENT = '0',END_DATE = sysdate ,STOP_BUY='0'
 		where nickname = #{nickname} and IS_CURRENT = '1' 
 	</update>
 	
