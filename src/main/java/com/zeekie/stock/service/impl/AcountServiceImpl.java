@@ -452,7 +452,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					acounter.operationIsEnded(nickname))) {
 
 				if (log.isDebugEnabled()) {
-					log.debug("用户" + nickname + "开始结束操盘");
+					log.debug("1、用户" + nickname + "开始结束操盘");
 				}
 
 				// 1、1结束操盘将资金划到HOMES
@@ -470,24 +470,19 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				if (cashDO.getUserCash() < 0) {
 					acounter.updateDebt(userCash, nickname);
 					result.put("debt", userCash);
+					if (log.isDebugEnabled()) {
+						log.debug("2、用户" + nickname + "产生亏损，记录亏损：" + userCash);
+					}
 				} else {
 					result.put("debt", "0");
-					// 2、
-					// 把获取的利润划到账户钱包,特别注意，如果只有利润大于0才加到用户余额中，不然会直接扣掉用户钱。但是又回记账debt，造成重复扣款
+					// 2、把获取的利润划到账户钱包
+					// 特别注意，如果只有利润大于0才加到用户余额中，不然会直接扣掉用户钱。但是又会记账到debt，造成重复扣款
 					acounter.moveProfitToUserWallet(nickname, userCash);
 					// 2、1记录流水
-					String type = StringUtils
-							.equals(Constants.EVENING_UP, flag) ? Constants.TIPS_RETURN_GURANTEE_CASH
-							: Constants.TRANS_FROM_HOMES_TO_CLIENT;
-					userCash = StringUtils.startsWith(userCash, "-") ? userCash
-							: "+" + userCash;
-					String description = "";
-					if (!StringUtils.startsWith(userCash, "-")) {
-						description = "返还保证金";
-					} else {
-						description = "亏损(扣除保证金)";
+					recordFlow(nickname, flag, userCash);
+					if (log.isDebugEnabled()) {
+						log.debug("3、用户" + nickname + "产生利润，划到钱包：" + userCash);
 					}
-					trade.recordFundflow(nickname, type, userCash, description);
 				}
 
 				String assginCash = StringUtil.keepThreeDot(cashDO
@@ -496,6 +491,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				// 3、把我们的配资的钱划到我们的总资金
 				acounter.addTotalFund("0", assginCash, cashDO.getFundAccount(),
 						"从HOMES划回配资的钱", "recharge");
+				if (log.isDebugEnabled()) {
+					log.debug("4、将资金【" + assginCash + "】划回到主单元");
+				}
 				// 更新历史金额状态为N
 				acounter.updateStatusToN(cashDO.getFundAccount());
 				// 更新当前金额状态为Y
@@ -503,7 +501,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 				// 4、计算推荐人的收益，如果该用户有推荐人。计算规则：每笔服务费的乘以一个百分比
 				trade.caculateRefereeIncome(nickname);
-
+				if (log.isDebugEnabled()) {
+					log.debug("5、计算【" + nickname + "】的推荐人收益，如果存在推荐人");
+				}
 				// 5、更新操盘为历史操盘
 				trade.currentOperationOver(nickname);
 
@@ -516,7 +516,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				result.put("msg", msg);
 
 				if (log.isDebugEnabled()) {
-					log.debug("用户" + nickname + "结束操盘成功");
+					log.debug("更新用户" + nickname + "的操盘为历史操盘，结束操盘结束");
 				}
 
 			} else {
@@ -525,11 +525,25 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				result.put("msg", msg);
 			}
 		} catch (Exception e) {
-			log.error("结束操盘失败!!!");
+			log.error("结束操盘失败！！！");
 			log.error(e.getMessage(), e);
 			throw new RuntimeException();
 		}
 		return result;
+	}
+
+	private void recordFlow(String nickname, String flag, String userCash)
+			throws Exception {
+		String type = StringUtils.equals(Constants.EVENING_UP, flag) ? Constants.TIPS_RETURN_GURANTEE_CASH
+				: Constants.TRANS_FROM_HOMES_TO_CLIENT;
+		String description = "";
+		if (!StringUtils.startsWith(userCash, "-")) {
+			description = "返还保证金";
+			userCash = "+" + userCash;
+		} else {
+			description = "亏损(扣除保证金)";
+		}
+		trade.recordFundflow(nickname, type, userCash, description);
 	}
 
 	private boolean modifyUserName(String fundAccount, String combineId)
@@ -547,21 +561,22 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
 		if (log.isDebugEnabled()) {
-			log.debug("开始访问homes做资金划转，以便结束操盘");
+			log.debug("用户[" + nickname + "]开始访问homes做资金划转，修改用户未空闲用户，以便结束操盘");
 		}
 		changes.callHomes(Fn_stock_current);
 		String currentCash = changes.getDataSet().getDataset(0)
 				.getString("current_cash");
 		if (StringUtils.isNotBlank(currentCash)
 				|| !StringUtils.equals("0", currentCash)) {
-			log.error("操盘账号：" + client.getTradeAcount()
-					+ " 仍然有有资金在HOMES中，下面将资金划转到主单元!!!");
+			log.warn("用户【" + nickname + "】的操盘账号为：" + client.getTradeAcount()
+					+ " 的操盘仍然有有资金在HOMES中，需将资金划转到主单元！！！");
 			StockAssetMove assetMove = new StockAssetMove(fundAccount,
 					combineId, client.getManagerCombineId(), currentCash);
 			assetMove.callHomes(Fn_asset_move);
 			if (assetMove.visitSuccess(Fn_stock_current)) {
-				log.error("将操盘账号为：" + client.getTradeAcount() + " 的资金["
-						+ currentCash + "]划转到主单元!!!");
+				log.warn("将用户【" + nickname + "】的操盘账号为："
+						+ client.getTradeAcount() + " 的资金[" + currentCash
+						+ "]划转到主单元成功！！！");
 			} else {
 				return false;
 			}
@@ -576,7 +591,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 
 		if (log.isDebugEnabled()) {
-			log.debug("结束操盘操作，访问homes成功结束！");
+			log.debug("用户【" + nickname + "】结束操盘操作，访问homes成功结束！");
 
 		}
 		return true;
@@ -783,7 +798,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		try {
 			BasicInfoDO basicinfoDO = acounter.getBasicInfo(userId);
 			basicinfoDO.setAppStatus(Constants.HOMES_STATUS);
-			return JSONObject.fromObject(basicinfoDO,Constants.jsonConfig);
+			return JSONObject.fromObject(basicinfoDO, Constants.jsonConfig);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

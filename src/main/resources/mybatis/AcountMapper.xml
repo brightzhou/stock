@@ -942,7 +942,7 @@
 		Select 1
 		  From Stock_User_Wallet w
 		 Where w.Nickname = #{nickname}
-		   And w.Balance > #{fund}
+		   And w.Balance >= #{fund}
 	</select>
 	
 	<select id="checkOldTelephone" parameterType="string" resultType="string">
