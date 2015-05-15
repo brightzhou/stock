@@ -159,17 +159,7 @@
 		</selectKey>
 	</select> -->
 	
-	<update id="updateManageFeeBatch">
-<!-- 	        UPDATE STOCK_USER_OPERATE_MAININFO W
-			   SET W.MANAGEMENT_FEE     = W.MANAGEMENT_FEE +
-			                              (SELECT R.FEE_RADIO * W.TRADE_FUND
-			                                 FROM STOCK_FUND_ASSIGN_RADIO R
-			                                WHERE R.NICKNAME = W.NICKNAME),
-			       W.ADD_MANAGEMENT_FEE =
-			       (SELECT R.FEE_RADIO * W.TRADE_FUND
-			          FROM STOCK_FUND_ASSIGN_RADIO R
-			         WHERE R.NICKNAME = W.NICKNAME)
-			 WHERE W.IS_CURRENT = '1' -->
+	<update id="updateManageFeeBatch" parameterType="string">
 			UPDATE STOCK_USER_OPERATE_MAININFO W
 			   SET W.MANAGEMENT_FEE     = W.MANAGEMENT_FEE +
 			                              (SELECT R.FEE_RADIO * W.TRADE_FUND
@@ -188,6 +178,12 @@
 			                 WHERE R.USER_ID = U.ID
 			                   AND U.REFEREE_ID IS NOT NULL))
 			 WHERE W.IS_CURRENT = '1'
+			 <if test="chargeFeeDate!=null and chargeFeeDate!=''">
+		 	   And To_Char(w.Start_Date, 'yyyy-mm-dd HH24:MI:ss') &lt;=
+			       To_Char(Sysdate, 'yyyy-mm-dd ') || #{chargeFeeDate}
+			   And To_Char(w.Start_Date, 'yyyy-mm-dd HH24:MI:ss') >
+			       To_Char(Sysdate, 'yyyy-mm-dd') || ' 08:45:00'
+			 </if>
 	</update>
 	
 	<update id="updateManageFeeByUser" parameterType="string">
@@ -212,10 +208,16 @@
 			   And W.nickname = #{nickname}
 	</update>
 	
-	<select id="queryCurrentStocker" resultMap="resultFee">
+	<select id="queryCurrentStocker" resultMap="resultFee" parameterType="string">
 		SELECT S.NICKNAME,S.ADD_MANAGEMENT_FEE,S.DRAW_FEE
 		  FROM STOCK_USER_OPERATE_MAININFO S
 		 WHERE S.IS_CURRENT = '1'
+		 <if test="chargeFeeDate!=null and chargeFeeDate!=''">
+	 	   And To_Char(s.Start_Date, 'yyyy-mm-dd HH24:MI:ss') &lt;=
+		       To_Char(Sysdate, 'yyyy-mm-dd ') || #{chargeFeeDate}
+		   And To_Char(s.Start_Date, 'yyyy-mm-dd HH24:MI:ss') >
+		       To_Char(Sysdate, 'yyyy-mm-dd') || ' 08:45:00'
+		 </if>
 	</select>
 	
 	<select id="queryNewStocker" resultMap="resultFee">

@@ -48,9 +48,11 @@ public interface TradeMapper {
 	DeductDO queryNewStocker(@Param("nickname") String nickname)
 			throws Exception;
 
-	List<DeductDO> queryCurrentStocker() throws Exception;
+	List<DeductDO> queryCurrentStocker(
+			@Param("chargeFeeDate") String chargeFeeDate) throws Exception;
 
-	void updateManageFeeBatch() throws Exception;
+	void updateManageFeeBatch(@Param("chargeFeeDate") String chargeFeeDate)
+			throws Exception;
 
 	void updateManageFeeByUser(@Param("nickname") String nickname)
 			throws Exception;
