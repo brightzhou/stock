@@ -1112,7 +1112,7 @@
 			  FROM STOCK_FUND_ASSIGN_RADIO T, STOCK_USER U
 			 WHERE U.NICKNAME = T.NICKNAME
 		 <if test="nickname!=null and nickname!=''">
-		 	where T.NICKNAME = #{nickname}
+		 	and T.NICKNAME = #{nickname}
 		 </if>
 		 ORDER BY ID DESC
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
