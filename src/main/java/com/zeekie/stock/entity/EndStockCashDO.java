@@ -7,7 +7,7 @@ package com.zeekie.stock.entity;
  * @since 2014.12.6
  * 
  */
-public class EndStockCashDO {
+public class EndStockCashDO extends StopDealStockDO{
 
 	/**
 	 * 用户的钱：保证金+盈亏金额
