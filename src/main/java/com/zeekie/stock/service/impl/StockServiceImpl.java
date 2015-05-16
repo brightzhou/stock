@@ -748,7 +748,7 @@ public class StockServiceImpl implements TradeService {
 				log.debug("客户" + nickname + "成功增加保证金结束！");
 			}
 
-			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
+//			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
 /*			if (deductFee != 0f) {
 				Map<String, String> param = new HashMap<String, String>();
 				param.put("nickname", nickname);

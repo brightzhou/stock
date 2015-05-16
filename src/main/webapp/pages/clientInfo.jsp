@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            <table style="width:100%;">
 	                <tr>
 	                    <td style="white-space:nowrap;">
-	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>   
+	                        <input id="key" class="mini-textbox" emptyText="请输入昵称/姓名/手机" style="width:150px;" onenter="onKeyEnter"/>   
 	                        <a class="mini-button" onclick="search()">查询</a>&nbsp;&nbsp;<a class="mini-button" onclick="sendMsg()">短信群发</a>
 	                    </td>
 	                </tr>
@@ -97,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     function sendRedPacket(nickname,phone){
-    	var url = "<%=basePath%>pages/sendRedPacket.jsp";
+    	var url = "pages/sendRedPacket.jsp";
 		mini.open({
 			url : url,
 			title : "发红包",

@@ -301,8 +301,9 @@
 			<list>
 			<!--  	<ref bean="deductManageFeeTrigger" />
 				<ref bean="caculateFundTrigger"/>
-				<ref bean="receiptJobTrigger"/> -->
+				<ref bean="receiptJobTrigger"/> 
 				<ref bean="deductManageFeeCurrentTrigger"/>
+				-->
 			</list>
 		</property>
 	</bean>

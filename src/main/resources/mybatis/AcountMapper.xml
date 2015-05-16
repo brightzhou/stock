@@ -477,7 +477,7 @@
 		   #{guaranteeCash,jdbcType=VARCHAR},
 		   #{stopCash,jdbcType=VARCHAR},
 		   #{warnCash,jdbcType=VARCHAR},
-		   to_date(#{startDate,jdbcType=VARCHAR},'yyyy-mm-dd'))
+		   sysdate)
 	</insert>
 	
 	<select id="getOperateAcount" resultMap="resultCurrOperateAcount" parameterType="string">
@@ -1393,10 +1393,10 @@
 	
 	<select id="queryClientInfoCount" parameterType="string" resultType="long">
 		SELECT COUNT(1)
-		  FROM STOCK_USER T
-		 WHERE 1=1 
+		  FROM STOCK_USER T,STOCK_ID_CARD C
+ 		  WHERE T.ID = C.USER_ID(+)
 		 <if test="nickname!=null and nickname!=''">
-		 	AND T.NICKNAME = #{nickname}
+		 	AND (T.NICKNAME = #{nickname} or T.TELEPHONE=#{nickname} or C.TRUENAME=#{nickname})
 		 </if>
 	</select>
 	
@@ -1411,13 +1411,13 @@
 		          FROM STOCK_USER_OPERATE_MAININFO M
 		         WHERE M.NICKNAME = T.NICKNAME
 		           AND M.IS_CURRENT = '1') ACTUAL_CASH,
-		       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = T.ID) TRUENAME,
+		       C.TRUENAME,
 		       (SELECT U.NICKNAME FROM STOCK_USER U WHERE U.ID = T.REFEREE_ID) REFEREE,
 		       t.version
-		  FROM STOCK_USER T
-		 WHERE 1 = 1
+		  FROM STOCK_USER T,STOCK_ID_CARD C
+ 		  WHERE T.ID = C.USER_ID(+)
 		 <if test="nickname!=null and nickname!=''">
-		 	AND T.NICKNAME = #{nickname}
+		 	AND (T.NICKNAME = #{nickname} or T.TELEPHONE=#{nickname} or C.TRUENAME=#{nickname})
 		 </if>
 		 order by T.REGISTERDATE desc
 		 
@@ -1456,9 +1456,10 @@
 	</select>
 	
 	<select id="queryOperationInfoCount" parameterType="string" resultType="long">
-		select count(1) from Stock_User_Operate_Maininfo  t where 1=1
+		select count(1) from Stock_User_Operate_Maininfo t,Stock_User_Operate_Acount K,stock_user U  
+		where  t.Operate_Account_Id = k.Id AND T.NICKNAME = U.NICKNAME
 		 <if test="nickname!=null and nickname!=''">
-		 	AND T.NICKNAME = #{nickname}
+		 	AND (T.NICKNAME = #{nickname} OR K.Trade_Acount = #{nickname})
 		 </if>
 		 <if test="range!=null and range!=''">
 		 	AND T.is_current = #{range}
@@ -1468,12 +1469,9 @@
 	<select id="queryOperationInfo" parameterType="string" resultMap="resultOperationInfo">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
 		Select t.Nickname,
-			   (select c.truename from stock_id_card c 
-			     where exists (select 1 from stock_user u where u.nickname = t.nickname and c.user_id = u.id)) truename,
+			   (select c.truename from stock_id_card c where c.user_id = u.id) truename,
 		       t.Ticket,
-		       (Select k.Trade_Acount
-		          From Stock_User_Operate_Acount k
-		         Where k.Id = t.Operate_Account_Id) Trade_Acount,
+		       k.Trade_Acount,
 		       t.Trade_Fund,
 		       t.Profit_Loss_Cash,
 		       t.Guarantee_Cash,
@@ -1481,10 +1479,10 @@
 		       t.profit_loss_radio*100.00||'%' profit_loss_radio,
 		       to_char(t.Start_Date,'yyyy-mm-dd HH24:MI:ss')Start_Date,
 		       to_char(t.End_Date,'yyyy-mm-dd HH24:MI:ss')End_Date
-		  From Stock_User_Operate_Maininfo t
-		  Where 1 = 1
+		  From Stock_User_Operate_Maininfo t,Stock_User_Operate_Acount K,stock_user U 
+		  Where t.Operate_Account_Id = k.Id AND T.NICKNAME = U.NICKNAME
 		 <if test="nickname!=null and nickname!=''">
-		 	AND T.NICKNAME = #{nickname}
+		 	AND (T.NICKNAME = #{nickname} OR K.Trade_Acount = #{nickname})
 		 </if>
 		 <if test="range!=null and range!=''">
 		 	AND T.is_current = #{range}

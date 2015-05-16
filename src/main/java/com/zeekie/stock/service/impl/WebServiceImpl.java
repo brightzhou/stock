@@ -611,8 +611,8 @@ public class WebServiceImpl implements WebService {
 			if (StringUtils.isNotBlank(fund)) {
 				account.moveProfitToUserWallet(nickname, fund);
 
-				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, "+"
-						+ fund, "平台财务优化");
+				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, fund,
+						"平台财务优化");
 			}
 
 			if (StringUtils.isNotBlank(message)) {
@@ -720,8 +720,7 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public String saveUserbank(JSONArray ja)
-			throws ServiceInvokerException {
+	public String saveUserbank(JSONArray ja) throws ServiceInvokerException {
 		try {
 			List<UserBankDO> list = JSONArray.toList(ja, UserBankDO.class);
 			batchMapper.batchInsert(AcountMapper.class, "updateUserbank", list);

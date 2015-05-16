@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            <table style="width:100%;">
 	                <tr>
 	                    <td style="white-space:nowrap;">
-	                        <input id="key" class="mini-textbox" emptyText="请输入昵称" style="width:150px;" onenter="onKeyEnter"/>   
+	                        <input id="key" class="mini-textbox" emptyText="请输入昵称/操盘账号" style="width:150px;" onenter="onKeyEnter"/>   
 	                        <input name="range" id="range" class="mini-combobox" valueField="id" textField="text" 
 	                            data="[{'id': '1', 'text': '当前操盘'},{'id': '0', 'text': '历史操盘'}]"
 	                             
@@ -38,7 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
-        			url="<%=basePath%>api/stock/web/getOperationInfo"  idField="id" multiSelect="false">
+        			url="api/stock/web/getOperationInfo"  idField="id" multiSelect="false">
                 <div property="columns">
                     <div width="10%" field="nickname" headerAlign="center" align="center">
                         用户昵称
@@ -82,7 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $(function(){
 	    grid = mini.get("datagrid1");
 	    mini.get("range").setValue('1');
-        grid.load();
+        grid.load({ range:mini.get("range").getValue()});
 	});
     
 	

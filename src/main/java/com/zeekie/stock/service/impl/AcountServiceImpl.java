@@ -541,7 +541,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	private void relieve(String operateNo, String stopBuy) throws Exception {
 		if (StringUtils.equals(Constants.CODE_SUCCESS, stopBuy)) {
 			StockRestrictBuyStock buyStock = new StockRestrictBuyStock(
-					operateNo, Constants.OPERATE_RIGHT_ZERO, "0");
+					operateNo, Constants.OPERATE_RIGHT_ZERO, Constants.OPERATE_TYPE);
 			buyStock.callHomes(changeInfoNo);
 
 			if (!buyStock.visitSuccess(operateNo)) {
