@@ -241,7 +241,7 @@ public class StockServiceImpl implements TradeService {
 			stock.updateOperateMainInfo(tradeFund, "0", nickname);
 
 			// 如果为8:45~14:59分之间，则立即扣除当天服务费；如为14:59分之后，则当天服务费不扣除
-//			jobHandler.handleJob(Constants.TYPE_JOB_DEDUCT, nickname);
+			jobHandler.handleJob(Constants.TYPE_JOB_DEDUCT, nickname);
 
 			// 返回当前操盘信息
 			currentOperateInfo.put("currentAsset", guaranteeCash);// 当前资产
@@ -748,14 +748,14 @@ public class StockServiceImpl implements TradeService {
 				log.debug("客户" + nickname + "成功增加保证金结束！");
 			}
 
-//			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
-/*			if (deductFee != 0f) {
+			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
+			if (deductFee != 0f) {
 				Map<String, String> param = new HashMap<String, String>();
 				param.put("nickname", nickname);
 				param.put("needDeductFee", result.get("needDeductFee"));
 				jobHandler.handleOtherJob(
 						Constants.TYPE_JOB_DEDUCT_ADDGURANTEE, param);
-			}*/
+			}
 
 			if (log.isDebugEnabled()) {
 				log.debug("执行增加保证金操作耗时："
