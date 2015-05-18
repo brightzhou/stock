@@ -15,7 +15,6 @@ import sitong.thinker.common.util.mybatis.BatchMapper;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.DeductDO;
-import com.zeekie.stock.entity.PhoneAndTIcketDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.StopDealStockDO;
 import com.zeekie.stock.entity.WarnLineDO;
