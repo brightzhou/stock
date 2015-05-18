@@ -256,7 +256,7 @@
 	<bean id="deductManageFeeCurrentTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="deductManageFeeCurrentJob" />
 		<!-- 每天15:05运行一次 -->
-		<property name="cronExpression" value="0 12 17 * * ?" />
+		<property name="cronExpression" value="0 12 17 * * MON-FRI" />
 	</bean>
 	<!-- 定时任务C 结束 -->
 

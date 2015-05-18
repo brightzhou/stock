@@ -43,9 +43,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.apache.commons.httpclient.HttpClient;  
-import org.apache.commons.httpclient.methods.PostMethod;  
-import org.apache.commons.httpclient.params.HttpClientParams;
 import com.oreilly.servlet.MultipartRequest;
 import com.tencent.xinge.Message;
 import com.tencent.xinge.XingeApp;
