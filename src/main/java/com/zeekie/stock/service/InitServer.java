@@ -78,6 +78,13 @@ public class InitServer implements InitializingBean {
 	@Value("${startHomes}")
 	private String startHomes;
 
+	@Autowired
+	@Value("${stock.interface.visit.time.range}")
+	private String range;
+
+	@Autowired
+	@Value("${stock.encryption.factor}")
+	private String factor;
 
 	@Autowired
 	private Mapper<String, String> dao;
@@ -128,6 +135,11 @@ public class InitServer implements InitializingBean {
 		Constants.accessId = StringUtils.trim(accessId);
 		Constants.secretkey = StringUtils.trim(secretkey);
 		Constants.environment = Integer.parseInt(StringUtils.trim(environment));
+
+		// 接口访问时间范围默认120秒
+		Constants.range = Integer.parseInt(StringUtils.trim(range));
+
+		Constants.factor = factor;
 
 		registerJsonConfig();
 		// 获取交易信息

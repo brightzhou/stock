@@ -44,7 +44,7 @@ public class Constants {
 	public static final String CODE_FAILURE = "0";
 
 	public static final String CODE_SUCCESS = "1";
-	
+
 	public static final String CODE_FAILURE_NO_ACCOUNT = "3#";
 
 	public static final String CODE_HOMES_SUCCESS = "0";
@@ -224,6 +224,12 @@ public class Constants {
 	public static String MAC = "";
 
 	public static String PAY_SUCCESS = "C000000000";
+
+	// 接口访问时间
+	public static int range = 120;
+
+	// 加密因子
+	public static String factor;
 
 	public static IClient getClient() {
 		return client;
