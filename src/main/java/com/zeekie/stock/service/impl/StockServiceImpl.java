@@ -715,7 +715,7 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			// 3、如果主账户资金充足从主账户减去配资的钱
-			if (StringUtils.equals("1", flag) && moveCash != 0f) {
+			if (moveCash != 0f) {
 				String fundAccount = acount.queryFundAccount(nickname);
 				acount.addTotalFund("0", "-" + moveCash, fundAccount,
 						"主账户扣除配资的钱", "recharge");
