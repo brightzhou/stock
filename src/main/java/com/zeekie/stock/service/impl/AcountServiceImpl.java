@@ -569,7 +569,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				newOperatePwd);
 		modify.callHomes(Fn_changePwd);
 		if (!modify.visitSuccess(Fn_changePwd)) {
-			log.error("用户" + nickname + "结束操盘，修改密码为：" + newOperatePwd);
+			log.error("用户【" + nickname + "】结束操盘，修改密码为：" + newOperatePwd+" 失败");
 		}
 	}
 
