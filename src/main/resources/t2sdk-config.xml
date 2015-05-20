@@ -5,7 +5,7 @@
 		           localServerName="mctest"   callBackTime="5000" enmCompress="true" />
     <parents>    
 		<parent  parentName="myserver" safeLevel="NONE">
-			<limit licenseFile="F:\workspace\stock\src\main\resources\license.dat" encrypt="HSBlowfish" />
+			<limit licenseFile="E:\space\src\main\resources\license.dat" encrypt="HSBlowfish" />
 			<members><!-- 222.73.95.204 -->
 				<member no="5" address="115.236.93.155" port="9011"
 				  charset="gbk" poolSize="1" />
