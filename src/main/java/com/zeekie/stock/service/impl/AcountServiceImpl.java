@@ -36,6 +36,7 @@ import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
+import com.zeekie.stock.service.homes.StockModifyPwd;
 import com.zeekie.stock.service.homes.StockModifyUserName;
 import com.zeekie.stock.service.homes.StockRestrictBuyStock;
 import com.zeekie.stock.service.syncTask.SyncHandler;
@@ -81,6 +82,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Autowired
 	@Value("${func_am_change_operator_info}")
 	private String changeInfoNo;
+
+	@Autowired
+	@Value("${func_am_change_password}")
+	private String Fn_changePwd;
 
 	@Autowired
 	private SyncHandler handler;
@@ -525,6 +530,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				}
 				// 结束操盘，如果有限制买入的操盘账号，要恢复可以买入股票
 				relieve(cashDO.getOperateNO(), cashDO.getStopBuy());
+				
+				modifyHomesPwd(nickname,cashDO.getOperateNO());
 			} else {
 				msg = "您还有未卖出的股票，请平仓后再结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
@@ -541,7 +548,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	private void relieve(String operateNo, String stopBuy) throws Exception {
 		if (StringUtils.equals(Constants.CODE_SUCCESS, stopBuy)) {
 			StockRestrictBuyStock buyStock = new StockRestrictBuyStock(
-					operateNo, Constants.OPERATE_RIGHT_ZERO, Constants.OPERATE_TYPE);
+					operateNo, Constants.OPERATE_RIGHT_ZERO,
+					Constants.OPERATE_TYPE);
 			buyStock.callHomes(changeInfoNo);
 
 			if (!buyStock.visitSuccess(operateNo)) {
@@ -551,6 +559,17 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					log.debug("修改当前用户所对应的操盘账号【" + operateNo + "】可以买入股票成功");
 				}
 			}
+		}
+	}
+
+	private void modifyHomesPwd(String nickname, String operatorAcount)
+			throws Exception {
+		String newOperatePwd = StringUtil.genRandomNum(6);
+		StockModifyPwd modify = new StockModifyPwd(operatorAcount, "",
+				newOperatePwd);
+		modify.callHomes(Fn_changePwd);
+		if (!modify.visitSuccess(Fn_changePwd)) {
+			log.error("用户" + nickname + "结束操盘，修改密码为：" + newOperatePwd);
 		}
 	}
 
