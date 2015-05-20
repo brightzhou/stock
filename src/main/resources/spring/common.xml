@@ -241,7 +241,7 @@
 	</bean>
 	<!-- 定时任务A 结束 -->
 	
-	<!-- 定时任务C=扣除管理费 当天操盘用户 8:45~15:05 -->
+	<!-- 定时任务C=扣除管理费 当天操盘用户 8:45~15:05 
 	<bean id="deductManageFeeCurrentJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -250,15 +250,15 @@
 			</bean>
 		</property>
 		<property name="targetMethod" value="deductFeeCurrentDay" />
-		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+		<property name="concurrent" value="false" />
 	</bean>
 
 	<bean id="deductManageFeeCurrentTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="deductManageFeeCurrentJob" />
-		<!-- 每天15:05运行一次 -->
-		<property name="cronExpression" value="0 12 17 * * ?" />
+		 每天15:05运行一次 
+		<property name="cronExpression" value="0 12 17 * * MON-FRI" />
 	</bean>
-	<!-- 定时任务C 结束 -->
+	 定时任务C 结束 -->
 
 
 	<!-- 定时任务B=更新盈亏金额 -->
