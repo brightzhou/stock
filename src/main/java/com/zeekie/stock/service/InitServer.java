@@ -87,15 +87,16 @@ public class InitServer implements InitializingBean {
 	private String factor;
 
 	@Autowired
+	@Value("${loaduser}")
+	private String loaduser;
+
+	@Autowired
 	private Mapper<String, String> dao;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
 		initContants();
-		if (log.isDebugEnabled()) {
-			log.debug("初始化全局变量成功！！！");
-		}
 
 		Constants.sensitiveWordMap = sensitive.initKeyWord();
 		if (log.isDebugEnabled()) {
@@ -107,9 +108,18 @@ public class InitServer implements InitializingBean {
 		// 启动HOMES
 		if (StringUtils.equals(Constants.CODE_SUCCESS, startHomes)) {
 			startHomes();
-			if (log.isDebugEnabled()) {
-				log.debug("启动HOMES成功！！！");
-			}
+		}
+
+		// 加载所有的用户用于token校验
+		if (StringUtils.equals(Constants.CODE_SUCCESS, loaduser)) {
+			loadAllUser();
+		}
+	}
+
+	private void loadAllUser() {
+		sensitive.loadAllUser();
+		if (log.isDebugEnabled()) {
+			log.debug("加载所有用户成功");
 		}
 	}
 
@@ -144,6 +154,10 @@ public class InitServer implements InitializingBean {
 		registerJsonConfig();
 		// 获取交易信息
 		initTransactionXml();
+
+		if (log.isDebugEnabled()) {
+			log.debug("初始化全局变量成功！！！");
+		}
 	}
 
 	private void registerJsonConfig() {
@@ -159,6 +173,10 @@ public class InitServer implements InitializingBean {
 			server.init();
 			server.start();
 			Constants.client = server.getClient(homes_server_name);
+
+			if (log.isDebugEnabled()) {
+				log.debug("启动HOMES成功！！！");
+			}
 		} catch (T2SDKException e) {
 			log.error(e.getMessage(), e);
 		}

@@ -2,8 +2,9 @@ package com.zeekie.stock.enums;
 
 public enum EnumMsg {
 
-	TOKEN_ERROR("80110101", "token错误"), PARAM_EMPTY("80110102", "缺少参数"), VISIT_EXCEED(
-			"80110103", "访问超时"), ERROR_IN("80110104", "服务器异常");
+	TOKEN_ERROR("80110101", "无效的token"), PARAM_EMPTY("80110102", "缺少参数"), VISIT_EXCEED(
+			"80110103", "token已经过期"), ERROR_IN("80110104", "服务器异常"), ERROR_PARAM(
+			"80110105", "错误的参数");
 
 	private String code;
 

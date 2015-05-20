@@ -78,11 +78,15 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 			}
 			trade.register(register);
 
-			// 建立空账户为注册用户
-			trade.setBlankWallet(register.getNickname());
+			String nickname = register.getNickname();
 
+			// 建立空账户为注册用户
+			trade.setBlankWallet(nickname);
 			// 插入比例
-			account.bindPercent(register.getNickname());
+			account.bindPercent(nickname);
+
+			// 将新注册的用户加入到内存中
+			Constants.user.add(nickname);
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

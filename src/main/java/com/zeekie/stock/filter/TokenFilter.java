@@ -104,8 +104,8 @@ public class TokenFilter implements Filter {
 			filterChain.doFilter(request, response);
 		} catch (Exception e) {
 			Log.error(e.getMessage(), e);
-			writeAuthFailed(response, EnumMsg.ERROR_IN.getCode(),
-					EnumMsg.ERROR_IN.getMsg());
+			writeAuthFailed(response, EnumMsg.TOKEN_ERROR.getCode(),
+					EnumMsg.TOKEN_ERROR.getMsg());
 		}
 		return true;
 	}
@@ -127,6 +127,13 @@ public class TokenFilter implements Filter {
 				map.put("code", EnumMsg.PARAM_EMPTY.getCode());
 				map.put("msg", EnumMsg.PARAM_EMPTY.getMsg());
 				return map;
+			} else {
+				if (Constants.user.indexOf(nickname) == -1) {
+					map.put("flag", Constants.CODE_FAILURE);
+					map.put("code", EnumMsg.ERROR_PARAM.getCode());
+					map.put("msg", EnumMsg.ERROR_PARAM.getMsg());
+					return map;
+				}
 			}
 			if (!checkServerTime(clientTime, Constants.range)) {
 				map.put("flag", Constants.CODE_FAILURE);

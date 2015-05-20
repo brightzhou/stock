@@ -1604,5 +1604,9 @@
 	<delete id="deleteUserbank" parameterType="string">
 		delete from Stock_Bank_Info where id = #{id}
 	</delete>
+	
+	<select id="queryAllUser" resultType="string">
+		select nickname from stock_user 
+	</select>
 </mapper>
 

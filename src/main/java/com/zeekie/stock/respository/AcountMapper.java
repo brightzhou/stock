@@ -617,4 +617,12 @@ public interface AcountMapper {
 	 */
 	public void deleteUserbank(@Param("id") String id) throws Exception;
 
+	/**
+	 * 初始化所有用户
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> queryAllUser() throws Exception;
+
 }

@@ -22,7 +22,7 @@ import com.zeekie.stock.util.ApiUtils;
  * @date 2014年7月23日
  */
 @Controller
-@RequestMapping("api/stock")
+@RequestMapping("api/stock/user")
 public class LoginController {
 
 	Logger log = LoggerFactory.getLogger(getClass());

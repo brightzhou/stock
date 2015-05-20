@@ -1,5 +1,7 @@
 package com.zeekie.stock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JsonConfig;
@@ -230,6 +232,8 @@ public class Constants {
 
 	// 加密因子
 	public static String factor;
+
+	public static List<String> user = new ArrayList<String>();
 
 	public static IClient getClient() {
 		return client;

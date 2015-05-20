@@ -1,5 +1,7 @@
 package com.zeekie.stock.controller;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -180,5 +182,14 @@ public class StockTradeController {
 			@RequestParam("refNo") String refNo) {
 		return trade.setPayInfo(userId, nickname, merchantId, cash, status,
 				respMsg,merchantDate,refNo);
+	}
+	
+	/**
+	 * 获取当前时间
+	 */
+	@RequestMapping("getServerTime")
+	@ResponseBody
+	public long getServerTime() {
+		return Calendar.getInstance().getTimeInMillis()*1000;
 	}
 }

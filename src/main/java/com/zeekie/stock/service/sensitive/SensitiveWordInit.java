@@ -11,8 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.zeekie.stock.Constants;
 import com.zeekie.stock.respository.AcountMapper;
 
 /**
@@ -23,6 +26,9 @@ import com.zeekie.stock.respository.AcountMapper;
  *         2015年2月9日
  */
 public class SensitiveWordInit {
+
+	private static final Logger Log = LoggerFactory
+			.getLogger(SensitiveWordInit.class);
 
 	private String ENCODING = "GBK"; // 字符编码
 	@SuppressWarnings("rawtypes")
@@ -46,7 +52,7 @@ public class SensitiveWordInit {
 			// 将敏感词库加入到HashMap中
 			addSensitiveWordToHashMap(keyWordSet);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.error(e.getMessage());
 		}
 		return sensitiveWordMap;
 	}
@@ -111,6 +117,7 @@ public class SensitiveWordInit {
 				}
 			}
 		} catch (Exception e) {
+			Log.error(e.getMessage());
 			throw e;
 		}
 		return set;
@@ -118,6 +125,7 @@ public class SensitiveWordInit {
 
 	/**
 	 * 读取敏感词库中的内容，将内容添加到set集合中
+	 * 
 	 * @return
 	 * @version 1.0
 	 * @throws Exception
@@ -141,10 +149,19 @@ public class SensitiveWordInit {
 				throw new Exception("敏感词库文件不存在");
 			}
 		} catch (Exception e) {
+			Log.error(e.getMessage());
 			throw e;
 		} finally {
 			read.close(); // 关闭文件流
 		}
 		return set;
+	}
+
+	public void loadAllUser() {
+		try {
+			Constants.user = mapper.queryAllUser();
+		} catch (Exception e) {
+			Log.error(e.getMessage());
+		}
 	}
 }
