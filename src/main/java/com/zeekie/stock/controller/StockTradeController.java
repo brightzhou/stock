@@ -1,6 +1,7 @@
 package com.zeekie.stock.controller;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +23,7 @@ import com.zeekie.stock.entity.form.TradeForm;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.TradeService;
 import com.zeekie.stock.util.ApiUtils;
+import com.zeekie.stock.util.DateUtil;
 
 /**
  * @Author zeekie
@@ -189,7 +191,8 @@ public class StockTradeController {
 	 */
 	@RequestMapping("getServerTime")
 	@ResponseBody
-	public long getServerTime() {
-		return Calendar.getInstance().getTimeInMillis()*1000;
+	public String getServerTime() {
+		return DateUtil.formatDate(new Date(), "yyyyMMddHHmmss");
 	}
+	
 }
