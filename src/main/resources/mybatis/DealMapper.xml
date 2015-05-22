@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zeekie.stock.respository.DealMapper">
+
+	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_stock_entrust_id.Nextval from dual
+		</selectKey>
+		INSERT INTO stock_entrust
+		  (ID, NICKNAME, TRADE_ACCOUNT, COMBINE_ID,FUND_ACCOUNT,entrust_no,batch_no)
+		VALUES
+		  (#{id},
+		   #{nickname},
+		   #{operateNo},
+		   #{combineId},
+		   #{fundAccount},
+		   #{entrust_no},
+		   #{batch_no}
+		   )
+	</insert>
+	
+</mapper>
+
