@@ -18,4 +18,29 @@ public interface EntrustService {
 	String entrust(String nickname, String stockCode, String entrustAmount,
 			String entrustPrice);
 
+	/**
+	 * 撤销委托
+	 * 
+	 * @param nickname
+	 *            昵称
+	 * @return
+	 */
+	String entrustWithdraw(String nickname);
+
+	/**
+	 * 账户资金查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	String queryCombasset(String nickname);
+
+	
+	/**
+	 * 当日委托查询
+	 * @param nickname
+	 * @return
+	 */
+	String queryEntrust(String nickname);
+
 }
