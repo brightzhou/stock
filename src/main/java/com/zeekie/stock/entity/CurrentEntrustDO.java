@@ -1,7 +1,236 @@
 package com.zeekie.stock.entity;
 
 public class CurrentEntrustDO extends BaseEntrustDO {
+
+	/**
+	 * 交易市场
+	 */
+	private String exchangeType;
+
+	/**
+	 * 买卖方向
+	 */
+	private String entrustDirection;
+
+	/**
+	 * 证劵代码
+	 */
+	private String stockCode;
+
+	/**
+	 * 委托状态
+	 */
+	private String amentrustStatus;
+
+	/**
+	 * 委托价格
+	 */
+	private Float entrustPrice;
+
+	/**
+	 * 委托数量
+	 */
+	private String entrustAmount;
+
+	/**
+	 * 委托编号
+	 */
+	private String entrustNo;
+
+	/**
+	 * 成交价格
+	 */
+	private Float businessBalance;
+
+	/**
+	 * 成交数量
+	 */
+	private String businessAmount;
+	/**
+	 * 委托日期
+	 */
+	private String entrustDate;
+
+	/**
+	 * 委托时间
+	 */
+	private String entrustTime;
+
+	/**
+	 * 废单原因
+	 */
+	private String cancelInfo;
+
+	/**
+	 * @return the exchangeType
+	 */
+	public String getExchangeType() {
+		return exchangeType;
+	}
+
+	/**
+	 * @param exchangeType the exchangeType to set
+	 */
+	public void setExchangeType(String exchangeType) {
+		this.exchangeType = exchangeType;
+	}
+
+	/**
+	 * @return the entrustDirection
+	 */
+	public String getEntrustDirection() {
+		return entrustDirection;
+	}
+
+	/**
+	 * @param entrustDirection the entrustDirection to set
+	 */
+	public void setEntrustDirection(String entrustDirection) {
+		this.entrustDirection = entrustDirection;
+	}
+
+	/**
+	 * @return the stockCode
+	 */
+	public String getStockCode() {
+		return stockCode;
+	}
+
+	/**
+	 * @param stockCode the stockCode to set
+	 */
+	public void setStockCode(String stockCode) {
+		this.stockCode = stockCode;
+	}
+
+	/**
+	 * @return the amentrustStatus
+	 */
+	public String getAmentrustStatus() {
+		return amentrustStatus;
+	}
+
+	/**
+	 * @param amentrustStatus the amentrustStatus to set
+	 */
+	public void setAmentrustStatus(String amentrustStatus) {
+		this.amentrustStatus = amentrustStatus;
+	}
+
+	/**
+	 * @return the entrustPrice
+	 */
+	public Float getEntrustPrice() {
+		return entrustPrice;
+	}
+
+	/**
+	 * @param entrustPrice the entrustPrice to set
+	 */
+	public void setEntrustPrice(Float entrustPrice) {
+		this.entrustPrice = entrustPrice;
+	}
+
+	/**
+	 * @return the entrustAmount
+	 */
+	public String getEntrustAmount() {
+		return entrustAmount;
+	}
+
+	/**
+	 * @param entrustAmount the entrustAmount to set
+	 */
+	public void setEntrustAmount(String entrustAmount) {
+		this.entrustAmount = entrustAmount;
+	}
+
+	/**
+	 * @return the entrustNo
+	 */
+	public String getEntrustNo() {
+		return entrustNo;
+	}
+
+	/**
+	 * @param entrustNo the entrustNo to set
+	 */
+	public void setEntrustNo(String entrustNo) {
+		this.entrustNo = entrustNo;
+	}
+
+	/**
+	 * @return the businessBalance
+	 */
+	public Float getBusinessBalance() {
+		return businessBalance;
+	}
+
+	/**
+	 * @param businessBalance the businessBalance to set
+	 */
+	public void setBusinessBalance(Float businessBalance) {
+		this.businessBalance = businessBalance;
+	}
+
+	/**
+	 * @return the businessAmount
+	 */
+	public String getBusinessAmount() {
+		return businessAmount;
+	}
+
+	/**
+	 * @param businessAmount the businessAmount to set
+	 */
+	public void setBusinessAmount(String businessAmount) {
+		this.businessAmount = businessAmount;
+	}
+
+	/**
+	 * @return the entrustDate
+	 */
+	public String getEntrustDate() {
+		return entrustDate;
+	}
+
+	/**
+	 * @param entrustDate the entrustDate to set
+	 */
+	public void setEntrustDate(String entrustDate) {
+		this.entrustDate = entrustDate;
+	}
+
+	/**
+	 * @return the entrustTime
+	 */
+	public String getEntrustTime() {
+		return entrustTime;
+	}
+
+	/**
+	 * @param entrustTime the entrustTime to set
+	 */
+	public void setEntrustTime(String entrustTime) {
+		this.entrustTime = entrustTime;
+	}
+
+	/**
+	 * @return the cancelInfo
+	 */
+	public String getCancelInfo() {
+		return cancelInfo;
+	}
+
+	/**
+	 * @param cancelInfo the cancelInfo to set
+	 */
+	public void setCancelInfo(String cancelInfo) {
+		this.cancelInfo = cancelInfo;
+	}
 	
-	
+	public CurrentEntrustDO() {
+		// TODO Auto-generated constructor stub
+	}
 
 }

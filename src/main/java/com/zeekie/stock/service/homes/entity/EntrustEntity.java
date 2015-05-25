@@ -6,15 +6,15 @@ public class EntrustEntity extends BaseEntity {
 
 	private String batch_no;
 	// 证券代码
-	private String stockCode;
+	private String stock_code;
 	// 交易市场 1：上交所 2：生交所
-	private String exchangeType;
+	private String exchange_type;
 	// 委托方向
-	private String entrustDirection;
+	private String entrust_direction;
 	// 委托价格
-	private String entrustPrice;
+	private String entrust_price;
 	// 委托数量
-	private String entrustAmount;
+	private String entrust_amount;
 
 	/**
 	 * @return the entrust_no
@@ -47,87 +47,78 @@ public class EntrustEntity extends BaseEntity {
 	}
 
 	/**
-	 * @return the stockCode
+	 * @return the stock_code
 	 */
-	public String getStockCode() {
-		return stockCode;
+	public String getStock_code() {
+		return stock_code;
 	}
 
 	/**
-	 * @param stockCode
-	 *            the stockCode to set
+	 * @param stock_code
+	 *            the stock_code to set
 	 */
-	public void setStockCode(String stockCode) {
-		this.stockCode = stockCode;
+	public void setStock_code(String stock_code) {
+		this.stock_code = stock_code;
 	}
 
 	/**
-	 * @return the exchangeType
+	 * @return the exchange_type
 	 */
-	public String getExchangeType() {
-		return exchangeType;
+	public String getExchange_type() {
+		return exchange_type;
 	}
 
 	/**
-	 * @param exchangeType
-	 *            the exchangeType to set
+	 * @param exchange_type
+	 *            the exchange_type to set
 	 */
-	public void setExchangeType(String exchangeType) {
-		this.exchangeType = exchangeType;
+	public void setExchange_type(String exchange_type) {
+		this.exchange_type = exchange_type;
 	}
 
 	/**
-	 * @return the entrustDirection
+	 * @return the entrust_direction
 	 */
-	public String getEntrustDirection() {
-		return entrustDirection;
+	public String getEntrust_direction() {
+		return entrust_direction;
 	}
 
 	/**
-	 * @param entrustDirection
-	 *            the entrustDirection to set
+	 * @param entrust_direction
+	 *            the entrust_direction to set
 	 */
-	public void setEntrustDirection(String entrustDirection) {
-		this.entrustDirection = entrustDirection;
+	public void setEntrust_direction(String entrust_direction) {
+		this.entrust_direction = entrust_direction;
 	}
 
 	/**
-	 * @return the entrustPrice
+	 * @return the entrust_price
 	 */
-	public String getEntrustPrice() {
-		return entrustPrice;
+	public String getEntrust_price() {
+		return entrust_price;
 	}
 
 	/**
-	 * @param entrustPrice
-	 *            the entrustPrice to set
+	 * @param entrust_price
+	 *            the entrust_price to set
 	 */
-	public void setEntrustPrice(String entrustPrice) {
-		this.entrustPrice = entrustPrice;
+	public void setEntrust_price(String entrust_price) {
+		this.entrust_price = entrust_price;
 	}
 
 	/**
-	 * @return the entrustAmount
+	 * @return the entrust_amount
 	 */
-	public String getEntrustAmount() {
-		return entrustAmount;
+	public String getEntrust_amount() {
+		return entrust_amount;
 	}
 
 	/**
-	 * @param entrustAmount
-	 *            the entrustAmount to set
+	 * @param entrust_amount
+	 *            the entrust_amount to set
 	 */
-	public void setEntrustAmount(String entrustAmount) {
-		this.entrustAmount = entrustAmount;
-	}
-
-	public void setIndividualParam(String exchangeType, String entrustPrice,
-			String entrustAmount, String entrustDirection, String stockCode) {
-		this.exchangeType = exchangeType;
-		this.entrustPrice = entrustPrice;
-		this.entrustAmount = entrustAmount;
-		this.entrustDirection = entrustDirection;
-		this.stockCode = stockCode;
+	public void setEntrust_amount(String entrust_amount) {
+		this.entrust_amount = entrust_amount;
 	}
 
 }

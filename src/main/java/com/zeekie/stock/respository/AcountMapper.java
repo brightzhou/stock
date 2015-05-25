@@ -625,4 +625,12 @@ public interface AcountMapper {
 	 */
 	public List<String> queryAllUser() throws Exception;
 
+	/**
+	 * 删除身份信息
+	 * 
+	 * @param id
+	 * @throws Exception
+	 */
+	public void deleteIdCard(@Param("id") String id) throws Exception;
+
 }

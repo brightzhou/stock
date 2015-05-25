@@ -38,7 +38,8 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice) {
-		return entrust.entrust(nickname, stockCode, entrustAmount, entrustPrice);
+		return entrust
+				.entrust(nickname, stockCode, entrustAmount, entrustPrice);
 	}
 
 	@ResponseBody
@@ -52,14 +53,21 @@ public class StockEntrustController {
 	public ApiResponse<?> queryCombasset(
 			@RequestParam("nickname") String nickname) {
 		return ApiUtils.good(entrust.queryCombasset(nickname));
-
 	}
-	
+
 	@ResponseBody
-	@RequestMapping("entrust/query")
-	public ApiResponse<?> queryEntrust(
-			@RequestParam("nickname") String nickname) {
+	@RequestMapping("query")
+	public ApiResponse<?> queryEntrust(@RequestParam("nickname") String nickname) {
 		return ApiUtils.good(entrust.queryEntrust(nickname));
-
 	}
+
+	@ResponseBody
+	@RequestMapping("history/query")
+	public ApiResponse<?> queryEntrustHistory(
+			@RequestParam("nickname") String nickname,
+			@RequestParam("startDate") String startDate,
+			@RequestParam("endDate") String endDate) {
+		return ApiUtils.good(entrust.queryEntrustHistory(nickname,startDate,endDate));
+	}
+
 }

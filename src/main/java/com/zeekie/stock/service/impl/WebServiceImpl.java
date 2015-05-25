@@ -735,6 +735,7 @@ public class WebServiceImpl implements WebService {
 	public String deleteUserbank(String id) throws ServiceInvokerException {
 		try {
 			account.deleteUserbank(id);
+			account.deleteIdCard(id);
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

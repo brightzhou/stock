@@ -29,6 +29,8 @@ public class AStockTrade {
 
 	private IDataset dataset;
 
+	private String errorInfo;
+
 	private IClient client = Constants.getClient();
 
 	public AStockTrade() {
@@ -127,14 +129,21 @@ public class AStockTrade {
 		if (StringUtils.isEmpty(errorNo)) {
 			return true;
 		} else {
+			errorInfo = dataset.getString("error_info");
 			if (StringUtils.equals("-1", errorNo)
-					&& StringUtils.equals(Constants.TOKEN_LOSS,
-							dataset.getString("error_info"))) {
+					&& StringUtils.equals(Constants.TOKEN_LOSS, errorInfo)) {
 				log.warn("token loss，下次访问重新登陆");
 				Constants.HOMES_TOKEN = "";
+			} else {
+				log.warn("访问homes获取返回结果错误，errorNo：" + errorNo + ",errorinfo:"
+						+ errorInfo);
 			}
 			return false;
 		}
+	}
+
+	public String getError() {
+		return errorInfo;
 	}
 
 	public IDatasets getDataSet() {

@@ -35,12 +35,22 @@ public interface EntrustService {
 	 */
 	String queryCombasset(String nickname);
 
-	
 	/**
 	 * 当日委托查询
+	 * 
 	 * @param nickname
 	 * @return
 	 */
 	String queryEntrust(String nickname);
+
+	/**
+	 * 获取历史委托
+	 * 
+	 * @param nickname
+	 * @param endDate 委托结束时间
+	 * @param startDate 委托开始时间
+	 * @return
+	 */
+	String queryEntrustHistory(String nickname, String startDate, String endDate);
 
 }

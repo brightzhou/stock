@@ -1,5 +1,7 @@
 package com.zeekie.stock.enums;
 
+import org.apache.commons.lang.StringUtils;
+
 public enum EnumMsg {
 
 	TOKEN_ERROR("80110101", "无效的token"), PARAM_EMPTY("80110102", "缺少参数"), VISIT_EXCEED(

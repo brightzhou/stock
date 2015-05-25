@@ -3,6 +3,13 @@ package com.zeekie.stock.entity;
 public class BaseEntrustDO {
 
 	/**
+	 * 资金账号
+	 */
+	private String fundAccount;
+
+	private String combineId;
+
+	/**
 	 * 操作员编号
 	 */
 	private String operatorNo;
@@ -11,6 +18,36 @@ public class BaseEntrustDO {
 	 * 委托序号
 	 */
 	private String entrustNo;
+
+	/**
+	 * @return the fundAccount
+	 */
+	public String getFundAccount() {
+		return fundAccount;
+	}
+
+	/**
+	 * @param fundAccount
+	 *            the fundAccount to set
+	 */
+	public void setFundAccount(String fundAccount) {
+		this.fundAccount = fundAccount;
+	}
+
+	/**
+	 * @return the combineId
+	 */
+	public String getCombineId() {
+		return combineId;
+	}
+
+	/**
+	 * @param combineId
+	 *            the combineId to set
+	 */
+	public void setCombineId(String combineId) {
+		this.combineId = combineId;
+	}
 
 	/**
 	 * @return the operatorNo

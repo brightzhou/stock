@@ -121,9 +121,11 @@ public abstract class BaseEntity {
 		this.nickname = nickname;
 	}
 
-	public void setBaseParam(String fundAccount, String combineId, String operateNo) {
+	public void setBaseParam(String fundAccount, String combineId,
+			String operateNo, String nickname) {
 		this.fundAccount = fundAccount;
 		this.combineId = combineId;
 		this.operateNo = operateNo;
+		this.nickname = nickname;
 	}
 }

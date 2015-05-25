@@ -1582,12 +1582,13 @@
 	
 	<select id="queryUserbankInfo" parameterType="string" resultMap="resultUserbankInfo">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		SELECT t.id,
+		SELECT 
 		       u.nickname,
 		       (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = T.USER_ID) TRUENAME,
 		       phone,
 		       card_number,
-		       bank
+		       bank,
+		       t.user_id id
 		  FROM Stock_Bank_Info T,stock_user u
 		  WHERE t.user_id = u.id
 		 <if test="nickname!=null and nickname!=''">
@@ -1602,7 +1603,11 @@
 	</update>
 	
 	<delete id="deleteUserbank" parameterType="string">
-		delete from Stock_Bank_Info where id = #{id}
+		delete from Stock_Bank_Info where user_id = #{id}
+	</delete>
+	
+	<delete id="deleteIdCard" parameterType="string">
+		delete from STOCK_ID_CARD where user_id = #{id}
 	</delete>
 	
 	<select id="queryAllUser" resultType="string">
