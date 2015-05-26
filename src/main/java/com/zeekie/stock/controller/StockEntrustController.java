@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import sitong.thinker.common.api.ApiResponse;
+
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.EntrustService;
+import com.zeekie.stock.util.ApiUtils;
 
 /**
  * @Author zeekie
@@ -35,7 +38,36 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice) {
-		return entrust.entrust(nickname, stockCode, entrustAmount, entrustPrice);
+		return entrust
+				.entrust(nickname, stockCode, entrustAmount, entrustPrice);
+	}
+
+	@ResponseBody
+	@RequestMapping("common/entrust/withdraw")
+	public String entrustWithdraw(@RequestParam("nickname") String nickname) {
+		return entrust.entrustWithdraw(nickname);
+	}
+
+	@ResponseBody
+	@RequestMapping("combasset/query")
+	public ApiResponse<?> queryCombasset(
+			@RequestParam("nickname") String nickname) {
+		return ApiUtils.good(entrust.queryCombasset(nickname));
+	}
+
+	@ResponseBody
+	@RequestMapping("query")
+	public ApiResponse<?> queryEntrust(@RequestParam("nickname") String nickname) {
+		return ApiUtils.good(entrust.queryEntrust(nickname));
+	}
+
+	@ResponseBody
+	@RequestMapping("history/query")
+	public ApiResponse<?> queryEntrustHistory(
+			@RequestParam("nickname") String nickname,
+			@RequestParam("startDate") String startDate,
+			@RequestParam("endDate") String endDate) {
+		return ApiUtils.good(entrust.queryEntrustHistory(nickname,startDate,endDate));
 	}
 
 }

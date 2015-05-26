@@ -216,6 +216,26 @@ public class Constants {
 	public static String HOMES_STATUS = "open";
 
 	/**
+	 * 上交所
+	 */
+	public static String HOMES_EXCHANGE_TYPE_SH = "1";
+
+	/**
+	 * 深交所
+	 */
+	public static String HOMES_EXCHANGE_TYPE_S = "2";
+
+	/**
+	 * 委托方向 1：买入
+	 */
+	public static String HOMES_ENTRUST_DIRECTION_BUY = "1";
+
+	/**
+	 * 委托方向 2：卖出
+	 */
+	public static String HOMES_ENTRUST_DIRECTION_SELL = "2";
+
+	/**
 	 * 获取的xml信息
 	 */
 	public static String XML = "";

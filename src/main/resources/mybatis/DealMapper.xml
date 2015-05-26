@@ -2,12 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zeekie.stock.respository.DealMapper">
 
+	<resultMap type="com.zeekie.stock.entity.BaseEntrustDO" id="resultEntrustInfo">
+		<result column="TRADE_ACCOUNT" property="operatorNo" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_NO" property="entrustNo" jdbcType="VARCHAR"/>
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="COMBINE_ID" property="combineId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.CombassetDO" id="resultCombasset">
+		<result column="ACTUAL_CASH" property="assetTotalValue" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CURRENT_CASH" property="assetValue" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.CurrentEntrustDO" id="resultCurrentEntrust">
+		<result column="FUND_ACCOUNT" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="COMBINE_ID" property="combineId" jdbcType="VARCHAR"/>
+		<result column="EXCHANGE_TYPE" property="exchangeType" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_DIRECTION" property="entrustDirection" jdbcType="VARCHAR"/>
+		<result column="STOCK_CODE" property="stockCode" jdbcType="VARCHAR"/>
+		<result column="AMENTRUST_STATUS" property="amentrustStatus" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_PRICE" property="entrustPrice" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ENTRUST_AMOUNT" property="entrustAmount" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_NO" property="entrustNo" jdbcType="VARCHAR"/>
+		<result column="BUSINESS_BALANCE" property="businessBalance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="BUSINESS_AMOUNT" property="businessAmount" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_TIME" property="entrustDate" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_TIMES" property="entrustTime" jdbcType="VARCHAR"/>
+		<result column="CANCEL_INFO" property="cancelInfo" jdbcType="VARCHAR"/>
+	</resultMap>
+
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select SEQ_stock_entrust_id.Nextval from dual
 		</selectKey>
-		INSERT INTO stock_entrust
-		  (ID, NICKNAME, TRADE_ACCOUNT, COMBINE_ID,FUND_ACCOUNT,entrust_no,batch_no)
+		INSERT INTO STOCK_ENTRUST
+		  (ID,
+		   NICKNAME,
+		   TRADE_ACCOUNT,
+		   COMBINE_ID,
+		   FUND_ACCOUNT,
+		   ENTRUST_NO,
+		   BATCH_NO,
+		   STOCK_CODE,
+		   EXCHANGE_TYPE,
+		   ENTRUST_DIRECTION,
+		   ENTRUST_PRICE,
+		   ENTRUST_AMOUNT)
 		VALUES
 		  (#{id},
 		   #{nickname},
@@ -15,9 +55,42 @@
 		   #{combineId},
 		   #{fundAccount},
 		   #{entrust_no},
-		   #{batch_no}
+		   #{batch_no},
+		   #{stock_code},
+		   #{exchange_type},
+		   #{entrust_direction},
+		   #{entrust_price},
+		   #{entrust_amount}
 		   )
 	</insert>
 	
+	<select id="queryEntrustInfo" parameterType="string" resultMap="resultEntrustInfo">
+		select t.TRADE_ACCOUNT,t.ENTRUST_NO,t.FUND_ACCOUNT,t.COMBINE_ID from STOCK_ENTRUST t where t.nickname = #{nickname}
+	</select>
+	
+	<select id="queryCombasset" parameterType="string" resultMap="resultCombasset">
+		SELECT M.ACTUAL_CASH, M.CURRENT_CASH
+		  FROM STOCK_USER_OPERATE_MAININFO M
+		 WHERE M.NICKNAME = #{nickname} and m.is_current='1'
+	</select>
+	
+	
+	<!-- 查询当日委托 -->
+	<select id="queryEntrustHistory" parameterType="string" resultMap="resultCurrentEntrust">
+		SELECT E.*,
+		       SUBSTR(TO_CHAR(SYSDATE, 'yyyymmddhh24miss'), 9) ENTRUST_TIMES
+		  FROM STOCK_ENTRUST E
+		 WHERE E.NICKNAME = #{nickname}
+		   AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &gt;= #{startDate}
+		   AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &lt;= #{endDate}
+	</select>
+	
+	<update id="updateEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustQueryEntity">
+	    update STOCK_ENTRUST p set 
+	   	 	   P.business_amount = #{business_amount},P.business_balance = #{business_balance},
+	    	   P.cancel_info =#{cancel_info}, P.amentrust_status = #{amentrust_status}
+	    where P.stock_code = #{stock_code} AND P.nickname = #{nickname}  
+		AND P.entrust_no = #{entrust_no}  
+	</update>
 </mapper>
 

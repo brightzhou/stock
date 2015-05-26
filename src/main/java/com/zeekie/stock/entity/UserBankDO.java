@@ -12,6 +12,7 @@ public class UserBankDO extends BankInfoDO {
 		// TODO Auto-generated constructor stub
 	}
 
+
 	/**
 	 * @return the id
 	 */

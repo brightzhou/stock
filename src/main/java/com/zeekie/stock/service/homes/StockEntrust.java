@@ -3,6 +3,10 @@ package com.zeekie.stock.service.homes;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.zeekie.stock.Constants;
+
 /**
  * 
  * 普通委托
@@ -20,7 +24,7 @@ public class StockEntrust extends AStockTrade {
 
 	private String combineId;
 
-	private String exchangeType = "1";
+	private String exchangeType;
 
 	private String stockCode;
 
@@ -34,13 +38,14 @@ public class StockEntrust extends AStockTrade {
 
 	public StockEntrust(String fundAccount, String combineId,
 			String operatorNo, String stockCode, String entrustAmount,
-			String entrustPrice) {
+			String entrustPrice, String exchangeType) {
 		this.fundAccount = fundAccount;
 		this.combineId = combineId;
 		this.operatorNo = operatorNo;
 		this.stockCode = stockCode;
 		this.entrustAmount = entrustAmount;
 		this.entrustPrice = entrustPrice;
+		this.exchangeType = exchangeType;
 	}
 
 	public StockEntrust() {

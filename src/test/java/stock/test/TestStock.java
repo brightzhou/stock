@@ -22,6 +22,10 @@ public class TestStock {
 	public static void main(String[] args) {
 		login();
 //		deal();
+//		cxdeal();
+//		queryCombasset();
+//		queryEntrust();
+//		queryEntrustHistory();
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
 		// REGISTER();
@@ -96,6 +100,50 @@ public class TestStock {
 		// testapi();
 	}
 
+	public static void queryEntrustHistory() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "实5");
+		datas.put("startDate", "2015-05-19");
+		datas.put("endDate", "2015-05-25");
+		try {
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/history/query",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void queryEntrust() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "实5");
+		try {
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/query",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void queryCombasset() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "实5");
+		try {
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/combasset/query",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void testapi() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -652,23 +700,43 @@ public class TestStock {
 		}
 	}
 
+	public static void cxdeal() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "实5");
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+
+		try {
+			item.put("token", TokenUtils.encryptToken("实5,20150525230220",
+					"saiying_$hahabao"));
+			headers.put("user_auth", item.toString());
+			req.setHeaders(headers);
+			String result = req.post(
+					"http://localhost:8080/stock/api/stock/entrust/common/entrust/withdraw", datas);
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void deal() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "测试34");
+		datas.put("nickname", "实5");
 		datas.put("stockCode", "600005");
-		datas.put("entrustPrice", "6.25");
+		datas.put("entrustPrice", "6.39");
 		datas.put("entrustAmount", "100");
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("测试34,20150522230220",
+			item.put("token", TokenUtils.encryptToken("实5,20150525230220",
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
 			String result = req.post(
-					"http://localhost:8085/stock/api/stock/entrust/common/entrust", datas);
+					"http://localhost:8080/stock/api/stock/entrust/common/entrust", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -678,7 +746,7 @@ public class TestStock {
 	public static void login() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "哇哈哈2");
+		datas.put("nickname", "测试");
 		datas.put("password", "123456");
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
