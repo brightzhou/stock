@@ -50,7 +50,7 @@ public class CombassetDO {
 	 *            the currentCash to set
 	 */
 	public void setCurrentCash(Float currentCash) {
-		this.currentCash = assetValue;
+		this.currentCash = currentCash;
 	}
 
 	public CombassetDO() {

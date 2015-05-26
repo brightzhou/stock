@@ -20,10 +20,10 @@ import com.zeekie.stock.util.http.HandleHttpRequest;
 public class TestStock {
 
 	public static void main(String[] args) {
-		login();
+//		login();
 //		deal();
 //		cxdeal();
-//		queryCombasset();
+		queryCombasset();
 //		queryEntrust();
 //		queryEntrustHistory();
 		// String ss = getVerifyCode();
@@ -133,10 +133,10 @@ public class TestStock {
 	public static void queryCombasset() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "实5");
+		datas.put("nickname", "呵呵");
 		try {
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/combasset/query",
+					.post("http://121.40.71.84:8083/stock/api/stock/entrust/combasset/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {

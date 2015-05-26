@@ -129,20 +129,20 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public String queryCombasset(String nickname) {
+	public JSONObject queryCombasset(String nickname) {
 		try {
 			CombassetDO combassetDO = deal.queryCombasset(nickname);
-			JSONObject jo = JSONObject.fromObject(combassetDO,
-					Constants.jsonConfig);
-			return jo.toString();
+			if (null != combassetDO) {
+				return JSONObject.fromObject(combassetDO, Constants.jsonConfig);
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		return "";
+		return null;
 	}
 
 	@Override
-	public String queryEntrust(String nickname) {
+	public JSONArray queryEntrust(String nickname) {
 		try {
 			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname);
 			String fundAccount = entrustDO.getFundAccount();
@@ -182,24 +182,24 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				jo.put("cancelInfo", entity.getCancel_info());
 				ja.add(jo);
 			}
-			return ja.toString();
+			return ja;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		return "";
+		return null;
 	}
 
 	@Override
-	public String queryEntrustHistory(String nickname, String startDate,
+	public JSONArray queryEntrustHistory(String nickname, String startDate,
 			String endDate) {
 		try {
 			List<CurrentEntrustDO> currentEntrustDO = deal.queryEntrustHistory(
 					nickname, startDate, endDate);
-			return JSONArray.fromObject(currentEntrustDO).toString();
+			return JSONArray.fromObject(currentEntrustDO);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		return "";
+		return null;
 	}
 
 }

@@ -1,5 +1,8 @@
 package com.zeekie.stock.service;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 public interface EntrustService {
 
 	/**
@@ -33,7 +36,7 @@ public interface EntrustService {
 	 * @param nickname
 	 * @return
 	 */
-	String queryCombasset(String nickname);
+	JSONObject queryCombasset(String nickname);
 
 	/**
 	 * 当日委托查询
@@ -41,16 +44,19 @@ public interface EntrustService {
 	 * @param nickname
 	 * @return
 	 */
-	String queryEntrust(String nickname);
+	JSONArray queryEntrust(String nickname);
 
 	/**
 	 * 获取历史委托
 	 * 
 	 * @param nickname
-	 * @param endDate 委托结束时间
-	 * @param startDate 委托开始时间
+	 * @param endDate
+	 *            委托结束时间
+	 * @param startDate
+	 *            委托开始时间
 	 * @return
 	 */
-	String queryEntrustHistory(String nickname, String startDate, String endDate);
+	JSONArray queryEntrustHistory(String nickname, String startDate,
+			String endDate);
 
 }

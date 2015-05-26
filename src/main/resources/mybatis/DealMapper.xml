@@ -12,6 +12,7 @@
 	<resultMap type="com.zeekie.stock.entity.CombassetDO" id="resultCombasset">
 		<result column="ACTUAL_CASH" property="assetTotalValue" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="CURRENT_CASH" property="assetValue" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CURRENT_CASH" property="currentCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.CurrentEntrustDO" id="resultCurrentEntrust">

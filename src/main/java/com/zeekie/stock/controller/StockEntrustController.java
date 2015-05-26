@@ -1,5 +1,8 @@
 package com.zeekie.stock.controller;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +55,21 @@ public class StockEntrustController {
 	@RequestMapping("combasset/query")
 	public ApiResponse<?> queryCombasset(
 			@RequestParam("nickname") String nickname) {
-		return ApiUtils.good(entrust.queryCombasset(nickname));
+		JSONObject jo = entrust.queryCombasset(nickname);
+		if (null != jo) {
+			return ApiUtils.good(jo);
+		}
+		return ApiUtils.good();
 	}
 
 	@ResponseBody
 	@RequestMapping("query")
 	public ApiResponse<?> queryEntrust(@RequestParam("nickname") String nickname) {
-		return ApiUtils.good(entrust.queryEntrust(nickname));
+		JSONArray ja = entrust.queryEntrust(nickname);
+		if (null != ja) {
+			return ApiUtils.good(ja);
+		}
+		return ApiUtils.good();
 	}
 
 	@ResponseBody
@@ -67,7 +78,11 @@ public class StockEntrustController {
 			@RequestParam("nickname") String nickname,
 			@RequestParam("startDate") String startDate,
 			@RequestParam("endDate") String endDate) {
-		return ApiUtils.good(entrust.queryEntrustHistory(nickname,startDate,endDate));
+		JSONArray ja = entrust.queryEntrustHistory(nickname, startDate, endDate);
+		if (null != ja) {
+			return ApiUtils.good(ja);
+		}
+		return ApiUtils.good();
 	}
 
 }

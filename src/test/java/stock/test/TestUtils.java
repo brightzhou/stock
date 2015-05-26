@@ -1,7 +1,6 @@
 package stock.test;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.net.URLDecoder;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,16 +22,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import net.sf.json.JSONException;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -43,12 +37,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.oreilly.servlet.MultipartRequest;
 import com.tencent.xinge.Message;
 import com.tencent.xinge.XingeApp;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.CryptoUtils;
-import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.util.http.HandleHttpRequest;
 
