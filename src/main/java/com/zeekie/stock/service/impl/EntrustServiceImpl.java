@@ -101,9 +101,9 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public String entrustWithdraw(String nickname) {
+	public String entrustWithdraw(String nickname,String entrustNo) {
 		try {
-			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname);
+			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname,entrustNo);
 			if (null == entrustDO) {
 				return Constants.CODE_FAILURE;
 			}
@@ -144,7 +144,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public JSONArray queryEntrust(String nickname) {
 		try {
-			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname);
+			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname,"");
 			String fundAccount = entrustDO.getFundAccount();
 			String combineId = entrustDO.getCombineId();
 			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,

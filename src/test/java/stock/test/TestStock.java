@@ -23,8 +23,8 @@ public class TestStock {
 //		login();
 //		deal();
 //		cxdeal();
-		queryCombasset();
-//		queryEntrust();
+//		queryCombasset();
+		queryEntrust();
 //		queryEntrustHistory();
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
@@ -103,12 +103,12 @@ public class TestStock {
 	public static void queryEntrustHistory() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "实5");
+		datas.put("nickname", "ceshi");
 		datas.put("startDate", "2015-05-19");
-		datas.put("endDate", "2015-05-25");
+		datas.put("endDate", "2015-05-26");
 		try {
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/history/query",
+					.post("http://localhost:8085/stock/api/stock/entrust/history/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -119,10 +119,10 @@ public class TestStock {
 	public static void queryEntrust() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "实5");
+		datas.put("nickname", "ceshi");
 		try {
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/query",
+					.post("http://localhost:8085/stock/api/stock/entrust/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -703,17 +703,18 @@ public class TestStock {
 	public static void cxdeal() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "实5");
+		datas.put("nickname", "ceshi");
+		datas.put("entrustNo", "7248741");
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("实5,20150525230220",
+			item.put("token", TokenUtils.encryptToken("ceshi,20150526230220",
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
 			String result = req.post(
-					"http://localhost:8080/stock/api/stock/entrust/common/entrust/withdraw", datas);
+					"http://localhost:8085/stock/api/stock/entrust/common/entrust/withdraw", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

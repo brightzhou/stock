@@ -26,9 +26,11 @@ public interface EntrustService {
 	 * 
 	 * @param nickname
 	 *            昵称
+	 * @param entrustNo
+	 *            委托编号
 	 * @return
 	 */
-	String entrustWithdraw(String nickname);
+	String entrustWithdraw(String nickname, String entrustNo);
 
 	/**
 	 * 账户资金查询

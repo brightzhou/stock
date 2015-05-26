@@ -67,6 +67,9 @@
 	
 	<select id="queryEntrustInfo" parameterType="string" resultMap="resultEntrustInfo">
 		select t.TRADE_ACCOUNT,t.ENTRUST_NO,t.FUND_ACCOUNT,t.COMBINE_ID from STOCK_ENTRUST t where t.nickname = #{nickname}
+		<if test="entrustNo!=null and entrustNo!=''">
+			and t.ENTRUST_NO = #{entrustNo}
+		</if>
 	</select>
 	
 	<select id="queryCombasset" parameterType="string" resultMap="resultCombasset">
@@ -86,12 +89,77 @@
 		   AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &lt;= #{endDate}
 	</select>
 	
-	<update id="updateEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustQueryEntity">
-	    update STOCK_ENTRUST p set 
+	<insert id="updateEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustQueryEntity">
+<!-- 	    update STOCK_ENTRUST p set 
 	   	 	   P.business_amount = #{business_amount},P.business_balance = #{business_balance},
 	    	   P.cancel_info =#{cancel_info}, P.amentrust_status = #{amentrust_status}
 	    where P.stock_code = #{stock_code} AND P.nickname = #{nickname}  
-		AND P.entrust_no = #{entrust_no}  
-	</update>
+		AND P.entrust_no = #{entrust_no}   -->
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_stock_entrust_id.Nextval from dual
+		</selectKey>
+		merge into STOCK_ENTRUST p
+		using (select 
+		            #{id} id,
+					#{business_amount} business_amount,
+					#{business_balance} business_balance,
+					#{cancel_info} cancel_info,
+					#{amentrust_status} amentrust_status,
+					#{stock_code} stock_code,
+					#{nickname} nickname,
+					#{entrust_no} entrust_no,
+					#{entrust_time} entrust_time,
+					#{batch_no} batch_no,
+					#{exchange_type} exchange_type,
+					#{entrust_direction} entrust_direction,
+					#{entrust_price} entrust_price,
+					#{entrust_amount} entrust_amount,
+					#{fundAccount} fundAccount,
+					#{combineId} combineId,
+					#{operateNo} operateNo
+				from dual) t
+		on (P.stock_code = t.stock_code AND P.nickname = t.nickname AND p.entrust_no = t.entrust_no)
+		WHEN MATCHED THEN
+		update set 
+			   P.business_amount = t.business_amount,P.business_balance = t.business_balance,
+	    	   P.cancel_info = t.cancel_info, P.amentrust_status = t.amentrust_status
+	    WHEN NOT MATCHED THEN
+		Insert
+		  (p.id,
+		   p.Operateno,
+		   p.Combineid,
+		   p.Fundaccount,
+		   p.Entrust_Amount,
+		   p.Entrust_Price,
+		   p.Entrust_Direction,
+		   p.Exchange_Type,
+		   p.Batch_No.,
+		   p.Entrust_Time,
+		   p.Entrust_No,
+		   p.Nickname,
+		   p.Stock_Code,
+		   p.Amentrust_Status,
+		   p.Cancel_Info,
+		   p.Business_Balance,
+		   p.Business_Amount)
+		Values
+		  (t.id,
+		   t.Operateno,
+		   t.Combineid,
+		   t.Fundaccount,
+		   t.Entrust_Amount,
+		   t.Entrust_Price,
+		   t.Entrust_Direction,
+		   t.Exchange_Type,
+		   t.Batch_No.,
+		   t.Entrust_Time,
+		   t.Entrust_No,
+		   t.Nickname,
+		   t.Stock_Code,
+		   t.Amentrust_Status,
+		   t.Cancel_Info,
+		   t.Business_Balance,
+		   t.Business_Amount)
+	</insert>
 </mapper>
 

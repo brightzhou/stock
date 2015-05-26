@@ -47,8 +47,9 @@ public class StockEntrustController {
 
 	@ResponseBody
 	@RequestMapping("common/entrust/withdraw")
-	public String entrustWithdraw(@RequestParam("nickname") String nickname) {
-		return entrust.entrustWithdraw(nickname);
+	public String entrustWithdraw(@RequestParam("nickname") String nickname,
+			@RequestParam("entrustNo") String entrustNo) {
+		return entrust.entrustWithdraw(nickname,entrustNo);
 	}
 
 	@ResponseBody
@@ -78,7 +79,8 @@ public class StockEntrustController {
 			@RequestParam("nickname") String nickname,
 			@RequestParam("startDate") String startDate,
 			@RequestParam("endDate") String endDate) {
-		JSONArray ja = entrust.queryEntrustHistory(nickname, startDate, endDate);
+		JSONArray ja = entrust
+				.queryEntrustHistory(nickname, startDate, endDate);
 		if (null != ja) {
 			return ApiUtils.good(ja);
 		}
