@@ -20,8 +20,8 @@ import com.zeekie.stock.util.http.HandleHttpRequest;
 public class TestStock {
 
 	public static void main(String[] args) {
-//		login();
-		deal();
+		login();
+//		deal();
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
 		// REGISTER();
@@ -684,7 +684,7 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("哇哈哈2,20150521230220",
+			item.put("token", TokenUtils.encryptToken("哇哈哈2,20150525230220",
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
