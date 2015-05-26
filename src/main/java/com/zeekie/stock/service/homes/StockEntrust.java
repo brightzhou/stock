@@ -28,7 +28,7 @@ public class StockEntrust extends AStockTrade {
 
 	private String stockCode;
 
-	private String entrustDirection = "1";
+	private String entrustDirection;
 
 	private String ampriceType = "0";
 
@@ -38,7 +38,7 @@ public class StockEntrust extends AStockTrade {
 
 	public StockEntrust(String fundAccount, String combineId,
 			String operatorNo, String stockCode, String entrustAmount,
-			String entrustPrice, String exchangeType) {
+			String entrustPrice, String exchangeType, String entrustDirection) {
 		this.fundAccount = fundAccount;
 		this.combineId = combineId;
 		this.operatorNo = operatorNo;
@@ -46,6 +46,7 @@ public class StockEntrust extends AStockTrade {
 		this.entrustAmount = entrustAmount;
 		this.entrustPrice = entrustPrice;
 		this.exchangeType = exchangeType;
+		this.entrustDirection = entrustDirection;
 	}
 
 	public StockEntrust() {

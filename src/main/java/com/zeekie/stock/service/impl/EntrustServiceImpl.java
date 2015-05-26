@@ -1,6 +1,7 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -31,6 +32,7 @@ import com.zeekie.stock.service.homes.StockEntrustQuery;
 import com.zeekie.stock.service.homes.StockEntrustWithdraw;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
+import com.zeekie.stock.util.DateUtil;
 
 @Service
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
@@ -60,7 +62,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 	@Override
 	public String entrust(String nickname, String stockCode,
-			String entrustAmount, String entrustPrice) {
+			String entrustAmount, String entrustPrice, String entrustDirection) {
 		try {
 			AccountDO accountDO = account.getAccount(nickname);
 			String combineId = accountDO.getCombineId();
@@ -70,7 +72,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					: Constants.HOMES_EXCHANGE_TYPE_S;
 			StockEntrust entrust = new StockEntrust(fundAccount, combineId,
 					operateNo, stockCode, entrustAmount, entrustPrice,
-					exchangeType);
+					exchangeType, entrustDirection);
 			entrust.callHomes(fn_entrust);
 
 			if (!entrust.visitSuccess(fn_entrust)) {
@@ -101,9 +103,10 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public String entrustWithdraw(String nickname,String entrustNo) {
+	public String entrustWithdraw(String nickname, String entrustNo) {
 		try {
-			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname,entrustNo);
+			BaseEntrustDO entrustDO = deal
+					.queryEntrustInfo(nickname, entrustNo);
 			if (null == entrustDO) {
 				return Constants.CODE_FAILURE;
 			}
@@ -144,45 +147,48 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public JSONArray queryEntrust(String nickname) {
 		try {
-			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname,"");
-			String fundAccount = entrustDO.getFundAccount();
-			String combineId = entrustDO.getCombineId();
-			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
-					combineId);
-			entrustQuery.callHomes(fn_am_entrust_qry);
+			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname, "");
+			if (null != entrustDO) {
+				String fundAccount = entrustDO.getFundAccount();
+				String combineId = entrustDO.getCombineId();
+				StockEntrustQuery entrustQuery = new StockEntrustQuery(
+						fundAccount, combineId);
+				entrustQuery.callHomes(fn_am_entrust_qry);
 
-			List<?> obj = returnObj(entrustQuery.getDataSet(),
-					EntrustQueryEntity.class);
-			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
-			EntrustQueryEntity entity = null;
-			JSONArray ja = new JSONArray();
-			if (!obj.isEmpty()) {
-				for (Object each : obj) {
-					entity = (EntrustQueryEntity) each;
-					entity.setBaseParam(fundAccount, combineId,
-							entrustDO.getOperatorNo(), nickname);
-					entities.add(entity);
+				List<?> obj = returnObj(entrustQuery.getDataSet(),
+						EntrustQueryEntity.class);
+				List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
+				EntrustQueryEntity entity = null;
+				JSONArray ja = new JSONArray();
+				if (!obj.isEmpty()) {
+					for (Object each : obj) {
+						entity = (EntrustQueryEntity) each;
+						entity.setBaseParam(fundAccount, combineId,
+								entrustDO.getOperatorNo(), nickname);
+						entities.add(entity);
+					}
+					batchMapper.batchInsert(DealMapper.class, "updateEntrust",
+							entities);
+					JSONObject jo = new JSONObject();
+					jo.put("StockCode", entity.getStock_code());
+					jo.put("amentrustStatus", AmentrustStatusEnum
+							.getDesc(entity.getAmentrust_status()));
+					jo.put("entrustPrice", entity.getEntrust_price());
+					jo.put("entrustAmount", entity.getEntrust_amount());
+					jo.put("entrustNo", entity.getEntrust_no());
+					jo.put("exchangeType",
+							ExchangeTypeEnum.getDesc(entity.getExchange_type()));
+					jo.put("entrustDirection", EntrustDirectionEnum
+							.getDesc(entity.getEntrust_direction()));
+					jo.put("businessBalance", entity.getBusiness_balance());
+					jo.put("businessAmount", entity.getBusiness_amount());
+					jo.put("entrustTime", entity.getEntrust_time());
+					jo.put("cancelInfo", entity.getCancel_info());
+					jo.put("entrusteDate",DateUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+					ja.add(jo);
 				}
-				batchMapper.batchInsert(DealMapper.class, "updateEntrust",
-						entities);
-				JSONObject jo = new JSONObject();
-				jo.put("StockCode", entity.getStock_code());
-				jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entity
-						.getAmentrust_status()));
-				jo.put("entrustPrice", entity.getEntrust_price());
-				jo.put("entrustAmount", entity.getEntrust_amount());
-				jo.put("entrustNo", entity.getEntrust_no());
-				jo.put("exchangeType",
-						ExchangeTypeEnum.getDesc(entity.getExchange_type()));
-				jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entity
-						.getEntrust_direction()));
-				jo.put("businessBalance", entity.getBusiness_balance());
-				jo.put("businessAmount", entity.getBusiness_amount());
-				jo.put("entrustTime", entity.getEntrust_time());
-				jo.put("cancelInfo", entity.getCancel_info());
-				ja.add(jo);
+				return ja;
 			}
-			return ja;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
@@ -195,10 +201,17 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 		try {
 			List<CurrentEntrustDO> currentEntrustDO = deal.queryEntrustHistory(
 					nickname, startDate, endDate);
-			return JSONArray.fromObject(currentEntrustDO);
+			return (null == currentEntrustDO || currentEntrustDO.isEmpty()) ? null
+					: JSONArray.fromObject(currentEntrustDO);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		return null;
+	}
+
+	@Override
+	public JSONArray queryStockPositon(String nickname) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
