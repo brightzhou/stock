@@ -408,8 +408,8 @@ public class StockServiceImpl implements TradeService {
 		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
 		if (!StringUtils
 				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
-					stock_manager_phone, fundAccount);
+			/*ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
+					stock_manager_phone, fundAccount);*/
 			if (log.isDebugEnabled()) {
 				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
 			}

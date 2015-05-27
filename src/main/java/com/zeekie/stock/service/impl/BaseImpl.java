@@ -72,11 +72,17 @@ public class BaseImpl {
 	 * @param entity
 	 *            具体操作的子类
 	 * @return
+	 * @throws InvocationTargetException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IntrospectionException
 	 */
-	public List<?> returnObj(IDatasets data, Class<?> entity) {
+	public List<?> returnObj(IDatasets data, Class<?> entity)
+			throws IntrospectionException, IllegalAccessException,
+			InstantiationException, InvocationTargetException {
 
 		int datasetCount = data.getDatasetCount();
-		List<Object> result = new ArrayList();
+		List<Object> result = new ArrayList<Object>();
 		// 遍历所有的结果集
 		for (int i = 0; i < datasetCount; i++) {
 			// 开始读取单个结果集的信息
@@ -85,27 +91,24 @@ public class BaseImpl {
 			if (StringUtil.equals(Constants.CODE_HOMES_SUCCESS, errorNo)
 					|| StringUtils.isBlank(errorNo)) {
 				int columnCount = ds.getColumnCount();
-				Map<String, String> map = new HashMap<String, String>();
 				// 遍历单个结果集列信息
+				List<String> columnName = new ArrayList<String>();
 				for (int j = 1; j <= columnCount; j++) {
-					map.put(ds.getColumnName(j), ds.getString(j));
+					columnName.add(ds.getColumnName(j));
+				}
+				ds.beforeFirst();
+				while (ds.hasNext()) {
+					Map<String, String> map = new HashMap<String, String>();
+					ds.next();
+					for (int k = 0; k < columnName.size(); k++) {
+						String column = columnName.get(k);
+						map.put(column, ds.getString(column));
+					}
+					result.add(BeanMapUtil.convertMap(entity, map));
 				}
 				if (log.isDebugEnabled()) {
 					log.debug("访问homes服务[" + data.getDatasetName(0)
-							+ "],返回的数据为：" + map);
-				}
-				if (!map.isEmpty()) {
-					try {
-						result.add(BeanMapUtil.convertMap(entity, map));
-					} catch (IntrospectionException e) {
-						log.error(e.getMessage(), e);
-					} catch (IllegalAccessException e) {
-						log.error(e.getMessage(), e);
-					} catch (InstantiationException e) {
-						log.error(e.getMessage(), e);
-					} catch (InvocationTargetException e) {
-						log.error(e.getMessage(), e);
-					}
+							+ "],返回的数据长度为：" + result.size());
 				}
 			} else {
 				log.error("访问homes服务[" + data.getDatasetName(0)
