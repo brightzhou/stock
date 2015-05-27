@@ -56,6 +56,10 @@
 	    <filter-name>tokenFilter</filter-name>
 	    <url-pattern>/api/stock/trade/*</url-pattern>
 	</filter-mapping>
+<!-- 	<filter-mapping>
+	    <filter-name>tokenFilter</filter-name>
+	    <url-pattern>/api/stock/entrust/*</url-pattern>
+	</filter-mapping> -->
     
     <filter>
 	    <filter-name>loginFilter</filter-name>
