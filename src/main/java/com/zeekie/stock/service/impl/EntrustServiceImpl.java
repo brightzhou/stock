@@ -218,8 +218,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public JSONArray queryStockPositon(String nickname) {
-		// TODO Auto-generated method stub
+	public JSONArray queryStockHold(String nickname) {
+		
 		return null;
 	}
 

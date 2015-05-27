@@ -84,7 +84,7 @@ public class StockEntrustController {
 	@RequestMapping("stockPositon/hold")
 	public ApiResponse<?> queryStockPositon(
 			@RequestParam("nickname") String nickname) {
-		JSONArray ja = entrust.queryStockPositon(nickname);
+		JSONArray ja = entrust.queryStockHold(nickname);
 		return (null != ja) ? ApiUtils.good(ja) : ApiUtils.good();
 	}
 }
