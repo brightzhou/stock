@@ -66,14 +66,30 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	/**
 	 * 开始时间
 	 */
-	private Date startDate;
+	private String startDate;
 	
 	
 	/**
 	 * 结束时间
 	 */
-	private Date endDate;
+	private String endDate;
 	
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
 	/**
 	 * 状态集合
 	 */
@@ -87,21 +103,6 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 		this.statusArray = statusArray;
 	}
 
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
 
 	/**
 	 * @return the exchangeType

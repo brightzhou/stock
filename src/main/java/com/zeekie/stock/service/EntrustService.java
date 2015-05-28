@@ -3,6 +3,8 @@ package com.zeekie.stock.service;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.zeekie.stock.entity.CurrentEntrustDO;
+
 public interface EntrustService {
 
 	/**
@@ -58,5 +60,31 @@ public interface EntrustService {
 	 */
 	JSONArray queryEntrustHistory(String nickname, String startDate,
 			String endDate);
-
+	/**
+	 * 成交查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	JSONArray tradedQuery(String nickname);
+	
+	/**
+	 * 历史成交查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	JSONArray historyTradedQuery(String nickname);
+    /**
+     * 持仓查询
+     * @param nickname
+     * @return
+     */
+	JSONArray queryCombostock(String nickname);
+	 /**
+     * 委托查询公交服务接口
+     * @param nickname
+     * @return
+     */
+	JSONArray queryEntrustComm(CurrentEntrustDO entrustDO);
 }

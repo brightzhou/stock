@@ -20,12 +20,14 @@ import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BaseEntrustDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.enums.AmentrustStatusEnum;
 import com.zeekie.stock.enums.EntrustDirectionEnum;
 import com.zeekie.stock.enums.ExchangeTypeEnum;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.service.EntrustService;
+import com.zeekie.stock.service.homes.StockCombostockQuery;
 import com.zeekie.stock.service.homes.StockEntrust;
 import com.zeekie.stock.service.homes.StockEntrustQuery;
 import com.zeekie.stock.service.homes.StockEntrustWithdraw;
@@ -54,9 +56,24 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Autowired
 	@Value("${func_am_entrust_qry}")
 	private String fn_am_entrust_qry;
-
+   
+	@Autowired
+	@Value("${func_am_realdeal_qry}")
+	private String func_am_realdeal_qry;
+    
+	@Autowired
+	@Value("${func_am_realdeal_history_qry}")
+	private String func_am_realdeal_history_qry;
+	
+	@Autowired
+	@Value("${func_am_combostock_qry}")
+	private String func_am_combostock_qry;
+	
 	@Autowired
 	private BatchMapper batchMapper;
+	
+	@Autowired
+	private AcountMapper acount;
 
 	@Override
 	public String entrust(String nickname, String stockCode,
@@ -200,6 +217,117 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			log.error(e.getMessage(), e);
 		}
 		return null;
+	}
+	
+	
+	@Override
+	public JSONArray tradedQuery(String nickname){
+		try {
+		    CurrentOperateUserDO userDO =	account.getCurrentOperateUser(nickname);
+			String fundAccount = userDO.getFundAccount();
+			String combineId =  userDO.getCombieId(); 
+			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,combineId);
+			entrustQuery.callHomes(func_am_realdeal_qry);
+
+			List<?> obj = returnObj(entrustQuery.getDataSet(),EntrustQueryEntity.class);
+			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
+			EntrustQueryEntity entity = null;
+			JSONArray ja = new JSONArray();
+			if (!obj.isEmpty()) {
+				for (Object each : obj) {
+					entity = (EntrustQueryEntity) each;
+					entity.setBaseParam(fundAccount, combineId,userDO.getTradeAcount(), nickname);
+					entities.add(entity);
+				}
+				for (EntrustQueryEntity entrustEntity : entities) {
+					JSONObject jo = new JSONObject();
+					jo.put("StockCode", entrustEntity.getStock_code());
+					jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entrustEntity.getAmentrust_status()));
+					jo.put("entrustPrice", entrustEntity.getEntrust_price());
+					jo.put("entrustAmount", entrustEntity.getEntrust_amount());
+					jo.put("entrustNo", entrustEntity.getEntrust_no());
+					jo.put("exchangeType",ExchangeTypeEnum.getDesc(entrustEntity.getExchange_type()));
+					jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entrustEntity.getEntrust_direction()));
+					jo.put("businessBalance", entrustEntity.getBusiness_balance());
+					jo.put("businessAmount", entrustEntity.getBusiness_amount());
+					jo.put("entrustTime", entrustEntity.getEntrust_time());
+					jo.put("cancelInfo", entrustEntity.getCancel_info());
+					ja.add(jo);
+				}
+				
+			}
+			return ja;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	@Override
+	public JSONArray historyTradedQuery(String nickname){
+		List<CurrentEntrustDO> list =	null;
+		try {		
+		    CurrentEntrustDO entrustDO = new CurrentEntrustDO();
+	        entrustDO.setNickName(nickname);
+	        entrustDO.setStatusArray(new String[] {"1","4","5","6","7","8","9","a","A","B","C","D","E","F"});
+	        list =	deal.queryEntrustComm(entrustDO);
+        }catch (Exception e) {
+			e.printStackTrace();
+		}
+        System.out.println(JSONArray.fromObject(list));
+		return JSONArray.fromObject(list);
+	}
+	@Override 
+	public JSONArray queryCombostock(String nickname){
+		try {
+		    CurrentOperateUserDO userDO =	account.getCurrentOperateUser(nickname);
+			String fundAccount = userDO.getFundAccount();
+			String combineId =  userDO.getCombieId(); 
+			StockCombostockQuery combostockQuery = new StockCombostockQuery(fundAccount,combineId);
+			combostockQuery.callHomes(func_am_combostock_qry);
+
+			List<?> obj = returnObj(combostockQuery.getDataSet(),EntrustQueryEntity.class);
+			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
+			EntrustQueryEntity entity = null;
+			JSONArray ja = new JSONArray();
+			if (!obj.isEmpty()) {
+				for (Object each : obj) {
+					entity = (EntrustQueryEntity) each;
+					entity.setBaseParam(fundAccount, combineId,userDO.getTradeAcount(), nickname);
+					entities.add(entity);
+				}
+				for (EntrustQueryEntity entrustEntity : entities) {
+					JSONObject jo = new JSONObject();
+					jo.put("StockCode", entrustEntity.getStock_code());
+					jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entrustEntity.getAmentrust_status()));
+					jo.put("entrustPrice", entrustEntity.getEntrust_price());
+					jo.put("entrustAmount", entrustEntity.getEntrust_amount());
+					jo.put("entrustNo", entrustEntity.getEntrust_no());
+					jo.put("exchangeType",ExchangeTypeEnum.getDesc(entrustEntity.getExchange_type()));
+					jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entrustEntity.getEntrust_direction()));
+					jo.put("businessBalance", entrustEntity.getBusiness_balance());
+					jo.put("businessAmount", entrustEntity.getBusiness_amount());
+					jo.put("entrustTime", entrustEntity.getEntrust_time());
+					jo.put("cancelInfo", entrustEntity.getCancel_info());
+					ja.add(jo);
+				}
+				
+			}
+			return ja;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	@Override
+	public JSONArray queryEntrustComm(CurrentEntrustDO entrustDO){
+		List<CurrentEntrustDO> list =	null;
+		try {		
+	        list =	deal.queryEntrustComm(entrustDO);
+        }catch (Exception e) {
+			e.printStackTrace();
+		}
+        return JSONArray.fromObject(list);
 	}
 
 }

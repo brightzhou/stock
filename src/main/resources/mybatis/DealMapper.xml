@@ -100,10 +100,10 @@
 		  FROM STOCK_ENTRUST E 
 		 <where>
 			 <if test="startDate != null">
-			      AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &gt;= #{startDate}
+			      AND E.ENTRUST_DATE  &gt;= to_date(#{startDate} , 'yyyy-mm-dd hh24:mi:ss')
 			 </if>
 			 <if test="endDate != null">
-			      AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &lt;= #{endDate}
+			      AND  E.ENTRUST_DATE &lt;= to_date(#{endDate} , 'yyyy-mm-dd hh24:mi:ss')
 			 </if>
 			 <if test="amentrustStatus != null">
 			      AND  E.AMENTRUST_STATUS  = #{amentrustStatus}
