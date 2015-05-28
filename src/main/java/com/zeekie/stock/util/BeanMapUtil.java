@@ -28,7 +28,7 @@ public class BeanMapUtil {
 	 * @throws InvocationTargetException
 	 *             如果调用属性的 setter 方法失败
 	 */
-	public static Object convertMap(Class type, Map map)
+	public static Object convertMap(Class<?> type, Map<String, ?> map)
 			throws IntrospectionException, IllegalAccessException,
 			InstantiationException, InvocationTargetException {
 		BeanInfo beanInfo = Introspector.getBeanInfo(type); // 获取类属性

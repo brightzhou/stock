@@ -166,26 +166,14 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 						entity.setBaseParam(fundAccount, combineId,
 								entrustDO.getOperatorNo(), nickname);
 						entities.add(entity);
+						assembleResult(entity, ja);
 					}
 					batchMapper.batchInsert(DealMapper.class, "updateEntrust",
 							entities);
-					JSONObject jo = new JSONObject();
-					jo.put("StockCode", entity.getStock_code());
-					jo.put("amentrustStatus", AmentrustStatusEnum
-							.getDesc(entity.getAmentrust_status()));
-					jo.put("entrustPrice", entity.getEntrust_price());
-					jo.put("entrustAmount", entity.getEntrust_amount());
-					jo.put("entrustNo", entity.getEntrust_no());
-					jo.put("exchangeType",
-							ExchangeTypeEnum.getDesc(entity.getExchange_type()));
-					jo.put("entrustDirection", EntrustDirectionEnum
-							.getDesc(entity.getEntrust_direction()));
-					jo.put("businessBalance", entity.getBusiness_balance());
-					jo.put("businessAmount", entity.getBusiness_amount());
-					jo.put("entrustTime", entity.getEntrust_time());
-					jo.put("cancelInfo", entity.getCancel_info());
-					jo.put("entrusteDate",DateUtil.dateToStr(new Date(), "yyyy-MM-dd"));
-					ja.add(jo);
+				} else {
+					if (log.isDebugEnabled()) {
+						log.debug("执行委托查询，返回数据为空");
+					}
 				}
 				return ja;
 			}
@@ -193,6 +181,26 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			log.error(e.getMessage(), e);
 		}
 		return null;
+	}
+
+	private void assembleResult(EntrustQueryEntity entity, JSONArray ja) {
+		JSONObject jo = new JSONObject();
+		jo.put("StockCode", entity.getStock_code());
+		jo.put("amentrustStatus",
+				AmentrustStatusEnum.getDesc(entity.getAmentrust_status()));
+		jo.put("entrustPrice", entity.getEntrust_price());
+		jo.put("entrustAmount", entity.getEntrust_amount());
+		jo.put("entrustNo", entity.getEntrust_no());
+		jo.put("exchangeType",
+				ExchangeTypeEnum.getDesc(entity.getExchange_type()));
+		jo.put("entrustDirection",
+				EntrustDirectionEnum.getDesc(entity.getEntrust_direction()));
+		jo.put("businessBalance", entity.getBusiness_balance());
+		jo.put("businessAmount", entity.getBusiness_amount());
+		jo.put("entrustTime", entity.getEntrust_time());
+		jo.put("cancelInfo", entity.getCancel_info());
+		jo.put("entrusteDate", DateUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+		ja.add(jo);
 	}
 
 	@Override
@@ -210,8 +218,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public JSONArray queryStockPositon(String nickname) {
-		// TODO Auto-generated method stub
+	public JSONArray queryStockHold(String nickname) {
+		
 		return null;
 	}
 

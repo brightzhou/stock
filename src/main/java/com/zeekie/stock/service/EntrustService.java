@@ -69,6 +69,6 @@ public interface EntrustService {
 	 * @param nickname
 	 * @return
 	 */
-	JSONArray queryStockPositon(String nickname);
+	JSONArray queryStockHold(String nickname);
 
 }

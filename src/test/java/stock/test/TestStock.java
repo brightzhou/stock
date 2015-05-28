@@ -108,7 +108,7 @@ public class TestStock {
 		datas.put("endDate", "2015-05-26");
 		try {
 			String result = req
-					.post("http://localhost:8085/stock/api/stock/entrust/history/query",
+					.post("http://121.40.71.84:8083/stock/api/stock/entrust/history/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -122,7 +122,7 @@ public class TestStock {
 		datas.put("nickname", "ceshi");
 		try {
 			String result = req
-					.post("http://localhost:8085/stock/api/stock/entrust/query",
+					.post("http://localhost:8080/stock/api/stock/entrust/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
