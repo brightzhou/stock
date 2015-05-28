@@ -13,6 +13,7 @@ import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
+import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.EndStockCashDO;
@@ -632,5 +633,13 @@ public interface AcountMapper {
 	 * @throws Exception
 	 */
 	public void deleteIdCard(@Param("id") String id) throws Exception;
+
+    /**
+     * 当前操作用户信息
+     * @param nickname
+     * @return
+     * @throws Exception
+     */
+	public CurrentOperateUserDO getCurrentOperateUser(@Param("nickname") String nickname) throws Exception;
 
 }

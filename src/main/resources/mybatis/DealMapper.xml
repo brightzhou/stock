@@ -93,5 +93,34 @@
 	    where P.stock_code = #{stock_code} AND P.nickname = #{nickname}  
 		AND P.entrust_no = #{entrust_no}  
 	</update>
+	
+	<select id="queryEntrustComm" parameterType="com.zeekie.stock.entity.CurrentEntrustDO" resultMap="resultCurrentEntrust">
+		SELECT E.*,
+		       SUBSTR(TO_CHAR(SYSDATE, 'yyyymmddhh24miss'), 9) ENTRUST_TIMES
+		  FROM STOCK_ENTRUST E 
+		 <where>
+			 <if test="startDate != null">
+			      AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &gt;= #{startDate}
+			 </if>
+			 <if test="endDate != null">
+			      AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &lt;= #{endDate}
+			 </if>
+			 <if test="amentrustStatus != null">
+			      AND  E.AMENTRUST_STATUS  = #{amentrustStatus}
+			 </if>
+			 <if test="statusArray != null">
+			     AND  E.AMENTRUST_STATUS  in
+			    <foreach collection="statusArray" index="index" item="item" open="(" separator="," close=")">  
+                       #{item}  
+                </foreach>
+			 </if>
+		     AND E.NICKNAME = #{nickName}
+		 </where>
+		  
+		 
+		 
+		   
+		   
+	</select>
 </mapper>
 

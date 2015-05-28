@@ -71,5 +71,17 @@ public interface DealMapper {
 			@Param("nickname") String nickname,
 			@Param("startDate") String startDate,
 			@Param("endDate") String endDate) throws Exception;
+	
+	
+	/**
+	 * 获取历史委托信息
+	 * 
+	 * @param nickname
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentEntrustDO> queryEntrustComm(CurrentEntrustDO entrustDO) throws Exception;
 
 }

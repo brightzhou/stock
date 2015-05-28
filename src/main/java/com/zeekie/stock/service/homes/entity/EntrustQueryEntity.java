@@ -12,6 +12,16 @@ public class EntrustQueryEntity extends EntrustEntity {
 	private String cancel_info;
 	// 委托时间
 	private String entrust_time;
+	//成交时间
+	private String business_time;
+
+	public String getBusiness_time() {
+		return business_time;
+	}
+
+	public void setBusiness_time(String businessTime) {
+		business_time = businessTime;
+	}
 
 	/**
 	 * @return the entrust_time

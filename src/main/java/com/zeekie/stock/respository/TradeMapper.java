@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.zeekie.stock.entity.AddGuaranteePageDO;
 import com.zeekie.stock.entity.AutoAddGuaranteeCashDO;
+import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.DayDO;
 import com.zeekie.stock.entity.DeductDO;
 import com.zeekie.stock.entity.EveningEndDO;
@@ -233,5 +234,8 @@ public interface TradeMapper {
 	 */
 	void updateStopBuyFlag(@Param("operateId") String operateId,
 			@Param("flag") String flag);
+	
+	
+    CurrentAccountDO getUserOperateAcount(@Param("nickname") String nickname) throws Exception;
 
 }

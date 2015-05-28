@@ -335,6 +335,16 @@
 		<result column="id" property="id" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.CurrentOperateUserDO" id="resultCurrentOperateUserDO">
+		<result column="start_date" property="startDate" jdbcType="DATE"/>
+		<result column="operate_account_id" property="operateAccountId" jdbcType="VARCHAR"/>
+		<result column="trade_acount" property="tradeAcount" jdbcType="VARCHAR"/>
+		<result column="trade_password" property="tradePassword" jdbcType="VARCHAR"/>
+		<result column="asset_id" property="assetId" jdbcType="VARCHAR"/>
+		<result column="fund_account" property="fundAccount" jdbcType="VARCHAR"/>
+		<result column="combie_id" property="combieId" jdbcType="VARCHAR"/>
+	</resultMap> 
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1612,6 +1622,11 @@
 	
 	<select id="queryAllUser" resultType="string">
 		select nickname from stock_user 
+	</select>
+	
+    <select id="getCurrentOperateUser" resultMap="resultCurrentOperateUserDO" parameterType="string">
+		  select som.start_date  , som.operate_account_id ,soa.trade_acount  ,soa.trade_password  ,soa.asset_id  ,soa.fund_account ,soa.combie_id  from stock_user_operate_maininfo som ,stock_user_operate_acount soa  
+          where  som.operate_account_id = soa.id  and som.is_current='1'  and som.nickname =#{nickname}
 	</select>
 </mapper>
 

@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity;
 
+import java.util.Date;
+
 public class CurrentEntrustDO extends BaseEntrustDO {
 
 	/**
@@ -60,6 +62,46 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	 * 废单原因
 	 */
 	private String cancelInfo;
+    
+	/**
+	 * 开始时间
+	 */
+	private Date startDate;
+	
+	
+	/**
+	 * 结束时间
+	 */
+	private Date endDate;
+	
+	/**
+	 * 状态集合
+	 */
+    private String[]   statusArray;
+    
+    public String[] getStatusArray() {
+		return statusArray;
+	}
+
+	public void setStatusArray(String[] statusArray) {
+		this.statusArray = statusArray;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
 
 	/**
 	 * @return the exchangeType
