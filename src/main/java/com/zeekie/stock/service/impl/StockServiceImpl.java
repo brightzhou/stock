@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.aspectj.apache.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,8 +172,8 @@ public class StockServiceImpl implements TradeService {
 			// 判断是否存在可用的操盘账号
 			if (!StringUtils.equals("1", acount.getOperateAccount())) {
 				currentOperateInfo.put("flag", "2");
-				ApiUtils.send(Constants.MODEL_ACCOUNT_EMPTY_FN,
-						stock_manager_phone);
+				// ApiUtils.send(Constants.MODEL_ACCOUNT_EMPTY_FN,
+				// stock_manager_phone);
 				if (log.isDebugEnabled()) {
 					log.debug("没有可用的操盘账号,不能操盘，操盘用户：" + nickname);
 				}
@@ -408,8 +407,10 @@ public class StockServiceImpl implements TradeService {
 		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
 		if (!StringUtils
 				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			/*ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
-					stock_manager_phone, fundAccount);*/
+			/*
+			 * ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
+			 * stock_manager_phone, fundAccount);
+			 */
 			if (log.isDebugEnabled()) {
 				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
 			}
