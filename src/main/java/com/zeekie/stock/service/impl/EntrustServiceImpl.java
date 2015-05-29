@@ -28,6 +28,7 @@ import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.service.homes.StockCombostockQuery;
+import com.zeekie.stock.service.homes.StockCommQuery;
 import com.zeekie.stock.service.homes.StockEntrust;
 import com.zeekie.stock.service.homes.StockEntrustQuery;
 import com.zeekie.stock.service.homes.StockEntrustWithdraw;
@@ -52,10 +53,6 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Autowired
 	@Value("${func_am_entrust_withdraw}")
 	private String fn_entrust_withdraw;
-
-	@Autowired
-	@Value("${func_am_entrust_qry}")
-	private String fn_am_entrust_qry;
    
 	@Autowired
 	@Value("${func_am_realdeal_qry}")
@@ -68,6 +65,15 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Autowired
 	@Value("${func_am_combostock_qry}")
 	private String func_am_combostock_qry;
+	
+	@Autowired
+	@Value("${func_am_entrust_qry}")
+	private String func_am_entrust_qry;
+	
+	
+	@Autowired
+	@Value("${func_am_entrust_history_qry}")
+	private String func_am_entrust_history_qry;
 	
 	@Autowired
 	private BatchMapper batchMapper;
@@ -161,15 +167,16 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public JSONArray queryEntrust(String nickname) {
 		try {
-			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname);
-			String fundAccount = entrustDO.getFundAccount();
-			String combineId = entrustDO.getCombineId();
-			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
-					combineId);
-			entrustQuery.callHomes(fn_am_entrust_qry);
+			CurrentOperateUserDO userDO =	account.getCurrentOperateUser(nickname);
+		    if(userDO==null){
+		    	return null;
+		    }
+			String fundAccount = userDO.getFundAccount();
+			String combineId =  userDO.getCombieId();
+			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,combineId);
+			entrustQuery.callHomes(func_am_entrust_qry);
 
-			List<?> obj = returnObj(entrustQuery.getDataSet(),
-					EntrustQueryEntity.class);
+			List<?> obj = returnOnlyParentList(entrustQuery.getDataSet(),EntrustQueryEntity.class);
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 			EntrustQueryEntity entity = null;
 			JSONArray ja = new JSONArray();
@@ -177,7 +184,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					entity.setBaseParam(fundAccount, combineId,
-							entrustDO.getOperatorNo(), nickname);
+							userDO.getTradeAcount(), nickname);
 					entities.add(entity);
 				}
 				batchMapper.batchInsert(DealMapper.class, "updateEntrust",
@@ -206,55 +213,45 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 		return null;
 	}
 
-	@Override
-	public JSONArray queryEntrustHistory(String nickname, String startDate,
-			String endDate) {
+    public JSONArray tradedQuery(String nickname ){
 		try {
-			List<CurrentEntrustDO> currentEntrustDO = deal.queryEntrustHistory(
-					nickname, startDate, endDate);
-			return JSONArray.fromObject(currentEntrustDO);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		return null;
-	}
-	
-	
-	@Override
-	public JSONArray tradedQuery(String nickname){
-		try {
-		    CurrentOperateUserDO userDO =	account.getCurrentOperateUser(nickname);
+			CurrentOperateUserDO userDO =	account.getCurrentOperateUser(nickname);
+		    if(userDO==null){
+		    	return null;
+		    }
 			String fundAccount = userDO.getFundAccount();
 			String combineId =  userDO.getCombieId(); 
 			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,combineId);
 			entrustQuery.callHomes(func_am_realdeal_qry);
-
-			List<?> obj = returnObj(entrustQuery.getDataSet(),EntrustQueryEntity.class);
+            List<?> obj = returnOnlyParentList(entrustQuery.getDataSet(),EntrustQueryEntity.class);
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 			EntrustQueryEntity entity = null;
 			JSONArray ja = new JSONArray();
 			if (!obj.isEmpty()) {
 				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
-					entity.setBaseParam(fundAccount, combineId,userDO.getTradeAcount(), nickname);
+					entity.setBaseParam(fundAccount, combineId,
+							userDO.getTradeAcount(), nickname);
 					entities.add(entity);
 				}
-				for (EntrustQueryEntity entrustEntity : entities) {
-					JSONObject jo = new JSONObject();
-					jo.put("StockCode", entrustEntity.getStock_code());
-					jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entrustEntity.getAmentrust_status()));
-					jo.put("entrustPrice", entrustEntity.getEntrust_price());
-					jo.put("entrustAmount", entrustEntity.getEntrust_amount());
-					jo.put("entrustNo", entrustEntity.getEntrust_no());
-					jo.put("exchangeType",ExchangeTypeEnum.getDesc(entrustEntity.getExchange_type()));
-					jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entrustEntity.getEntrust_direction()));
-					jo.put("businessBalance", entrustEntity.getBusiness_balance());
-					jo.put("businessAmount", entrustEntity.getBusiness_amount());
-					jo.put("entrustTime", entrustEntity.getEntrust_time());
-					jo.put("cancelInfo", entrustEntity.getCancel_info());
-					ja.add(jo);
-				}
-				
+				batchMapper.batchInsert(DealMapper.class, "updateEntrust",
+						entities);
+				JSONObject jo = new JSONObject();
+				jo.put("StockCode", entity.getStock_code());
+				jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entity
+						.getAmentrust_status()));
+				jo.put("entrustPrice", entity.getEntrust_price());
+				jo.put("entrustAmount", entity.getEntrust_amount());
+				jo.put("entrustNo", entity.getEntrust_no());
+				jo.put("exchangeType",
+						ExchangeTypeEnum.getDesc(entity.getExchange_type()));
+				jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entity
+						.getEntrust_direction()));
+				jo.put("businessBalance", entity.getBusiness_balance());
+				jo.put("businessAmount", entity.getBusiness_amount());
+				jo.put("entrustTime", entity.getEntrust_time());
+				jo.put("cancelInfo", entity.getCancel_info());
+				ja.add(jo);
 			}
 			return ja;
 		} catch (Exception e) {
@@ -262,30 +259,20 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 		}
 		return null;
 	}
-	@Override
-	public JSONArray historyTradedQuery(String nickname){
-		List<CurrentEntrustDO> list =	null;
-		try {		
-		    CurrentEntrustDO entrustDO = new CurrentEntrustDO();
-	        entrustDO.setNickName(nickname);
-	        entrustDO.setStatusArray(new String[] {"1","4","5","6","7","8","9","a","A","B","C","D","E","F"});
-	        list =	deal.queryEntrustComm(entrustDO);
-        }catch (Exception e) {
-			e.printStackTrace();
-		}
-        System.out.println(JSONArray.fromObject(list));
-		return JSONArray.fromObject(list);
-	}
+	
+
 	@Override 
 	public JSONArray queryCombostock(String nickname){
 		try {
 		    CurrentOperateUserDO userDO =	account.getCurrentOperateUser(nickname);
+		    if(userDO==null){
+		    	return null;
+		    }
 			String fundAccount = userDO.getFundAccount();
 			String combineId =  userDO.getCombieId(); 
 			StockCombostockQuery combostockQuery = new StockCombostockQuery(fundAccount,combineId);
 			combostockQuery.callHomes(func_am_combostock_qry);
-
-			List<?> obj = returnObj(combostockQuery.getDataSet(),EntrustQueryEntity.class);
+            List<?> obj = returnOnlyParentList(combostockQuery.getDataSet(),EntrustQueryEntity.class);
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 			EntrustQueryEntity entity = null;
 			JSONArray ja = new JSONArray();
@@ -297,23 +284,24 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				}
 				for (EntrustQueryEntity entrustEntity : entities) {
 					JSONObject jo = new JSONObject();
-					jo.put("StockCode", entrustEntity.getStock_code());
-					jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entrustEntity.getAmentrust_status()));
-					jo.put("entrustPrice", entrustEntity.getEntrust_price());
-					jo.put("entrustAmount", entrustEntity.getEntrust_amount());
-					jo.put("entrustNo", entrustEntity.getEntrust_no());
-					jo.put("exchangeType",ExchangeTypeEnum.getDesc(entrustEntity.getExchange_type()));
-					jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entrustEntity.getEntrust_direction()));
-					jo.put("businessBalance", entrustEntity.getBusiness_balance());
-					jo.put("businessAmount", entrustEntity.getBusiness_amount());
-					jo.put("entrustTime", entrustEntity.getEntrust_time());
-					jo.put("cancelInfo", entrustEntity.getCancel_info());
+					jo.put("stockCode", entrustEntity.getStock_code());
+					jo.put("currentAmount", entrustEntity.getCurrent_amount());
+					jo.put("enableAmount", entrustEntity.getEnable_amount());
+					jo.put("costBalance", entrustEntity.getCost_balance());
+					jo.put("marketValue", entrustEntity.getMarket_value());
 					ja.add(jo);
+					
+					
+					
+					
+					
+					
 				}
 				
 			}
 			return ja;
 		} catch (Exception e) {
+			 
 			log.error(e.getMessage(), e);
 		}
 		return null;

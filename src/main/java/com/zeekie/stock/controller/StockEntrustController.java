@@ -75,14 +75,13 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("query")
 	public ApiResponse<?> queryEntrust(@RequestParam("nickname") String nickname) {
-		CurrentEntrustDO entrustDO = new CurrentEntrustDO();
-        entrustDO.setNickName(nickname);
-        entrustDO.setStartDate(DateUtil.formatDate(new Date(), "yyyy-MM-dd")+" 00:00:00");
-        entrustDO.setEndDate(DateUtil.formatDate(new Date(), "yyyy-MM-dd")+" 23:59:59");
-        entrustDO.setStatusArray(new String[] {"1","4","5","6","7","8","9","a","A","B","C","D","E","F"});
-		JSONArray ja = entrust.queryEntrustComm(entrustDO);
-		if (null != ja) {
-			return ApiUtils.good(ja);
+		try{
+			JSONArray ja = entrust.queryEntrust(nickname);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
 		return ApiUtils.good(new JSONArray());
 	}
@@ -96,14 +95,18 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("history/query")
 	public ApiResponse<?> queryhistory(@RequestParam("nickname") String nickname,@RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate) {
-		CurrentEntrustDO entrustDO = new CurrentEntrustDO();
-        entrustDO.setNickName(nickname);
-        entrustDO.setStartDate(StringUtil.isNotBlank(startDate)?startDate+" 00:00:00":null);
-        entrustDO.setEndDate(StringUtil.isNotBlank(endDate)?endDate+" 23:59:29":null);
-        entrustDO.setStatusArray(new String[] {"1","4","5","6","7","8","9","a","A","B","C","D","E","F"});
-		JSONArray ja = entrust.queryEntrustComm(entrustDO);
-		if (null != ja) {
-			return ApiUtils.good(ja);
+		try{
+			CurrentEntrustDO entrustDO = new CurrentEntrustDO();
+	        entrustDO.setNickName(nickname);
+	        entrustDO.setStartDate(StringUtil.isNotBlank(startDate)?startDate+" 00:00:00":null);
+	        entrustDO.setEndDate(StringUtil.isNotBlank(endDate)?endDate+" 23:59:29":null);
+	        entrustDO.setStatusArray(new String[] {"1","4","5","6","7","8","9","a","A","B","C","D","E","F"});
+			JSONArray ja = entrust.queryEntrustComm(entrustDO);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
 		return ApiUtils.good(new JSONArray());
 	}
@@ -115,14 +118,13 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("traded/query")
 	public ApiResponse<?> queryTraded(@RequestParam("nickname") String nickname) {
-		CurrentEntrustDO entrustDO = new CurrentEntrustDO();
-        entrustDO.setNickName(nickname);
-        entrustDO.setStartDate(DateUtil.formatDate(new Date(), "yyyy-MM-dd")+" 00:00:00");
-        entrustDO.setEndDate(DateUtil.formatDate(new Date(), "yyyy-MM-dd")+" 23:59:59");
-        entrustDO.setAmentrustStatus("7");
-		JSONArray ja = entrust.queryEntrustComm(entrustDO);
-		if (null != ja) {
-			return ApiUtils.good(ja);
+		try{
+			JSONArray ja = entrust.tradedQuery(nickname); 
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
 		return ApiUtils.good(new JSONArray());
 	}
@@ -136,14 +138,18 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("history/traded/query")
 	public ApiResponse<?> queryHistoryTraded(@RequestParam("nickname") String nickname,@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
-        CurrentEntrustDO entrustDO = new CurrentEntrustDO();
-        entrustDO.setNickName(nickname);
-        entrustDO.setStartDate(StringUtil.isNotBlank(startDate)?(startDate+" 00:00:00"):null);
-        entrustDO.setEndDate(StringUtil.isNotBlank(endDate)?(endDate+" 23:59:29"):null);
-        entrustDO.setAmentrustStatus("7");
-		JSONArray ja = entrust.queryEntrustComm(entrustDO);
-		if (null != ja) {
-			return ApiUtils.good(ja);
+        try {
+			CurrentEntrustDO entrustDO = new CurrentEntrustDO();
+			entrustDO.setNickName(nickname);
+			entrustDO.setStartDate(StringUtil.isNotBlank(startDate) ? (startDate + " 00:00:00"): null);
+			entrustDO.setEndDate(StringUtil.isNotBlank(endDate) ? (endDate + " 23:59:29"): null);
+			entrustDO.setAmentrustStatus("7");
+			JSONArray ja = entrust.queryEntrustComm(entrustDO);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
 		return ApiUtils.good(new JSONArray());
 	}
@@ -155,11 +161,15 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("combostock/query")
 	public ApiResponse<?> queryCombostock(@RequestParam("nickname") String nickname) {
-		JSONArray jo = entrust.queryCombostock(nickname);
-		if (null != jo) {
-			return ApiUtils.good(jo);
+		try {
+			JSONArray jo = entrust.queryCombostock(nickname);
+			if (null != jo) {
+				return ApiUtils.good(jo);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
-		return ApiUtils.good();
+		return ApiUtils.good(new JSONArray());
 	}
 
 }

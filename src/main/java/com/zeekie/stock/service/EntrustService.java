@@ -49,32 +49,12 @@ public interface EntrustService {
 	JSONArray queryEntrust(String nickname);
 
 	/**
-	 * 获取历史委托
-	 * 
-	 * @param nickname
-	 * @param endDate
-	 *            委托结束时间
-	 * @param startDate
-	 *            委托开始时间
-	 * @return
-	 */
-	JSONArray queryEntrustHistory(String nickname, String startDate,
-			String endDate);
-	/**
 	 * 成交查询
 	 * 
 	 * @param nickname
 	 * @return
 	 */
 	JSONArray tradedQuery(String nickname);
-	
-	/**
-	 * 历史成交查询
-	 * 
-	 * @param nickname
-	 * @return
-	 */
-	JSONArray historyTradedQuery(String nickname);
     /**
      * 持仓查询
      * @param nickname
