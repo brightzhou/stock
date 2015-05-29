@@ -438,8 +438,17 @@ public class StockServiceImpl implements TradeService {
 			log.debug("开始操盘，判断获取的操盘账号是否可用，开始访问HOMES");
 		}
 		changes.callHomes(Fn_stock_current);
-		String currentCash = changes.getDataSet().getDataset(0)
-				.getString("current_cash");
+		IDataset ds = changes.getDataSet().getDataset(0);
+		String currentCash = "";
+		ds.beforeFirst();
+		while (ds.hasNext()) {
+			ds.next();
+			currentCash = ds.getString("current_cash");
+			if (StringUtils.isNotBlank(currentCash)) {
+				break;
+			}
+		}
+
 		Float money = 0f;
 		if (StringUtils.isNotBlank(currentCash)) {
 			money = StringUtil.keepTwoDecimalFloat(Float
