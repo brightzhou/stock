@@ -408,8 +408,10 @@ public class StockServiceImpl implements TradeService {
 		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
 		if (!StringUtils
 				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			/*ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
-					stock_manager_phone, fundAccount);*/
+			/*
+			 * ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
+			 * stock_manager_phone, fundAccount);
+			 */
 			if (log.isDebugEnabled()) {
 				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
 			}
@@ -437,8 +439,17 @@ public class StockServiceImpl implements TradeService {
 			log.debug("开始操盘，判断获取的操盘账号是否可用，开始访问HOMES");
 		}
 		changes.callHomes(Fn_stock_current);
-		String currentCash = changes.getDataSet().getDataset(0)
-				.getString("current_cash");
+		IDataset ds = changes.getDataSet().getDataset(0);
+		String currentCash = "";
+		ds.beforeFirst();
+		while (ds.hasNext()) {
+			ds.next();
+			currentCash = ds.getString("current_cash");
+			if (StringUtils.isNotBlank(currentCash)) {
+				break;
+			}
+		}
+
 		Float money = 0f;
 		if (StringUtils.isNotBlank(currentCash)) {
 			money = StringUtil.keepTwoDecimalFloat(Float

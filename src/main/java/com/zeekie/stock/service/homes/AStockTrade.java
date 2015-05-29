@@ -126,7 +126,8 @@ public class AStockTrade {
 	private boolean tokenIsEffective() {
 		IDataset dataset = result.getDataset(0);
 		String errorNo = dataset.getString("error_no");
-		if (StringUtils.isEmpty(errorNo)) {
+		if (StringUtils.isEmpty(errorNo)
+				|| StringUtils.equals(Constants.CODE_HOMES_SUCCESS, errorNo)) {
 			return true;
 		} else {
 			errorInfo = dataset.getString("error_info");

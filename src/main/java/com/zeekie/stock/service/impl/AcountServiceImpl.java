@@ -718,11 +718,11 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	public String deductDebt(String nickname) {
 		try {
 			CashDO cashDO = acounter.selectCash(nickname);
-			if (cashDO.getResidueCash() > 0) {
+			if (cashDO.getResidueCash() >= 0) {
 				acounter.deductDebt(cashDO.getResidueCash(), nickname);
+				trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
+						cashDO.getDebt() + "", "支付亏损");
 			}
-			trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
-					cashDO.getDebt() + "", "支付亏损");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Constants.CODE_FAILURE;
