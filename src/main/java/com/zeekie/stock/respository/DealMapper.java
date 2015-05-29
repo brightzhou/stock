@@ -29,8 +29,8 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public BaseEntrustDO queryEntrustInfo(@Param("nickname") String nickname)
-			throws Exception;
+	public BaseEntrustDO queryEntrustInfo(@Param("nickname") String nickname,
+			@Param("entrustNo") String entrustNo) throws Exception;
 
 	/**
 	 * 账户资金查询 注释：目前查询数据库即可。没有再次调用接口

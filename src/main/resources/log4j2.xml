@@ -11,7 +11,7 @@
         <RollingFile name="rolling" fileName="${filename}" filePattern="${filePattern}">
             <PatternLayout charset="GBK" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %t %-5p %c{2} - %msg%n%xEx"/>
             <SizeBasedTriggeringPolicy size="10M" />
-            <DefaultRolloverStrategy max="100" min="1" />
+            <DefaultRolloverStrategy max="500" min="1" />
         </RollingFile>
         
 	    <appender name="A1" class="org.apache.log4j.RollingFileAppender">

@@ -5,6 +5,7 @@ import java.util.Date;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,15 +46,17 @@ public class StockEntrustController {
 	public String entrust(@RequestParam("nickname") String nickname,
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
-			@RequestParam("entrustPrice") String entrustPrice) {
-		return entrust
-				.entrust(nickname, stockCode, entrustAmount, entrustPrice);
+			@RequestParam("entrustPrice") String entrustPrice,
+			@RequestParam("entrustDirection") String entrustDirection) {
+		return entrust.entrust(nickname, stockCode, entrustAmount,
+				entrustPrice, entrustDirection);
 	}
 
 	@ResponseBody
 	@RequestMapping("common/entrust/withdraw")
-	public String entrustWithdraw(@RequestParam("nickname") String nickname) {
-		return entrust.entrustWithdraw(nickname);
+	public String entrustWithdraw(@RequestParam("nickname") String nickname,
+			@RequestParam("entrustNo") String entrustNo) {
+		return entrust.entrustWithdraw(nickname, entrustNo);
 	}
 
 	@ResponseBody
@@ -61,10 +64,7 @@ public class StockEntrustController {
 	public ApiResponse<?> queryCombasset(
 			@RequestParam("nickname") String nickname) {
 		JSONObject jo = entrust.queryCombasset(nickname);
-		if (null != jo) {
-			return ApiUtils.good(jo);
-		}
-		return ApiUtils.good();
+		return (null != jo) ? ApiUtils.good(jo) : ApiUtils.good();
 	}
 
     /**
@@ -171,5 +171,4 @@ public class StockEntrustController {
 		}
 		return ApiUtils.good(new JSONArray());
 	}
-
 }

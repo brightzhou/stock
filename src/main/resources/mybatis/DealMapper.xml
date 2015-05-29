@@ -27,8 +27,8 @@
 		<result column="ENTRUST_NO" property="entrustNo" jdbcType="VARCHAR"/>
 		<result column="BUSINESS_BALANCE" property="businessBalance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="BUSINESS_AMOUNT" property="businessAmount" jdbcType="VARCHAR"/>
-		<result column="ENTRUST_TIME" property="entrustDate" jdbcType="VARCHAR"/>
-		<result column="ENTRUST_TIMES" property="entrustTime" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_DATES" property="entrustDate" jdbcType="VARCHAR"/>
+		<result column="ENTRUST_TIME" property="entrustTime" jdbcType="VARCHAR"/>
 		<result column="CANCEL_INFO" property="cancelInfo" jdbcType="VARCHAR"/>
 	</resultMap>
 
@@ -67,6 +67,10 @@
 	
 	<select id="queryEntrustInfo" parameterType="string" resultMap="resultEntrustInfo">
 		select t.TRADE_ACCOUNT,t.ENTRUST_NO,t.FUND_ACCOUNT,t.COMBINE_ID from STOCK_ENTRUST t where t.nickname = #{nickname}
+		<if test="entrustNo!=null and entrustNo!=''">
+			and t.ENTRUST_NO = #{entrustNo}
+		</if>
+		AND ROWNUM = 1
 	</select>
 	
 	<select id="queryCombasset" parameterType="string" resultMap="resultCombasset">
@@ -78,22 +82,87 @@
 	
 	<!-- 查询当日委托 -->
 	<select id="queryEntrustHistory" parameterType="string" resultMap="resultCurrentEntrust">
-		SELECT E.*,
-		       SUBSTR(TO_CHAR(SYSDATE, 'yyyymmddhh24miss'), 9) ENTRUST_TIMES
+		SELECT E.*,TO_CHAR(ENTRUST_DATE, 'yyyy-mm-dd') ENTRUST_DATES
 		  FROM STOCK_ENTRUST E
 		 WHERE E.NICKNAME = #{nickname}
-		   AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &gt;= #{startDate}
-		   AND TO_CHAR(E.ENTRUST_TIME, 'yyyy-mm-dd') &lt;= #{endDate}
+		   AND TO_CHAR(E.ENTRUST_DATE, 'yyyy-mm-dd') &gt;= #{startDate}
+		   AND TO_CHAR(E.ENTRUST_DATE, 'yyyy-mm-dd') &lt;= #{endDate}
 	</select>
 	
-	<update id="updateEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustQueryEntity">
-	    update STOCK_ENTRUST p set 
+	<insert id="updateEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustQueryEntity">
+<!-- 	    update STOCK_ENTRUST p set 
 	   	 	   P.business_amount = #{business_amount},P.business_balance = #{business_balance},
 	    	   P.cancel_info =#{cancel_info}, P.amentrust_status = #{amentrust_status}
 	    where P.stock_code = #{stock_code} AND P.nickname = #{nickname}  
-		AND P.entrust_no = #{entrust_no}  
-	</update>
-	
+		AND P.entrust_no = #{entrust_no}   -->
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_stock_entrust_id.Nextval from dual
+		</selectKey>
+			MERGE INTO STOCK_ENTRUST P
+			USING (SELECT   #{id} id,
+							#{business_amount} business_amount,
+							#{business_balance} business_balance,
+							#{cancel_info} cancel_info,
+							#{amentrust_status} amentrust_status,
+							#{stock_code} stock_code,
+							#{nickname} nickname,
+							#{entrust_no} entrust_no,
+							#{entrust_time} entrust_time,
+							#{batch_no} batch_no,
+							#{exchange_type} exchange_type,
+							#{entrust_direction} entrust_direction,
+							#{entrust_price} entrust_price,
+							#{entrust_amount} entrust_amount,
+							#{fundAccount} FUND_ACCOUNT,
+							#{combineId} COMBINE_ID,
+							#{operateNo} TRADE_ACCOUNT
+			         FROM DUAL) T
+			ON (P.STOCK_CODE = T.STOCK_CODE AND P.NICKNAME = T.NICKNAME AND P.ENTRUST_NO = T.ENTRUST_NO)
+			WHEN MATCHED THEN
+			  UPDATE
+			     SET P.BUSINESS_AMOUNT  = T.BUSINESS_AMOUNT,
+			         P.BUSINESS_BALANCE = T.BUSINESS_BALANCE,
+			         P.CANCEL_INFO      = T.CANCEL_INFO,
+			         P.AMENTRUST_STATUS = T.AMENTRUST_STATUS
+			WHEN NOT MATCHED THEN
+			  INSERT
+			    (P.ID,
+			     P.TRADE_ACCOUNT,
+			     P.COMBINE_ID,
+			     P.FUND_ACCOUNT,
+			     P.ENTRUST_AMOUNT,
+			     P.ENTRUST_PRICE,
+			     P.ENTRUST_DIRECTION,
+			     P.EXCHANGE_TYPE,
+			     P.BATCH_NO,
+			     P.ENTRUST_TIME,
+			     P.ENTRUST_NO,
+			     P.NICKNAME,
+			     P.STOCK_CODE,
+			     P.AMENTRUST_STATUS,
+			     P.CANCEL_INFO,
+			     P.BUSINESS_BALANCE,
+			     P.BUSINESS_AMOUNT)
+			  VALUES
+			    (T.ID,
+			     T.TRADE_ACCOUNT,
+			     T.COMBINE_ID,
+			     T.FUND_ACCOUNT,
+			     T.ENTRUST_AMOUNT,
+			     T.ENTRUST_PRICE,
+			     T.ENTRUST_DIRECTION,
+			     T.EXCHANGE_TYPE,
+			     T.BATCH_NO,
+			     T.ENTRUST_TIME,
+			     T.ENTRUST_NO,
+			     T.NICKNAME,
+			     T.STOCK_CODE,
+			     T.AMENTRUST_STATUS,
+			     T.CANCEL_INFO,
+			     T.BUSINESS_BALANCE,
+			     T.BUSINESS_AMOUNT)
+
+	</insert>
 	<select id="queryEntrustComm" parameterType="com.zeekie.stock.entity.CurrentEntrustDO" resultMap="resultCurrentEntrust">
 		SELECT E.*,
 		       SUBSTR(TO_CHAR(SYSDATE, 'yyyymmddhh24miss'), 9) ENTRUST_TIMES
@@ -116,11 +185,5 @@
 			 </if>
 		     AND E.NICKNAME = #{nickName}
 		 </where>
-		  
-		 
-		 
-		   
-		   
-	</select>
+    </select>
 </mapper>
-

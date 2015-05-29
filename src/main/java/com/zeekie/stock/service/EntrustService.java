@@ -18,19 +18,23 @@ public interface EntrustService {
 	 *            股票数目
 	 * @param entrustPrice
 	 *            股票单价
+	 * @param entrustDirection
+	 *            委托方向 1：买入 2：卖出
 	 * @return 1:成功/0：失败
 	 */
 	String entrust(String nickname, String stockCode, String entrustAmount,
-			String entrustPrice);
+			String entrustPrice, String entrustDirection);
 
 	/**
 	 * 撤销委托
 	 * 
 	 * @param nickname
 	 *            昵称
+	 * @param entrustNo
+	 *            委托编号
 	 * @return
 	 */
-	String entrustWithdraw(String nickname);
+	String entrustWithdraw(String nickname, String entrustNo);
 
 	/**
 	 * 账户资金查询
@@ -67,4 +71,6 @@ public interface EntrustService {
      * @return
      */
 	JSONArray queryEntrustComm(CurrentEntrustDO entrustDO);
+
+
 }

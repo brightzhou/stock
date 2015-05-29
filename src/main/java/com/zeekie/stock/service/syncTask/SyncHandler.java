@@ -341,6 +341,15 @@ public class SyncHandler {
 	private void deductFeeWhenAddGuarantee(String nickname,
 			String needCaculateMoney) {
 		try {
+			String rightNow = DateUtil.dateToStr(new Date(),
+					DateUtil.FORMAT_YYYY_MM_DD);
+
+			if (StringUtils.isBlank(trade.selectFeeDay(rightNow))) {
+				if (log.isDebugEnabled()) {
+					log.debug("今天[" + rightNow + "]未设置收取服务费");
+				}
+				return;
+			}
 			if (DateUtil.compareDate()) {
 				StockRadioDO radioDO = account
 						.getAssignRadioForCurrUser(nickname);
