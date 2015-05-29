@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,7 +30,11 @@ public class LoginController {
 
 	@Autowired
 	private CommonService operator;
-
+    
+	@Autowired
+	@Value("${isShowRedEnvelope}")
+	private String isShowRedEnvelope;
+	
 	@ResponseBody
 	@RequestMapping("login")
 	public ApiResponse login(@RequestParam("nickname") String nickname,
@@ -113,6 +118,12 @@ public class LoginController {
 			@RequestParam("telephone") String telephone,
 			@RequestParam("verifyCode") String verifyCode) {
 		return operator.bindTelephone(nickname, telephone, verifyCode);
+	}
+	
+	@ResponseBody
+	@RequestMapping("redEnvelope/isShow")
+	public String isShowRedEnvelope() {
+		return  isShowRedEnvelope;
 	}
 
 }

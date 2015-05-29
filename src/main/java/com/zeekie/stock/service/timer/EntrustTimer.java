@@ -25,29 +25,36 @@ import com.zeekie.stock.service.impl.BaseImpl;
 
 @Service
 @Transactional
-public class EntrustTimer extends BaseImpl{
+public class EntrustTimer extends BaseImpl {
 
-	@Autowired
-	private DealMapper deal;
-
-	@Autowired
-	private AcountMapper account;
+	 
 
 	@Autowired
 	@Value("${func_am_entrust_history_qry}")
 	private String func_am_entrust_history_qry;
 	
+ 
 	@Autowired
-	private BatchMapper batchMapper;
+	private DealMapper deal;
 	
-	@Autowired
-	private AcountMapper acount;
+	
+	public String getFunc_am_entrust_history_qry() {
+		return func_am_entrust_history_qry;
+	}
 
-	public JSONArray  historyEntrustQuery(){
+
+
+	public void setFunc_am_entrust_history_qry(String funcAmEntrustHistoryQry) {
+		func_am_entrust_history_qry = funcAmEntrustHistoryQry;
+	}
+
+
+
+	public void  historyEntrustQuery(){
 		try {
-			StockCommQuery stockCommQuery = new StockCommQuery("2","20150527");
+			StockCommQuery stockCommQuery = new StockCommQuery("2","20150528");
 			stockCommQuery.callHomes(func_am_entrust_history_qry);
-            List<?> obj = returnObj(stockCommQuery.getDataSet(),EntrustQueryEntity.class);
+            List<?> obj =  returnObj(stockCommQuery.getDataSet(),EntrustQueryEntity.class);
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 			EntrustQueryEntity entity = null;
 			JSONArray ja = new JSONArray();
@@ -74,11 +81,10 @@ public class EntrustTimer extends BaseImpl{
 			    }
 				
 			}
-			return ja;
+			 
 		} catch (Exception e) {
-			 e.getMessage() ;
+			 e.printStackTrace() ;
 		}
-		return null;
 	}
 
 	 
