@@ -41,7 +41,7 @@
 	    <filter-class>com.zeekie.stock.filter.TokenFilter</filter-class>
 	    <init-param>  
 			<param-name>excludedPages</param-name>  
-			<param-value>/api/stock/user/register,/api/stock/trade/getServerTime</param-value>  
+			<param-value>/api/stock/user/register,/api/stock/trade/getServerTime,api/stock/user/redEnvelope/isShow</param-value>  
 		</init-param> 
 	</filter>
 	<filter-mapping>
