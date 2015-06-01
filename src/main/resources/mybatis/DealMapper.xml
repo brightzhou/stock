@@ -95,11 +95,9 @@
 	    	   P.cancel_info =#{cancel_info}, P.amentrust_status = #{amentrust_status}
 	    where P.stock_code = #{stock_code} AND P.nickname = #{nickname}  
 		AND P.entrust_no = #{entrust_no}   -->
-		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
-			select SEQ_stock_entrust_id.Nextval from dual
-		</selectKey>
+ 
 			MERGE INTO STOCK_ENTRUST P
-			USING (SELECT   #{id} id,
+			USING (SELECT  
 							#{business_amount} business_amount,
 							#{business_balance} business_balance,
 							#{cancel_info} cancel_info,
@@ -144,7 +142,7 @@
 			     P.BUSINESS_BALANCE,
 			     P.BUSINESS_AMOUNT)
 			  VALUES
-			    (T.ID,
+			    ( SEQ_stock_entrust_id.Nextval,
 			     T.TRADE_ACCOUNT,
 			     T.COMBINE_ID,
 			     T.FUND_ACCOUNT,
@@ -186,4 +184,15 @@
 		     AND E.NICKNAME = #{nickName}
 		 </where>
     </select>
+    
+    
+    
+    <select id="queryTradeInfoByCombineId" parameterType="string" resultMap="resultCurrentEntrust">
+	    select m.nickname ,m.trade_fund as  operatorNo
+	    from stock_user_operate_maininfo  m  left join stock_user_operate_acount  a  
+	    on m.operate_account_id = a.id  
+	    where  m.start_date &lt;=   to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss') and   m.end_date &gt;= to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss')  and  a.combie_id= #{combineId}
+    </select>
+   
+    
 </mapper>

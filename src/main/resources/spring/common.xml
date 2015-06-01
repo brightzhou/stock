@@ -294,8 +294,24 @@
 		<property name="startDelay" value="20000" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
 		<property name="repeatInterval" value="10000" /><!-- 每10秒调度一次 -->
 	</bean>
+	
+		<!-- 定时任务D= 获取历史委托--> 
+   <bean id="entrustJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.EntrustTimer" />
+		</property>
+		<property name="targetMethod" value="historyEntrustQuery" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
 
-	<!--开始调度 -->
+	<bean id="entrustTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="entrustJob" />
+		<!-- 每天8:00运行一次 -->
+		<property name="cronExpression" value="0 01 01 * * ?" />
+	</bean>
+
+	  <!--开始调度 -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -303,7 +319,9 @@
 				<ref bean="caculateFundTrigger"/>
 				<ref bean="receiptJobTrigger"/> 
 				<ref bean="deductManageFeeCurrentTrigger"/>
+				 <ref bean="entrustTrigger"/>
 				-->
+				 <ref bean="entrustTrigger"/>
 			</list>
 		</property>
 	</bean>
