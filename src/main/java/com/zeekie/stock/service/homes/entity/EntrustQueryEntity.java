@@ -42,11 +42,29 @@ public class EntrustQueryEntity extends EntrustEntity {
 	private String report_time 	;
 	//已撤数量
 	private String withdraw_amount ;
-
-
+    // 委托日期 
+    private String entrust_day;
+    //可用资金
+    private String enable_balance;
 		 
 		 
 
+
+	public String getEnable_balance() {
+		return enable_balance;
+	}
+
+	public void setEnable_balance(String enable_balance) {
+		this.enable_balance = enable_balance;
+	}
+
+	public String getEntrust_day() {
+		return entrust_day;
+	}
+
+	public void setEntrust_day(String entrust_day) {
+		this.entrust_day = entrust_day;
+	}
 
 	public String getFund_account() {
 		return fund_account;

@@ -3,9 +3,11 @@ package com.zeekie.stock.service.homes;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 
+
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.util.StringUtil;
 
 /**
  * 
@@ -38,7 +40,7 @@ public class StockEntrust extends AStockTrade {
 
 	public StockEntrust(String fundAccount, String combineId,
 			String operatorNo, String stockCode, String entrustAmount,
-			String entrustPrice, String exchangeType, String entrustDirection) {
+			String entrustPrice, String exchangeType, String entrustDirection,String ampriceType) {
 		this.fundAccount = fundAccount;
 		this.combineId = combineId;
 		this.operatorNo = operatorNo;
@@ -47,6 +49,8 @@ public class StockEntrust extends AStockTrade {
 		this.entrustPrice = entrustPrice;
 		this.exchangeType = exchangeType;
 		this.entrustDirection = entrustDirection;
+		if(StringUtil.isBlank(ampriceType))
+		this.ampriceType = ampriceType;
 	}
 
 	public StockEntrust() {
