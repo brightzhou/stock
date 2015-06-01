@@ -35,6 +35,7 @@ public class LoginController {
 	@Value("${isShowRedEnvelope}")
 	private String isShowRedEnvelope;
 	
+	
 	@ResponseBody
 	@RequestMapping("login")
 	public ApiResponse login(@RequestParam("nickname") String nickname,
@@ -119,11 +120,15 @@ public class LoginController {
 			@RequestParam("verifyCode") String verifyCode) {
 		return operator.bindTelephone(nickname, telephone, verifyCode);
 	}
-	
+	/**
+	 * 是否显示红包
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("redEnvelope/isShow")
 	public String isShowRedEnvelope() {
 		return  isShowRedEnvelope;
 	}
+
 
 }
