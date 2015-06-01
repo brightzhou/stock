@@ -96,7 +96,12 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${stock.operation.number}")
 	private String operationNo;
-
+    
+	@Autowired
+	@Value("${isShowEntrust}")
+	private String isShowEntrust;
+	
+	
 	private Set<String> fundAccountSet = new HashSet<String>();
 
 	@Override
@@ -306,6 +311,7 @@ public class StockServiceImpl implements TradeService {
 				operateAcount.put("operatorPwd", "");
 				operateAcount.put("flag", "0");
 			}
+			operateAcount.put("isSwitch", isShowEntrust);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

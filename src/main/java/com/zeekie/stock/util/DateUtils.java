@@ -53,5 +53,27 @@ public class DateUtils {
 		}
 		return ym;
 	}
+	 /**
+     *  获取跨天时间
+     * @param day 天数
+     * @return
+     */
+	public static Date getInterDay(int day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.DAY_OF_MONTH, day);
+		return calendar.getTime();
+
+	}
+	/**
+	 * 格式化时间
+	 * @param date 
+	 * @param format  比如：yyyy-MM-dd HH:mm:ss
+	 * @return
+	 */
+	public static String formatDate(Date date,String format) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+		return  dateFormat.format(date);
+	}
 
 }
