@@ -1,6 +1,7 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.LoginDO;
+import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.form.RegisterForm;
 import com.zeekie.stock.enums.UserInfo;
 import com.zeekie.stock.msg.ReturnMsg;
@@ -271,5 +273,42 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * 获取验证码
+	 * 
+	 * @param telephone
+	 * @param source
+	 * @return
+	 */
+	public String genVerifyCodeByNickname(String nickname, String source) {
+
+		try {
+			String verifyCode = StringUtil.genRandomNum(4);
+			List<UserInfoDO> listUserInfo = account
+					.getUserInfoByNickname(nickname);
+			if (listUserInfo != null && listUserInfo.size() == 1) {
+				String phone = listUserInfo.get(0).getPhone();
+				trade.genVerifyCode(phone, verifyCode, source);
+				// 发送验证码
+				if (ApiUtils.send(Constants.MODEL_VERYFY_FN, phone,
+						getDesc(source), verifyCode)) {
+					Map<String, String> body = new HashMap<String, String>();
+					body.put("phone", phone);
+					body.put("verifyCode", verifyCode);
+					return ApiUtils.toJSON("1", "成功", body);
+				}else{
+					return ApiUtils.toJSON("2", "发送验证吗失败", "");
+				}
+				
+			} else {
+				return ApiUtils.toJSON("0", "该用户不存在", "");
+
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return "";
 	}
 }

@@ -100,6 +100,9 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${isShowEntrust}")
 	private String isShowEntrust;
+	@Autowired
+	@Value("${isDownload}")
+	private String isDownload;
 	
 	
 	private Set<String> fundAccountSet = new HashSet<String>();
@@ -312,6 +315,7 @@ public class StockServiceImpl implements TradeService {
 				operateAcount.put("flag", "0");
 			}
 			operateAcount.put("isSwitch", isShowEntrust);
+			operateAcount.put("isOpen",isDownload);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

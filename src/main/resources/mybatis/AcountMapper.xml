@@ -345,6 +345,15 @@
 		<result column="combie_id" property="combieId" jdbcType="VARCHAR"/>
 	</resultMap> 
 	
+	<resultMap type="com.zeekie.stock.entity.UserInfoDO" id="UserInfoDO">
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="telephone" property="phone" jdbcType="VARCHAR"/>
+		<result column="registerdate" property="registerDate" jdbcType="DATE"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="version" property="version" jdbcType="VARCHAR"/>
+	</resultMap> 
+ 
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1627,6 +1636,10 @@
     <select id="getCurrentOperateUser" resultMap="resultCurrentOperateUserDO" parameterType="string">
 		  select som.start_date  , som.operate_account_id ,soa.trade_acount  ,soa.trade_password  ,soa.asset_id  ,soa.fund_account ,soa.combie_id  from stock_user_operate_maininfo som ,stock_user_operate_acount soa  
           where  som.operate_account_id = soa.id  and som.is_current='1'  and som.nickname =#{nickname}
+	</select>
+	
+	<select id="getUserInfoByNickname"  resultMap="UserInfoDO" parameterType="string">
+		    select u.id ,u.nickname,u.telephone  ,u.registerdate  ,u.referee_id  ,u.status , u.version   from stock_user u  where  u.nickname =#{nickname}
 	</select>
 </mapper>
 

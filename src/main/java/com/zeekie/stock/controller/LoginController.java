@@ -129,6 +129,14 @@ public class LoginController {
 	public String isShowRedEnvelope() {
 		return  isShowRedEnvelope;
 	}
+	
+	@ResponseBody
+	@RequestMapping("verifyCodeByNickname/get")
+	public String getVerifyCodeByNickname(@RequestParam("nickname") String nickname,
+			@RequestParam("source") String source) {
+		return operator.genVerifyCodeByNickname(nickname, source);
+	}
+    
 
 
 }

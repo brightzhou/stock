@@ -641,5 +641,14 @@ public interface AcountMapper {
      * @throws Exception
      */
 	public CurrentOperateUserDO getCurrentOperateUser(@Param("nickname") String nickname) throws Exception;
+	
+	
+	/**
+	 * 通过昵称获取用户信息
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserInfoDO> getUserInfoByNickname(@Param("nickname") String nickname) throws Exception;
 
 }

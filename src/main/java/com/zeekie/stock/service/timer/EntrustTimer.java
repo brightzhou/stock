@@ -87,10 +87,12 @@ public class EntrustTimer extends BaseImpl {
 					    List<CurrentEntrustDO> entrustDO  =   deal.queryTradeInfoByCombineId(entrustEntity.getCombineId(),dayTime.toString());
 					    if(entrustDO!=null&&entrustDO.size()>0){
 					    	 entrustEntity.setNickname(entrustDO.get(0).getNickName());
-					    	 entrustEntity.setOperateNo(entrustEntity.getOperateNo());
+					    	 entrustEntity.setOperateNo(entrustDO.get(0).getOperatorNo());
+					    	 entrustEntity.setEntrust_day(dayTime.toString());
 		                     deal.updateEntrust(entrustEntity);
 					    }
 					  }
+					 flag = false ;
 					 if(log.isDebugEnabled()) {
 						  log.debug("获取历史委托信息");
 					 }
@@ -100,7 +102,7 @@ public class EntrustTimer extends BaseImpl {
 				     }
 					 flag = true ;
 					 count--;
-					 Thread.sleep(1000*60*5);
+					  Thread.sleep(1000*60*5);
 				 }
 			} catch (Exception e) {
 				 flag = true ;

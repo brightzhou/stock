@@ -208,7 +208,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					combassetDO.setAssetValue(Float.valueOf(entity
-							.getEnable_balance()));
+							.getEnable_balance_t1()));
 					break;
 				}
 			} else {
@@ -259,8 +259,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					entities.add(entity);
 					assembleResult(entity, ja);
 				}
-				batchMapper.batchInsert(DealMapper.class, "updateEntrust",
-						entities);
+				
 			} else {
 				if (log.isDebugEnabled()) {
 					log.debug("执行委托查询，返回数据为空");
@@ -289,33 +288,34 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			List<?> obj = returnObj(entrustQuery.getDataSet(),
 					EntrustQueryEntity.class);
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
-			EntrustQueryEntity entity = null;
+			EntrustQueryEntity entityObj = null;
 			JSONArray ja = new JSONArray();
 			if (!obj.isEmpty()) {
 				for (Object each : obj) {
-					entity = (EntrustQueryEntity) each;
-					entity.setBaseParam(fundAccount, combineId,
+					entityObj = (EntrustQueryEntity) each;
+					entityObj.setBaseParam(fundAccount, combineId,
 							userDO.getTradeAcount(), nickname);
-					entities.add(entity);
+					entities.add(entityObj);
 				}
-				batchMapper.batchInsert(DealMapper.class, "updateEntrust",
-						entities);
-				JSONObject jo = new JSONObject();
-				jo.put("stockCode", entity.getStock_code());
-				jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entity
-						.getAmentrust_status()));
-				jo.put("entrustPrice", entity.getEntrust_price());
-				jo.put("entrustAmount", entity.getEntrust_amount());
-				jo.put("entrustNo", entity.getEntrust_no());
-				jo.put("exchangeType",
-						ExchangeTypeEnum.getDesc(entity.getExchange_type()));
-				jo.put("entrustDirection", EntrustDirectionEnum.getDesc(entity
-						.getEntrust_direction()));
-				jo.put("businessBalance", entity.getBusiness_balance());
-				jo.put("businessAmount", entity.getBusiness_amount());
-				jo.put("entrustTime", entity.getEntrust_time());
-				jo.put("cancelInfo", entity.getCancel_info());
-				ja.add(jo);
+				for (EntrustQueryEntity entity : entities) {
+					JSONObject jo = new JSONObject();
+					jo.put("stockCode", entity.getStock_code());
+					jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entity
+							.getAmentrust_status()));
+					jo.put("entrustPrice", entity.getEntrust_price());
+					jo.put("entrustAmount", entity.getEntrust_amount());
+					jo.put("entrustNo", entity.getEntrust_no());
+					jo.put("exchangeType",
+							ExchangeTypeEnum.getDesc(entity.getExchange_type()));
+					jo.put("entrustDirection",entity
+							.getEntrust_direction());
+					jo.put("businessBalance", entity.getBusiness_balance());
+					jo.put("businessAmount", entity.getBusiness_amount());
+					jo.put("entrustTime", entity.getEntrust_time());
+					jo.put("cancelInfo", entity.getCancel_info());
+					ja.add(jo);
+				}
+				
 			}
 			return ja;
 		} catch (Exception e) {

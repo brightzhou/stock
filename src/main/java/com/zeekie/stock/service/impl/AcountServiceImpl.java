@@ -437,8 +437,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				// 更新开户行
 				acounter.updateOpenBank(nickname, openBank);
 				// 发短信通知管理员有人提款
-				ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
-						stock_manager_phone);
+				/*ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
+						stock_manager_phone);*/ // 注销不适用
 				map.put("flag", "1");
 				map.put("msg", msg);
 			}
