@@ -58,6 +58,9 @@ public class EntrustTimer extends BaseImpl {
 		int count = 5 ;
 		do{
 		   try {
+			   if(log.isDebugEnabled()) {
+					  log.debug("跑线程开始获取历史委托信息 COUNT"+count);
+				}
 				String day =DateUtils.formatDate(DateUtils.getInterDay(-1),"yyyy-MM-dd");
 				StockCommQuery stockCommQuery = new StockCommQuery("2",DateUtils.formatDate(DateUtils.getInterDay(-1),"yyyyMMdd"));   
 				stockCommQuery.callHomes(func_am_entrust_history_qry);
@@ -114,6 +117,9 @@ public class EntrustTimer extends BaseImpl {
 				 
 				 }
 			}
+		   if(log.isDebugEnabled()) {
+				  log.debug("跑线程结束获取历史委托信息 COUNT"+count);
+		  }
 		}while(flag&&count>0);
 	}
 
