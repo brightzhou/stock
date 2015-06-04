@@ -65,6 +65,8 @@ public class Constants {
 	public static final String CODE_ERROR_EXCEED_LIMIT = "5";
 
 	public static final String MSG_ERROR_WALLET_LITTLE = "余额不足以支付保证金";
+	
+	public static final String CODE_ERROR_MONEY = "6";  //输入保证金错误
 	// 无效的验证码
 	public static final String CODE_ERROR_VERIFYCODE = "3";
 

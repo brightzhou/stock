@@ -630,6 +630,17 @@ public class StockServiceImpl implements TradeService {
 			log.info("用户[" + nickname + "]开始增加保证金...");
 			// 判断当前账户是否有足够的钱
 			String addedGuaranteeCash = transferData.getAddedGuaranteeCash();
+			// 判断用户输入的保证金额是否正确
+			if(addedGuaranteeCash==null||!addedGuaranteeCash.matches("[1-9]+")){
+				String msg = "亲爱的" + nickname + " 请正确输入保证金";
+				map.put("msg", msg);
+				map.put("flag", Constants.CODE_ERROR_MONEY);
+				if (log.isDebugEnabled()) {
+					log.debug(msg);
+				}
+				return map;
+			}
+			
 			String isEnough = trade.isEnoughCashForClient(nickname,
 					addedGuaranteeCash);
 			if (!StringUtils.equals("1", isEnough)) {
