@@ -77,12 +77,17 @@ public class EntrustTimer extends BaseImpl {
 					    entrustEntity.setNickname("");
 					    entrustEntity.setOperateNo("");
 					    time =  entrustEntity.getEntrust_time();
+					    System.out.println(time);
+					    
+					    
+					    
 					    if(StringUtil.isNotBlank(time)){
-					    	   int  number = Integer.parseInt(time.substring(0,1)) ;
-					    	   if(number<10&&number>1){
+					    	   int  number = Integer.parseInt(time.substring(0,2)) ;
+					    	   if(number>=10&&number<=23){
+					    		   dayTime.append(day).append(" ").append(time.substring(0,2)).append(":").append(time.substring(2,4)).append(":").append(time.substring(4,6));
+                               }else{
 					    		   dayTime.append(day).append(" 0").append(time.substring(0,1)).append(":").append(time.substring(1,3)).append(":").append(time.substring(3,5));
-					    	   }else{
-					    		   dayTime.append(day).append(" ").append(time.substring(0,2)).append(":").append(time.substring(2,4)).append(":").append(time.substring(4,5)).append("0");
+
 					    	   }
 					    	   System.out.println(dayTime.toString());
 					   	   
