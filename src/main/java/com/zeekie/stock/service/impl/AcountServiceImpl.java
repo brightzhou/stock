@@ -474,7 +474,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
             if (!obj.isEmpty()) {
-            	String statis[] = new String[]{"1","4","6","7","8","a","A","B","C","D","E","F"};
+            	String statis[] = new String[]{"1","4","6","7","8","a","A","B","C","D","E"};
             	for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					for (String str : statis) {
@@ -502,13 +502,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("flag", Constants.CODE_FAILURE);
 		String msg = "成功";
-       try {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
-			if(hasEntrust(nickname)){
+       try {
+			/*if(hasEntrust(nickname)){ //是否还有委托的股票
 				msg = "你还有委托的股票，不能结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
 				result.put("msg", msg);
-			}else if (StringUtils.equals(Constants.CODE_SUCCESS,
-					acounter.operationIsEnded(nickname))) {
+				
+			}else */if (StringUtils.equals(Constants.CODE_SUCCESS,
+					acounter.operationIsEnded(nickname))) {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 
 				if (log.isDebugEnabled()) {
 					log.debug("1、用户" + nickname + "开始结束操盘");

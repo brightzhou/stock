@@ -466,8 +466,8 @@ public class StockServiceImpl implements TradeService {
 		}
 		if (money != 0f) {
 			log.error("操盘账号：" + operator + " 仍然有有资金在HOMES中，不可使用!!!");
-			ApiUtils.send(Constants.MODEL_OPERATOR_HAS_CASH_FN,
-					stock_manager_phone, operator);
+			//ApiUtils.send(Constants.MODEL_OPERATOR_HAS_CASH_FN,
+			//		stock_manager_phone, operator);
 			return false;
 		}
 		if (log.isDebugEnabled()) {
@@ -631,7 +631,7 @@ public class StockServiceImpl implements TradeService {
 			// 判断当前账户是否有足够的钱
 			String addedGuaranteeCash = transferData.getAddedGuaranteeCash();
 			// 判断用户输入的保证金额是否正确
-			if(addedGuaranteeCash==null||!addedGuaranteeCash.matches("[1-9]+")){
+			if(addedGuaranteeCash==null||!addedGuaranteeCash.matches("[1-9]\\d*")){
 				String msg = "亲爱的" + nickname + " 请正确输入保证金";
 				map.put("msg", msg);
 				map.put("flag", Constants.CODE_ERROR_MONEY);

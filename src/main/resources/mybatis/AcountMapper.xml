@@ -524,13 +524,13 @@
 			       u.Operator_Pwd,
 			       u.Combine_Id,
 			       a.Fund_Account,
-			       a.Combine_Id Manager_Combine_Id,
-			       (Round(To_Number(Sysdate - u.Last_Use_Date))) s
+			       a.Combine_Id Manager_Combine_Id
+			     <!--   (Round(To_Number(Sysdate - u.Last_Use_Date))) s -->
 			  From Stock_User_Acount_Assigned u, Stock_Manager_Acount a
 			 Where Flag = '0'
 			   And u.Fund_Account = a.Fund_Account
 			   And a.Status = '1'
-			 Order By s Desc
+			 Order By last_use_date
 	</select>
 	
 	<select id="getAccount" parameterType="string" resultMap="resultGetAccount">

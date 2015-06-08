@@ -91,11 +91,27 @@
 		<result column="Year_Month" property="yearMonth" jdbcType="VARCHAR"/>
 		<result column="DAY" property="day" jdbcType="VARCHAR"/>
 	</resultMap> -->
+	
 
 	<select id="getSeqId" parameterType="string" resultType="LONG" statementType="STATEMENT">
 		select ${seq} from dual
 	</select>
 	
+	<resultMap type="com.zeekie.stock.entity.StatisticsDO" id="resultStatistics">
+		<result column="serviceCharge" property="serviceCharge" jdbcType="VARCHAR"/>
+		<result column="commission" property="commission" jdbcType="VARCHAR"/>
+		<result column="financialOptimization" property="financialOptimization" jdbcType="VARCHAR"/>
+		<result column="bond" property="bond" jdbcType="VARCHAR"/>
+		
+		<result column="transaction_day" property="transactionDay" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	
+	  
+	  
+	  
+	  
 	<insert id="storeOperatorAcountInfo" parameterType="com.zeekie.stock.entity.TradeDO">
 		<!-- <selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select Seq_User_Operate_Acount_Id.Nextval from dual
@@ -674,4 +690,57 @@
 		     T.TRANSACTION_TIME,
 		     T.DESCRIPTION)
 	</insert>
+	
+
+    <select id="queryStatistics" resultMap="resultStatistics" parameterType="com.zeekie.stock.web.StatisticsPage">
+		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+			 select (select -sum(t.Fund) From Stock_Fund_Flow t
+		  Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') =  a.transaction_day
+		   And Trim(t.Transaction_Type) = '30') as serviceCharge , ( Select Sum(Fund)
+		  From Stock_Fund_Flow t
+		 Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') = a.transaction_day
+		   And Trim(t.Transaction_Type) = '120' ) as commission ,( Select Sum(Fund)
+		  From Stock_Fund_Flow t
+		 Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') =  a.transaction_day
+		   And Trim(t.Transaction_Type) = '130') as financialOptimization,(  Select -Sum(Fund)
+		  From Stock_Fund_Flow t
+		 Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') = a.transaction_day
+		   And Trim(t.Transaction_Type) = '10' ) as bond  , a.transaction_day  
+		   from  ( select   To_Char(t.Transaction_Time, 'yyyy-mm-dd') as  transaction_day  from Stock_Fund_Flow t
+		   <where>
+			 <if test="day != null">
+			      To_Char(t.Transaction_Time, 'yyyy-mm-dd') = #{day}
+			 </if>
+		  </where>
+		   group by  To_Char(t.Transaction_Time, 'yyyy-mm-dd')  order by  To_Char(t.Transaction_Time, 'yyyy-mm-dd') desc )  a
+          <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+	</select> 
+	<select id="queryStatisticsCount"  resultType="long" parameterType="com.zeekie.stock.web.StatisticsPage">
+     	SELECT COUNT(1)  from  ( select   To_Char(t.Transaction_Time, 'yyyy-mm-dd') as  transaction_day  from Stock_Fund_Flow t  <where>
+			 <if test="day != null">
+			      To_Char(t.Transaction_Time, 'yyyy-mm-dd') = #{day}
+			 </if>
+		  </where>
+      group by  To_Char(t.Transaction_Time, 'yyyy-mm-dd')    )  a
+    </select>
+	
+	<insert id="insertDictionaries" parameterType="string">
+		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_DICTIONARIES_ID.Nextval from dual
+		</selectKey>
+	    	insert into stock_dictionaries(ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status)
+            values(#{id},#{dicType},#{dicWord},#{dicValue},#{dicName},#{orderNo},#{des},#{isCache},#{status});
+    </insert>
+   <select id="queryDictionaries"  resultType="long" parameterType="com.zeekie.stock.web.StatisticsPage">
+		   select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries
+           
+    </select>
+    <select id="queryDictionariesCount"  resultType="long" parameterType="com.zeekie.stock.web.StatisticsPage">
+		   select count(id)   from stock_dictionaries
+    </select>
+    <delete id="deleteDictionaries" >
+           delete from  stock_dictionaries where id =${id}
+    </delete>
+	
+	
 </mapper>

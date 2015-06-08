@@ -18,8 +18,10 @@ import com.zeekie.stock.entity.RuleDO;
 import com.zeekie.stock.entity.StopDealStockDO;
 import com.zeekie.stock.entity.TradeDO;
 import com.zeekie.stock.entity.WarnLineDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.entity.form.AddCuaranteeForm;
 import com.zeekie.stock.mybatis.MyBatisRepository;
+import com.zeekie.stock.web.StatisticsPage;
 
 @MyBatisRepository
 public interface TradeMapper {
@@ -237,5 +239,18 @@ public interface TradeMapper {
 	
 	
     CurrentAccountDO getUserOperateAcount(@Param("nickname") String nickname) throws Exception;
+    /**
+     * 统计每天收益
+     * @return
+     * @throws Exception
+     */
+    List<StatisticsDO> queryStatistics(StatisticsPage statisticsPage) throws Exception;
+    
+    /**
+     * 统计每天收益总条数
+     * @return
+     * @throws Exception
+     */
+    Long queryStatisticsCount(StatisticsPage statisticsPage) throws Exception;
 
 }
