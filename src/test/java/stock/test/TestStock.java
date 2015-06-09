@@ -24,7 +24,7 @@ public class TestStock {
 //		deal();
 //		cxdeal();
 //		queryCombasset();
-		queryEntrust();
+//		queryEntrust();
 //		queryEntrustHistory();
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
