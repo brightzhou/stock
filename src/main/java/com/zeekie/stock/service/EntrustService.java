@@ -3,6 +3,8 @@ package com.zeekie.stock.service;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.zeekie.stock.entity.CurrentEntrustDO;
+
 public interface EntrustService {
 
 	/**
@@ -21,7 +23,7 @@ public interface EntrustService {
 	 * @return 1:成功/0：失败
 	 */
 	String entrust(String nickname, String stockCode, String entrustAmount,
-			String entrustPrice, String entrustDirection);
+			String entrustPrice, String entrustDirection,String ampriceType);
 
 	/**
 	 * 撤销委托
@@ -51,24 +53,24 @@ public interface EntrustService {
 	JSONArray queryEntrust(String nickname);
 
 	/**
-	 * 获取历史委托
+	 * 成交查询
 	 * 
 	 * @param nickname
-	 * @param endDate
-	 *            委托结束时间
-	 * @param startDate
-	 *            委托开始时间
 	 * @return
 	 */
-	JSONArray queryEntrustHistory(String nickname, String startDate,
-			String endDate);
+	JSONArray tradedQuery(String nickname);
+    /**
+     * 持仓查询
+     * @param nickname
+     * @return
+     */
+	JSONArray queryCombostock(String nickname);
+	 /**
+     * 委托查询公交服务接口
+     * @param nickname
+     * @return
+     */
+	JSONArray queryEntrustComm(CurrentEntrustDO entrustDO);
 
-	/**
-	 * 股票持仓查询
-	 * 
-	 * @param nickname
-	 * @return
-	 */
-	JSONArray queryStockHold(String nickname);
 
 }

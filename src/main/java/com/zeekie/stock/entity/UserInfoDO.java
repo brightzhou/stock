@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity;
 
+import java.util.Date;
+
 public class UserInfoDO {
 
 	private String nickname;
@@ -15,7 +17,48 @@ public class UserInfoDO {
 	private String upLine;
 
 	private String version;
+	
+	private String status ;
+	
+	private String refereeId ;
+	
+	private Date registerDate ;
+    
+	public String getStatus() {
+		return status;
+	}
 
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getRefereeId() {
+		return refereeId;
+	}
+
+	public void setRefereeId(String refereeId) {
+		this.refereeId = refereeId;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	private Integer id;
+	
+	
 	/**
 	 * @return the version
 	 */

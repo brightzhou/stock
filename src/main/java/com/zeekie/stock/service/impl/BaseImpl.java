@@ -117,4 +117,56 @@ public class BaseImpl {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * 返回homes只有父类集合交易结果
+	 * 
+	 * @param data
+	 * @param entity
+	 *            具体操作的子类
+	 * @return
+	 */
+	public List<?> returnOnlyParentList(IDatasets data, Class<?> entity) {
+        int datasetCount = data.getDatasetCount();
+		List<Object> result = new ArrayList();
+		// 遍历所有的结果集
+		if (datasetCount>0) {
+			// 开始读取单个结果集的信息
+			IDataset ds = data.getDataset(0);
+			String errorNo = ds.getString("error_no");
+			if (StringUtil.equals(Constants.CODE_HOMES_SUCCESS, errorNo)|| StringUtils.isBlank(errorNo)) {
+				int columnCount = ds.getColumnCount();
+				Map<String, String> map = new HashMap<String, String>();
+				// 遍历单个结果集列信息
+				ds.beforeFirst();
+				while (ds.hasNext()) {
+					ds.next();
+					for (int j = 1; j <= columnCount; j++) {
+						map.put(ds.getColumnName(j), ds.getString(j));
+					}
+					if (!map.isEmpty()) {
+						try {
+							result.add(BeanMapUtil.convertMap(entity, map));
+						} catch (IntrospectionException e) {
+							log.error(e.getMessage(), e);
+						} catch (IllegalAccessException e) {
+							log.error(e.getMessage(), e);
+						} catch (InstantiationException e) {
+							log.error(e.getMessage(), e);
+						} catch (InvocationTargetException e) {
+							log.error(e.getMessage(), e);
+						}
+					}
+				}
+				if (log.isDebugEnabled()) {
+					log.debug("访问homes服务[" + data.getDatasetName(0)+ "],返回的数据为：" + map);
+				}
+			} else {
+				log.error("访问homes服务[" + data.getDatasetName(0)
+						+ "],：error_no 返回不为0-不成功");
+			}
+		}
+		return result;
+	}
 }

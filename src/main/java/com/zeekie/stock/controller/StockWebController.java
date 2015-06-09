@@ -43,6 +43,7 @@ import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
@@ -54,6 +55,7 @@ import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
+import com.zeekie.stock.web.StatisticsPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -730,5 +732,29 @@ public class StockWebController {
 		jo.put("blus**", "316%");
 		jo.put("高富帅**", "298%");
 		return ApiUtils.good(jo);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("statistics/get")
+	public DefaultPage<StatisticsDO> getStatistics(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "day", required = false) String day) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+            StatisticsPage statisticsPage = new StatisticsPage(
+            		Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, day);
+
+			return webService.queryStatistics(statisticsPage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getEveningUp error happened:", e.getMessage());
+			return new DefaultPage<StatisticsDO>();
+		}
 	}
 }

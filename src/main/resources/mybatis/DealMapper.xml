@@ -95,11 +95,9 @@
 	    	   P.cancel_info =#{cancel_info}, P.amentrust_status = #{amentrust_status}
 	    where P.stock_code = #{stock_code} AND P.nickname = #{nickname}  
 		AND P.entrust_no = #{entrust_no}   -->
-		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
-			select SEQ_stock_entrust_id.Nextval from dual
-		</selectKey>
+ 
 			MERGE INTO STOCK_ENTRUST P
-			USING (SELECT   #{id} id,
+			USING (SELECT  
 							#{business_amount} business_amount,
 							#{business_balance} business_balance,
 							#{cancel_info} cancel_info,
@@ -115,9 +113,10 @@
 							#{entrust_amount} entrust_amount,
 							#{fundAccount} FUND_ACCOUNT,
 							#{combineId} COMBINE_ID,
+							TO_DATE(#{entrust_day}, 'YYYY-MM-DD HH24:MI:SS')  entrust_DATE,
 							#{operateNo} TRADE_ACCOUNT
 			         FROM DUAL) T
-			ON (P.STOCK_CODE = T.STOCK_CODE AND P.NICKNAME = T.NICKNAME AND P.ENTRUST_NO = T.ENTRUST_NO)
+			ON (P.STOCK_CODE = T.STOCK_CODE  AND P.ENTRUST_NO = T.ENTRUST_NO)
 			WHEN MATCHED THEN
 			  UPDATE
 			     SET P.BUSINESS_AMOUNT  = T.BUSINESS_AMOUNT,
@@ -142,9 +141,10 @@
 			     P.AMENTRUST_STATUS,
 			     P.CANCEL_INFO,
 			     P.BUSINESS_BALANCE,
+			     P.ENTRUST_DATE ,
 			     P.BUSINESS_AMOUNT)
 			  VALUES
-			    (T.ID,
+			    ( SEQ_stock_entrust_id.Nextval,
 			     T.TRADE_ACCOUNT,
 			     T.COMBINE_ID,
 			     T.FUND_ACCOUNT,
@@ -153,15 +153,49 @@
 			     T.ENTRUST_DIRECTION,
 			     T.EXCHANGE_TYPE,
 			     T.BATCH_NO,
-			     T.ENTRUST_TIME,
+			     T.entrust_time,
 			     T.ENTRUST_NO,
 			     T.NICKNAME,
 			     T.STOCK_CODE,
 			     T.AMENTRUST_STATUS,
 			     T.CANCEL_INFO,
 			     T.BUSINESS_BALANCE,
+			     T.entrust_DATE,
 			     T.BUSINESS_AMOUNT)
 
 	</insert>
+	<select id="queryEntrustComm" parameterType="com.zeekie.stock.entity.CurrentEntrustDO" resultMap="resultCurrentEntrust">
+		SELECT E.*,
+		       SUBSTR(TO_CHAR(SYSDATE, 'yyyymmddhh24miss'), 9) ENTRUST_TIMES
+		  FROM STOCK_ENTRUST E 
+		 <where>
+			 <if test="startDate != null">
+			      AND E.ENTRUST_DATE  &gt;= to_date(#{startDate} , 'yyyy-mm-dd hh24:mi:ss')
+			 </if>
+			 <if test="endDate != null">
+			      AND  E.ENTRUST_DATE &lt;= to_date(#{endDate} , 'yyyy-mm-dd hh24:mi:ss')
+			 </if>
+			 <if test="amentrustStatus != null">
+			      AND  E.AMENTRUST_STATUS  = #{amentrustStatus}
+			 </if>
+			 <if test="statusArray != null">
+			     AND  E.AMENTRUST_STATUS  in
+			    <foreach collection="statusArray" index="index" item="item" open="(" separator="," close=")">  
+                       #{item}  
+                </foreach>
+			 </if>
+		     AND E.NICKNAME = #{nickName}
+		 </where>
+    </select>
+    
+    
+    
+    <select id="queryTradeInfoByCombineId" parameterType="string" resultMap="resultCurrentEntrust">
+	    select m.nickname ,a.trade_acount as  operatorNo
+	    from stock_user_operate_maininfo  m  left join stock_user_operate_acount  a  
+	    on m.operate_account_id = a.id  
+	    where  m.start_date &lt;=   to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss') and   m.end_date &gt;= to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss')  and  a.combie_id= #{combineId}
+    </select>
+   
+    
 </mapper>
-
