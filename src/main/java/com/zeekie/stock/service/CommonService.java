@@ -91,5 +91,14 @@ public interface CommonService {
 	public Object figureLogin(String nickname, String figurePwd);
 
 	public void loginOff(String nickname);
+	
+	/**
+	 * 获取验证码
+	 * 
+	 * @param telephone
+	 * @param source
+	 * @return
+	 */
+	public String genVerifyCodeByNickname(String nickname, String source);
 
 }

@@ -36,6 +36,7 @@ import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
@@ -48,6 +49,7 @@ import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
+import com.zeekie.stock.web.StatisticsPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -737,6 +739,21 @@ public class WebServiceImpl implements WebService {
 			account.deleteUserbank(id);
 			account.deleteIdCard(id);
 			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+	@Override
+	public DefaultPage<StatisticsDO> queryStatistics(StatisticsPage statisticsPage)  throws ServiceInvokerException{
+		List<StatisticsDO> result = new ArrayList<StatisticsDO>();
+		long total = 0;
+		try {
+			total = trade.queryStatisticsCount(statisticsPage);
+			if (0 != total) {
+				result =trade.queryStatistics(statisticsPage);
+			}
+			return new DefaultPage<StatisticsDO>(total, result);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);

@@ -19,12 +19,14 @@ import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
+import com.zeekie.stock.web.StatisticsPage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -306,5 +308,14 @@ public interface WebService {
 	 * @throws ServiceInvokerException
 	 */
 	public String deleteUserbank(String id) throws ServiceInvokerException;
+	
+	/**
+	 * 每天收益统计
+	 * @param statisticsPage
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public DefaultPage<StatisticsDO> queryStatistics(StatisticsPage statisticsPage)
+			throws ServiceInvokerException;
 
 }

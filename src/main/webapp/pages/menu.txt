@@ -15,6 +15,7 @@
 	{id: "client", text: "客户比例管理" , pid: "operation"},
 	{id: "account", text: "多账户管理" , pid: "operation"},
 	{id: "owingfee", text: "欠费管理" , pid: "operation"},
+	{id: "statistics", text: "财务统计" , pid: "operation"},
 	{id: "switch", text: "总开关" , pid: "operation"},
 	{id: "picture", text: "页面管理" , pid: "operation"},
 	

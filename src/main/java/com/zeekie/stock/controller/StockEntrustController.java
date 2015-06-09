@@ -1,5 +1,7 @@
 package com.zeekie.stock.controller;
 
+import java.util.Date;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -14,9 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import sitong.thinker.common.api.ApiResponse;
 
+import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.util.ApiUtils;
+import com.zeekie.stock.util.DateUtil;
+import com.zeekie.stock.util.StringUtil;
 
 /**
  * @Author zeekie
@@ -42,9 +47,10 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice,
-			@RequestParam("entrustDirection") String entrustDirection) {
+			@RequestParam("entrustDirection") String entrustDirection,
+			@RequestParam("entrustDirection") String ampriceType) {
 		return entrust.entrust(nickname, stockCode, entrustAmount,
-				entrustPrice, entrustDirection);
+				entrustPrice, entrustDirection, ampriceType);
 	}
 
 	@ResponseBody
@@ -62,29 +68,132 @@ public class StockEntrustController {
 		return (null != jo) ? ApiUtils.good(jo) : ApiUtils.good();
 	}
 
+	/**
+	 * 当日委托查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("query")
 	public ApiResponse<?> queryEntrust(@RequestParam("nickname") String nickname) {
-		JSONArray ja = entrust.queryEntrust(nickname);
-		return (null != ja) ? ApiUtils.good(ja) : ApiUtils.good();
+		try {
+			JSONArray ja = entrust.queryEntrust(nickname);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
 	}
 
+	/**
+	 * 历史委托查询
+	 * 
+	 * @param nickname
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("history/query")
-	public ApiResponse<?> queryEntrustHistory(
+	public ApiResponse<?> queryhistory(
 			@RequestParam("nickname") String nickname,
 			@RequestParam("startDate") String startDate,
 			@RequestParam("endDate") String endDate) {
-		JSONArray ja = entrust
-				.queryEntrustHistory(nickname, startDate, endDate);
-		return (null != ja) ? ApiUtils.good(ja) : ApiUtils.good();
+		try {
+			CurrentEntrustDO entrustDO = new CurrentEntrustDO();
+			entrustDO.setNickName(nickname);
+			entrustDO.setStartDate(StringUtil.isNotBlank(startDate) ? startDate
+					+ " 00:00:00" : null);
+			entrustDO.setEndDate(StringUtil.isNotBlank(endDate) ? endDate
+					+ " 23:59:29" : null);
+			entrustDO.setStatusArray(new String[] { "1", "4", "5", "6", "7",
+					"8", "9", "a", "A", "B", "C", "D", "E", "F" });
+			JSONArray ja = entrust.queryEntrustComm(entrustDO);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
 	}
 
+	/**
+	 * 成交查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
 	@ResponseBody
-	@RequestMapping("stockPositon/hold")
-	public ApiResponse<?> queryStockPositon(
-			@RequestParam("nickname") String nickname) {
-		JSONArray ja = entrust.queryStockHold(nickname);
-		return (null != ja) ? ApiUtils.good(ja) : ApiUtils.good();
+	@RequestMapping("traded/query")
+	public ApiResponse<?> queryTraded(@RequestParam("nickname") String nickname) {
+		try {
+			JSONArray ja = entrust.tradedQuery(nickname);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
 	}
+
+	/**
+	 * 历史成交查询
+	 * 
+	 * @param nickname
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("history/traded/query")
+	public ApiResponse<?> queryHistoryTraded(
+			@RequestParam("nickname") String nickname,
+			@RequestParam("startDate") String startDate,
+			@RequestParam("endDate") String endDate) {
+		try {
+			CurrentEntrustDO entrustDO = new CurrentEntrustDO();
+			entrustDO.setNickName(nickname);
+			entrustDO
+					.setStartDate(StringUtil.isNotBlank(startDate) ? (startDate + " 00:00:00")
+							: null);
+			entrustDO
+					.setEndDate(StringUtil.isNotBlank(endDate) ? (endDate + " 23:59:29")
+							: null);
+			entrustDO.setAmentrustStatus("7");
+			JSONArray ja = entrust.queryEntrustComm(entrustDO);
+			if (null != ja) {
+				return ApiUtils.good(ja);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
+	}
+
+	/**
+	 * 持仓查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("combostock/query")
+	public ApiResponse<?> queryCombostock(
+			@RequestParam("nickname") String nickname) {
+		try {
+			JSONArray jo = entrust.queryCombostock(nickname);
+			if (null != jo) {
+				return ApiUtils.good(jo);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
+	}
+
 }

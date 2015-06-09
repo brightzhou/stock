@@ -2,11 +2,11 @@ package com.zeekie.stock.entity;
 
 public class CombassetDO {
 	// 单元总资产
-	private Float assetTotalValue;
+	private Float assetTotalValue =0F;
 	// 单元净值
-	private Float assetValue;
+	private Float assetValue=0f;
 	// 单元现金余额
-	private Float currentCash;
+	private Float currentCash=0f;
 
 	/**
 	 * @return the assetTotalValue

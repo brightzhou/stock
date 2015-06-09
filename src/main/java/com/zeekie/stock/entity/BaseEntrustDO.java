@@ -18,6 +18,19 @@ public class BaseEntrustDO {
 	 * 委托序号
 	 */
 	private String entrustNo;
+    
+	/**
+	 * 昵称
+	 */
+	private String nickName;
+	
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
 	/**
 	 * @return the fundAccount

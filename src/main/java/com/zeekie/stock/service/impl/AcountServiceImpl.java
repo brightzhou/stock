@@ -22,6 +22,7 @@ import com.zeekie.stock.entity.BasicInfoDO;
 import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
+import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
@@ -36,11 +37,12 @@ import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
+import com.zeekie.stock.service.homes.StockEntrustQuery;
 import com.zeekie.stock.service.homes.StockModifyPwd;
 import com.zeekie.stock.service.homes.StockModifyUserName;
 import com.zeekie.stock.service.homes.StockRestrictBuyStock;
+import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.syncTask.SyncHandler;
-import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
 
 @Service
@@ -86,6 +88,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Autowired
 	@Value("${func_am_change_password}")
 	private String Fn_changePwd;
+	
+	@Autowired
+	@Value("${func_am_entrust_qry}")
+	private String func_am_entrust_qry;
 
 	@Autowired
 	private SyncHandler handler;
@@ -437,8 +443,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				// 更新开户行
 				acounter.updateOpenBank(nickname, openBank);
 				// 发短信通知管理员有人提款
-				ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
-						stock_manager_phone);
+				/*ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
+						stock_manager_phone);*/ // 注销不适用
 				map.put("flag", "1");
 				map.put("msg", msg);
 			}
@@ -449,17 +455,61 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 		return map;
 	}
-
+    /**
+     * 是否还有委托的股票
+     * @return
+     */
+	public boolean hasEntrust(String nickname){
+		boolean flag = false ;
+		try{
+			CurrentOperateUserDO userDO = acounter.getCurrentOperateUser(nickname);
+			if (userDO == null) {
+				return false ;
+			}
+			String fundAccount = userDO.getFundAccount();
+			String combineId = userDO.getCombieId();
+			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,combineId);
+			entrustQuery.callHomes(func_am_entrust_qry);
+	        List<?> obj = returnObj(entrustQuery.getDataSet(),
+					EntrustQueryEntity.class);
+			EntrustQueryEntity entity = null;
+            if (!obj.isEmpty()) {
+            	String statis[] = new String[]{"1","4","6","7","8","a","A","B","C","D","E"};
+            	for (Object each : obj) {
+					entity = (EntrustQueryEntity) each;
+					for (String str : statis) {
+						if(str.equals(entity.getAmentrust_status())){
+							 flag = true ;
+							 break ;
+						}
+					}
+					if(flag){
+						break ;
+					}
+					 
+				}
+				
+			}
+		}catch(Exception e){
+			log.error("查看是否有委托！！！");
+			log.error(e.getMessage(), e);
+		}
+		return  flag ;
+	}
 	@Override
 	public Map<String, String> endStock(String nickname, String flag)
 			throws RuntimeException {
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("flag", Constants.CODE_FAILURE);
 		String msg = "成功";
-
-		try {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
-			if (StringUtils.equals(Constants.CODE_SUCCESS,
-					acounter.operationIsEnded(nickname))) {
+       try {
+			/*if(hasEntrust(nickname)){ //是否还有委托的股票
+				msg = "你还有委托的股票，不能结束操盘！";
+				result.put("flag", Constants.CODE_FAILURE);
+				result.put("msg", msg);
+				
+			}else */if (StringUtils.equals(Constants.CODE_SUCCESS,
+					acounter.operationIsEnded(nickname))) {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 
 				if (log.isDebugEnabled()) {
 					log.debug("1、用户" + nickname + "开始结束操盘");
@@ -533,7 +583,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				
 				modifyHomesPwd(nickname,cashDO.getOperateNO());
 			} else {
-				msg = "您还有未卖出的股票，请平仓后再结束操盘！";
+				msg = "你还有未卖出的股票，请卖出所有股票后再结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
 				result.put("msg", msg);
 			}
@@ -718,11 +768,11 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	public String deductDebt(String nickname) {
 		try {
 			CashDO cashDO = acounter.selectCash(nickname);
-			if (cashDO.getResidueCash() > 0) {
+			if (cashDO.getResidueCash() >= 0) {
 				acounter.deductDebt(cashDO.getResidueCash(), nickname);
+				trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
+						cashDO.getDebt() + "", "支付亏损");
 			}
-			trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
-					cashDO.getDebt() + "", "支付亏损");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Constants.CODE_FAILURE;

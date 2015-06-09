@@ -20,11 +20,16 @@ import com.zeekie.stock.util.http.HandleHttpRequest;
 public class TestStock {
 
 	public static void main(String[] args) {
+//		entrustQuery();
+//	 	combostock();
+		entrustTradedQuery();
+//		historyTradedQuery();
+//		entrustTradedQuery();
 //		login();
 //		deal();
 //		cxdeal();
 //		queryCombasset();
-		queryEntrust();
+//		queryEntrust();
 //		queryEntrustHistory();
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
@@ -799,4 +804,57 @@ public class TestStock {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void entrustTradedQuery() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "ceshi");
+		try {
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/traded/query",datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void entrustQuery() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "ceshi");
+		try {
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/query",datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void historyTradedQuery() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "ceshi");
+		datas.put("startDate", "2015-05-27");
+		datas.put("endDate", "2015-05-27");
+		try {
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/history/traded/query",datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void combostock() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("nickname", "ceshi");
+		try {
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/combostock/query",datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 }
