@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.UUID;
 
@@ -169,7 +170,7 @@ public class StringUtil {
 		final int maxNum = 10;
 		int i; // 生成的随机数
 		int count = 0; // 生成的密码的长度
-		char[] str = { '0' , '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+		char[] str = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 		StringBuffer pwd = new StringBuffer("");
 		Random r = new Random();
@@ -275,7 +276,7 @@ public class StringUtil {
 		df.applyPattern(".####");
 		return subZeroAndDot(Float.parseFloat(df.format(f)));
 	}
-	
+
 	public static String subZeroAndDot(Float s) {
 
 		String result = s + "";
@@ -408,6 +409,16 @@ public class StringUtil {
 
 	public static boolean compareNum(Float param1, Float param2) {
 		return (param1 > param2);
+	}
+
+	/**
+	 * 获取当年天数
+	 * 
+	 * @return
+	 */
+	public static int getCurrentYearDays() {
+		Calendar c = GregorianCalendar.getInstance();
+		return c.getActualMaximum(Calendar.DAY_OF_YEAR);
 	}
 
 }
