@@ -27,8 +27,48 @@ public class FinanceProductDO {
 	 */
 	private String expireDay;
 
+	/**
+	 * 最大购买额度
+	 */
+	private String maxLimit;
+
+	/**
+	 * 最小购买额度
+	 */
+	private String minLimit;
+
 	public FinanceProductDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the maxLimit
+	 */
+	public String getMaxLimit() {
+		return maxLimit;
+	}
+
+	/**
+	 * @param maxLimit
+	 *            the maxLimit to set
+	 */
+	public void setMaxLimit(String maxLimit) {
+		this.maxLimit = maxLimit;
+	}
+
+	/**
+	 * @return the minLimit
+	 */
+	public String getMinLimit() {
+		return minLimit;
+	}
+
+	/**
+	 * @param minLimit
+	 *            the minLimit to set
+	 */
+	public void setMinLimit(String minLimit) {
+		this.minLimit = minLimit;
 	}
 
 	/**

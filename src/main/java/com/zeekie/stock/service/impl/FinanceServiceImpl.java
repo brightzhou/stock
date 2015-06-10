@@ -20,12 +20,13 @@ import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.FinanceProductDO;
-import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.form.FinanceProducetForm;
+import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.FinanceMapper;
 import com.zeekie.stock.service.FinanceService;
 import com.zeekie.stock.util.BeanMapUtil;
 import com.zeekie.stock.util.StringUtil;
+
 @Service
 public class FinanceServiceImpl implements FinanceService {
 
@@ -35,15 +36,18 @@ public class FinanceServiceImpl implements FinanceService {
 	@Autowired
 	private FinanceMapper financeMapper;
 	
-	@Autowired 
+	@Autowired
+	private AcountMapper acountMapper;
+
+	@Autowired
 	@Value("${stock_root_url}")
 	private String root;
-	
-	@Autowired 
+
+	@Autowired
 	@Value("${apk_down_path}")
 	private String contextpath;
-	
-	@Autowired 
+
+	@Autowired
 	@Value("${finance.protocal}")
 	private String financeProtocal;
 
@@ -79,6 +83,12 @@ public class FinanceServiceImpl implements FinanceService {
 		String annualIncome = form.getAnnualIncome();
 		String financeLimit = form.getFinanceLimit();
 		String currentIncome = "0";
+		
+		String balance = financeMapper.checkBalance(form.getUserId(),financeLimit);
+		if(StringUtils.isBlank(balance)){
+			return Constants.CODE_BALANCE_LITTLE;
+		}
+		
 		if (StringUtils.isNotBlank(annualIncome)
 				&& StringUtils.isNotBlank(financeLimit)) {
 			currentIncome = (StringUtil.keepTwoDecimalFloat(Float
@@ -94,7 +104,8 @@ public class FinanceServiceImpl implements FinanceService {
 	public JSONArray getHistoryFinance(String userId, String offset)
 			throws ServiceInvokerException {
 		List<FinanceProducetForm> list = financeMapper.getHistoryFinance(
-				userId, offset,root+contextpath+File.separator+financeProtocal);
+				userId, offset, root + contextpath + File.separator
+						+ financeProtocal);
 		if (null != list) {
 			return JSONArray.fromObject(list);
 		}
