@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zeekie.stock.respository.FinanceMapper">
+
+	<resultMap type="com.zeekie.stock.entity.FinanceProductDO" id="resultFinanceProduct">
+		<result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR"/>
+		<result column="FINANCE_PRODUCT" property="financeProduct" jdbcType="VARCHAR"/>
+		<result column="FINANCE_TOTAL_LIMIT" property="financeTotalLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ANNUAL_INCOME" property="annualIncome" jdbcType="VARCHAR"/>
+		<result column="EXPIRE_DAY" property="expireDay" jdbcType="VARCHAR"/>
+		<result column="MAX_LIMIT" property="maxLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="MIN_LIMIT" property="minLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		
+	</resultMap>
+	
+	
+	<resultMap type="com.zeekie.stock.entity.HistoryFinanceDO" id="resultHistoryFinance">
+		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
+		<result column="FINANCE_LIMIT" property="financeLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="INCOME" property="income" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CURRENT_INCOME" property="currentIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ANNUAL_INCOME" property="annualIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CARRY_DATE" property="carryDate" jdbcType="VARCHAR"/>
+		<result column="SETTLE_DATE" property="settleDate" jdbcType="VARCHAR"/>
+		<result column="financeProtcol" property="financeProtcol" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.FinanceIncomeDO" id="resultFinanceIncome">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="income" property="income" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+    <select id="getFinanceProduct" resultMap="resultFinanceProduct">
+	   SELECT  T.PRODUCT_CODE,
+		       T.FINANCE_PRODUCT,
+		       T.FINANCE_TOTAL_LIMIT,
+		       T.ANNUAL_INCOME*100||'%' ANNUAL_INCOME,
+		       T.EXPIRE_DAY,
+		       T.MAX_LIMIT,
+		       T.MIN_LIMIT
+		  FROM STOCK_FINANCE_PRODUCT T
+		  WHERE T.FLAG = '1'
+    </select>
+    
+    <insert id="saveCurrentFinance" parameterType="com.zeekie.stock.entity.form.FinanceProducetForm">
+   		 <selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select Seq_STOCK_FINANCE_RECORD_ID.Nextval from dual
+		</selectKey>
+		     INSERT INTO STOCK_FINANCE_RECORD
+					  (ID,
+					   TICKET,
+					   PRODUCT_CODE,
+					   FINANCE_PRODUCT,
+					   FINANCE_LIMIT,
+					   ANNUAL_INCOME,
+					   INCOME,
+					   CURRENT_INCOME,
+					   CARRY_DATE,
+					   SETTLE_DATE,
+					   user_id)
+			   VALUES
+					   (#{id},
+					    #{ticket},
+					    #{productCode},
+					    #{financeProduct},
+					    #{financeLimit},
+					    #{annualIncome},
+					    #{income},
+					    #{currentIncome},
+					    to_date(#{carryDate},'yyyy-mm-dd'),
+					    to_date(#{settleDate},'yyyy-mm-dd'),
+					    #{userId})
+	</insert>
+	
+	<select id="getHistoryFinance" resultMap="resultHistoryFinance" parameterType="string">
+		SELECT TICKET,
+		       FINANCE_LIMIT,
+		       INCOME,
+		       CURRENT_INCOME,
+		       TO_CHAR(CARRY_DATE, 'yyyy-mm-dd') CARRY_DATE,
+		       TO_CHAR(SETTLE_DATE, 'yyyy-mm-dd') SETTLE_DATE,
+		       ANNUAL_INCOME,
+		       #{financeProtcol} FINANCEPROTCOL
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY T.ID DESC) AS NUM, T.*
+		          FROM STOCK_FINANCE_RECORD T
+		         WHERE USER_ID = #{userId}) S
+		 WHERE NUM &gt;= #{offset} + 1 AND NUM &lt;= #{offset} + 20
+    </select>
+    
+    <select id="checkBalance" parameterType="string" resultType="string">
+    	select 1 from stock_user_wallet w 
+    	where exists(select 1 from stock_user u where u.nickname = w.nickname
+    	      and u.id = #{userId})
+    	and w.balance>=#{financeLimit}
+    </select>
+    
+    <select id="queryFinanceIncome" parameterType="string" resultMap="resultFinanceIncome">
+    	SELECT CURRENT_INCOME income,
+		       (SELECT NICKNAME FROM STOCK_USER U WHERE U.ID = R.USER_ID) NICKNAME
+		  FROM STOCK_FINANCE_RECORD R
+		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+    </select>
+    
+    <update id="updateCurrentIncome" parameterType="string">
+	    UPDATE STOCK_FINANCE_RECORD R
+		   SET R.CURRENT_INCOME =
+		       ((TRUNC(TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) -
+		       TRUNC(R.CARRY_DATE)) * R.FINANCE_LIMIT * R.ANNUAL_INCOME) / #{currentYearDays}
+		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+    </update>
+    
+    
+    <!-- 计算收益 -->
+	<update id="updateFinanceIncomeBatch" parameterType="com.zeekie.stock.entity.FinanceIncomeDO">
+        UPDATE STOCK_USER_WALLET W set
+       		   W.BALANCE = (W.BALANCE + #{income})
+	 	WHERE  W.NICKNAME = #{nickname}
+	</update>
+	
+	<update id="updateStatus" parameterType="string">
+		update stock_user u set u.ISSTOCK = #{isStock}
+		where u.id = #{userId}
+	</update>
+	
+	<update id="updateTotalLimit" parameterType="string">
+		update STOCK_FINANCE_PRODUCT set FINANCE_TOTAL_LIMIT = FINANCE_TOTAL_LIMIT - to_number(#{financeLimit})
+		where PRODUCT_CODE = #{productCode}
+	</update>
+    
+</mapper>
