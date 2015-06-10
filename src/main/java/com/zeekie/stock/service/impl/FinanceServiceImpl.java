@@ -20,6 +20,7 @@ import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.FinanceProductDO;
+import com.zeekie.stock.entity.HistoryFinanceDO;
 import com.zeekie.stock.entity.form.FinanceProducetForm;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.FinanceMapper;
@@ -35,7 +36,7 @@ public class FinanceServiceImpl implements FinanceService {
 
 	@Autowired
 	private FinanceMapper financeMapper;
-	
+
 	@Autowired
 	private AcountMapper acountMapper;
 
@@ -80,36 +81,43 @@ public class FinanceServiceImpl implements FinanceService {
 	public String saveCurrentFinance(FinanceProducetForm form)
 			throws ServiceInvokerException {
 		form.setTicket(ticketPrex + StringUtil.genRandomNum(4));
-		String annualIncome = form.getAnnualIncome();
 		String financeLimit = form.getFinanceLimit();
-		String currentIncome = "0";
-		
-		String balance = financeMapper.checkBalance(form.getUserId(),financeLimit);
-		if(StringUtils.isBlank(balance)){
+
+		String balance = financeMapper.checkBalance(form.getUserId(),
+				financeLimit);
+		if (StringUtils.isBlank(balance)) {
 			return Constants.CODE_BALANCE_LITTLE;
 		}
-		
-		if (StringUtils.isNotBlank(annualIncome)
-				&& StringUtils.isNotBlank(financeLimit)) {
-			currentIncome = (StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat(annualIncome) * Float.parseFloat(financeLimit)) / StringUtil
-						.getCurrentYearDays()) + "";
-		}
-		form.setCurrentIncome(currentIncome);
+
+		// if (StringUtils.isNotBlank(annualIncome)
+		// && StringUtils.isNotBlank(financeLimit)) {
+		// currentIncome = (StringUtil.keepTwoDecimalFloat(Float
+		// .parseFloat(annualIncome) * Float.parseFloat(financeLimit)) /
+		// StringUtil
+		// .getCurrentYearDays()) + "";
+		// }
 		financeMapper.saveCurrentFinance(form);
+		// 更新理财额度
+		financeMapper.updateTotalLimit(form.getProductCode(), financeLimit);
 		return Constants.CODE_SUCCESS;
 	}
 
 	@Override
 	public JSONArray getHistoryFinance(String userId, String offset)
 			throws ServiceInvokerException {
-		List<FinanceProducetForm> list = financeMapper.getHistoryFinance(
-				userId, offset, root + contextpath + File.separator
-						+ financeProtocal);
+		List<HistoryFinanceDO> list = financeMapper.getHistoryFinance(userId,
+				offset, root + contextpath + File.separator + financeProtocal);
 		if (null != list) {
-			return JSONArray.fromObject(list);
+			return JSONArray.fromObject(list, Constants.jsonConfig);
 		}
 		return null;
+	}
+
+	@Override
+	public String updateStatus(String userId, String isStock)
+			throws ServiceInvokerException {
+		financeMapper.updateStatus(userId, isStock);
+		return Constants.CODE_SUCCESS;
 	}
 
 }

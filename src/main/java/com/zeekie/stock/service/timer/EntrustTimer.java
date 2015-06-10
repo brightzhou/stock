@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.timer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,9 +10,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import sitong.thinker.common.exception.ServiceInvokerException;
+import sitong.thinker.common.util.mybatis.BatchMapper;
+
+import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.entity.FinanceIncomeDO;
+import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.enums.FundFlowEnum;
 import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.respository.FinanceMapper;
+import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.homes.StockCommQuery;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.impl.BaseImpl;
@@ -22,14 +31,18 @@ import com.zeekie.stock.util.StringUtil;
 @Transactional
 public class EntrustTimer extends BaseImpl {
 
-	private static final Logger log = LoggerFactory.getLogger(DeductManageFeeTimer.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(DeductManageFeeTimer.class);
+
 	@Autowired
 	@Value("${func_am_entrust_history_qry}")
 	private String func_am_entrust_history_qry;
-	
+
 	@Autowired
 	private DealMapper deal;
+
+	@Autowired
+	private BatchMapper batchMapper;
 
 	@Autowired
 	private FinanceMapper financeMapper;
@@ -43,12 +56,19 @@ public class EntrustTimer extends BaseImpl {
 	}
 
 	public void historyEntrustQuery() {
+		getEntrusts();
+
+		// 凌晨计算理财收益
+		caculateFinanceIncome();
+	}
+
+	private void getEntrusts() {
 		boolean flag = false;
 		int count = 5;
 		do {
 			try {
 				if (log.isDebugEnabled()) {
-					log.debug("跑线程开始获取历史委托信息 COUNT" + count);
+					log.debug("跑线程开始获取历史委托信息 COUNT:" + count);
 				}
 				String day = DateUtils.formatDate(DateUtils.getInterDay(-1),
 						"yyyy-MM-dd");
@@ -138,8 +158,41 @@ public class EntrustTimer extends BaseImpl {
 
 	// 计算理财收益
 	private void caculateFinanceIncome() {
+		try {
+			if (log.isDebugEnabled()) {
+				log.debug("开始计算理财收益...");
+			}
+			// 1、更新理财收益记录表
+			financeMapper.updateCurrentIncome(StringUtil.getCurrentYearDays());
 
-		
+			List<FinanceIncomeDO> result = financeMapper.queryFinanceIncome();
+
+			// 2、更新钱包余额，计算理财收益
+			batchMapper.batchInsert(FinanceMapper.class,
+					"updateFinanceIncomeBatch", result);
+
+			// 3、记录流水
+			List<FundFlowDO> fee = new ArrayList<FundFlowDO>();
+			for (FinanceIncomeDO income : result) {
+				String nickname = income.getNickname();
+				String incomes = income.getIncome() + "";
+				FundFlowDO flowDO = new FundFlowDO(nickname,
+						FundFlowEnum.FINANCE_INCOME.getType(), incomes,
+						FundFlowEnum.FINANCE_INCOME.getDesc());
+				fee.add(flowDO);
+
+				if (log.isDebugEnabled()) {
+					log.debug("用户【" + nickname + "】获取理财收益【" + incomes + "】");
+				}
+			}
+			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
+
+			if (log.isDebugEnabled()) {
+				log.debug("计算理财收益完成!!!");
+			}
+		} catch (ServiceInvokerException e) {
+			log.error(e.getMessage(), e);
+		}
 	}
 
 }

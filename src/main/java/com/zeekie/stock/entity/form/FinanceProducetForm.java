@@ -1,18 +1,18 @@
 package com.zeekie.stock.entity.form;
 
 public class FinanceProducetForm {
-	
+
 	private Long id;
-	
+
 	/**
 	 * 单号
 	 */
 	private String ticket;
-	
+
 	/**
 	 * 当前收益
 	 */
-	private String currentIncome;
+	private String currentIncome = "0";
 
 	/**
 	 * 產品代碼
@@ -53,27 +53,6 @@ public class FinanceProducetForm {
 	 * 用户id
 	 */
 	private String userId;
-	
-	/**
-	 * 理财协议
-	 */
-	private String financeProtcol;
-	
-	
-
-	/**
-	 * @return the financeProtcol
-	 */
-	public String getFinanceProtcol() {
-		return financeProtcol;
-	}
-
-	/**
-	 * @param financeProtcol the financeProtcol to set
-	 */
-	public void setFinanceProtcol(String financeProtcol) {
-		this.financeProtcol = financeProtcol;
-	}
 
 	/**
 	 * @return the ticket
@@ -83,7 +62,8 @@ public class FinanceProducetForm {
 	}
 
 	/**
-	 * @param ticket the ticket to set
+	 * @param ticket
+	 *            the ticket to set
 	 */
 	public void setTicket(String ticket) {
 		this.ticket = ticket;
@@ -97,7 +77,8 @@ public class FinanceProducetForm {
 	}
 
 	/**
-	 * @param currentIncome the currentIncome to set
+	 * @param currentIncome
+	 *            the currentIncome to set
 	 */
 	public void setCurrentIncome(String currentIncome) {
 		this.currentIncome = currentIncome;
@@ -111,7 +92,8 @@ public class FinanceProducetForm {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;

@@ -71,4 +71,16 @@ public class StockFinanceController {
 		}
 		return ApiUtils.good();
 	}
+
+	@ResponseBody
+	@RequestMapping("status/set")
+	public String setStatus(@RequestParam("userId") String userId,
+			@RequestParam("isStock") String isStock) {
+		try {
+			return operator.updateStatus(userId, isStock);
+		} catch (ServiceInvokerException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
+	}
 }

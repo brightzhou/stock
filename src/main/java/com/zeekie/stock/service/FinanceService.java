@@ -39,4 +39,16 @@ public interface FinanceService {
 	public JSONArray getHistoryFinance(String userId, String offset)
 			throws ServiceInvokerException;
 
+	/**
+	 * 设置是理财还是操盘
+	 * 
+	 * @param userId
+	 * @param isStock
+	 *            0:配资 1：理财
+	 * @return 1:成功 0：失败
+	 * @throws ServiceInvokerException
+	 */
+	public String updateStatus(String userId, String isStock)
+			throws ServiceInvokerException;
+
 }
