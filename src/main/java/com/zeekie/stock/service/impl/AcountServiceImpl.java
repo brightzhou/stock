@@ -24,11 +24,13 @@ import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.entity.DebtDO;
+import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.RedpacketAndBalanceDO;
+import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.UserDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
 import com.zeekie.stock.enums.Fund;
@@ -474,7 +476,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
             if (!obj.isEmpty()) {
-            	String statis[] = new String[]{"1","4","6","7","8","a","A","B","C","D","E"};
+            	String statis[] = new String[]{"1","4","8","a","A","B","C","D"};
             	for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					for (String str : statis) {
@@ -503,12 +505,12 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		result.put("flag", Constants.CODE_FAILURE);
 		String msg = "成功";
        try {
-			/*if(hasEntrust(nickname)){ //是否还有委托的股票
+			if(hasEntrust(nickname)){ //是否还有委托的股票
 				msg = "你还有委托的股票，不能结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
 				result.put("msg", msg);
 				
-			}else */if (StringUtils.equals(Constants.CODE_SUCCESS,
+			}else if (StringUtils.equals(Constants.CODE_SUCCESS,
 					acounter.operationIsEnded(nickname))) {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 
 				if (log.isDebugEnabled()) {
@@ -888,11 +890,53 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	public JSONObject getBasicInfo(String userId) {
 		try {
 			BasicInfoDO basicinfoDO = acounter.getBasicInfo(userId);
+			if("1".equals(basicinfoDO.getHasOperation())){
+				/** start 放入杠杆倍数   add 20150610 */
+ 			    StockRadioDO stockRadioDO =	acounter.getAssignRadioForCurrUserId(userId);
+ 			    if(stockRadioDO!=null){
+ 			    	basicinfoDO.setAssignRadio(stockRadioDO.getAssignRadio());
+ 			    }
+ 				/**  end  放入杠杆倍数  add 20150610 */
+			}else{
+				/** start 放入杠杆倍数   add 20150610*/
+				DictionariesDO dictionariesDO  = trade.getDictionariesByDicWord("assignRadio") ;
+				if(dictionariesDO!=null){
+					basicinfoDO.setAssignRadio(Float.valueOf(dictionariesDO.getDicValue()) );
+				} 
+				/**  end 放入杠杆倍数   add 20150610*/
+            }
 			basicinfoDO.setAppStatus(Constants.HOMES_STATUS);
 			return JSONObject.fromObject(basicinfoDO, Constants.jsonConfig);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return null;
+	}
+	
+	@Override
+	public String residualAssets(){
+		Map<String, String> map = new HashMap<String, String>();
+		try{ 
+			DictionariesDO dictionariesDO = new DictionariesDO();
+			 dictionariesDO.setStatus("1");
+			 dictionariesDO.setDicType("3");
+			 List<DictionariesDO>  list = trade.queryDictionarieList(dictionariesDO);
+			 
+			 if(list!=null&&list.size()==2){
+				 for (DictionariesDO obj : list) {
+					if("fundAcound".equals(obj.getDicWord())){
+						    map.put("surplusAssets", acounter.getSurplusAssetsByfundAcound(dictionariesDO.getDicValue()))  ;
+					} 
+					if("totalMoney".equals(obj.getDicWord())){
+					    	map.put("totalMoney", obj.getDicValue()) ;
+					}
+				 }
+				
+			 }
+		}catch(Exception e){
+			log.error(e.getMessage(), e);
+		}
+		
+		 return    JSONObject.fromObject(map, Constants.jsonConfig).toString();
 	}
 }

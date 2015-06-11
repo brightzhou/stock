@@ -2,7 +2,7 @@ package com.zeekie.stock.entity;
 
 public class DictionariesDO {
     //主键
-	private String id;
+	private Long id;
 	//类型
 	private String dicType;
 	//字典词
@@ -20,10 +20,11 @@ public class DictionariesDO {
 	//状态 1可用   0不可用 
 	private String status;
 	
-	public String getId() {
+ 
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getDicType() {

@@ -32,6 +32,7 @@ import sitong.thinker.common.page.DefaultPage;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
+import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
@@ -50,6 +51,7 @@ import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.util.XmlUtil;
 import com.zeekie.stock.web.ClientPage;
+import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
@@ -756,5 +758,109 @@ public class StockWebController {
 			log.error("query getEveningUp error happened:", e.getMessage());
 			return new DefaultPage<StatisticsDO>();
 		}
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("dictionaries/get")
+	public DefaultPage<DictionariesDO> getDictionaries(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "dicName", required = false) String dicName) {
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+            DictionariesPage  dictionariesPage  = new DictionariesPage(
+            		Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, dicName);
+
+			return webService.queryDictionaries(dictionariesPage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getEveningUp error happened:", e.getMessage());
+			return new DefaultPage<DictionariesDO>();
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping("dictionaries/add")
+	public String addDictionaries( 
+			HttpServletRequest request,
+			@RequestParam(value = "dicType", required = false) String dicType,
+			@RequestParam(value = "dicWord", required = false) String dicWord,
+			@RequestParam(value = "dicValue", required = false) String dicValue,
+			@RequestParam(value = "dicName", required = false) String dicName,
+			@RequestParam(value = "orderNo", required = false) String orderNo,
+			@RequestParam(value = "des", required = false) String des,
+			@RequestParam(value = "isCache", required = false) String isCache,
+			@RequestParam(value = "status", required = false) String status) {
+		DictionariesDO dictionariesDO = new DictionariesDO();
+		dictionariesDO.setDes(des);
+		dictionariesDO.setDicName(dicName);
+		dictionariesDO.setDicType(dicType);
+		dictionariesDO.setDicValue(dicValue);
+		dictionariesDO.setDicWord(dicWord);
+		dictionariesDO.setIsCache(isCache);
+		dictionariesDO.setOrderNo(orderNo);
+		dictionariesDO.setStatus(status);
+		try {
+		  return 	webService.insertDictionaries(dictionariesDO);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return null;
+	 
+	}
+	
+	@ResponseBody
+	@RequestMapping("dictionaries/update")
+	public String updateDictionaries(
+			HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "dicType", required = false) String dicType,
+			@RequestParam(value = "dicWord", required = false) String dicWord,
+			@RequestParam(value = "dicValue", required = false) String dicValue,
+			@RequestParam(value = "dicName", required = false) String dicName,
+			@RequestParam(value = "orderNo", required = false) String orderNo,
+			@RequestParam(value = "des", required = false) String des,
+			@RequestParam(value = "isCache", required = false) String isCache,
+			@RequestParam(value = "status", required = false) String status) {
+		DictionariesDO dictionariesDO = new DictionariesDO();
+		dictionariesDO.setDes(des);
+		dictionariesDO.setDicName(dicName);
+		dictionariesDO.setDicType(dicType);
+		dictionariesDO.setDicValue(dicValue);
+		dictionariesDO.setDicWord(dicWord);
+		dictionariesDO.setId(Long.valueOf(id));
+		dictionariesDO.setIsCache(isCache);
+		dictionariesDO.setOrderNo(orderNo);
+		dictionariesDO.setStatus(status);
+	  return 	webService.updateDictionaries(dictionariesDO);
+	  
+	}
+	@ResponseBody
+	@RequestMapping("dictionaries/initInfo")
+	public String dictionariesInitInfo(
+			HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id) {
+		   
+	        return 	webService.getDictionaries(id);
+		
+		
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping("dictionaries/delete")
+	public String dictionariesDelete(
+			HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id) {
+		    return 	webService.deleteDictionaries(id);
+		
+		
+		
 	}
 }

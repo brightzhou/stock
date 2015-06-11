@@ -11,6 +11,18 @@ public class BasicInfoDO {
 	private Float balance;
 
 	private Float progressbar;
+	/**当前炒盘倍数  add 20150610  */
+	private  Float assignRadio;
+
+ 
+
+	public Float getAssignRadio() {
+		return assignRadio;
+	}
+
+	public void setAssignRadio(Float assignRadio) {
+		this.assignRadio = assignRadio;
+	}
 
 	public BasicInfoDO() {
 		// TODO Auto-generated constructor stub

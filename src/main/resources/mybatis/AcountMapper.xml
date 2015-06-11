@@ -486,7 +486,7 @@
 		   GUARANTEE_CASH,
 		   STOP_CASH,
 		   WARN_CASH,
-		   START_DATE)
+		   START_DATE,STOP_RADIO ,WARN_RADIO ,ASSIGN_RADIO)
 		VALUES
 		  (#{id},
 		   'H000'||(#{id} * 5 + #{ticket}),
@@ -496,7 +496,11 @@
 		   #{guaranteeCash,jdbcType=VARCHAR},
 		   #{stopCash,jdbcType=VARCHAR},
 		   #{warnCash,jdbcType=VARCHAR},
-		   sysdate)
+		   sysdate,
+		   #{stopRadio,jdbcType=NUMBER},
+		    #{warnRadio,jdbcType=NUMBER},
+		     #{assignRadio,jdbcType=NUMBER}
+		  )
 	</insert>
 	
 	<select id="getOperateAcount" resultMap="resultCurrOperateAcount" parameterType="string">
@@ -1641,5 +1645,20 @@
 	<select id="getUserInfoByNickname"  resultMap="UserInfoDO" parameterType="string">
 		    select u.id ,u.nickname,u.telephone  ,u.registerdate  ,u.referee_id  ,u.status , u.version   from stock_user u  where  u.nickname =#{nickname}
 	</select>
+	
+    <update id="updateAssignRadio"   parameterType="string">
+	     update stock_fund_assign_radio set stop_radio =#{stopRadio} ,warn_radio =#{warnRadio} ,assign_radio=#{assignRadio}  where  nickname =#{nickname}
+	</update>
+	
+	<select id="getAssignRadioForCurrUserId" resultMap="resultRadio" parameterType="string">
+	  SELECT ASSIGN_RADIO, STOP_RADIO, WARN_RADIO,FEE_RADIO, Up_Line_Percent,assign_cash
+	  FROM STOCK_FUND_ASSIGN_RADIO  
+	  WHERE user_id = #{userId}
+   </select>
+   
+   <select id="getSurplusAssetsByfundAcound" resultType="string"  parameterType="string">
+	    SELECT S.TOTAL_FUND   FROM STOCK_TOTAL_FUND S   WHERE S.IS_CURRENT = 'Y' and s.fund_acount=#{fundAcound}
+   </select>
+	
 </mapper>
 

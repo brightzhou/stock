@@ -22,10 +22,10 @@ public class TestStock {
 	public static void main(String[] args) {
 //		entrustQuery();
 //	 	combostock();
-		entrustTradedQuery();
+//		entrustTradedQuery();
 //		historyTradedQuery();
 //		entrustTradedQuery();
-//		login();
+		login();
 //		deal();
 //		cxdeal();
 //		queryCombasset();
@@ -752,18 +752,18 @@ public class TestStock {
 	public static void login() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "测试");
+		datas.put("nickname", "ceshi");
 		datas.put("password", "123456");
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("哇哈哈2,20150525230220",
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
 			String result = req.post(
-					"http://121.40.71.84:8083/stock/api/stock/user/login", datas);
+					"http://localhost:8080/stock/api/stock/user/login", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

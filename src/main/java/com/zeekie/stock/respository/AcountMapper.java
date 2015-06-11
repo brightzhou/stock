@@ -650,5 +650,35 @@ public interface AcountMapper {
 	 * @throws Exception
 	 */
 	public List<UserInfoDO> getUserInfoByNickname(@Param("nickname") String nickname) throws Exception;
+	
+    /**
+     * 修改用户配置比例参数
+     * @param nickname
+     * @param stopRadio
+     * @param warnRadio
+     * @param assignRadio
+     * @return
+     * @throws Exception
+     */
+	public Long updateAssignRadio(@Param("nickname") String nickname
+			,@Param("stopRadio") float stopRadio
+			,@Param("warnRadio") float warnRadio
+			,@Param("assignRadio") float assignRadio) throws Exception;
+	
+	/**
+	 * 通过用户ID 查询用户配置比例
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public StockRadioDO getAssignRadioForCurrUserId(
+			@Param("userId") String userId) throws Exception;
+   /**
+    * 通过主单元号查询用户剩余资产	
+    * @param fundAcound
+    * @return
+    * @throws Exception
+    */
+   public String getSurplusAssetsByfundAcound(@Param("fundAcound") String fundAcound) throws Exception;
 
 }

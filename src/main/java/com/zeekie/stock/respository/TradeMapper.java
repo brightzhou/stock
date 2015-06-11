@@ -10,6 +10,7 @@ import com.zeekie.stock.entity.AutoAddGuaranteeCashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.DayDO;
 import com.zeekie.stock.entity.DeductDO;
+import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.EveningEndDO;
 import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.HasOpertAndDebtDO;
@@ -21,6 +22,7 @@ import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.entity.form.AddCuaranteeForm;
 import com.zeekie.stock.mybatis.MyBatisRepository;
+import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.StatisticsPage;
 
 @MyBatisRepository
@@ -252,5 +254,58 @@ public interface TradeMapper {
      * @throws Exception
      */
     Long queryStatisticsCount(StatisticsPage statisticsPage) throws Exception;
-
+    
+    
+    /**
+     * 添加字典信息
+     * @param dictionariesDO
+     * @return
+     * @throws Exception
+     */
+    Long  insertDictionaries(DictionariesDO dictionariesDO) throws Exception ;
+	
+	/**
+	 * 删除字典信息
+	 * @param id
+	 * @return
+	 */
+	void  deleteDictionaries(@Param("id") String id);
+	
+	/**
+	 * 修改字典信息
+	 * @param dictionariesDO
+	 * @return
+	 */
+	Long  updateDictionaries(DictionariesDO dictionariesDO);
+	
+	/**
+	 * 查询字典信息
+	 * @param dictionariesPage
+	 * @return
+	 */
+	List<DictionariesDO> queryDictionaries(DictionariesPage dictionariesPage);
+	/**
+	 * 查询字典信息数量
+	 * @param dictionariesPage
+	 * @return
+	 */
+	Long queryDictionariesCount(DictionariesPage dictionariesPage);
+	/**
+	 * 查找字典信息
+	 * @param id
+	 * @return
+	 */
+	public DictionariesDO  getDictionaries(@Param("id") String id);
+	/**
+	 * 通过字典KEY查找字典信息
+	 * @param id
+	 * @return
+	 */
+	public   DictionariesDO  getDictionariesByDicWord(@Param("dicWord") String dicWord);	
+	/**
+	 * 查找字典信息
+	 * @param id
+	 * @return
+	 */
+	public  List<DictionariesDO>  queryDictionarieList(DictionariesDO dictionariesDO);	
 }

@@ -92,7 +92,6 @@ System.out.println(yearMonth);
 	    
 	    function search() {
 	        var day = $(".mini-buttonedit-input").val();
-	        alert(day);
 	        grid.load({ day: day });
 	    }
  

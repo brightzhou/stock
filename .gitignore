@@ -17,7 +17,6 @@ pom.xml
 /target
 /.settings
 t2sdk-config.xml
-/src/main/resources/*
 /src/main/webapp/WEB-INF/lib/*
 /src/main/webapp/WEB-INF/classes/*
 */test/*

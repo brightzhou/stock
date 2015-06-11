@@ -15,12 +15,12 @@ public class FinanceProductDO {
 	/**
 	 * 理财额度
 	 */
-	private long financeTotalLimit;
+	private Float financeTotalLimit;
 
 	/**
 	 * 年化收益
 	 */
-	private long annualIncome;
+	private String annualIncome;
 
 	/**
 	 * 期限
@@ -30,45 +30,15 @@ public class FinanceProductDO {
 	/**
 	 * 最大购买额度
 	 */
-	private String maxLimit;
+	private Float maxLimit;
 
 	/**
 	 * 最小购买额度
 	 */
-	private String minLimit;
+	private Float minLimit;
 
 	public FinanceProductDO() {
 		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @return the maxLimit
-	 */
-	public String getMaxLimit() {
-		return maxLimit;
-	}
-
-	/**
-	 * @param maxLimit
-	 *            the maxLimit to set
-	 */
-	public void setMaxLimit(String maxLimit) {
-		this.maxLimit = maxLimit;
-	}
-
-	/**
-	 * @return the minLimit
-	 */
-	public String getMinLimit() {
-		return minLimit;
-	}
-
-	/**
-	 * @param minLimit
-	 *            the minLimit to set
-	 */
-	public void setMinLimit(String minLimit) {
-		this.minLimit = minLimit;
 	}
 
 	/**
@@ -104,7 +74,7 @@ public class FinanceProductDO {
 	/**
 	 * @return the financeTotalLimit
 	 */
-	public long getFinanceTotalLimit() {
+	public Float getFinanceTotalLimit() {
 		return financeTotalLimit;
 	}
 
@@ -112,14 +82,14 @@ public class FinanceProductDO {
 	 * @param financeTotalLimit
 	 *            the financeTotalLimit to set
 	 */
-	public void setFinanceTotalLimit(long financeTotalLimit) {
+	public void setFinanceTotalLimit(Float financeTotalLimit) {
 		this.financeTotalLimit = financeTotalLimit;
 	}
 
 	/**
 	 * @return the annualIncome
 	 */
-	public long getAnnualIncome() {
+	public String getAnnualIncome() {
 		return annualIncome;
 	}
 
@@ -127,7 +97,7 @@ public class FinanceProductDO {
 	 * @param annualIncome
 	 *            the annualIncome to set
 	 */
-	public void setAnnualIncome(long annualIncome) {
+	public void setAnnualIncome(String annualIncome) {
 		this.annualIncome = annualIncome;
 	}
 
@@ -144,6 +114,36 @@ public class FinanceProductDO {
 	 */
 	public void setExpireDay(String expireDay) {
 		this.expireDay = expireDay;
+	}
+
+	/**
+	 * @return the maxLimit
+	 */
+	public Float getMaxLimit() {
+		return maxLimit;
+	}
+
+	/**
+	 * @param maxLimit
+	 *            the maxLimit to set
+	 */
+	public void setMaxLimit(Float maxLimit) {
+		this.maxLimit = maxLimit;
+	}
+
+	/**
+	 * @return the minLimit
+	 */
+	public Float getMinLimit() {
+		return minLimit;
+	}
+
+	/**
+	 * @param minLimit
+	 *            the minLimit to set
+	 */
+	public void setMinLimit(Float minLimit) {
+		this.minLimit = minLimit;
 	}
 
 }
