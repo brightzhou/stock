@@ -204,4 +204,10 @@ public interface AcountService {
 	 * @return
 	 */
 	public JSONObject getBasicInfo(String userId);
+	
+	/**
+	 * 剩余资产宣传页需要的数据
+	 * @return
+	 */
+	public String residualAssets();
 }

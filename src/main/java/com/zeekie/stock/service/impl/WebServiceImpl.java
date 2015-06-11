@@ -23,6 +23,7 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DayDO;
+import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperateAccountDO;
@@ -44,6 +45,7 @@ import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.web.ClientPage;
+import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
@@ -758,5 +760,81 @@ public class WebServiceImpl implements WebService {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);
 		}
+	}
+	
+	 /**
+     * 添加字典信息
+     * @param dictionariesDO
+     * @return
+     * @throws Exception
+     */
+	public String  insertDictionaries(DictionariesDO dictionariesDO) {
+		 try {
+			 DictionariesPage dictionariesPage = new DictionariesPage(0, 10, null, null, null);
+			 dictionariesPage.setDicWord(dictionariesDO.getDicWord());
+			 long count =  trade.queryDictionariesCount(dictionariesPage);
+			 if(count==0){
+				 return String.valueOf(trade.insertDictionaries(dictionariesDO)) ;
+			 }else{
+				 return "-1";
+			 }
+		 	 
+		 } catch (Exception e) {
+			log.error(e.getMessage(), e);
+			 
+		}
+		return null;
+	}
+	
+	/**
+	 * 删除字典信息
+	 * @param id
+	 * @return
+	 */
+	public String  deleteDictionaries(String id){
+		   trade.deleteDictionaries(id);
+		   return "1";
+	}
+	
+	/**
+	 * 修改字典信息
+	 * @param dictionariesDO
+	 * @return
+	 */
+	public String  updateDictionaries(DictionariesDO dictionariesDO){
+	    return   String.valueOf(trade.updateDictionaries(dictionariesDO))  ;
+ 
+	}
+	
+	/**
+	 * 查询字典信息
+	 * @param dictionariesPage
+	 * @return
+	 */
+	public DefaultPage<DictionariesDO>  queryDictionaries(DictionariesPage dictionariesPage) throws ServiceInvokerException{
+		List<DictionariesDO> result = new ArrayList<DictionariesDO>();
+		long total = 0;
+		try {
+			total = trade.queryDictionariesCount(dictionariesPage);
+			if (0 != total) {
+				result =trade.queryDictionaries(dictionariesPage);
+			}
+			return new DefaultPage<DictionariesDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+	
+	/**
+	 * 查找字典信息
+	 * @param id
+	 * @return
+	 */
+	public String  getDictionaries(String id){
+	    DictionariesDO dictionariesDO =	trade.getDictionaries(id);
+		JSONObject jo = JSONObject.fromObject(dictionariesDO,
+				Constants.jsonConfig);
+		return jo.toString();
 	}
 }

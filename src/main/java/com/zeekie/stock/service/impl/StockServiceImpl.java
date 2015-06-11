@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import com.hundsun.t2sdk.interfaces.share.dataset.IDatasets;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AddGuaranteePageDO;
 import com.zeekie.stock.entity.CurrentOperationDO;
+import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.EveningEndDO;
 import com.zeekie.stock.entity.HasOpertAndDebtDO;
 import com.zeekie.stock.entity.HistoryOperationDO;
@@ -118,6 +120,50 @@ public class StockServiceImpl implements TradeService {
 		}
 
 		try {
+			/** start  修改用户 配置比例  警戒  止损    add20150610 */
+			DictionariesDO dictionariesDO = new DictionariesDO();
+			dictionariesDO.setDicType("2");
+			dictionariesDO.setStatus("1");
+		    List<DictionariesDO>	 dicList = trade.queryDictionarieList(dictionariesDO);
+            float stopRadio = 0 ;
+		    float warnRadio = 0 ;
+		    float assignRadio = 0 ;
+		    if(dicList!=null&&dicList.size()==3){
+		    	int i= 0;
+		    	for (DictionariesDO  dictionarie : dicList) {
+					if("stopRadio".equals(dictionarie.getDicWord())){
+						stopRadio  = Float.valueOf(dictionarie.getDicValue());
+						i++;
+					}
+					if("warnRadio".equals(dictionarie.getDicWord())){
+						warnRadio  = Float.valueOf(dictionarie.getDicValue());
+						i++;				
+				    }
+					if("assignRadio".equals(dictionarie.getDicWord())){
+						assignRadio  = Integer.valueOf(dictionarie.getDicValue());
+						i++;
+					}
+				}
+		    	if(i!=3){
+					 currentOperate.put("flag", "4");
+					 return currentOperate;
+				}else{
+					stopRadio =   new BigDecimal(1-stopRadio/assignRadio).setScale(4, BigDecimal.ROUND_HALF_UP).floatValue(); ;
+					warnRadio =   new BigDecimal(1-warnRadio/assignRadio).setScale(4, BigDecimal.ROUND_HALF_UP).floatValue();;
+					long count = acount.updateAssignRadio(nickname, stopRadio, warnRadio, assignRadio);
+				    if(count!=1){
+				    	 currentOperate.put("flag", "5");
+						 return currentOperate;
+				    }
+				}
+		    	
+		    }else{
+		    	currentOperate.put("flag", "4");
+				return currentOperate;
+		    }
+		    /** end   修改用户 配置比例  警戒  止损   add20150610*/
+		    
+			
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
 			if (null != radioDO) {
 				// 判断是否大于设置操盘额度的上线
@@ -223,6 +269,11 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			// 5、保存操盘信息
+			
+			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
+            tradeForm.setWarnRadio(radioDO.getWarnRadio());
+			tradeForm.setStopRadio(radioDO.getStopRadio());
+			tradeForm.setAssignRadio(radioDO.getAssignRadio());
 			tradeForm.setOperateAccountId(id + "");
 			acount.storeOperatorCash(tradeForm);
 
@@ -624,7 +675,7 @@ public class StockServiceImpl implements TradeService {
 
 		long startTime = System.currentTimeMillis();
 		Map<String, String> map = new HashMap<String, String>();
-		String flag = "0";
+		String flag = "1";
 		try {
 			String nickname = transferData.getNickname();
 			log.info("用户[" + nickname + "]开始增加保证金...");
@@ -859,10 +910,20 @@ public class StockServiceImpl implements TradeService {
 				map.put("debt",
 						andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
 				map.put("balance", andDebtDO.getBalance() + "");
+				/** start 放入杠杆倍数  */
+				StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
+				map.put("assignRadio",Float.toString(radioDO.getAssignRadio()));
+				/**  end  放入杠杆倍数  */
 			} else {
 				map.put("flag", "0");
 				map.put("debt", "");
 				map.put("balance", "");
+				/** start 放入杠杆倍数  */
+				DictionariesDO dictionariesDO  = trade.getDictionariesByDicWord("assignRadio") ;
+				if(dictionariesDO!=null){
+				   map.put("assignRadio",dictionariesDO.getDicValue());
+                }
+				/**  end  放入杠杆倍数  */
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

@@ -1,5 +1,6 @@
 package com.zeekie.stock.service;
 
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
@@ -8,6 +9,7 @@ import sitong.thinker.common.page.DefaultPage;
 
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
+import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
@@ -21,6 +23,7 @@ import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.web.ClientPage;
+import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
@@ -317,5 +320,41 @@ public interface WebService {
 	 */
 	public DefaultPage<StatisticsDO> queryStatistics(StatisticsPage statisticsPage)
 			throws ServiceInvokerException;
+	
+	 /**
+     * 添加字典信息
+     * @param dictionariesDO
+     * @return
+     * @throws Exception
+     */
+	public String  insertDictionaries(DictionariesDO dictionariesDO) throws Exception ;
+	
+	/**
+	 * 删除字典信息
+	 * @param id
+	 * @return
+	 */
+	public String  deleteDictionaries(String id);
+	
+	/**
+	 * 修改字典信息
+	 * @param dictionariesDO
+	 * @return
+	 */
+	public String  updateDictionaries(DictionariesDO dictionariesDO);
+	
+	/**
+	 * 查询字典信息
+	 * @param dictionariesPage
+	 * @return
+	 */
+	public DefaultPage<DictionariesDO> queryDictionaries(DictionariesPage dictionariesPage) throws ServiceInvokerException;
+	
+	/**
+	 * 查找字典信息
+	 * @param id
+	 * @return
+	 */
+	public String  getDictionaries(String id);
 
 }

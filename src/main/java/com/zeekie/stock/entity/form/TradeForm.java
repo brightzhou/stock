@@ -39,6 +39,45 @@ public class TradeForm {
 	private String operateAccountId;
 
 	private int ticket = Integer.parseInt(StringUtil.genRandomFive(1));
+	/**
+	 * 止损比例
+	 */
+	private float stopRadio ;
+	/**
+	 * 警戒比例
+	 */
+	private float warnRadio ;
+	/**
+	 * 配资比例
+	 */
+	private float assignRadio ;
+	
+	
+	
+
+	public float getStopRadio() {
+		return stopRadio;
+	}
+
+	public void setStopRadio(float stopRadio) {
+		this.stopRadio = stopRadio;
+	}
+
+	public float getWarnRadio() {
+		return warnRadio;
+	}
+
+	public void setWarnRadio(float warnRadio) {
+		this.warnRadio = warnRadio;
+	}
+
+	public float getAssignRadio() {
+		return assignRadio;
+	}
+
+	public void setAssignRadio(float assignRadio) {
+		this.assignRadio = assignRadio;
+	}
 
 	/**
 	 * @return the ticket

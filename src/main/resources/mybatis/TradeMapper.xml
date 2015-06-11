@@ -107,6 +107,20 @@
 	</resultMap>
 	
 	
+	<resultMap type="com.zeekie.stock.entity.DictionariesDO" id="resultDictionaries">
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="DIC_TYPE" property="dicType" jdbcType="VARCHAR"/>
+		<result column="dic_Word" property="dicWord" jdbcType="VARCHAR"/>
+		<result column="dic_Value" property="dicValue" jdbcType="VARCHAR"/>
+		<result column="dic_Name" property="dicName" jdbcType="VARCHAR"/>
+		<result column="Order_No" property="orderNo" jdbcType="VARCHAR"/>
+		<result column="DES" property="des" jdbcType="VARCHAR"/>
+		<result column="IS_CACHE" property="isCache" jdbcType="VARCHAR"/>
+		<result column="Status" property="status" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+ 
+	
 	
 	  
 	  
@@ -724,23 +738,65 @@
       group by  To_Char(t.Transaction_Time, 'yyyy-mm-dd')    )  a
     </select>
 	
-	<insert id="insertDictionaries" parameterType="string">
-		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+	<insert id="insertDictionaries" parameterType="com.zeekie.stock.entity.DictionariesDO" >
+		<selectKey order="BEFORE" resultType="Long" keyProperty="id">
 			select SEQ_STOCK_DICTIONARIES_ID.Nextval from dual
 		</selectKey>
-	    	insert into stock_dictionaries(ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status)
-            values(#{id},#{dicType},#{dicWord},#{dicValue},#{dicName},#{orderNo},#{des},#{isCache},#{status});
+	    	insert into stock_dictionaries(id,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status)
+            values(SEQ_STOCK_DICTIONARIES_ID.Nextval,#{dicType},#{dicWord},#{dicValue},#{dicName},#{orderNo},#{des},#{isCache},#{status})
     </insert>
-   <select id="queryDictionaries"  resultType="long" parameterType="com.zeekie.stock.web.StatisticsPage">
+   <select id="queryDictionaries"  resultMap="resultDictionaries"  parameterType="com.zeekie.stock.web.DictionariesPage">
 		   select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries
-           
-    </select>
-    <select id="queryDictionariesCount"  resultType="long" parameterType="com.zeekie.stock.web.StatisticsPage">
+		   <where>
+			 <if test="dicName != null  and  dicName != ''">
+			      dic_Name=#{dicName}
+			 </if>
+			 <if test="dicWord != null and dicWord != ''">
+			      dic_Word=#{dicWord}
+			 </if>
+		   </where>
+	</select>
+    <select id="queryDictionariesCount"  resultType="long" parameterType="com.zeekie.stock.web.DictionariesPage">
 		   select count(id)   from stock_dictionaries
+		   <where>
+			 <if test="dicName != null  and  dicName != ''">
+			      dic_Name=#{dicName}
+			 </if>
+			 <if test="dicWord != null and dicWord != ''">
+			      dic_Word=#{dicWord}
+			 </if>
+		   </where>
     </select>
-    <delete id="deleteDictionaries" >
-           delete from  stock_dictionaries where id =${id}
+    <delete id="deleteDictionaries" parameterType="String">
+             delete from  stock_dictionaries where id =#{id}
     </delete>
-	
+    
+    <update id="updateDictionaries"  parameterType="com.zeekie.stock.entity.DictionariesDO">
+             update stock_dictionaries set dic_type= #{dicType} ,  dic_word= #{dicWord}  , dic_value =#{dicValue}  , dic_name =#{dicName} , order_no =#{orderNo} , des =#{des} ,  is_cache = #{isCache}   ,  status  =#{status}  where id=#{id}
+    </update>
+	<select id="getDictionaries"  resultMap="resultDictionaries"  parameterType="String">
+		     select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries where id=#{id}
+    </select>
+    <select id="getDictionariesByDicWord"  resultMap="resultDictionaries"  parameterType="String">
+		     select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries where status=1 and dic_Word=#{dicWord}  
+    </select>
+    <select id="queryDictionarieList"  resultMap="resultDictionaries"  parameterType="com.zeekie.stock.entity.DictionariesDO">
+		     select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries 
+             <where>
+	             <if test="dicType != null  and  dicType != ''">
+				      DIC_TYPE=#{dicType}  and
+				 </if>
+	             <if test="dicName != null  and  dicName != ''">
+				      dic_Name=#{dicName} and
+				 </if>
+				 <if test="dicWord != null and dicWord != ''">
+				      dic_Word=#{dicWord} and
+				 </if>
+				 <if test="status != null and status != ''">
+				      status=#{status}
+				 </if>
+		    </where>
+		    order by Order_No asc
+   </select>
 	
 </mapper>
