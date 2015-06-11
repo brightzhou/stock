@@ -18,9 +18,9 @@ public class TestPublishChannel {
 
 	public static void main(String[] args) {
 
-		 publish();
+		// publish();
 		// publishCommon();
-		// getdata();
+		getdata();
 		// getMaxBytes();
 		// getTime();
 	}
@@ -28,9 +28,9 @@ public class TestPublishChannel {
 	public static void getTime() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		try {
-			String result = req.post(
-					"http://localhost:8080/sms-service/api/getServerTime.htm",
-					new HashMap<String, String>());
+			String result = req
+					.post("http://192.168.70.75:8005/sms-service/api/getServerTime.htm",
+							new HashMap<String, String>());
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -63,35 +63,35 @@ public class TestPublishChannel {
 	// }
 	// }
 	//
-	// public static void getdata() {
-	// String url =
-	// "http://localhost:8080/sms-service/api/sms/getResultByBatch.htm";
-	// HandleHttpRequest request = new HandleHttpRequest();
-	//
-	// Map<String, String> headers = new HashMap<String, String>();
-	// JSONObject item = new JSONObject();
-	// item.put("authType", "2");
-	// try {
-	// item.put("token", TokenUtils.encryptToken(
-	// "02,6338673674855554,20150430185036,100015",
-	// "servyou_sitong_s"));
-	// } catch (JSONException e1) {
-	// e1.printStackTrace();
-	// } catch (CodecException e1) {
-	// e1.printStackTrace();
-	// }
-	// headers.put("user_auth", item.toString());
-	// request.setHeaders(headers);
-	//
-	// Map<String, String> map = new HashMap<String, String>();
-	// map.put("batchId", "0bde4973256c446fbe8e625df82ce5bc");
-	// map.put("offset", "1");
-	// try {
-	// System.out.println(request.post(url, map));
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
+	public static void getdata() {
+		String url = "http://192.168.70.75:8005/sms-service/api/sms/getResultByBatch.htm";
+		HandleHttpRequest request = new HandleHttpRequest();
+
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+		item.put("authType", "2");
+		try {
+			item.put("token", TokenUtils.encryptToken(
+					"02,6338673674855554,20150611185036,4406",
+					"servyou_sitong_s"));
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} catch (CodecException e1) {
+			e1.printStackTrace();
+		}
+		headers.put("user_auth", item.toString());
+		request.setHeaders(headers);
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("batchId", "bf3fb6fcb26b44d48c501adff42cddfe");
+		map.put("offset", "0");
+		try {
+			System.out.println(request.post(url, map));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	//
 	// public static void publishCommon() {
 	// // String url =
