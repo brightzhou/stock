@@ -770,7 +770,7 @@ public class WebServiceImpl implements WebService {
      */
 	public String  insertDictionaries(DictionariesDO dictionariesDO) {
 		 try {
-			 DictionariesPage dictionariesPage = new DictionariesPage(0, 10, null, null, null);
+			 DictionariesPage dictionariesPage = new DictionariesPage(0, 10, null, null, null,null);
 			 dictionariesPage.setDicWord(dictionariesDO.getDicWord());
 			 long count =  trade.queryDictionariesCount(dictionariesPage);
 			 if(count==0){

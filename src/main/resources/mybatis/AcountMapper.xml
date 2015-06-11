@@ -497,9 +497,9 @@
 		   #{stopCash,jdbcType=VARCHAR},
 		   #{warnCash,jdbcType=VARCHAR},
 		   sysdate,
-		   #{stopRadio,jdbcType=NUMBER},
-		    #{warnRadio,jdbcType=NUMBER},
-		     #{assignRadio,jdbcType=NUMBER}
+		   #{stopRadio},
+		    #{warnRadio},
+		     #{assignRadio}
 		  )
 	</insert>
 	

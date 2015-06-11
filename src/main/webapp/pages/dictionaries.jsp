@@ -34,6 +34,11 @@ System.out.println(yearMonth);
 	                <tbody><tr>
 	                    <td style="white-space:nowrap;">
 	                                                                                    字典名 <input   name="dicName"  id="dicName"/>  
+	                        <select name="dicType" id="dicType" class="mini-select">
+	                           <option value="">全部</option>
+                               <option value="1">其它</option>
+                               <option value="2">炒盘参数</option>
+                            </select>                                                            
 	                        <a class="mini-button" href="javascript:search()"><span class="mini-button-text ">查询</span></a>&nbsp;&nbsp;<a class="mini-button" onclick="add()">添加</a>
 	                    </td>
 	                </tr>
@@ -92,8 +97,10 @@ System.out.println(yearMonth);
 		});
 	    
 	    function search() {
-	        var dicName = $("#dicName").val();
-	        grid.load({dicName: dicName});
+	        var  dicName = $("#dicName").val();
+	        var  dicType = $("#dicType").val();
+	        
+	        grid.load({dicName: dicName,dicType:dicType});
 	    }
  
 	    function operation(e){

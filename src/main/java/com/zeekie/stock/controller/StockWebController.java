@@ -769,13 +769,14 @@ public class StockWebController {
 			@RequestParam(value = "pageSize", required = false) String pageSize,
 			@RequestParam(value = "sortField", required = false) String sortField,
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
-			@RequestParam(value = "dicName", required = false) String dicName) {
+			@RequestParam(value = "dicName", required = false) String dicName,
+			@RequestParam(value = "dicType", required = false) String dicType) {
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
             DictionariesPage  dictionariesPage  = new DictionariesPage(
             		Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
-					sortOrder, dicName);
+					sortOrder, dicName,dicType);
 
 			return webService.queryDictionaries(dictionariesPage);
 		} catch (ServiceInvokerException e) {
