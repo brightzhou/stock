@@ -749,22 +749,28 @@
 		   select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries
 		   <where>
 			 <if test="dicName != null  and  dicName != ''">
-			      dic_Name=#{dicName}
+			      dic_Name=#{dicName} and
 			 </if>
 			 <if test="dicWord != null and dicWord != ''">
-			      dic_Word=#{dicWord}
+			      dic_Word=#{dicWord} and
 			 </if>
+			 <if test="dicType != null  and  dicType != ''">
+				      DIC_TYPE=#{dicType}  
+			  </if>
 		   </where>
 	</select>
     <select id="queryDictionariesCount"  resultType="long" parameterType="com.zeekie.stock.web.DictionariesPage">
 		   select count(id)   from stock_dictionaries
 		   <where>
 			 <if test="dicName != null  and  dicName != ''">
-			      dic_Name=#{dicName}
+			      dic_Name=#{dicName} and
 			 </if>
 			 <if test="dicWord != null and dicWord != ''">
-			      dic_Word=#{dicWord}
+			      dic_Word=#{dicWord} and
 			 </if>
+			 <if test="dicType != null  and  dicType != ''">
+				      DIC_TYPE=#{dicType}   
+				 </if>
 		   </where>
     </select>
     <delete id="deleteDictionaries" parameterType="String">

@@ -9,6 +9,20 @@ public class DictionariesPage extends PageQuery {
 	private String dicName ;
 	
 	private String dicWord ;
+	
+	private String dicType;
+
+
+
+	public String getDicType() {
+		return dicType;
+	}
+
+
+
+	public void setDicType(String dicType) {
+		this.dicType = dicType;
+	}
 
 
 
@@ -37,9 +51,10 @@ public class DictionariesPage extends PageQuery {
 
 
 	public DictionariesPage(long pageIndex, long pageSize, String sortField,
-			String sortOrder, String dicName) {
+			String sortOrder, String dicName,String dicType) {
 		super(pageIndex, pageSize, sortField, sortOrder);
 		this.dicName = dicName;
+		this.dicType = dicType;
 	}
 
 	 
