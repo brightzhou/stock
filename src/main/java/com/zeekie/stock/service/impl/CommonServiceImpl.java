@@ -251,6 +251,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 					"debt",
 					StringUtils.defaultIfBlank(
 							StringUtil.keepThreeDot(loginDO.getDebt()), "0"));
+			result.put("isStock", loginDO.getIsStock());
 		} else {
 			result.put("isLogin", "0");
 			result.put("userId", "");
@@ -263,6 +264,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 			result.put("operateAccount", "0");
 			result.put("assignCash", "");
 			result.put("debt", "0");
+			result.put("isStock", "0");
 		}
 	}
 
@@ -298,10 +300,10 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 					body.put("phone", phone);
 					body.put("verifyCode", verifyCode);
 					return ApiUtils.toJSON("1", "成功", body);
-				}else{
+				} else {
 					return ApiUtils.toJSON("2", "发送验证吗失败", "");
 				}
-				
+
 			} else {
 				return ApiUtils.toJSON("0", "该用户不存在", "");
 

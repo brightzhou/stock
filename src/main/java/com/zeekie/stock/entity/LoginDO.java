@@ -22,6 +22,23 @@ public class LoginDO {
 
 	private Float debt;
 
+	private String isStock;
+
+	/**
+	 * @return the isStock
+	 */
+	public String getIsStock() {
+		return isStock;
+	}
+
+	/**
+	 * @param isStock
+	 *            the isStock to set
+	 */
+	public void setIsStock(String isStock) {
+		this.isStock = isStock;
+	}
+
 	/**
 	 * @return the userId
 	 */

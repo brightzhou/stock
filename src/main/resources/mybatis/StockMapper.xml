@@ -20,6 +20,7 @@
 		<result column="TELEPHONE" property="telephone" jdbcType="VARCHAR"/>
 		<result column="ID_CARD" property="identification" jdbcType="VARCHAR"/>
 		<result column="card_number" property="bankCard" jdbcType="VARCHAR"/>
+		<result column="isStock" property="isStock" jdbcType="VARCHAR"/>
 		<result column="ASSIGN_CASH" property="assignCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="DEBT" property="debt" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
@@ -76,7 +77,8 @@
        	 	  (SELECT C.ID_CARD FROM STOCK_ID_CARD C WHERE C.USER_ID = S.ID) ID_CARD,
        	 	  (SELECT b.card_number FROM stock_bank_info b WHERE b.USER_ID = S.ID) card_number,
        	 	  (SELECT ASSIGN_CASH FROM stock_fund_assign_radio a WHERE s.nickname = a.nickname) ASSIGN_CASH,
-       	 	  (SELECT debt FROM STOCK_USER_WALLET a WHERE s.nickname = a.nickname) debt
+       	 	  (SELECT debt FROM STOCK_USER_WALLET a WHERE s.nickname = a.nickname) debt,
+       	 	  isStock
 		  FROM STOCK_USER S
 		 WHERE S.NICKNAME = #{nickname} 
 		   AND S.PASSWORD = #{password}

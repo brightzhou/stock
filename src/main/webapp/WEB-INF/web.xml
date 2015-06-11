@@ -74,8 +74,6 @@
 	    <url-pattern>/pages/*</url-pattern>
 	</filter-mapping>
 	
-
-	
 	
     <!-- - Servlet that dispatches request to registered handlers (Controller
         implementations). -->
@@ -97,3 +95,4 @@
         <session-timeout>30</session-timeout>
     </session-config>
 </web-app>
+
