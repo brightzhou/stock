@@ -37,8 +37,48 @@ public class FinanceProductDO {
 	 */
 	private Float minLimit;
 
+	/**
+	 * 起息日
+	 */
+	private String carryDate;
+
+	/**
+	 * 解析日
+	 */
+	private String settleDate;
+
 	public FinanceProductDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the carryDate
+	 */
+	public String getCarryDate() {
+		return carryDate;
+	}
+
+	/**
+	 * @param carryDate
+	 *            the carryDate to set
+	 */
+	public void setCarryDate(String carryDate) {
+		this.carryDate = carryDate;
+	}
+
+	/**
+	 * @return the settleDate
+	 */
+	public String getSettleDate() {
+		return settleDate;
+	}
+
+	/**
+	 * @param settleDate
+	 *            the settleDate to set
+	 */
+	public void setSettleDate(String settleDate) {
+		this.settleDate = settleDate;
 	}
 
 	/**

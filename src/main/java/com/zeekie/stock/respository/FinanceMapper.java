@@ -103,4 +103,15 @@ public interface FinanceMapper {
 	public void updateWallet(@Param("fund") String fund,
 			@Param("userId") String userId);
 
+	/**
+	 * 查询额度是否够买
+	 * 
+	 * @param productCode
+	 * @param financeLimit
+	 * @return result>0 可以买入
+	 */
+	public Float queryTotalLimitBalance(
+			@Param("productCode") String productCode,
+			@Param("financeLimit") String financeLimit);
+
 }

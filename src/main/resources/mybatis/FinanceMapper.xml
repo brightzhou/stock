@@ -7,6 +7,8 @@
 		<result column="FINANCE_PRODUCT" property="financeProduct" jdbcType="VARCHAR"/>
 		<result column="FINANCE_TOTAL_LIMIT" property="financeTotalLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="ANNUAL_INCOME" property="annualIncome" jdbcType="VARCHAR"/>
+		<result column="Carry_Date" property="carryDate" jdbcType="VARCHAR"/>
+		<result column="Settle_Date" property="settleDate" jdbcType="VARCHAR"/>
 		<result column="EXPIRE_DAY" property="expireDay" jdbcType="VARCHAR"/>
 		<result column="MAX_LIMIT" property="maxLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="MIN_LIMIT" property="minLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
@@ -40,7 +42,9 @@
 		       T.ANNUAL_INCOME*100||'%' ANNUAL_INCOME,
 		       T.EXPIRE_DAY,
 		       T.MAX_LIMIT,
-		       T.MIN_LIMIT
+		       T.MIN_LIMIT,
+		       To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
+		       To_Char(t.Carry_Date + 30, 'yyyy-mm-dd') Settle_Date
 		  FROM STOCK_FINANCE_PRODUCT T
 		  WHERE T.FLAG = '1'
     </select>
@@ -95,7 +99,7 @@
     	select 1 from stock_user_wallet w 
     	where exists(select 1 from stock_user u where u.nickname = w.nickname
     	      and u.id = #{userId})
-    	and w.balance>=#{financeLimit}
+    	and w.balance>=to_number(#{financeLimit})
     </select>
     
     <select id="queryFinanceIncome" parameterType="string" resultMap="resultFinanceIncome">
@@ -142,9 +146,13 @@
 		where PRODUCT_CODE = #{productCode}
 	</update>
 	
-	<update id="updateWallet" parameterType="string">
+	<update id="updateWallet" parameterType="string" >
     	update stock_user_wallet w set w.balance = w.balance - to_number(#{fund})
     	where exists(select 1 from stock_user u where u.id = #{userId} and u.nickname = w.nickname)
     </update>
+    
+    <select id="queryTotalLimitBalance" parameterType="string" resultType="float">
+     select FINANCE_TOTAL_LIMIT - to_number(#{financeLimit}) from STOCK_FINANCE_PRODUCT p where p.PRODUCT_CODE = #{productCode}
+    </select>
     
 </mapper>

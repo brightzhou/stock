@@ -86,19 +86,20 @@ public class FinanceServiceImpl implements FinanceService {
 		if (StringUtils.isBlank(balance)) {
 			return Constants.CODE_BALANCE_LITTLE;
 		}
-
-		financeMapper.updateWallet(financeLimit, form.getUserId());
-
-		// if (StringUtils.isNotBlank(annualIncome)
-		// && StringUtils.isNotBlank(financeLimit)) {
-		// currentIncome = (StringUtil.keepTwoDecimalFloat(Float
-		// .parseFloat(annualIncome) * Float.parseFloat(financeLimit)) /
-		// StringUtil
-		// .getCurrentYearDays()) + "";
-		// }
+		// 计算额度是否够买
+		synchronized (this) {
+			Float totalLimit = financeMapper.queryTotalLimitBalance(
+					form.getProductCode(), financeLimit);
+			if (totalLimit <= 0f) {
+				return Constants.CODE_TOTAL_lIMIT_LITTLE;
+			}
+		}
+		// 保存购买记录
 		financeMapper.saveCurrentFinance(form);
 		// 更新理财额度
 		financeMapper.updateTotalLimit(form.getProductCode(), financeLimit);
+		// 更新钱包，扣除理财的钱
+		financeMapper.updateWallet(financeLimit, form.getUserId());
 		return Constants.CODE_SUCCESS;
 	}
 
