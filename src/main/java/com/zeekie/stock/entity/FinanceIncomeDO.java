@@ -6,6 +6,40 @@ public class FinanceIncomeDO {
 
 	private Float income;
 
+	private Float financeLimit;
+
+	private String num;
+
+	/**
+	 * @return the financeLimit
+	 */
+	public Float getFinanceLimit() {
+		return financeLimit;
+	}
+
+	/**
+	 * @param financeLimit
+	 *            the financeLimit to set
+	 */
+	public void setFinanceLimit(Float financeLimit) {
+		this.financeLimit = financeLimit;
+	}
+
+	/**
+	 * @return the num
+	 */
+	public String getNum() {
+		return num;
+	}
+
+	/**
+	 * @param num
+	 *            the num to set
+	 */
+	public void setNum(String num) {
+		this.num = num;
+	}
+
 	/**
 	 * @return the nickname
 	 */

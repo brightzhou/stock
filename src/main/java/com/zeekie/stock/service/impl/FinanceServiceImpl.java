@@ -24,6 +24,7 @@ import com.zeekie.stock.entity.HistoryFinanceDO;
 import com.zeekie.stock.entity.form.FinanceProducetForm;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.FinanceMapper;
+import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.FinanceService;
 import com.zeekie.stock.util.BeanMapUtil;
 import com.zeekie.stock.util.StringUtil;
@@ -36,9 +37,6 @@ public class FinanceServiceImpl implements FinanceService {
 
 	@Autowired
 	private FinanceMapper financeMapper;
-
-	@Autowired
-	private AcountMapper acountMapper;
 
 	@Autowired
 	@Value("${stock_root_url}")
@@ -88,6 +86,8 @@ public class FinanceServiceImpl implements FinanceService {
 		if (StringUtils.isBlank(balance)) {
 			return Constants.CODE_BALANCE_LITTLE;
 		}
+
+		financeMapper.updateWallet(financeLimit, form.getUserId());
 
 		// if (StringUtils.isNotBlank(annualIncome)
 		// && StringUtils.isNotBlank(financeLimit)) {

@@ -8,10 +8,6 @@ import sitong.thinker.common.message.ResultMessage;
  */
 public class StockResultMessage extends ResultMessage {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/** 成功 */
 	public static final StockResultMessage SUCCESS = newMessage();

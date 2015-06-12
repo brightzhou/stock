@@ -94,4 +94,13 @@ public interface FinanceMapper {
 			@Param("financeLimit") String financeLimit)
 			throws ServiceInvokerException;
 
+	/**
+	 * 更新钱包余额
+	 * 
+	 * @param financeLimit
+	 * @param userId
+	 */
+	public void updateWallet(@Param("fund") String fund,
+			@Param("userId") String userId);
+
 }

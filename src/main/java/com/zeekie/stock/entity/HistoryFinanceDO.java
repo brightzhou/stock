@@ -42,6 +42,26 @@ public class HistoryFinanceDO {
 	private String financeProtcol;
 
 	/**
+	 * 剩余天数
+	 */
+	private String num;
+
+	/**
+	 * @return the num
+	 */
+	public String getNum() {
+		return num;
+	}
+
+	/**
+	 * @param num
+	 *            the num to set
+	 */
+	public void setNum(String num) {
+		this.num = num;
+	}
+
+	/**
 	 * @return the financeProtcol
 	 */
 	public String getFinanceProtcol() {

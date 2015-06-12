@@ -3,6 +3,7 @@ package com.zeekie.stock.service.timer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,6 +174,7 @@ public class EntrustTimer extends BaseImpl {
 
 			// 3、记录流水
 			List<FundFlowDO> fee = new ArrayList<FundFlowDO>();
+			List<FundFlowDO> feeOfCapital = new ArrayList<FundFlowDO>();
 			for (FinanceIncomeDO income : result) {
 				String nickname = income.getNickname();
 				String incomes = income.getIncome() + "";
@@ -184,9 +186,32 @@ public class EntrustTimer extends BaseImpl {
 				if (log.isDebugEnabled()) {
 					log.debug("用户【" + nickname + "】获取理财收益【" + incomes + "】");
 				}
+
+				// 计算是否理财产品到期，如果到期需要归还本金
+				String money = income.getFinanceLimit() + "";
+				if (StringUtils.equals("0", income.getNum())) {
+					FundFlowDO flow = new FundFlowDO(nickname,
+							FundFlowEnum.FINANCE_CAPATAL.getType(), money,
+							FundFlowEnum.FINANCE_CAPATAL.getDesc());
+					feeOfCapital.add(flow);
+
+					if (log.isDebugEnabled()) {
+						log.debug("用户【" + nickname + "】有理财到期，归还本金" + money);
+					}
+				}
+
 			}
 			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
 
+			if (!feeOfCapital.isEmpty()) {
+				// 更新本金
+				batchMapper.batchInsert(TradeMapper.class,
+						"updateCapitalBatch", feeOfCapital);
+
+				// 记录流水
+				batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch",
+						feeOfCapital);
+			}
 			if (log.isDebugEnabled()) {
 				log.debug("计算理财收益完成!!!");
 			}
