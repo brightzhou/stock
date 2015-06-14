@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
+import sitong.thinker.common.page.PageQuery;
 import sitong.thinker.common.util.mybatis.BatchMapper;
 
 import com.zeekie.stock.Constants;
@@ -24,6 +25,9 @@ import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DayDO;
 import com.zeekie.stock.entity.DictionariesDO;
+import com.zeekie.stock.entity.FinanceProductDO;
+import com.zeekie.stock.entity.FinanceProductDetailDO;
+import com.zeekie.stock.entity.FlbDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperateAccountDO;
@@ -32,13 +36,14 @@ import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
-import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.respository.AcountMapper;
+import com.zeekie.stock.respository.FinanceMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.WebService;
@@ -47,6 +52,8 @@ import com.zeekie.stock.util.StringUtil;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
+import com.zeekie.stock.web.FinanceDetailPage;
+import com.zeekie.stock.web.FinancePage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -75,6 +82,9 @@ public class WebServiceImpl implements WebService {
 
 	@Autowired
 	private SyncHandler handler;
+
+	@Autowired
+	private FinanceMapper financeMapper;
 
 	@Override
 	public DefaultPage<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage)
@@ -746,14 +756,16 @@ public class WebServiceImpl implements WebService {
 			throw new ServiceInvokerException(e);
 		}
 	}
+
 	@Override
-	public DefaultPage<StatisticsDO> queryStatistics(StatisticsPage statisticsPage)  throws ServiceInvokerException{
+	public DefaultPage<StatisticsDO> queryStatistics(
+			StatisticsPage statisticsPage) throws ServiceInvokerException {
 		List<StatisticsDO> result = new ArrayList<StatisticsDO>();
 		long total = 0;
 		try {
 			total = trade.queryStatisticsCount(statisticsPage);
 			if (0 != total) {
-				result =trade.queryStatistics(statisticsPage);
+				result = trade.queryStatistics(statisticsPage);
 			}
 			return new DefaultPage<StatisticsDO>(total, result);
 		} catch (Exception e) {
@@ -761,63 +773,69 @@ public class WebServiceImpl implements WebService {
 			throw new ServiceInvokerException(e);
 		}
 	}
-	
-	 /**
-     * 添加字典信息
-     * @param dictionariesDO
-     * @return
-     * @throws Exception
-     */
-	public String  insertDictionaries(DictionariesDO dictionariesDO) {
-		 try {
-			 DictionariesPage dictionariesPage = new DictionariesPage(0, 10, null, null, null,null);
-			 dictionariesPage.setDicWord(dictionariesDO.getDicWord());
-			 long count =  trade.queryDictionariesCount(dictionariesPage);
-			 if(count==0){
-				 return String.valueOf(trade.insertDictionaries(dictionariesDO)) ;
-			 }else{
-				 return "-1";
-			 }
-		 	 
-		 } catch (Exception e) {
+
+	/**
+	 * 添加字典信息
+	 * 
+	 * @param dictionariesDO
+	 * @return
+	 * @throws Exception
+	 */
+	public String insertDictionaries(DictionariesDO dictionariesDO) {
+		try {
+			DictionariesPage dictionariesPage = new DictionariesPage(0, 10,
+					null, null, null, null);
+			dictionariesPage.setDicWord(dictionariesDO.getDicWord());
+			long count = trade.queryDictionariesCount(dictionariesPage);
+			if (count == 0) {
+				return String.valueOf(trade.insertDictionaries(dictionariesDO));
+			} else {
+				return "-1";
+			}
+
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			 
+
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 删除字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public String  deleteDictionaries(String id){
-		   trade.deleteDictionaries(id);
-		   return "1";
+	public String deleteDictionaries(String id) {
+		trade.deleteDictionaries(id);
+		return "1";
 	}
-	
+
 	/**
 	 * 修改字典信息
+	 * 
 	 * @param dictionariesDO
 	 * @return
 	 */
-	public String  updateDictionaries(DictionariesDO dictionariesDO){
-	    return   String.valueOf(trade.updateDictionaries(dictionariesDO))  ;
- 
+	public String updateDictionaries(DictionariesDO dictionariesDO) {
+		return String.valueOf(trade.updateDictionaries(dictionariesDO));
+
 	}
-	
+
 	/**
 	 * 查询字典信息
+	 * 
 	 * @param dictionariesPage
 	 * @return
 	 */
-	public DefaultPage<DictionariesDO>  queryDictionaries(DictionariesPage dictionariesPage) throws ServiceInvokerException{
+	public DefaultPage<DictionariesDO> queryDictionaries(
+			DictionariesPage dictionariesPage) throws ServiceInvokerException {
 		List<DictionariesDO> result = new ArrayList<DictionariesDO>();
 		long total = 0;
 		try {
 			total = trade.queryDictionariesCount(dictionariesPage);
 			if (0 != total) {
-				result =trade.queryDictionaries(dictionariesPage);
+				result = trade.queryDictionaries(dictionariesPage);
 			}
 			return new DefaultPage<DictionariesDO>(total, result);
 		} catch (Exception e) {
@@ -825,16 +843,83 @@ public class WebServiceImpl implements WebService {
 			throw new ServiceInvokerException(e);
 		}
 	}
-	
+
 	/**
 	 * 查找字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public String  getDictionaries(String id){
-	    DictionariesDO dictionariesDO =	trade.getDictionaries(id);
+	public String getDictionaries(String id) {
+		DictionariesDO dictionariesDO = trade.getDictionaries(id);
 		JSONObject jo = JSONObject.fromObject(dictionariesDO,
 				Constants.jsonConfig);
 		return jo.toString();
+	}
+
+	@Override
+	public DefaultPage<FinanceProductDO> getAllCurrentFinance(FinancePage page)
+			throws ServiceInvokerException {
+
+		List<FinanceProductDO> result = new ArrayList<FinanceProductDO>();
+		long total = 0;
+		try {
+			total = financeMapper.queryAllCurrentFinanceCount(page.getDate());
+			if (0 != total) {
+				result = financeMapper.getAllCurrentFinance(page);
+			}
+			return new DefaultPage<FinanceProductDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public String saveProduct(String financeProduct, String financeTotalLimit,
+			String annualIncome, String expireDay, String carryDate,
+			String maxLimit, String minLimit) throws ServiceInvokerException {
+		String productCode = StringUtil.genRandomNum(6);
+		financeMapper.insertProduct(productCode, financeProduct,
+				financeTotalLimit, annualIncome, expireDay, carryDate,
+				maxLimit, minLimit);
+		return Constants.CODE_SUCCESS;
+	}
+
+	@Override
+	public DefaultPage<FinanceProductDetailDO> getFinanceDetail(
+			FinanceDetailPage page) throws ServiceInvokerException {
+
+		List<FinanceProductDetailDO> result = new ArrayList<FinanceProductDetailDO>();
+		long total = 0;
+		try {
+			total = financeMapper
+					.queryFinanceDetailCount(page.getProductCode());
+			if (0 != total) {
+				result = financeMapper.queryFinanceDetail(page);
+			}
+			return new DefaultPage<FinanceProductDetailDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public DefaultPage<FlbDO> getFlb(PageQuery flbPage)
+			throws ServiceInvokerException {
+
+		List<FlbDO> result = new ArrayList<FlbDO>();
+		long total = 0;
+		try {
+			total = financeMapper.queryFlbUnitCount();
+			if (0 != total) {
+				result = financeMapper.queryFlbUnit(flbPage);
+			}
+			return new DefaultPage<FlbDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
 	}
 }

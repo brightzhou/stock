@@ -61,6 +61,7 @@
 		<result column="BALANCE" property="balance" jdbcType="FLOAT"/>
 		<result column="FREEZE_CASH" property="freezeCash" jdbcType="FLOAT"/>
 		<result column="fee" property="fee" jdbcType="FLOAT"/>
+		<result column="finance" property="finance" jdbcType="FLOAT"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.WithdrawlDO" id="resultDeposit">
@@ -631,9 +632,17 @@
           FROM STOCK_USER_OPERATE_MAININFO T, STOCK_FUND_ASSIGN_RADIO R
          WHERE T.IS_CURRENT = '1'
            AND T.NICKNAME = R.NICKNAME
-           AND T.NICKNAME = W.NICKNAME) fee
-	  From Stock_User_Wallet w
+           AND T.NICKNAME = W.NICKNAME) fee,
+        (SELECT SUM(FINANCE_LIMIT)
+		  FROM STOCK_FINANCE_RECORD R
+		 WHERE r.user_id = u.id
+		   AND R.CARRY_DATE &lt;=
+		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		   AND R.SETTLE_DATE >=
+		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) finance  
+	  From Stock_User_Wallet w,stock_user u
 	 Where w.Nickname = #{nickname}
+	 and w.nickname = u.nickname
     </select>
     
     <insert id="withdraw"  parameterType="string">
@@ -1661,4 +1670,5 @@
    </select>
 	
 </mapper>
+
 

@@ -3,6 +3,8 @@ package com.zeekie.stock.service.impl;
 import java.beans.IntrospectionException;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +19,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import sitong.thinker.common.exception.ServiceInvokerException;
+import sitong.thinker.common.util.mybatis.BatchMapper;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.FinanceProductDO;
+import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.HistoryFinanceDO;
 import com.zeekie.stock.entity.form.FinanceProducetForm;
+import com.zeekie.stock.enums.FundFlowEnum;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.FinanceMapper;
 import com.zeekie.stock.respository.TradeMapper;
@@ -37,6 +42,12 @@ public class FinanceServiceImpl implements FinanceService {
 
 	@Autowired
 	private FinanceMapper financeMapper;
+
+	@Autowired
+	private BatchMapper batchMapper;
+
+	@Autowired
+	private AcountMapper acountMapper;
 
 	@Autowired
 	@Value("${stock_root_url}")
@@ -100,6 +111,20 @@ public class FinanceServiceImpl implements FinanceService {
 		financeMapper.updateTotalLimit(form.getProductCode(), financeLimit);
 		// 更新钱包，扣除理财的钱
 		financeMapper.updateWallet(financeLimit, form.getUserId());
+
+		List<FundFlowDO> fee = new ArrayList<FundFlowDO>();
+		try {
+			FundFlowDO flowDO = new FundFlowDO(acountMapper.queryNickname(form
+					.getUserId()), FundFlowEnum.FINANCE_CAPATAL_BUY.getType(),
+					"-" + financeLimit, MessageFormat.format(
+							FundFlowEnum.FINANCE_CAPATAL_BUY.getDesc(),
+							form.getTicket()));
+			fee.add(flowDO);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		// 记录流水
+		batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
 		return Constants.CODE_SUCCESS;
 	}
 

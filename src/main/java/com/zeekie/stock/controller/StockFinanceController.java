@@ -44,6 +44,7 @@ public class StockFinanceController {
 		}
 		return ApiUtils.good();
 	}
+	
 
 	@ResponseBody
 	@RequestMapping("save")

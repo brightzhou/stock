@@ -28,6 +28,26 @@ public class CurrentAccountDO {
 	private Float fee;
 
 	/**
+	 * 理财金额
+	 */
+	private Float finance;
+
+	/**
+	 * @return the finance
+	 */
+	public Float getFinance() {
+		return finance;
+	}
+
+	/**
+	 * @param finance
+	 *            the finance to set
+	 */
+	public void setFinance(Float finance) {
+		this.finance = finance;
+	}
+
+	/**
 	 * @return the fee
 	 */
 	public Float getFee() {

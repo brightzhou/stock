@@ -6,10 +6,14 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
+import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DictionariesDO;
+import com.zeekie.stock.entity.FinanceProductDO;
+import com.zeekie.stock.entity.FinanceProductDetailDO;
+import com.zeekie.stock.entity.FlbDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
@@ -25,6 +29,8 @@ import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
+import com.zeekie.stock.web.FinanceDetailPage;
+import com.zeekie.stock.web.FinancePage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -311,50 +317,108 @@ public interface WebService {
 	 * @throws ServiceInvokerException
 	 */
 	public String deleteUserbank(String id) throws ServiceInvokerException;
-	
+
 	/**
 	 * 每天收益统计
+	 * 
 	 * @param statisticsPage
 	 * @return
 	 * @throws ServiceInvokerException
 	 */
-	public DefaultPage<StatisticsDO> queryStatistics(StatisticsPage statisticsPage)
-			throws ServiceInvokerException;
-	
-	 /**
-     * 添加字典信息
-     * @param dictionariesDO
-     * @return
-     * @throws Exception
-     */
-	public String  insertDictionaries(DictionariesDO dictionariesDO) throws Exception ;
-	
+	public DefaultPage<StatisticsDO> queryStatistics(
+			StatisticsPage statisticsPage) throws ServiceInvokerException;
+
+	/**
+	 * 添加字典信息
+	 * 
+	 * @param dictionariesDO
+	 * @return
+	 * @throws Exception
+	 */
+	public String insertDictionaries(DictionariesDO dictionariesDO)
+			throws Exception;
+
 	/**
 	 * 删除字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public String  deleteDictionaries(String id);
-	
+	public String deleteDictionaries(String id);
+
 	/**
 	 * 修改字典信息
+	 * 
 	 * @param dictionariesDO
 	 * @return
 	 */
-	public String  updateDictionaries(DictionariesDO dictionariesDO);
-	
+	public String updateDictionaries(DictionariesDO dictionariesDO);
+
 	/**
 	 * 查询字典信息
+	 * 
 	 * @param dictionariesPage
 	 * @return
 	 */
-	public DefaultPage<DictionariesDO> queryDictionaries(DictionariesPage dictionariesPage) throws ServiceInvokerException;
-	
+	public DefaultPage<DictionariesDO> queryDictionaries(
+			DictionariesPage dictionariesPage) throws ServiceInvokerException;
+
 	/**
 	 * 查找字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public String  getDictionaries(String id);
+	public String getDictionaries(String id);
+
+	/**
+	 * 获取所有的标
+	 * 
+	 * @return
+	 */
+	public DefaultPage<FinanceProductDO> getAllCurrentFinance(
+			FinancePage financePage) throws ServiceInvokerException;
+
+	/**
+	 * 保存新产信息
+	 * 
+	 * @param financeProduct
+	 *            理财产品
+	 * @param financeTotalLimit
+	 *            额度
+	 * @param annualIncome
+	 *            年化收益率
+	 * @param expireDay
+	 *            期限
+	 * @param carryDate
+	 *            起息日
+	 * @param maxLimit
+	 *            最大购买额度
+	 * @param minLimit
+	 *            最小购买额度
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public String saveProduct(String financeProduct, String financeTotalLimit,
+			String annualIncome, String expireDay, String carryDate,
+			String maxLimit, String minLimit) throws ServiceInvokerException;
+
+	/**
+	 * 獲取某個產品的購買明細
+	 * 
+	 * @param financePage
+	 * @return
+	 */
+	public DefaultPage<FinanceProductDetailDO> getFinanceDetail(
+			FinanceDetailPage financePage) throws ServiceInvokerException;
+
+	/**
+	 * 为付立波查询
+	 * 
+	 * @param flbPage
+	 * @return
+	 */
+	public DefaultPage<FlbDO> getFlb(PageQuery flbPage)
+			throws ServiceInvokerException;
 
 }

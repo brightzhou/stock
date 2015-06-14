@@ -51,4 +51,5 @@ public interface FinanceService {
 	public String updateStatus(String userId, String isStock)
 			throws ServiceInvokerException;
 
+
 }

@@ -28,23 +28,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
+import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DictionariesDO;
+import com.zeekie.stock.entity.FinanceProductDO;
+import com.zeekie.stock.entity.FinanceProductDetailDO;
+import com.zeekie.stock.entity.FlbDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
-import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.service.WebService;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.ApiUtils;
@@ -53,6 +57,8 @@ import com.zeekie.stock.util.XmlUtil;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
+import com.zeekie.stock.web.FinanceDetailPage;
+import com.zeekie.stock.web.FinancePage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -713,7 +719,7 @@ public class StockWebController {
 			return "0";
 		}
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("userBank/kill")
 	public String deleteUserbank(@RequestParam(value = "id") String id) {
@@ -735,8 +741,7 @@ public class StockWebController {
 		jo.put("高富帅**", "298%");
 		return ApiUtils.good(jo);
 	}
-	
-	
+
 	@ResponseBody
 	@RequestMapping("statistics/get")
 	public DefaultPage<StatisticsDO> getStatistics(
@@ -749,8 +754,8 @@ public class StockWebController {
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
-            StatisticsPage statisticsPage = new StatisticsPage(
-            		Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+			StatisticsPage statisticsPage = new StatisticsPage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
 					sortOrder, day);
 
 			return webService.queryStatistics(statisticsPage);
@@ -759,8 +764,7 @@ public class StockWebController {
 			return new DefaultPage<StatisticsDO>();
 		}
 	}
-	
-	
+
 	@ResponseBody
 	@RequestMapping("dictionaries/get")
 	public DefaultPage<DictionariesDO> getDictionaries(
@@ -774,9 +778,9 @@ public class StockWebController {
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
-            DictionariesPage  dictionariesPage  = new DictionariesPage(
-            		Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
-					sortOrder, dicName,dicType);
+			DictionariesPage dictionariesPage = new DictionariesPage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, dicName, dicType);
 
 			return webService.queryDictionaries(dictionariesPage);
 		} catch (ServiceInvokerException e) {
@@ -784,10 +788,10 @@ public class StockWebController {
 			return new DefaultPage<DictionariesDO>();
 		}
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("dictionaries/add")
-	public String addDictionaries( 
+	public String addDictionaries(
 			HttpServletRequest request,
 			@RequestParam(value = "dicType", required = false) String dicType,
 			@RequestParam(value = "dicWord", required = false) String dicWord,
@@ -807,15 +811,15 @@ public class StockWebController {
 		dictionariesDO.setOrderNo(orderNo);
 		dictionariesDO.setStatus(status);
 		try {
-		  return 	webService.insertDictionaries(dictionariesDO);
+			return webService.insertDictionaries(dictionariesDO);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    return null;
-	 
+		return null;
+
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("dictionaries/update")
 	public String updateDictionaries(
@@ -839,29 +843,109 @@ public class StockWebController {
 		dictionariesDO.setIsCache(isCache);
 		dictionariesDO.setOrderNo(orderNo);
 		dictionariesDO.setStatus(status);
-	  return 	webService.updateDictionaries(dictionariesDO);
-	  
+		return webService.updateDictionaries(dictionariesDO);
+
 	}
+
 	@ResponseBody
 	@RequestMapping("dictionaries/initInfo")
-	public String dictionariesInitInfo(
-			HttpServletRequest request,
+	public String dictionariesInitInfo(HttpServletRequest request,
 			@RequestParam(value = "id", required = false) String id) {
-		   
-	        return 	webService.getDictionaries(id);
-		
-		
-		
+		return webService.getDictionaries(id);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("dictionaries/delete")
-	public String dictionariesDelete(
-			HttpServletRequest request,
+	public String dictionariesDelete(HttpServletRequest request,
 			@RequestParam(value = "id", required = false) String id) {
-		    return 	webService.deleteDictionaries(id);
-		
-		
-		
+		return webService.deleteDictionaries(id);
+
+	}
+
+	@ResponseBody
+	@RequestMapping("finance/get")
+	public DefaultPage<FinanceProductDO> getCurrentFinance(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "date", required = false) String date) {
+
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+			FinancePage financePage = new FinancePage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, date);
+
+			return webService.getAllCurrentFinance(financePage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getEveningUp error happened:", e.getMessage());
+			return new DefaultPage<FinanceProductDO>();
+		}
+
+	}
+
+	@ResponseBody
+	@RequestMapping("product/save")
+	public String saveProduct(
+			@RequestParam("financeProduct") String financeProduct,
+			@RequestParam("financeTotalLimit") String financeTotalLimit,
+			@RequestParam("annualIncome") String annualIncome,
+			@RequestParam("expireDay") String expireDay,
+			@RequestParam("carryDate") String carryDate,
+			@RequestParam("maxLimit") String maxLimit,
+			@RequestParam("minLimit") String minLimit) {
+		try {
+			return webService.saveProduct(financeProduct, financeTotalLimit,
+					annualIncome, expireDay, carryDate, maxLimit, minLimit);
+		} catch (ServiceInvokerException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
+	}
+
+	@ResponseBody
+	@RequestMapping("financeDetail/get")
+	public DefaultPage<FinanceProductDetailDO> getFinanceDetail(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam("productCode") String productCode) {
+
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+			FinanceDetailPage financePage = new FinanceDetailPage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, productCode);
+			return webService.getFinanceDetail(financePage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getEveningUp error happened:", e.getMessage());
+			return new DefaultPage<FinanceProductDetailDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("flbQuery")
+	public DefaultPage<FlbDO> getFlb(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder) {
+
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+			PageQuery flbPage = new PageQuery(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder);
+			return webService.getFlb(flbPage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getEveningUp error happened:", e.getMessage());
+			return new DefaultPage<FlbDO>();
+		}
 	}
 }
