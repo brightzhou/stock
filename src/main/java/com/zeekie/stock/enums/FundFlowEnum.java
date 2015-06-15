@@ -1,10 +1,8 @@
 package com.zeekie.stock.enums;
 
-import org.apache.commons.lang.StringUtils;
-
 public enum FundFlowEnum {
 
-	FINANCE_INCOME("160", "当日理财收益");
+	FINANCE_INCOME("160", "理财[{0}]当日收益"),FINANCE_CAPATAL("170","理财[{0}]返还本金"),FINANCE_CAPATAL_BUY("180","购买理财[{0}]");
 
 	private String type;
 

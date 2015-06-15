@@ -15,7 +15,7 @@ public class FinanceProductDO {
 	/**
 	 * 理财额度
 	 */
-	private Float financeTotalLimit;
+	private String financeTotalLimit;
 
 	/**
 	 * 年化收益
@@ -30,15 +30,95 @@ public class FinanceProductDO {
 	/**
 	 * 最大购买额度
 	 */
-	private Float maxLimit;
+	private String maxLimit;
 
 	/**
 	 * 最小购买额度
 	 */
-	private Float minLimit;
+	private String minLimit;
+
+	/**
+	 * 起息日
+	 */
+	private String carryDate;
+
+	/**
+	 * 解析日
+	 */
+	private String settleDate;
+
+	/*
+	 * 参与人数
+	 */
+	private String num;
+
+	/*
+	 * 剩余天数
+	 */
+	private String leaveDays;
 
 	public FinanceProductDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return the leaveDays
+	 */
+	public String getLeaveDays() {
+		return leaveDays;
+	}
+
+	/**
+	 * @param leaveDays
+	 *            the leaveDays to set
+	 */
+	public void setLeaveDays(String leaveDays) {
+		this.leaveDays = leaveDays;
+	}
+
+	/**
+	 * @return the num
+	 */
+	public String getNum() {
+		return num;
+	}
+
+	/**
+	 * @param num
+	 *            the num to set
+	 */
+	public void setNum(String num) {
+		this.num = num;
+	}
+
+	/**
+	 * @return the carryDate
+	 */
+	public String getCarryDate() {
+		return carryDate;
+	}
+
+	/**
+	 * @param carryDate
+	 *            the carryDate to set
+	 */
+	public void setCarryDate(String carryDate) {
+		this.carryDate = carryDate;
+	}
+
+	/**
+	 * @return the settleDate
+	 */
+	public String getSettleDate() {
+		return settleDate;
+	}
+
+	/**
+	 * @param settleDate
+	 *            the settleDate to set
+	 */
+	public void setSettleDate(String settleDate) {
+		this.settleDate = settleDate;
 	}
 
 	/**
@@ -74,7 +154,7 @@ public class FinanceProductDO {
 	/**
 	 * @return the financeTotalLimit
 	 */
-	public Float getFinanceTotalLimit() {
+	public String getFinanceTotalLimit() {
 		return financeTotalLimit;
 	}
 
@@ -82,7 +162,7 @@ public class FinanceProductDO {
 	 * @param financeTotalLimit
 	 *            the financeTotalLimit to set
 	 */
-	public void setFinanceTotalLimit(Float financeTotalLimit) {
+	public void setFinanceTotalLimit(String financeTotalLimit) {
 		this.financeTotalLimit = financeTotalLimit;
 	}
 
@@ -98,7 +178,8 @@ public class FinanceProductDO {
 	 *            the annualIncome to set
 	 */
 	public void setAnnualIncome(String annualIncome) {
-		this.annualIncome = annualIncome;
+		this.annualIncome = String.format("%.4f",
+				Float.parseFloat(annualIncome));
 	}
 
 	/**
@@ -119,7 +200,7 @@ public class FinanceProductDO {
 	/**
 	 * @return the maxLimit
 	 */
-	public Float getMaxLimit() {
+	public String getMaxLimit() {
 		return maxLimit;
 	}
 
@@ -127,14 +208,14 @@ public class FinanceProductDO {
 	 * @param maxLimit
 	 *            the maxLimit to set
 	 */
-	public void setMaxLimit(Float maxLimit) {
+	public void setMaxLimit(String maxLimit) {
 		this.maxLimit = maxLimit;
 	}
 
 	/**
 	 * @return the minLimit
 	 */
-	public Float getMinLimit() {
+	public String getMinLimit() {
 		return minLimit;
 	}
 
@@ -142,7 +223,7 @@ public class FinanceProductDO {
 	 * @param minLimit
 	 *            the minLimit to set
 	 */
-	public void setMinLimit(Float minLimit) {
+	public void setMinLimit(String minLimit) {
 		this.minLimit = minLimit;
 	}
 

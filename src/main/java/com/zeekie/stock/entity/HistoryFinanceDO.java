@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity;
 
+import com.zeekie.stock.util.StringUtil;
+
 public class HistoryFinanceDO {
 
 	/**
@@ -10,12 +12,12 @@ public class HistoryFinanceDO {
 	/**
 	 * 额度
 	 */
-	private Float financeLimit;
+	private String financeLimit;
 
 	/**
 	 * 收益
 	 */
-	private Float income;
+	private String income;
 
 	/**
 	 * 当前收益
@@ -35,11 +37,31 @@ public class HistoryFinanceDO {
 	/**
 	 * 年化收益
 	 */
-	private Float annualIncome;
+	private String annualIncome;
 	/**
 	 * 理财协议
 	 */
 	private String financeProtcol;
+
+	/**
+	 * 剩余天数
+	 */
+	private String num;
+
+	/**
+	 * @return the num
+	 */
+	public String getNum() {
+		return num;
+	}
+
+	/**
+	 * @param num
+	 *            the num to set
+	 */
+	public void setNum(String num) {
+		this.num = num;
+	}
 
 	/**
 	 * @return the financeProtcol
@@ -74,7 +96,7 @@ public class HistoryFinanceDO {
 	/**
 	 * @return the financeLimit
 	 */
-	public Float getFinanceLimit() {
+	public String getFinanceLimit() {
 		return financeLimit;
 	}
 
@@ -82,14 +104,14 @@ public class HistoryFinanceDO {
 	 * @param financeLimit
 	 *            the financeLimit to set
 	 */
-	public void setFinanceLimit(Float financeLimit) {
+	public void setFinanceLimit(String financeLimit) {
 		this.financeLimit = financeLimit;
 	}
 
 	/**
 	 * @return the income
 	 */
-	public Float getIncome() {
+	public String getIncome() {
 		return income;
 	}
 
@@ -97,8 +119,8 @@ public class HistoryFinanceDO {
 	 * @param income
 	 *            the income to set
 	 */
-	public void setIncome(Float income) {
-		this.income = income;
+	public void setIncome(String income) {
+		this.income = StringUtil.subZeroAndDot(Float.parseFloat(income));
 	}
 
 	/**
@@ -149,7 +171,7 @@ public class HistoryFinanceDO {
 	/**
 	 * @return the annualIncome
 	 */
-	public Float getAnnualIncome() {
+	public String getAnnualIncome() {
 		return annualIncome;
 	}
 
@@ -157,8 +179,8 @@ public class HistoryFinanceDO {
 	 * @param annualIncome
 	 *            the annualIncome to set
 	 */
-	public void setAnnualIncome(Float annualIncome) {
-		this.annualIncome = annualIncome;
+	public void setAnnualIncome(String annualIncome) {
+		this.annualIncome = String.format("%.4f",Float.parseFloat(annualIncome));
 	}
 
 	public HistoryFinanceDO() {

@@ -50,6 +50,11 @@ public class Constants {
 	 * 余额不足 code=2 理财
 	 */
 	public static final String CODE_BALANCE_LITTLE = "2";
+	
+	/**
+	 * 理财额度已经用完 code=3 
+	 */
+	public static final String CODE_TOTAL_lIMIT_LITTLE = "3";
 
 	public static final String CODE_FAILURE_NO_ACCOUNT = "3#";
 

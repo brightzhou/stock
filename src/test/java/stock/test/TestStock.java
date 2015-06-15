@@ -1,3 +1,4 @@
+
 package stock.test;
 
 import java.io.File;
@@ -13,7 +14,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 
-import sitong.thinker.common.util.codec.CodecException;
 import sitong.thinker.common.util.codec.TokenUtils;
 
 import com.zeekie.stock.util.http.HandleHttpRequest;
@@ -21,10 +21,7 @@ import com.zeekie.stock.util.http.HandleHttpRequest;
 public class TestStock {
 
 	public static void main(String[] args) {
-		 
-//		verifyCodeByNickname();
-//		storeOperationInfo();
-//		test();
+
 //		entrustQuery();
 //	 	combostock();
 //		entrustTradedQuery();
@@ -34,14 +31,12 @@ public class TestStock {
 //		deal();
 //		cxdeal();
 //		queryCombasset();
-
-//   	queryEntrust();
-
 //		queryEntrust();
 //		queryEntrustHistory();
-//		  String ss = getVerifyCode();
-//		  System.out.println(ss);
-		//   REGISTER();
+
+		// String ss = getVerifyCode();
+		// System.out.println(ss);
+		// REGISTER();
 		// updatePwd();
 		// getVerifyCode();
 		// updatetel("f9d4");
@@ -52,22 +47,22 @@ public class TestStock {
 		// withdrawPageEnter();
 
 		// setDepositPwd();
-		// getCurrentAccount();
+//		getCurrentAccount();
 		// record();
 		// withdraw();
 
-		 //startOperate();
-		//storeOperationInfo();
+		// startOperate();
+		// storeOperationInfo();
 		// getCurrentOperation();
 		// modifyDepositPwd();
 		// getOperateAcount();
 
-		 // enter();
-		 //add();
+		// enter();
+		// add();
 		// getapkpath();
 		// getHistoryOperation();
-		// getFundFlow();
-//		  endStock();
+		 getFundFlow();
+		// endStock();
 		// enterSpreadPage();
 		// spread();
 		// int max = 9999;
@@ -104,15 +99,51 @@ public class TestStock {
 		// getId();
 		// getbindCreditCard();
 
-		 //  hasOperation();
+		// hasOperation();
 		// getBankLimitation();
 
-		 getBasicInfo();
+		// getBasicInfo();
 
 		// getVersionPic();
 		// testapi();
+		saveCurrentFinance();
 	}
 
+	
+	public static void getCurrentFinance() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		try {
+			String result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/finance/get",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveCurrentFinance() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("productCode", "10011");
+		datas.put("financeProduct", "哈哈宝理财");
+		datas.put("annualIncome", "0.18");
+		datas.put("financeLimit", "50");
+		datas.put("carryDate", "2015-06-12");
+		datas.put("settleDate", "2015-07-12");
+		datas.put("income", "10");
+		datas.put("userId", "1523");
+		try {
+			String result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/finance/save",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void queryEntrustHistory() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -128,35 +159,35 @@ public class TestStock {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void queryEntrust() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/query",
-							datas);
+			String result = req.post(
+					"http://localhost:8080/stock/api/stock/entrust/query",
+					datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void queryCombasset() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
+		datas.put("nickname", "呵呵");
 		try {
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/combasset/query",
+					.post("http://121.40.71.84:8083/stock/api/stock/entrust/combasset/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void testapi() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -201,21 +232,13 @@ public class TestStock {
 	public static void getBasicInfo() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("userId", "1523");
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
+		datas.put("userId", "1121");
 		try {
-			item.put("token", TokenUtils.encryptToken("呵呵,20150611135520","saiying_$hahabao"));
-			headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/account/basicInfo/get",
+					.post("http://121.40.71.84:8083/stock/api/stock/account/basicInfo/get",
 							datas);
 			System.out.println(result);
-		}  catch (IOException e) {
-			e.printStackTrace();
-		}catch (CodecException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -237,21 +260,13 @@ public class TestStock {
 	public static void hasOperation() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
+		datas.put("nickname", "crespowang");
 		try {
-			item.put("token", TokenUtils.encryptToken("呵呵,20150611134920","saiying_$hahabao"));
-			headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/has",
+					.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/has",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
-			e.printStackTrace();
-		}catch (CodecException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -386,14 +401,21 @@ public class TestStock {
 	public static void getFundFlow() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "����1");
+		datas.put("nickname", "test");
 		datas.put("offset", "0");
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+
 		try {
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
+					"saiying_$hahabao"));
+			headers.put("user_auth", item.toString());
+			req.setHeaders(headers);
 			String result = req
 					.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/fundFlow/get",
 							datas);
 			System.out.println(result);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -416,19 +438,11 @@ public class TestStock {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "test");
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
 		try {
-			item.put("token", TokenUtils.encryptToken("test,201506041820320","saiying_$hahabao"));
-		    headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
 			String result = req
 					.post("http://localhost:8080/stock/api/stock/trade/operation/end",
 							datas);
 			System.out.println(result);
-		} catch (CodecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -466,28 +480,19 @@ public class TestStock {
 	public static void add() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "test");
-		datas.put("addedGuaranteeCash", "10");
+		datas.put("nickname", "letaojin");
+		datas.put("addedGuaranteeCash", "199.5");
 		// datas.put("currentGuaranteeCash", "100");
 		// datas.put("currentOperateLimit", "1000");
 		// datas.put("profitAndLossCash", "-15.0");
 		datas.put("flag", "66");
 
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
 		try {
-			 
-		    item.put("token", TokenUtils.encryptToken("ceshi,20150611105020","saiying_$hahabao"));
-		    headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
 			String result = req
 					.post("http://localhost:8080/stock/api/stock/trade/operation/guaranteeCash/add/",
 							datas);
 			System.out.println(result);
-		} catch (CodecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -555,22 +560,14 @@ public class TestStock {
 	public static void startOperate() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
+		datas.put("nickname", "��136");
 		datas.put("tradeFund", "10");
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
 		try {
-			item.put("token", TokenUtils.encryptToken("呵呵,20150611104920","saiying_$hahabao"));
-			headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
 			String result = req
 					.post("http://localhost:8080/stock/api/stock/trade/operation/start",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
-			e.printStackTrace();
-		}catch (CodecException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -583,23 +580,13 @@ public class TestStock {
 		datas.put("tradeFund", "10");
 		datas.put("stopCash", "9.3");
 		datas.put("warnCash", "9.5");
-		datas.put("startDate", "2015-06-11");
-		
-		 
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
+		datas.put("startDate", "2015-12-23");
 		try {
-			item.put("token", TokenUtils.encryptToken("呵呵,20150611114820","saiying_$hahabao"));
-			headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/info/store",
+					.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/info/store",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
-			e.printStackTrace();
-		}catch (CodecException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -657,14 +644,21 @@ public class TestStock {
 	public static void getCurrentAccount() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "��4");
+		datas.put("nickname", "test");
 		datas.put("version", "android1.1.4");
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+
 		try {
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
+					"saiying_$hahabao"));
+			headers.put("user_auth", item.toString());
+			req.setHeaders(headers);
 			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/account/currentAccount/get",
+					.post("http://121.40.71.84:8083/stock/api/stock/account/currentAccount/get",
 							datas);
 			System.out.println(result);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -777,14 +771,15 @@ public class TestStock {
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req.post(
-					"http://localhost:8085/stock/api/stock/entrust/common/entrust/withdraw", datas);
+			String result = req
+					.post("http://localhost:8085/stock/api/stock/entrust/common/entrust/withdraw",
+							datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void deal() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -800,24 +795,25 @@ public class TestStock {
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req.post(
-					"http://localhost:8080/stock/api/stock/entrust/common/entrust", datas);
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/common/entrust",
+							datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void login() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "HEHE");
+		datas.put("nickname", "ceshi");
 		datas.put("password", "123456");
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("哇哈哈2,20150605161120",
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
@@ -849,7 +845,7 @@ public class TestStock {
 	public static void REGISTER() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "GAOBO");
+		datas.put("nickname", "����");
 		datas.put("password", "111");
 		// datas.put("telephone", "15867266666");
 		// datas.put("verifyCode", verifyCode);
@@ -857,36 +853,41 @@ public class TestStock {
 		datas.put("refereeId", "407");
 		try {
 			String result = req.post(
-					"http://localhost:8080/stock/api/stock/register", datas);
+					"http://121.41.34.71:8082/stock/api/stock/register", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void entrustTradedQuery() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req.post("http://121.40.71.84:8083/stock/api/stock/entrust/traded/query",datas);
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/traded/query",
+							datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void entrustQuery() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req.post("http://localhost:8080/stock/api/stock/entrust/query",datas);
+			String result = req.post(
+					"http://localhost:8080/stock/api/stock/entrust/query",
+					datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	public static void historyTradedQuery() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -894,51 +895,28 @@ public class TestStock {
 		datas.put("startDate", "2015-05-27");
 		datas.put("endDate", "2015-05-27");
 		try {
-			String result = req.post("http://localhost:8080/stock/api/stock/entrust/history/traded/query",datas);
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/history/traded/query",
+							datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void combostock() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req.post("http://localhost:8080/stock/api/stock/entrust/combostock/query",datas);
+			String result = req
+					.post("http://localhost:8080/stock/api/stock/entrust/combostock/query",
+							datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public static String verifyCodeByNickname() {
-		
-		
-		HandleHttpRequest req = new HandleHttpRequest();
-		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
-		datas.put("source", "11");
-		String result = "";
-		Map<String, String> headers = new HashMap<String, String>();
-		JSONObject item = new JSONObject();
 
-		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150602104020","saiying_$hahabao"));
-			headers.put("user_auth", item.toString());
-			req.setHeaders(headers);
-			result = req.post("http://localhost:8080/stock/api/stock/user/verifyCodeByNickname/get",datas);
-			System.out.println("验证码" + result);
-		}catch (IOException e) {
-			e.printStackTrace();
-		}catch (CodecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	
-	
-	
 }
+

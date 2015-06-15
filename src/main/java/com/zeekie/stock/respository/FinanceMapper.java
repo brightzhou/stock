@@ -5,12 +5,17 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import sitong.thinker.common.exception.ServiceInvokerException;
+import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.FinanceIncomeDO;
 import com.zeekie.stock.entity.FinanceProductDO;
+import com.zeekie.stock.entity.FinanceProductDetailDO;
+import com.zeekie.stock.entity.FlbDO;
 import com.zeekie.stock.entity.HistoryFinanceDO;
 import com.zeekie.stock.entity.form.FinanceProducetForm;
 import com.zeekie.stock.mybatis.MyBatisRepository;
+import com.zeekie.stock.web.FinanceDetailPage;
+import com.zeekie.stock.web.FinancePage;
 
 @MyBatisRepository
 public interface FinanceMapper {
@@ -93,5 +98,90 @@ public interface FinanceMapper {
 	public void updateTotalLimit(@Param("productCode") String productCode,
 			@Param("financeLimit") String financeLimit)
 			throws ServiceInvokerException;
+
+	/**
+	 * 更新钱包余额
+	 * 
+	 * @param financeLimit
+	 * @param userId
+	 */
+	public void updateWallet(@Param("fund") String fund,
+			@Param("userId") String userId);
+
+	/**
+	 * 查询额度是否够买
+	 * 
+	 * @param productCode
+	 * @param financeLimit
+	 * @return result>0 可以买入
+	 */
+	public Float queryTotalLimitBalance(
+			@Param("productCode") String productCode,
+			@Param("financeLimit") String financeLimit);
+
+	/**
+	 * 获取所有的标书
+	 * 
+	 * @param date
+	 */
+	public List<FinanceProductDO> getAllCurrentFinance(FinancePage page);
+
+	/**
+	 * 保存新产品
+	 * 
+	 * @param productCode
+	 * @param financeProduct
+	 * @param financeTotalLimit
+	 * @param annualIncome
+	 * @param expireDay
+	 * @param carryDate
+	 * @param maxLimit
+	 * @param minLimit
+	 */
+	public void insertProduct(@Param("productCode") String productCode,
+			@Param("financeProduct") String financeProduct,
+			@Param("financeTotalLimit") String financeTotalLimit,
+			@Param("annualIncome") String annualIncome,
+			@Param("expireDay") String expireDay,
+			@Param("carryDate") String carryDate,
+			@Param("maxLimit") String maxLimit,
+			@Param("minLimit") String minLimit);
+
+	/**
+	 * 获取产品购买详情
+	 * 
+	 * @param page
+	 * @return List<FinanceProductDetailDO>
+	 */
+	public List<FinanceProductDetailDO> queryFinanceDetail(
+			FinanceDetailPage page);
+
+	/**
+	 * 获取总数
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public long queryAllCurrentFinanceCount(@Param("date") String date);
+
+	/**
+	 * 获取总数
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public long queryFinanceDetailCount(@Param("productCode") String productCode);
+
+	/**
+	 * 胡立波单元
+	 * 
+	 * @return
+	 */
+	public long queryFlbUnitCount();
+
+	/*
+	 * 胡立波单元
+	 */
+	public List<FlbDO> queryFlbUnit(PageQuery flbPage);
 
 }

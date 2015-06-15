@@ -366,12 +366,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						(account.getFreezeCash() == null) ? "0.00" : freezeCash);
 				String fee = account.getFee() + "";
 				map.put("fee", (null == account.getFee()) ? "" : fee);
+				String finance = account.getFinance()+"";
+				map.put("finance", (StringUtils.isBlank(finance)) ? "" : finance);
 			} else {
 				map.put("balance", "0.00");
 				map.put("guaranteeCash", "0.00");
 				map.put("stockCapital", "0.00");
 				map.put("freezeCash", "0.00");
 				map.put("fee", "");
+				map.put("finance", "0.00");
 			}
 			if (StringUtils.isNotBlank(version)) {
 				acounter.updateUserAppVersion(nickname, version);
