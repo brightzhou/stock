@@ -48,6 +48,7 @@
 		<result column="MANAGEMENT_FEE" property="managementFee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander" />
 		<result column="ASSET_ID" property="assetId" jdbcType="VARCHAR"/>
 		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="ASSIGN_RADIO" property="assginRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander" />
 		<result column="GUARANTEE_CASH" property="guaranteeCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
@@ -434,7 +435,8 @@
 			       S.TICKET ASSET_ID,
 			       TO_CHAR(START_DATE, 'yyyy-mm-dd') STARTDATE,
 			       TO_CHAR(END_DATE, 'yyyy-mm-dd') ENDDATE,
-			       (SELECT R.LOAN_RULE FROM STOCK_RULE R) LOAN_RULE
+			       (SELECT R.LOAN_RULE FROM STOCK_RULE R) LOAN_RULE,
+			       ASSIGN_RADIO
 			  FROM (SELECT ROW_NUMBER() OVER(ORDER BY T.END_DATE desc) AS NUM, T.*
 			          FROM STOCK_USER_OPERATE_MAININFO T
 			         WHERE T.NICKNAME = #{nickname}

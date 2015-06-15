@@ -490,7 +490,7 @@
 		   START_DATE,STOP_RADIO ,WARN_RADIO ,ASSIGN_RADIO)
 		VALUES
 		  (#{id},
-		   'H000'||(#{id} * 5 + #{ticket}),
+		   'H00'||(#{id} * 5 + #{ticket}),
 		   #{operateAccountId,jdbcType=VARCHAR},
 		   #{nickname,jdbcType=VARCHAR},
 		   #{tradeFund,jdbcType=VARCHAR},
@@ -636,8 +636,6 @@
         (SELECT SUM(FINANCE_LIMIT)
 		  FROM STOCK_FINANCE_RECORD R
 		 WHERE r.user_id = u.id
-		   AND R.CARRY_DATE &lt;=
-		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   AND R.SETTLE_DATE >=
 		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) finance  
 	  From Stock_User_Wallet w,stock_user u

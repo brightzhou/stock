@@ -16,8 +16,18 @@ public class HistoryOperationDO extends CurrentOperationDO {
 
 	private String id;
 
+	private Float assginRadio;
+
 	public HistoryOperationDO() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Float getAssginRadio() {
+		return assginRadio;
+	}
+
+	public void setAssginRadio(Float assginRadio) {
+		this.assginRadio = assginRadio;
 	}
 
 	/**

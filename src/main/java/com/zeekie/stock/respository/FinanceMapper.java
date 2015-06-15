@@ -194,4 +194,11 @@ public interface FinanceMapper {
 	public Float queryLeaveLimits(@Param("productCode") String productCode,
 			@Param("userId") String userId);
 
+	/**
+	 * 获取最后一次理财产品
+	 * 
+	 * @return
+	 */
+	public FinanceProductDO getFinanceProductLast();
+
 }

@@ -75,6 +75,9 @@ public class FinanceServiceImpl implements FinanceService {
 		try {
 			if (null != productDO) {
 				return BeanMapUtil.convertBean(productDO);
+			} else {
+				return BeanMapUtil.convertBean(financeMapper
+						.getFinanceProductLast());
 			}
 		} catch (IntrospectionException e) {
 			log.error(e.getMessage(), e);
