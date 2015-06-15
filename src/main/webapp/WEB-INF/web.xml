@@ -66,7 +66,7 @@
 	    <filter-class>com.zeekie.stock.filter.LoginFilter</filter-class>
 	    <init-param>  
 			<param-name>excludedPages</param-name>  
-			<param-value>/pages/register.jsp,/pages/registerSuccess.jsp,/pages/welcome.jsp,/pages/download.jsp</param-value>  
+			<param-value>/pages/register.jsp,/pages/registerSuccess.jsp,/pages/welcome.jsp,/pages/download.jsp,/pages/flb.jsp</param-value>  
 		</init-param> 
 	</filter>
 	<filter-mapping>

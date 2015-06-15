@@ -10,6 +10,7 @@
 	{id: "operation", text: "实盘信息" , pid: "wallet"},
 	{id: "bankEdit", text: "银行卡维护" , pid: "wallet"},
 	{id: "dictionaries", text: "字典管理" , pid: "wallet"},
+	{id: "finance", text: "理财管理" , pid: "wallet"},
 	
 	{id: "operation", text: "操盘管理"},
 	{id: "eveningUp", text: "结束操盘" , pid: "operation"},

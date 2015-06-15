@@ -5,23 +5,35 @@
 	<resultMap type="com.zeekie.stock.entity.FinanceProductDO" id="resultFinanceProduct">
 		<result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR"/>
 		<result column="FINANCE_PRODUCT" property="financeProduct" jdbcType="VARCHAR"/>
-		<result column="FINANCE_TOTAL_LIMIT" property="financeTotalLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FINANCE_TOTAL_LIMIT" property="financeTotalLimit" jdbcType="VARCHAR"/>
 		<result column="ANNUAL_INCOME" property="annualIncome" jdbcType="VARCHAR"/>
 		<result column="Carry_Date" property="carryDate" jdbcType="VARCHAR"/>
 		<result column="Settle_Date" property="settleDate" jdbcType="VARCHAR"/>
 		<result column="EXPIRE_DAY" property="expireDay" jdbcType="VARCHAR"/>
-		<result column="MAX_LIMIT" property="maxLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="MIN_LIMIT" property="minLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		
+		<result column="MAX_LIMIT" property="maxLimit" jdbcType="VARCHAR"/>
+		<result column="MIN_LIMIT" property="minLimit" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.FinanceProductDO" id="resultAllCurrentFinance">
+		<result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR"/>
+		<result column="FINANCE_PRODUCT" property="financeProduct" jdbcType="VARCHAR"/>
+		<result column="FINANCE_TOTAL_LIMIT" property="financeTotalLimit" jdbcType="VARCHAR"/>
+		<result column="ANNUAL_INCOME" property="annualIncome" jdbcType="VARCHAR"/>
+		<result column="Carry_Date" property="carryDate" jdbcType="VARCHAR"/>
+		<result column="Settle_Date" property="settleDate" jdbcType="VARCHAR"/>
+		<result column="EXPIRE_DAY" property="expireDay" jdbcType="VARCHAR"/>
+		<result column="MAX_LIMIT" property="maxLimit" jdbcType="VARCHAR"/>
+		<result column="MIN_LIMIT" property="minLimit" jdbcType="VARCHAR"/>
+		<result column="NUM" property="num" jdbcType="VARCHAR"/>
+		<result column="leaveDays" property="leaveDays" jdbcType="VARCHAR"/>
+	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.HistoryFinanceDO" id="resultHistoryFinance">
 		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
-		<result column="FINANCE_LIMIT" property="financeLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="INCOME" property="income" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FINANCE_LIMIT" property="financeLimit" jdbcType="VARCHAR"/>
+		<result column="INCOME" property="income" jdbcType="VARCHAR"/>
 		<result column="CURRENT_INCOME" property="currentIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="ANNUAL_INCOME" property="annualIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="ANNUAL_INCOME" property="annualIncome"  jdbcType="VARCHAR"/>
 		<result column="CARRY_DATE" property="carryDate" jdbcType="VARCHAR"/>
 		<result column="SETTLE_DATE" property="settleDate" jdbcType="VARCHAR"/>
 		<result column="financeProtcol" property="financeProtcol" jdbcType="VARCHAR"/>
@@ -30,23 +42,75 @@
 	
 	<resultMap type="com.zeekie.stock.entity.FinanceIncomeDO" id="resultFinanceIncome">
 		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="ticket" property="ticket" jdbcType="VARCHAR"/>
 		<result column="FINANCE_LIMIT" property="financeLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="num" property="num" jdbcType="VARCHAR"/>
 		<result column="income" property="income" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.FinanceProductDetailDO" id="resultFinanceDetail">
+		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+		<result column="ticket" property="ticket" jdbcType="VARCHAR"/>
+		<result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR"/>
+		<result column="FINANCE_PRODUCT" property="financeProduct" jdbcType="VARCHAR"/>
+		<result column="INCOME" property="income" jdbcType="VARCHAR"/>
+		<result column="CURRENT_INCOME" property="currentIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="CARRY_DATE" property="carryDate" jdbcType="VARCHAR"/>
+		<result column="SETTLE_DATE" property="settleDate" jdbcType="VARCHAR"/>
+		<result column="BUY_DATE" property="buyDate" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<resultMap type="com.zeekie.stock.entity.FlbDO" id="resultFlbUnit">
+		<result column="TRUENAME" property="trueName" jdbcType="VARCHAR"/>
+		<result column="ID_CARD" property="certification" jdbcType="VARCHAR"/>
+		<result column="START_DATE" property="operateTime" jdbcType="VARCHAR"/>
+		<result column="TRADE_FUND" property="fundLimit" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
     <select id="getFinanceProduct" resultMap="resultFinanceProduct">
 	   SELECT  T.PRODUCT_CODE,
 		       T.FINANCE_PRODUCT,
 		       T.FINANCE_TOTAL_LIMIT,
-		       T.ANNUAL_INCOME*100||'%' ANNUAL_INCOME,
+		       T.ANNUAL_INCOME,
 		       T.EXPIRE_DAY,
 		       T.MAX_LIMIT,
 		       T.MIN_LIMIT,
 		       To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
-		       To_Char(t.Carry_Date + 30, 'yyyy-mm-dd') Settle_Date
+		       To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date
 		  FROM STOCK_FINANCE_PRODUCT T
-		  WHERE T.FLAG = '1'
+		  WHERE TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+       
+    </select>
+    
+    <select id="queryAllCurrentFinanceCount" parameterType="string" resultType="long">
+    	select count(1) from STOCK_FINANCE_PRODUCT
+    	<if test="date!=null and date!=''">
+		  where to_char(PUBLISH_DATE,'yyyy-mm-dd') = #{date}
+		 </if>
+    </select>
+    
+    <select id="getAllCurrentFinance" resultMap="resultAllCurrentFinance" parameterType="string">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+		SELECT T.PRODUCT_CODE,
+		       T.FINANCE_PRODUCT,
+		       T.FINANCE_TOTAL_LIMIT,
+		       T.ANNUAL_INCOME,
+		       T.EXPIRE_DAY,
+		       T.MAX_LIMIT,
+		       T.MIN_LIMIT,
+		       TO_CHAR(T.CARRY_DATE, 'yyyy-mm-dd') CARRYDATE,
+		       TO_CHAR(T.CARRY_DATE + 30, 'yyyy-mm-dd') SETTLE_DATE,
+		       (SELECT COUNT(1)
+		          FROM STOCK_FINANCE_RECORD R
+		         WHERE R.PRODUCT_CODE = T.PRODUCT_CODE
+		         GROUP BY R.PRODUCT_CODE) NUM,
+			   (T.CARRY_DATE + 30 -To_Date(To_Char(Sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')) leaveDays
+		  FROM STOCK_FINANCE_PRODUCT T
+		  <if test="date!=null and date!=''">
+		  where to_char(PUBLISH_DATE,'yyyy-mm-dd') = #{date}
+		  </if>
+		 ORDER BY PUBLISH_DATE DESC
+		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
     </select>
     
     <insert id="saveCurrentFinance" parameterType="com.zeekie.stock.entity.form.FinanceProducetForm">
@@ -106,7 +170,8 @@
     	SELECT CURRENT_INCOME income,
 		       (SELECT NICKNAME FROM STOCK_USER U WHERE U.ID = R.USER_ID) NICKNAME,
 		       (R.SETTLE_DATE - TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) num,
-		       FINANCE_LIMIT
+		       FINANCE_LIMIT,
+		       ticket
 		  FROM STOCK_FINANCE_RECORD R
 		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
@@ -153,6 +218,59 @@
     
     <select id="queryTotalLimitBalance" parameterType="string" resultType="float">
      select FINANCE_TOTAL_LIMIT - to_number(#{financeLimit}) from STOCK_FINANCE_PRODUCT p where p.PRODUCT_CODE = #{productCode}
+    </select>
+    
+    <insert id="insertProduct" parameterType="string">
+    	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select Seq_STOCK_FINANCE_PRODUCT_ID.Nextval from dual
+		</selectKey>
+    	insert into STOCK_FINANCE_PRODUCT(id,PRODUCT_CODE,FINANCE_PRODUCT,FINANCE_TOTAL_LIMIT,
+    	EXPIRE_DAY,ANNUAL_INCOME,MIN_LIMIT,MAX_LIMIT,CARRY_DATE)
+    	values(#{id},#{productCode},#{financeProduct},#{financeTotalLimit},
+    	#{expireDay},#{annualIncome},#{minLimit},#{maxLimit},to_date(#{carryDate},'yyyy-mm-dd'))
+    </insert>
+    
+    <select id="queryFinanceDetail" parameterType="string" resultMap="resultFinanceDetail">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+    	select (select u.nickname from stock_user u where u.id = r.user_id )nickname,
+    		TICKET,PRODUCT_CODE,FINANCE_PRODUCT,INCOME,CURRENT_INCOME,TO_CHAR(CARRY_DATE, 'yyyy-mm-dd') CARRY_DATE,
+                       TO_CHAR(SETTLE_DATE, 'yyyy-mm-dd') SETTLE_DATE,to_char(r.BUY_DATE, 'yyyy-mm-dd HH24:MI:ss')BUY_DATE
+    	 from STOCK_FINANCE_RECORD r 
+    	where product_code = #{productCode}
+    	order by BUY_DATE ,user_id desc
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+    </select>
+    
+    <select id="queryFinanceDetailCount" parameterType="string" resultType="long">
+        select count(1)
+    	 from STOCK_FINANCE_RECORD r 
+    	where product_code = #{productCode}
+    </select>
+    
+    <select id="queryFlbUnitCount" resultType="long">
+		SELECT COUNT(1)
+		  FROM STOCK_USER_OPERATE_MAININFO T, STOCK_USER U
+		 WHERE U.NICKNAME = T.NICKNAME
+		   AND EXISTS (SELECT 1
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE T.OPERATE_ACCOUNT_ID = A.ID
+		           AND A.FUND_ACCOUNT = '63380003')
+    </select>
+    
+    <select id="queryFlbUnit" resultMap="resultFlbUnit">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+			SELECT (SELECT C.TRUENAME FROM STOCK_ID_CARD C WHERE C.USER_ID = U.ID)  TRUENAME,
+			       (SELECT C.ID_CARD FROM STOCK_ID_CARD C WHERE C.USER_ID = U.ID) ID_CARD,
+			       T.TRADE_FUND,
+			       to_char(T.START_DATE, 'yyyy-mm-dd HH24:MI:ss') START_DATE
+			  FROM STOCK_USER_OPERATE_MAININFO T, STOCK_USER U
+			 WHERE U.NICKNAME = T.NICKNAME
+			   AND EXISTS (SELECT 1
+			          FROM STOCK_USER_OPERATE_ACOUNT A
+			         WHERE T.OPERATE_ACCOUNT_ID = A.ID
+			           AND A.FUND_ACCOUNT = '63380003')
+			 ORDER BY T.START_DATE DESC
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
     </select>
     
 </mapper>

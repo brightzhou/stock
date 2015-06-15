@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.timer;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.util.mybatis.BatchMapper;
 
-import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.entity.FinanceIncomeDO;
 import com.zeekie.stock.entity.FundFlowDO;
@@ -177,10 +177,11 @@ public class EntrustTimer extends BaseImpl {
 			List<FundFlowDO> feeOfCapital = new ArrayList<FundFlowDO>();
 			for (FinanceIncomeDO income : result) {
 				String nickname = income.getNickname();
-				String incomes = income.getIncome() + "";
+				String incomes = income.getIncome() + ""; 
+				String ticket = income.getTicket();
 				FundFlowDO flowDO = new FundFlowDO(nickname,
 						FundFlowEnum.FINANCE_INCOME.getType(), incomes,
-						FundFlowEnum.FINANCE_INCOME.getDesc());
+						MessageFormat.format(FundFlowEnum.FINANCE_INCOME.getDesc(),ticket));
 				fee.add(flowDO);
 
 				if (log.isDebugEnabled()) {
@@ -188,11 +189,11 @@ public class EntrustTimer extends BaseImpl {
 				}
 
 				// 计算是否理财产品到期，如果到期需要归还本金
-				String money = income.getFinanceLimit() + "";
+				String money = ""+income.getFinanceLimit();
 				if (StringUtils.equals("0", income.getNum())) {
 					FundFlowDO flow = new FundFlowDO(nickname,
 							FundFlowEnum.FINANCE_CAPATAL.getType(), money,
-							FundFlowEnum.FINANCE_CAPATAL.getDesc());
+							MessageFormat.format(FundFlowEnum.FINANCE_CAPATAL.getDesc(),ticket));
 					feeOfCapital.add(flow);
 
 					if (log.isDebugEnabled()) {
