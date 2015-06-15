@@ -84,20 +84,30 @@
     </select>
     
     <select id="getFinanceProductLast" resultMap="resultFinanceProduct">
-	  SELECT    T.PRODUCT_CODE,
-	            T.FINANCE_PRODUCT,
-	            T.FINANCE_TOTAL_LIMIT,
-	            T.ANNUAL_INCOME,
-	            T.EXPIRE_DAY,
-	            T.MAX_LIMIT,
-	            T.MIN_LIMIT,
-	            To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
-	            To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date
-	       FROM STOCK_FINANCE_PRODUCT T
-	      WHERE TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=
-	            TO_CHAR(SYSDATE, 'yyyy-mm-dd')
-	        and rownum = 1
-	      order by t.publish_date desc
+		select PRODUCT_CODE,
+		       FINANCE_PRODUCT,
+		       FINANCE_TOTAL_LIMIT,
+		       ANNUAL_INCOME,
+		       EXPIRE_DAY,
+		       MAX_LIMIT,
+		       MIN_LIMIT,
+		       Carrydate,
+		       Settle_Date
+		  from (SELECT T.PRODUCT_CODE,
+		               T.FINANCE_PRODUCT,
+		               T.FINANCE_TOTAL_LIMIT,
+		               T.ANNUAL_INCOME,
+		               T.EXPIRE_DAY,
+		               T.MAX_LIMIT,
+		               T.MIN_LIMIT,
+		               To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
+		               To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date,
+		               publish_date
+		          FROM STOCK_FINANCE_PRODUCT T
+		         WHERE TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=
+		               TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+		         order by t.publish_date desc)
+		 where rownum = 1
     </select>
     
     <select id="queryAllCurrentFinanceCount" parameterType="string" resultType="long">
