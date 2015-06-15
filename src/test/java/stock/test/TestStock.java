@@ -25,7 +25,7 @@ public class TestStock {
 //		entrustTradedQuery();
 //		historyTradedQuery();
 //		entrustTradedQuery();
-		login();
+//		login();
 //		deal();
 //		cxdeal();
 //		queryCombasset();
@@ -103,8 +103,44 @@ public class TestStock {
 
 		// getVersionPic();
 		// testapi();
+		saveCurrentFinance();
 	}
 
+	
+	public static void getCurrentFinance() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		try {
+			String result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/finance/get",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveCurrentFinance() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("productCode", "10011");
+		datas.put("financeProduct", "哈哈宝理财");
+		datas.put("annualIncome", "0.18");
+		datas.put("financeLimit", "50");
+		datas.put("carryDate", "2015-06-12");
+		datas.put("settleDate", "2015-07-12");
+		datas.put("income", "10");
+		datas.put("userId", "1523");
+		try {
+			String result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/finance/save",
+							datas);
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void queryEntrustHistory() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -858,3 +894,4 @@ public class TestStock {
 	
 	
 }
+
