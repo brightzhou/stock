@@ -31,6 +31,7 @@
 	<resultMap type="com.zeekie.stock.entity.HistoryFinanceDO" id="resultHistoryFinance">
 		<result column="TICKET" property="ticket" jdbcType="VARCHAR"/>
 		<result column="FINANCE_LIMIT" property="financeLimit" jdbcType="VARCHAR"/>
+		<result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR"/>
 		<result column="INCOME" property="income" jdbcType="VARCHAR"/>
 		<result column="CURRENT_INCOME" property="currentIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="ANNUAL_INCOME" property="annualIncome"  jdbcType="VARCHAR"/>
@@ -79,6 +80,7 @@
 		       To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date
 		  FROM STOCK_FINANCE_PRODUCT T
 		  WHERE TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+		  and t.finance_total_limit > 0
        
     </select>
     
@@ -146,6 +148,7 @@
 	<select id="getHistoryFinance" resultMap="resultHistoryFinance" parameterType="string">
 		SELECT TICKET,
 		       FINANCE_LIMIT,
+		       PRODUCT_CODE,
 		       INCOME,
 		       CURRENT_INCOME,
 		       TO_CHAR(CARRY_DATE, 'yyyy-mm-dd') CARRY_DATE,
@@ -175,6 +178,7 @@
 		  FROM STOCK_FINANCE_RECORD R
 		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		   
     </select>
     
     <update id="updateCurrentIncome" parameterType="string">
@@ -271,6 +275,17 @@
 			           AND A.FUND_ACCOUNT = '63380003')
 			 ORDER BY T.START_DATE DESC
     	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+    </select>
+    
+    <select id="queryLeaveLimits" parameterType="string" resultType="float" >
+    	select p.max_limit -
+       (select sum(r.finance_limit)
+          from stock_finance_record r
+         where r.user_id = #{userId}
+           and r.product_code = p.product_code) 
+		  from stock_finance_product p
+		 where p.product_code = #{productCode}
+    
     </select>
     
 </mapper>

@@ -91,17 +91,44 @@ public class FinanceServiceImpl implements FinanceService {
 			throws ServiceInvokerException {
 		form.setTicket(ticketPrex + StringUtil.genRandomNum(4));
 		String financeLimit = form.getFinanceLimit();
-
-		String balance = financeMapper.checkBalance(form.getUserId(),
-				financeLimit);
+		String userId = form.getUserId();
+		String productName = form.getFinanceProduct();
+		String balance = financeMapper.checkBalance(userId, financeLimit);
 		if (StringUtils.isBlank(balance)) {
 			return Constants.CODE_BALANCE_LITTLE;
 		}
 		// 计算额度是否够买
 		synchronized (this) {
+			Float leaveLimits = financeMapper.queryLeaveLimits(
+					form.getProductCode(), userId);
+			if (null != leaveLimits) {
+				if (leaveLimits <= 0) {
+					if (log.isDebugEnabled()) {
+						log.debug("用户[" + userId + "]购买理财产品[" + productName
+								+ "]历史金额已经达到最大额度，不能继续购买");
+					}
+					return Constants.CODE_REACH_MAX_lIMIT;
+				} else {
+					if (leaveLimits < Float.parseFloat(financeLimit)) {
+						String canBuyLeavelimits = "$"
+								+ StringUtil.keepThreeDot(leaveLimits);
+						if (log.isDebugEnabled()) {
+							log.debug("用户[" + userId + "]当前购买理财产品["
+									+ productName + "]的金额超出限制,当前只能购买："
+									+ canBuyLeavelimits);
+						}
+						return canBuyLeavelimits;
+					}
+				}
+			}
+
 			Float totalLimit = financeMapper.queryTotalLimitBalance(
 					form.getProductCode(), financeLimit);
-			if (totalLimit <= 0f) {
+			if (totalLimit < 0f) {
+				if (log.isDebugEnabled()) {
+					log.debug("用户[" + userId + "]当前购买理财产品[" + productName
+							+ "]的金额超出总的理财金额限制，不能购买");
+				}
 				return Constants.CODE_TOTAL_lIMIT_LITTLE;
 			}
 		}

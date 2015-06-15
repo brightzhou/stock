@@ -102,12 +102,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         });
     }
     
-    var status='0';
+    var status='1';
     function changeStatus(e) {
         var re = e.record;
+        var totalLimit = re.financeTotalLimit;
         if (parseInt(re.leaveDays)>0) {
-        	status = '1';
-        	return '<span><font color=green>正在售卖,剩余('+re.leaveDays+')天</font></span>';
+	        if(totalLimit <= 0){
+	        	status = '0';
+	        }
+        	return '<span><font color=green>离结息日还剩('+re.leaveDays+')天</font></span>';
         }else{
         	return '<span><font color=red>已经结束</font></span>';
         }
