@@ -44,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				年化收益
 					</td>
 					<td class="mini-content_32">
-                 	  <input id="annualIncome" class="mini-textbox" style="width: 60%;" required="true" vtype="float" vtype="float;rangeDecimals:2" emptyText="0.18"/>%
+                 	  <input id="annualIncome" class="mini-textbox" style="width: 60%;" required="true" vtype="float" vtype="float;rangeDecimals:2" emptyText="0.18"/>
                     </td>
 				</tr>
 				<tr>
