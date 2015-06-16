@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.error.Message;
+import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.service.AcountService;
@@ -100,7 +101,7 @@ public class AcountController {
 	public ApiResponse getCurrentAccount(
 			@RequestParam("nickname") String nickname,
 			@RequestParam(value = "version", required = false) String version) {
-		return ApiUtils.good(operator.getCurrentAccount(nickname,version));
+		return ApiUtils.good(operator.getCurrentAccount(nickname, version));
 	}
 
 	@ResponseBody
@@ -165,5 +166,16 @@ public class AcountController {
 	public ApiResponse getBasicInfo(@RequestParam("userId") String userId) {
 		JSONObject jo = operator.getBasicInfo(userId);
 		return (null != jo) ? ApiUtils.good(jo) : ApiUtils.good();
+	}
+
+	@ResponseBody
+	@RequestMapping("idCard/exists")
+	public String getDuplicateIdCard(@RequestParam("idCard") String idCard) {
+		try {
+			return operator.getDuplicateIdCard(idCard);
+		} catch (ServiceInvokerException e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_SUCCESS;
 	}
 }

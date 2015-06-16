@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import sitong.thinker.common.exception.ServiceInvokerException;
+
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BankInfoDO;
@@ -90,7 +92,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Autowired
 	@Value("${func_am_change_password}")
 	private String Fn_changePwd;
-	
+
 	@Autowired
 	@Value("${func_am_entrust_qry}")
 	private String func_am_entrust_qry;
@@ -366,8 +368,9 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						(account.getFreezeCash() == null) ? "0.00" : freezeCash);
 				String fee = account.getFee() + "";
 				map.put("fee", (null == account.getFee()) ? "" : fee);
-				String finance = account.getFinance()+"";
-				map.put("finance", (StringUtils.isBlank(finance)) ? "" : finance);
+				String finance = account.getFinance() + "";
+				map.put("finance", (StringUtils.isBlank(finance)) ? ""
+						: finance);
 			} else {
 				map.put("balance", "0.00");
 				map.put("guaranteeCash", "0.00");
@@ -448,8 +451,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				// 更新开户行
 				acounter.updateOpenBank(nickname, openBank);
 				// 发短信通知管理员有人提款
-				/*ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
-						stock_manager_phone);*/ // 注销不适用
+				/*
+				 * ApiUtils.send(Constants.MODEL_DEPOSIT_SQ_FN,
+				 * stock_manager_phone);
+				 */// 注销不适用
 				map.put("flag", "1");
 				map.put("msg", msg);
 			}
@@ -460,60 +465,66 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 		return map;
 	}
-    /**
-     * 是否还有委托的股票
-     * @return
-     */
-	public boolean hasEntrust(String nickname){
-		boolean flag = false ;
-		try{
-			CurrentOperateUserDO userDO = acounter.getCurrentOperateUser(nickname);
+
+	/**
+	 * 是否还有委托的股票
+	 * 
+	 * @return
+	 */
+	public boolean hasEntrust(String nickname) {
+		boolean flag = false;
+		try {
+			CurrentOperateUserDO userDO = acounter
+					.getCurrentOperateUser(nickname);
 			if (userDO == null) {
-				return false ;
+				return false;
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
-			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,combineId);
+			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
+					combineId);
 			entrustQuery.callHomes(func_am_entrust_qry);
-	        List<?> obj = returnObj(entrustQuery.getDataSet(),
+			List<?> obj = returnObj(entrustQuery.getDataSet(),
 					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
-            if (!obj.isEmpty()) {
-            	String statis[] = new String[]{"1","4","8","a","A","B","C","D"};
-            	for (Object each : obj) {
+			if (!obj.isEmpty()) {
+				String statis[] = new String[] { "1", "4", "8", "a", "A", "B",
+						"C", "D" };
+				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					for (String str : statis) {
-						if(str.equals(entity.getAmentrust_status())){
-							 flag = true ;
-							 break ;
+						if (str.equals(entity.getAmentrust_status())) {
+							flag = true;
+							break;
 						}
 					}
-					if(flag){
-						break ;
+					if (flag) {
+						break;
 					}
-					 
+
 				}
-				
+
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			log.error("查看是否有委托！！！");
 			log.error(e.getMessage(), e);
 		}
-		return  flag ;
+		return flag;
 	}
+
 	@Override
 	public Map<String, String> endStock(String nickname, String flag)
 			throws RuntimeException {
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("flag", Constants.CODE_FAILURE);
 		String msg = "成功";
-       try {
-			if(hasEntrust(nickname)){ //是否还有委托的股票
+		try {
+			if (hasEntrust(nickname)) { // 是否还有委托的股票
 				msg = "你还有委托的股票，不能结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
 				result.put("msg", msg);
-				
-			}else if (StringUtils.equals(Constants.CODE_SUCCESS,
+
+			} else if (StringUtils.equals(Constants.CODE_SUCCESS,
 					acounter.operationIsEnded(nickname))) {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 
 				if (log.isDebugEnabled()) {
@@ -585,8 +596,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				}
 				// 结束操盘，如果有限制买入的操盘账号，要恢复可以买入股票
 				relieve(cashDO.getOperateNO(), cashDO.getStopBuy());
-				
-				modifyHomesPwd(nickname,cashDO.getOperateNO());
+
+				modifyHomesPwd(nickname, cashDO.getOperateNO());
 			} else {
 				msg = "你还有未卖出的股票，请卖出所有股票后再结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
@@ -624,7 +635,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				newOperatePwd);
 		modify.callHomes(Fn_changePwd);
 		if (!modify.visitSuccess(Fn_changePwd)) {
-			log.error("用户【" + nickname + "】结束操盘，修改密码为：" + newOperatePwd+" 失败");
+			log.error("用户【" + nickname + "】结束操盘，修改密码为：" + newOperatePwd + " 失败");
 		}
 	}
 
@@ -893,21 +904,24 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	public JSONObject getBasicInfo(String userId) {
 		try {
 			BasicInfoDO basicinfoDO = acounter.getBasicInfo(userId);
-			if("1".equals(basicinfoDO.getHasOperation())){
-				/** start 放入杠杆倍数   add 20150610 */
- 			    StockRadioDO stockRadioDO =	acounter.getAssignRadioForCurrUserId(userId);
- 			    if(stockRadioDO!=null){
- 			    	basicinfoDO.setAssignRadio(stockRadioDO.getAssignRadio());
- 			    }
- 				/**  end  放入杠杆倍数  add 20150610 */
-			}else{
-				/** start 放入杠杆倍数   add 20150610*/
-				DictionariesDO dictionariesDO  = trade.getDictionariesByDicWord("assignRadio") ;
-				if(dictionariesDO!=null){
-					basicinfoDO.setAssignRadio(Float.valueOf(dictionariesDO.getDicValue()) );
-				} 
-				/**  end 放入杠杆倍数   add 20150610*/
-            }
+			if ("1".equals(basicinfoDO.getHasOperation())) {
+				/** start 放入杠杆倍数 add 20150610 */
+				StockRadioDO stockRadioDO = acounter
+						.getAssignRadioForCurrUserId(userId);
+				if (stockRadioDO != null) {
+					basicinfoDO.setAssignRadio(stockRadioDO.getAssignRadio());
+				}
+				/** end 放入杠杆倍数 add 20150610 */
+			} else {
+				/** start 放入杠杆倍数 add 20150610 */
+				DictionariesDO dictionariesDO = trade
+						.getDictionariesByDicWord("assignRadio");
+				if (dictionariesDO != null) {
+					basicinfoDO.setAssignRadio(Float.valueOf(dictionariesDO
+							.getDicValue()));
+				}
+				/** end 放入杠杆倍数 add 20150610 */
+			}
 			basicinfoDO.setAppStatus(Constants.HOMES_STATUS);
 			return JSONObject.fromObject(basicinfoDO, Constants.jsonConfig);
 		} catch (Exception e) {
@@ -915,31 +929,43 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public String residualAssets(){
+	public String residualAssets() {
 		Map<String, String> map = new HashMap<String, String>();
-		try{ 
+		try {
 			DictionariesDO dictionariesDO = new DictionariesDO();
-			 dictionariesDO.setStatus("1");
-			 dictionariesDO.setDicType("3");
-			 List<DictionariesDO>  list = trade.queryDictionarieList(dictionariesDO);
-			 
-			 if(list!=null&&list.size()==2){
-				 for (DictionariesDO obj : list) {
-					if("fundAcound".equals(obj.getDicWord())){
-						    map.put("surplusAssets", acounter.getSurplusAssetsByfundAcound(dictionariesDO.getDicValue()))  ;
-					} 
-					if("totalMoney".equals(obj.getDicWord())){
-					    	map.put("totalMoney", obj.getDicValue()) ;
+			dictionariesDO.setStatus("1");
+			dictionariesDO.setDicType("3");
+			List<DictionariesDO> list = trade
+					.queryDictionarieList(dictionariesDO);
+
+			if (list != null && list.size() == 2) {
+				for (DictionariesDO obj : list) {
+					if ("fundAcound".equals(obj.getDicWord())) {
+						map.put("surplusAssets", acounter
+								.getSurplusAssetsByfundAcound(dictionariesDO
+										.getDicValue()));
 					}
-				 }
-				
-			 }
-		}catch(Exception e){
+					if ("totalMoney".equals(obj.getDicWord())) {
+						map.put("totalMoney", obj.getDicValue());
+					}
+				}
+
+			}
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		
-		 return    JSONObject.fromObject(map, Constants.jsonConfig).toString();
+		return JSONObject.fromObject(map, Constants.jsonConfig).toString();
+	}
+
+	@Override
+	public String getDuplicateIdCard(String idCard)
+			throws ServiceInvokerException {
+		if (StringUtils.isNotBlank(acounter
+				.queryDuplicateIdCard(idCard))) {
+			return Constants.CODE_SUCCESS;
+		}
+		return Constants.CODE_FAILURE;
 	}
 }

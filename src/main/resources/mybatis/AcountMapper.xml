@@ -474,6 +474,10 @@
 		update stock_user set TELEPHONE = #{telephone} where nickname = #{nickname}
 	</update>
 	
+	<select id="queryDupTelephone" parameterType="string" resultType="string">
+		select 1 from stock_user where TELEPHONE = #{telephone} and rownum=1
+	</select>
+	
 	<insert id="storeOperatorCash" parameterType="com.zeekie.stock.entity.form.TradeForm">
 	<selectKey resultType="LONG" keyProperty="id" order="BEFORE">
 		select sqt_user_operate_maininfo_id.nextval FROM DUAL
@@ -1667,6 +1671,10 @@
    
    <select id="getSurplusAssetsByfundAcound" resultType="string"  parameterType="string">
 	    SELECT S.TOTAL_FUND   FROM STOCK_TOTAL_FUND S   WHERE S.IS_CURRENT = 'Y' and s.fund_acount=#{fundAcound}
+   </select>
+   
+   <select id="queryDuplicateIdCard" parameterType="string" resultType="string">
+   		select 1 from stock_id_card c where  c.ID_CARD = #{idCard} and rownum = 1
    </select>
 	
 </mapper>

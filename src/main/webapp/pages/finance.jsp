@@ -75,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         限购最小额度
                     </div>
                     <div width="7%" field="carryDate" headerAlign="center" align="center">
-                        结息日期
+                        起息日期
                     </div>
                     <div width="6%" field="num" headerAlign="center" align="center" renderer="changeContent">
                         购买人数

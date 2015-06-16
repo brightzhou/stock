@@ -33,7 +33,7 @@ public class TestStock {
 //		queryEntrust();
 //		queryEntrustHistory();
 
-		// String ss = getVerifyCode();
+//		 String ss = getVerifyCode();
 		// System.out.println(ss);
 		// REGISTER();
 		// updatePwd();
@@ -60,7 +60,7 @@ public class TestStock {
 		// add();
 		// getapkpath();
 		// getHistoryOperation();
-		 getFundFlow();
+//		 getFundFlow();
 		// endStock();
 		// enterSpreadPage();
 		// spread();
@@ -93,7 +93,7 @@ public class TestStock {
 		// "lexical error at position {0}, encountered {1}, expected {2}";
 		// String result = MessageFormat.format(template, 123,"aaa","bbb");
 		// System.out.println(result);
-		// bindPhone(ss);
+//		 bindPhone(ss);
 
 		// getId();
 		// getbindCreditCard();
@@ -105,9 +105,34 @@ public class TestStock {
 
 		// getVersionPic();
 		// testapi();
-		saveCurrentFinance();
+//		saveCurrentFinance();
+//		getDuplicateIdCard();
+		getCurrentFinance();
 	}
 
+	public static void getDuplicateIdCard() {
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("userId", "1544");
+		datas.put("idCard", "362323199208200015");
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+
+		try {
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
+					"saiying_$hahabao"));
+			headers.put("user_auth", item.toString());
+			req.setHeaders(headers);
+			String result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/account/idCard/exists",
+							datas);
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	public static void getCurrentFinance() {
 		HandleHttpRequest req = new HandleHttpRequest();
@@ -301,15 +326,22 @@ public class TestStock {
 	public static void bindPhone(String ss) {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "qianhongqiang");
-		datas.put("telephone", "15867198578");
+		datas.put("nickname", "test150");
+		datas.put("telephone", "18698579821");
 		datas.put("verifyCode", ss);
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+
 		try {
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
+					"saiying_$hahabao"));
+			headers.put("user_auth", item.toString());
+			req.setHeaders(headers);
 			String result = req.post(
-					"http://121.41.34.71:8082/stock/api/stock/telephone/bind",
+					"http://121.40.71.84:8083/stock/api/stock/user/telephone/bind",
 					datas);
 			System.out.println(result);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -827,15 +859,22 @@ public class TestStock {
 	public static String getVerifyCode() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("telephone", "15867198578");
+		datas.put("telephone", "18698579821");
 		datas.put("source", "13");
 		String result = "";
+		Map<String, String> headers = new HashMap<String, String>();
+		JSONObject item = new JSONObject();
+
 		try {
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
+					"saiying_$hahabao"));
+			headers.put("user_auth", item.toString());
+			req.setHeaders(headers);
 			result = req.post(
-					"http://121.41.34.71:8082/stock/api/stock/verifyCode/get",
+					"http://121.40.71.84:8083/stock/api/stock/user/verifyCode/get",
 					datas);
-			System.out.println("��֤�룺" + result);
-		} catch (IOException e) {
+			System.out.println("获取的验证码是：" + result);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;

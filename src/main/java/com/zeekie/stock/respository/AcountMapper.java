@@ -634,51 +634,76 @@ public interface AcountMapper {
 	 */
 	public void deleteIdCard(@Param("id") String id) throws Exception;
 
-    /**
-     * 当前操作用户信息
-     * @param nickname
-     * @return
-     * @throws Exception
-     */
-	public CurrentOperateUserDO getCurrentOperateUser(@Param("nickname") String nickname) throws Exception;
-	
-	
 	/**
-	 * 通过昵称获取用户信息
+	 * 当前操作用户信息
+	 * 
 	 * @param nickname
 	 * @return
 	 * @throws Exception
 	 */
-	public List<UserInfoDO> getUserInfoByNickname(@Param("nickname") String nickname) throws Exception;
-	
-    /**
-     * 修改用户配置比例参数
-     * @param nickname
-     * @param stopRadio
-     * @param warnRadio
-     * @param assignRadio
-     * @return
-     * @throws Exception
-     */
-	public Long updateAssignRadio(@Param("nickname") String nickname
-			,@Param("stopRadio") float stopRadio
-			,@Param("warnRadio") float warnRadio
-			,@Param("assignRadio") float assignRadio) throws Exception;
-	
+	public CurrentOperateUserDO getCurrentOperateUser(
+			@Param("nickname") String nickname) throws Exception;
+
+	/**
+	 * 通过昵称获取用户信息
+	 * 
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserInfoDO> getUserInfoByNickname(
+			@Param("nickname") String nickname) throws Exception;
+
+	/**
+	 * 修改用户配置比例参数
+	 * 
+	 * @param nickname
+	 * @param stopRadio
+	 * @param warnRadio
+	 * @param assignRadio
+	 * @return
+	 * @throws Exception
+	 */
+	public Long updateAssignRadio(@Param("nickname") String nickname,
+			@Param("stopRadio") float stopRadio,
+			@Param("warnRadio") float warnRadio,
+			@Param("assignRadio") float assignRadio) throws Exception;
+
 	/**
 	 * 通过用户ID 查询用户配置比例
+	 * 
 	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
 	public StockRadioDO getAssignRadioForCurrUserId(
 			@Param("userId") String userId) throws Exception;
-   /**
-    * 通过主单元号查询用户剩余资产	
-    * @param fundAcound
-    * @return
-    * @throws Exception
-    */
-   public String getSurplusAssetsByfundAcound(@Param("fundAcound") String fundAcound) throws Exception;
+
+	/**
+	 * 通过主单元号查询用户剩余资产
+	 * 
+	 * @param fundAcound
+	 * @return
+	 * @throws Exception
+	 */
+	public String getSurplusAssetsByfundAcound(
+			@Param("fundAcound") String fundAcound) throws Exception;
+
+	/**
+	 * 判断是否存在手机号同一个用户
+	 * 
+	 * @param nickname
+	 * @param telephone
+	 */
+	public String queryDupTelephone(@Param("telephone") String telephone)
+			throws Exception;
+
+	/**
+	 * 判断是否存在相同的身份证号
+	 * 
+	 * @param idCard
+	 * @return
+	 */
+	public String queryDuplicateIdCard(@Param("idCard") String idCard);
 
 }
