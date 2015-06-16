@@ -184,4 +184,21 @@ public interface FinanceMapper {
 	 */
 	public List<FlbDO> queryFlbUnit(PageQuery flbPage);
 
+	/**
+	 * 获取剩余可购买额度
+	 * 
+	 * @param productCode
+	 * @param userId
+	 * @return
+	 */
+	public Float queryLeaveLimits(@Param("productCode") String productCode,
+			@Param("userId") String userId);
+
+	/**
+	 * 获取最后一次理财产品
+	 * 
+	 * @return
+	 */
+	public FinanceProductDO getFinanceProductLast();
+
 }

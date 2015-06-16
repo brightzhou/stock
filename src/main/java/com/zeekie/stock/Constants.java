@@ -55,6 +55,11 @@ public class Constants {
 	 * 理财额度已经用完 code=3 
 	 */
 	public static final String CODE_TOTAL_lIMIT_LITTLE = "3";
+	
+	/**
+	 * 理财额度已经达到其最大上限 code=4
+	 */
+	public static final String CODE_REACH_MAX_lIMIT= "4";
 
 	public static final String CODE_FAILURE_NO_ACCOUNT = "3#";
 

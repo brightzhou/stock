@@ -3,6 +3,11 @@ package com.zeekie.stock.entity;
 import com.zeekie.stock.util.StringUtil;
 
 public class HistoryFinanceDO {
+	
+	/**
+	 *  产品代码
+	 */
+	private String productCode;
 
 	/**
 	 * 单号
@@ -47,6 +52,16 @@ public class HistoryFinanceDO {
 	 * 剩余天数
 	 */
 	private String num;
+	
+	
+
+	public String getProductCode() {
+		return productCode;
+	}
+
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
 
 	/**
 	 * @return the num
