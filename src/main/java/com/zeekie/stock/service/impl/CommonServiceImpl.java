@@ -190,6 +190,9 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 			return Constants.ERROR_CODE_WRONG_VERIFYCODE;
 		}
 		try {
+			if (StringUtils.isNotBlank(account.queryDupTelephone(telephone))) {
+				return Constants.ERROR_CODE_EXISTS_TELEPHONE;
+			}
 			// 2、绑定手机号
 			account.updateTelephone(nickname, telephone);
 		} catch (Exception e) {

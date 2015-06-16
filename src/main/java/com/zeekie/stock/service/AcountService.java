@@ -2,6 +2,7 @@ package com.zeekie.stock.service;
 
 import java.util.Map;
 
+import sitong.thinker.common.exception.ServiceInvokerException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -204,10 +205,21 @@ public interface AcountService {
 	 * @return
 	 */
 	public JSONObject getBasicInfo(String userId);
-	
+
 	/**
 	 * 剩余资产宣传页需要的数据
+	 * 
 	 * @return
 	 */
 	public String residualAssets();
+
+	/**
+	 * 查看是否存在已经绑定的身份证号码
+	 * 
+	 * @param idCard
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public String getDuplicateIdCard(String idCard)
+			throws ServiceInvokerException;
 }

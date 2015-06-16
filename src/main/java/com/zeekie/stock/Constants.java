@@ -68,6 +68,8 @@ public class Constants {
 	public static final String ERROR_CODE_WRONG_TEL = "2";
 
 	public static final String ERROR_CODE_WRONG_VERIFYCODE = "3";
+	
+	public static final String ERROR_CODE_EXISTS_TELEPHONE = "2";
 
 	// 该用户已经存在
 	public static final String CODE_ERROR_NICKNAME = "2";
