@@ -637,7 +637,7 @@
          WHERE T.IS_CURRENT = '1'
            AND T.NICKNAME = R.NICKNAME
            AND T.NICKNAME = W.NICKNAME) fee,
-        (SELECT SUM(FINANCE_LIMIT)
+        (SELECT SUM(current_income)
 		  FROM STOCK_FINANCE_RECORD R
 		 WHERE r.user_id = u.id
 		   AND R.SETTLE_DATE >=

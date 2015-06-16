@@ -19,6 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 
 <body class="body_fit" >
+<form id="form1" method="post">
 	<div class="mini-fit" id="datagrid">
 		<div align="center" style="padding-top: 30px">
 			<table style="width:80%;">
@@ -27,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                               产品名称：
                     </td>
                     <td class="mini-content_32">
-                     <input id="financeProduct" class="mini-textbox" style="width: 60%;" emptyText=""/>  
+                     <input id="financeProduct" class="mini-textbox" style="width: 60%;" required="true" emptyText=""/>  
                     </td>
                 </tr>
                 <tr>
@@ -35,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                               额度：
                     </td>
                     <td class="mini-content_32">
-                 	  <input id="financeTotalLimit" class="mini-textbox" style="width: 60%;" emptyText="0"/> 
+                 	  <input id="financeTotalLimit" class="mini-textbox" style="width: 60%;" required="true" emptyText="单元（元）" vtype="int"/> 
                     </td>
                 </tr>
 				<tr>
@@ -43,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				年化收益
 					</td>
 					<td class="mini-content_32">
-                 	  <input id="annualIncome" class="mini-textbox" style="width: 60%;" emptyText=""/> 
+                 	  <input id="annualIncome" class="mini-textbox" style="width: 60%;" required="true" vtype="float" vtype="float;rangeDecimals:2" emptyText="0.18"/>%
                     </td>
 				</tr>
 				<tr>
@@ -51,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				期限
 					</td>
 					<td class="mini-content_32">
-                 	  <input id="expireDay" class="mini-textbox" style="width: 60%;" emptyText="30"/> 
+                 	  <input id="expireDay" class="mini-textbox" style="width: 60%;" required="true" emptyText="单位（天）" vtype="int"/> 
                     </td>
 				</tr>
 				<tr>
@@ -59,7 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				起息日
 					</td>
 					<td class="mini-content_32">
-                 	  <input id="carryDate" class="mini-datepicker" format="yyyy-MM-dd" />
+                 	  <input id="carryDate" class="mini-datepicker" format="yyyy-MM-dd" required="true" />
                     </td>
 				</tr>
 				<tr>
@@ -67,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				最大额度
 					</td>
 					<td class="mini-content_32">
-                 	  <input id="maxLimit" class="mini-textbox" style="width: 60%;" emptyText="0"/> 
+                 	  <input id="maxLimit" class="mini-textbox" style="width: 60%;" required="true" emptyText="单位（元）" vtype="int"/> 
                     </td>
 				</tr>
 				<tr>
@@ -75,7 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				最小额度
 					</td>
 					<td class="mini-content_32">
-                 	  <input id="minLimit" class="mini-textbox" style="width: 60%;" emptyText="0"/> 
+                 	  <input id="minLimit" class="mini-textbox" style="width: 60%;" required="true" emptyText="单位（元）" vtype="int"/> 
                     </td>
 				</tr>
 				<tr></tr>
@@ -96,11 +97,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</table>
 		</div>
 	</div>
+</form>
 <script type="text/javascript">
     mini.parse();
     var gridUrl = "api/stock/web/product/save";
+    var form = new mini.Form("form1");
     function handle(type) {
 		if (type == 'sure') {
+            form.validate();
+            if (form.isValid() == false) return;
 			var financeProduct = $.trim(mini.get("financeProduct").getValue());
 			var financeTotalLimit = $.trim(mini.get("financeTotalLimit").getValue());
 			var annualIncome = $.trim(mini.get("annualIncome").getValue());
@@ -108,6 +113,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var carryDate = $.trim(mini.get("carryDate").getFormValue());
 			var maxLimit = $.trim(mini.get("maxLimit").getValue());
 			var minLimit = $.trim(mini.get("minLimit").getValue());
+			
+			if(maxLimit<minLimit){
+				mini.alert('最大额度不能低于最小额度');
+				return;
+			}
+			
 			$.ajax({
                 url: gridUrl,
                 type: "POST",

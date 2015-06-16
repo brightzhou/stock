@@ -58,9 +58,6 @@ public class EntrustTimer extends BaseImpl {
 
 	public void historyEntrustQuery() {
 		getEntrusts();
-
-		// 凌晨计算理财收益
-		caculateFinanceIncome();
 	}
 
 	private void getEntrusts() {
@@ -158,13 +155,13 @@ public class EntrustTimer extends BaseImpl {
 	}
 
 	// 计算理财收益
-	private void caculateFinanceIncome() {
+	public void caculateFinanceIncome() {
 		try {
 			if (log.isDebugEnabled()) {
 				log.debug("开始计算理财收益...");
 			}
 			// 1、更新理财收益记录表
-			financeMapper.updateCurrentIncome(StringUtil.getCurrentYearDays());
+			// financeMapper.updateCurrentIncome(StringUtil.getCurrentYearDays());
 
 			List<FinanceIncomeDO> result = financeMapper.queryFinanceIncome();
 
@@ -177,36 +174,44 @@ public class EntrustTimer extends BaseImpl {
 			List<FundFlowDO> feeOfCapital = new ArrayList<FundFlowDO>();
 			for (FinanceIncomeDO income : result) {
 				String nickname = income.getNickname();
-				String incomes = income.getIncome() + ""; 
+				Float currentIncomeOfDay = income.getIncome();
+				if (currentIncomeOfDay == 0f) {
+					continue;
+				}
 				String ticket = income.getTicket();
 				FundFlowDO flowDO = new FundFlowDO(nickname,
-						FundFlowEnum.FINANCE_INCOME.getType(), incomes,
-						MessageFormat.format(FundFlowEnum.FINANCE_INCOME.getDesc(),ticket));
+						FundFlowEnum.FINANCE_INCOME.getType(),
+						currentIncomeOfDay + "", MessageFormat.format(
+								FundFlowEnum.FINANCE_INCOME.getDesc(), ticket));
 				fee.add(flowDO);
 
 				if (log.isDebugEnabled()) {
-					log.debug("用户【" + nickname + "】获取理财收益【" + incomes + "】");
+					log.debug("用户【" + nickname + "】获取理财["+ticket+"]收益【"
+							+ currentIncomeOfDay + "】");
 				}
 
 				// 计算是否理财产品到期，如果到期需要归还本金
-				String money = ""+income.getFinanceLimit();
+				String money = "" + income.getFinanceLimit();
 				if (StringUtils.equals("0", income.getNum())) {
 					FundFlowDO flow = new FundFlowDO(nickname,
 							FundFlowEnum.FINANCE_CAPATAL.getType(), money,
-							MessageFormat.format(FundFlowEnum.FINANCE_CAPATAL.getDesc(),ticket));
+							MessageFormat.format(
+									FundFlowEnum.FINANCE_CAPATAL.getDesc(),
+									ticket));
 					feeOfCapital.add(flow);
 
 					if (log.isDebugEnabled()) {
-						log.debug("用户【" + nickname + "】有理财到期，归还本金" + money);
+						log.debug("用户【" + nickname + "】的理财["+income.getTicket()+"]到期，归还本金" + money);
 					}
 				}
 
 			}
+			// 记录流水
 			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
 
 			if (!feeOfCapital.isEmpty()) {
 				// 更新本金
-				batchMapper.batchInsert(TradeMapper.class,
+				batchMapper.batchInsert(FinanceMapper.class,
 						"updateCapitalBatch", feeOfCapital);
 
 				// 记录流水

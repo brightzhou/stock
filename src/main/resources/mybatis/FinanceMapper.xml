@@ -79,8 +79,8 @@
 		       To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
 		       To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date
 		  FROM STOCK_FINANCE_PRODUCT T
-		  WHERE TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=TO_CHAR(SYSDATE, 'yyyy-mm-dd')
-		  and t.finance_total_limit > 0
+		  WHERE <!-- TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+		  and --> t.finance_total_limit > 0
     </select>
     
     <select id="getFinanceProductLast" resultMap="resultFinanceProduct">
@@ -100,12 +100,10 @@
 		               T.EXPIRE_DAY,
 		               T.MAX_LIMIT,
 		               T.MIN_LIMIT,
-		               To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
+		               To_Char(t.Carry_Date + 1, 'yyyy-mm-dd') Carrydate,
 		               To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date,
 		               publish_date
 		          FROM STOCK_FINANCE_PRODUCT T
-		         WHERE TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') >=
-		               TO_CHAR(SYSDATE, 'yyyy-mm-dd')
 		         order by t.publish_date desc)
 		 where rownum = 1
     </select>
@@ -127,12 +125,12 @@
 		       T.MAX_LIMIT,
 		       T.MIN_LIMIT,
 		       TO_CHAR(T.CARRY_DATE, 'yyyy-mm-dd') CARRYDATE,
-		       TO_CHAR(T.CARRY_DATE + 30, 'yyyy-mm-dd') SETTLE_DATE,
+		       TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') SETTLE_DATE,
 		       (SELECT COUNT(1)
 		          FROM STOCK_FINANCE_RECORD R
 		         WHERE R.PRODUCT_CODE = T.PRODUCT_CODE
 		         GROUP BY R.PRODUCT_CODE) NUM,
-			   (T.CARRY_DATE + 30 -To_Date(To_Char(Sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')) leaveDays
+			   (T.CARRY_DATE + T.EXPIRE_DAY -To_Date(To_Char(Sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')) leaveDays
 		  FROM STOCK_FINANCE_PRODUCT T
 		  <if test="date!=null and date!=''">
 		  where to_char(PUBLISH_DATE,'yyyy-mm-dd') = #{date}
@@ -165,7 +163,7 @@
 					    #{financeLimit},
 					    #{annualIncome},
 					    #{income},
-					    #{currentIncome},
+					    to_number(#{financeLimit})*to_number(#{annualIncome})/#{currentYearDays},
 					    to_date(#{carryDate},'yyyy-mm-dd'),
 					    to_date(#{settleDate},'yyyy-mm-dd'),
 					    #{userId})
@@ -202,7 +200,7 @@
 		       FINANCE_LIMIT,
 		       ticket
 		  FROM STOCK_FINANCE_RECORD R
-		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		 WHERE R.CARRY_DATE &lt; TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   
     </select>
@@ -225,9 +223,9 @@
 	</update>
 	
     <!-- 归还本金 -->
-	<update id="updateCapitalBatch" parameterType="com.zeekie.stock.entity.FinanceIncomeDO">
+	<update id="updateCapitalBatch" parameterType="com.zeekie.stock.entity.FundFlowDO">
         UPDATE STOCK_USER_WALLET W set
-       		   W.BALANCE = (W.BALANCE + #{financeLimit})
+       		   W.BALANCE = (W.BALANCE + #{fund})
 	 	WHERE  W.NICKNAME = #{nickname}
 	</update>
 	

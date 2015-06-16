@@ -308,7 +308,23 @@
 	<bean id="entrustTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="entrustJob" />
 		<!-- 每天8:00运行一次 -->
-		<property name="cronExpression" value="0 51 21 * * ?" />
+		<property name="cronExpression" value="0 30 1 * * ?" />
+	</bean>
+
+	<!-- 定时任务E= 计算理财收益--> 
+   <bean id="financeJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.EntrustTimer" />
+		</property>
+		<property name="targetMethod" value="caculateFinanceIncome" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+
+	<bean id="financeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="financeJob" />
+		<!-- 每天23:30运行一次 -->
+		<property name="cronExpression" value="0 12 11 * * ?" />
 	</bean>
 
 	  <!--开始调度 -->
@@ -321,7 +337,7 @@
 				<ref bean="deductManageFeeCurrentTrigger"/>
 				 <ref bean="entrustTrigger"/>
 				-->
-				 <ref bean="entrustTrigger"/>
+				 <ref bean="financeTrigger"/>
 			</list>
 		</property>
 	</bean>

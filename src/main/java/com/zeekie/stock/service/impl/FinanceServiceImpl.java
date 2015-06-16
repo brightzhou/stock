@@ -73,12 +73,10 @@ public class FinanceServiceImpl implements FinanceService {
 		FinanceProductDO productDO = financeMapper.getFinanceProduct();
 		Map<String, String> map = new HashMap<String, String>();
 		try {
-			if (null != productDO) {
-				return BeanMapUtil.convertBean(productDO);
-			} else {
-				return BeanMapUtil.convertBean(financeMapper
-						.getFinanceProductLast());
+			if (null == productDO) {
+				productDO = financeMapper.getFinanceProductLast();
 			}
+			return BeanMapUtil.convertBean(productDO);
 		} catch (IntrospectionException e) {
 			log.error(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
@@ -96,6 +94,7 @@ public class FinanceServiceImpl implements FinanceService {
 		String financeLimit = form.getFinanceLimit();
 		String userId = form.getUserId();
 		String productName = form.getFinanceProduct();
+		form.setCurrentYearDays(StringUtil.getCurrentYearDays());
 		String balance = financeMapper.checkBalance(userId, financeLimit);
 		if (StringUtils.isBlank(balance)) {
 			return Constants.CODE_BALANCE_LITTLE;

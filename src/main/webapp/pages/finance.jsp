@@ -59,19 +59,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="7%" field="financeProduct" headerAlign="center" align="center">
                         理财名称
                     </div>
-                    <div width="6%" field="financeTotalLimit" headerAlign="center" align="center">
+                    <div width="6%" field="financeTotalLimit" headerAlign="center" align="center" >
                         额度
                     </div>
-                    <div field="annualIncome" width="5%"  headerAlign="center" align="center">
+                    <div field="annualIncome" width="5%"  headerAlign="center" align="center" >
                         年收益
                     </div>
-                    <div field="expireDay" width="6%"  headerAlign="center" align="center">
+                    <div field="expireDay" width="6%"  headerAlign="center" align="center" >
                         期限
                     </div>
-                    <div field="maxLimit" width="10%"  headerAlign="center" align="center">
+                    <div field="maxLimit" width="10%"  headerAlign="center" align="center" >
                         限购最大额度
                     </div>
-                    <div width="10%" field="minLimit" headerAlign="center" align="center">
+                    <div width="10%" field="minLimit" headerAlign="center" align="center" >
                         限购最小额度
                     </div>
                     <div width="7%" field="carryDate" headerAlign="center" align="center">
@@ -102,14 +102,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         });
     }
     
-    var status='1';
+    var status='';
     function changeStatus(e) {
         var re = e.record;
         var totalLimit = re.financeTotalLimit;
+        if(totalLimit > 0){
+        	status+='1';
+        }
         if (parseInt(re.leaveDays)>0) {
-	        if(totalLimit <= 0){
-	        	status = '0';
-	        }
         	return '<span><font color=green>离结息日还剩('+re.leaveDays+')天</font></span>';
         }else{
         	return '<span><font color=red>已经结束</font></span>';
@@ -121,7 +121,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         if (re.num=='' || re.num==null) {
         	return '<span><font color=red>未购买</font></span>';
         }else{
-        	status = '1';
         	return '<span class="link_2"><a  onclick="queryDetail(\''+re.productCode+'\')">'+re.num+'</a></span>&nbsp;&nbsp;';
         }
     }
@@ -137,7 +136,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     function add(){
     	
-    	if(status=='1'){
+    	if(status!=''){
     		mini.alert('仍然有产品在售卖中，不能新增');
     		return;
     	}
@@ -146,8 +145,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		mini.open({
 			url : url,
 			title : "新增理财产品",
-			width : 500,
-			height : 350,
+			width : 600,
+			height : 500,
 			onload : function() {
 				/* var iframe = this.getIFrameEl();
 				var data = { value: mini.get("type").getValue(),

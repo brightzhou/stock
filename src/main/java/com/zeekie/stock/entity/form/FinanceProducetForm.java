@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity.form;
 
+import com.zeekie.stock.util.StringUtil;
+
 public class FinanceProducetForm {
 
 	private Long id;
@@ -12,7 +14,7 @@ public class FinanceProducetForm {
 	/**
 	 * 当前收益
 	 */
-	private String currentIncome = "0";
+	private String currentIncome;
 
 	/**
 	 * 產品代碼
@@ -53,6 +55,26 @@ public class FinanceProducetForm {
 	 * 用户id
 	 */
 	private String userId;
+
+	/**
+	 * 当年有多少天
+	 */
+	private Integer currentYearDays;
+
+	/**
+	 * @return the currentYearDays
+	 */
+	public Integer getCurrentYearDays() {
+		return currentYearDays;
+	}
+
+	/**
+	 * @param currentYearDays
+	 *            the currentYearDays to set
+	 */
+	public void setCurrentYearDays(Integer currentYearDays) {
+		this.currentYearDays = currentYearDays;
+	}
 
 	/**
 	 * @return the ticket
