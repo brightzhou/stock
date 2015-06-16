@@ -919,8 +919,7 @@ public class StockServiceImpl implements TradeService {
 					if(dictionariesDO!=null){
 					   map.put("assignRadio",dictionariesDO.getDicValue());
 	                }
-					
-	            }
+				}
 				/**  end 放入杠杆倍数   update 20150616*/
 			} else {
 				map.put("flag", "0");
