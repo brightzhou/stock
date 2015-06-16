@@ -80,7 +80,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="6%" field="num" headerAlign="center" align="center" renderer="changeContent">
                         购买人数
                     </div>
-                    <div width="10%" field="leaveDays" headerAlign="center" align="center" renderer="changeStatus">
+                    <div width="10%" field="leaveDays" headerAlign="center" align="center" renderer="changeStatus" allowSort="true">
                         状态
                     </div>
                 </div>

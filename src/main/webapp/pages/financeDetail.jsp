@@ -39,6 +39,9 @@ String productCode = request.getParameter("productCode");
                     <div field="financeProduct" width="5%"  headerAlign="center" align="center" >
                         产品名称
                     </div>
+                    <div field="financeLimit" width="5%"  headerAlign="center" align="center" >
+                        购买额度
+                    </div>
                     <div  field="income" headerAlign="center" align="center" width="5%">
                         总收益
                     </div>

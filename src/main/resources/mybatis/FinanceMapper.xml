@@ -56,6 +56,7 @@
 		<result column="FINANCE_PRODUCT" property="financeProduct" jdbcType="VARCHAR"/>
 		<result column="INCOME" property="income" jdbcType="VARCHAR"/>
 		<result column="CURRENT_INCOME" property="currentIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="FINANCE_LIMIT" property="financeLimit" jdbcType="VARCHAR"/>
 		<result column="CARRY_DATE" property="carryDate" jdbcType="VARCHAR"/>
 		<result column="SETTLE_DATE" property="settleDate" jdbcType="VARCHAR"/>
 		<result column="BUY_DATE" property="buyDate" jdbcType="VARCHAR"/>
@@ -117,25 +118,37 @@
     
     <select id="getAllCurrentFinance" resultMap="resultAllCurrentFinance" parameterType="string">
     	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		SELECT T.PRODUCT_CODE,
-		       T.FINANCE_PRODUCT,
-		       T.FINANCE_TOTAL_LIMIT,
-		       T.ANNUAL_INCOME,
-		       T.EXPIRE_DAY,
-		       T.MAX_LIMIT,
-		       T.MIN_LIMIT,
-		       TO_CHAR(T.CARRY_DATE, 'yyyy-mm-dd') CARRYDATE,
-		       TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') SETTLE_DATE,
-		       (SELECT COUNT(1)
-		          FROM STOCK_FINANCE_RECORD R
-		         WHERE R.PRODUCT_CODE = T.PRODUCT_CODE
-		         GROUP BY R.PRODUCT_CODE) NUM,
-			   (T.CARRY_DATE + T.EXPIRE_DAY -To_Date(To_Char(Sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')) leaveDays
-		  FROM STOCK_FINANCE_PRODUCT T
-		  <if test="date!=null and date!=''">
-		  where to_char(PUBLISH_DATE,'yyyy-mm-dd') = #{date}
-		  </if>
-		 ORDER BY PUBLISH_DATE DESC
+				select Product_Code,
+                       Finance_Product,
+                       Finance_Total_Limit,
+                       Annual_Income,
+                       Expire_Day,
+                       Max_Limit,
+                       Min_Limit,
+                       Carrydate,
+                       Settle_Date,
+                       Num,
+                       Leavedays
+				from (
+				SELECT T.PRODUCT_CODE,
+				       T.FINANCE_PRODUCT,
+				       T.FINANCE_TOTAL_LIMIT,
+				       T.ANNUAL_INCOME,
+				       T.EXPIRE_DAY,
+				       T.MAX_LIMIT,
+				       T.MIN_LIMIT,
+				       TO_CHAR(T.CARRY_DATE, 'yyyy-mm-dd') CARRYDATE,
+				       TO_CHAR(T.CARRY_DATE + T.EXPIRE_DAY, 'yyyy-mm-dd') SETTLE_DATE,
+				       (SELECT COUNT(1)
+				          FROM STOCK_FINANCE_RECORD R
+				         WHERE R.PRODUCT_CODE = T.PRODUCT_CODE
+				         GROUP BY R.PRODUCT_CODE) NUM,
+					   (T.CARRY_DATE + T.EXPIRE_DAY -To_Date(To_Char(Sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')) leaveDays
+				  FROM STOCK_FINANCE_PRODUCT T
+				  <if test="date!=null and date!=''">
+				  where to_char(PUBLISH_DATE,'yyyy-mm-dd') = #{date}
+				  </if>
+				 ORDER BY PUBLISH_DATE DESC)
 		 <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
     </select>
     
@@ -261,7 +274,7 @@
     <select id="queryFinanceDetail" parameterType="string" resultMap="resultFinanceDetail">
     	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
     	select (select u.nickname from stock_user u where u.id = r.user_id )nickname,
-    		TICKET,PRODUCT_CODE,FINANCE_PRODUCT,INCOME,CURRENT_INCOME,TO_CHAR(CARRY_DATE, 'yyyy-mm-dd') CARRY_DATE,
+    		TICKET,PRODUCT_CODE,FINANCE_PRODUCT,INCOME,CURRENT_INCOME,TO_CHAR(CARRY_DATE, 'yyyy-mm-dd') CARRY_DATE,FINANCE_LIMIT,
                        TO_CHAR(SETTLE_DATE, 'yyyy-mm-dd') SETTLE_DATE,to_char(r.BUY_DATE, 'yyyy-mm-dd HH24:MI:ss')BUY_DATE
     	 from STOCK_FINANCE_RECORD r 
     	where product_code = #{productCode}

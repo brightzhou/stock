@@ -637,10 +637,10 @@
          WHERE T.IS_CURRENT = '1'
            AND T.NICKNAME = R.NICKNAME
            AND T.NICKNAME = W.NICKNAME) fee,
-        (SELECT SUM(current_income)
+        (SELECT SUM(finance_limit)
 		  FROM STOCK_FINANCE_RECORD R
 		 WHERE r.user_id = u.id
-		   AND R.SETTLE_DATE >=
+		   AND R.SETTLE_DATE >
 		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) finance  
 	  From Stock_User_Wallet w,stock_user u
 	 Where w.Nickname = #{nickname}
