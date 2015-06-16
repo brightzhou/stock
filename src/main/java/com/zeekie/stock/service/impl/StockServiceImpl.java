@@ -909,10 +909,18 @@ public class StockServiceImpl implements TradeService {
 				map.put("debt",
 						andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
 				map.put("balance", andDebtDO.getBalance() + "");
-				/** start 放入杠杆倍数  */
-				StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
-				map.put("assignRadio",Float.toString(radioDO.getAssignRadio()));
-				/**  end  放入杠杆倍数  */
+				 
+				/** start 放入杠杆倍数   update 20150616 */
+				if("1".equals(andDebtDO.getOperation())){
+					StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
+					map.put("assignRadio",Float.toString(radioDO.getAssignRadio()));
+                }else{
+					DictionariesDO dictionariesDO  = trade.getDictionariesByDicWord("assignRadio") ;
+					if(dictionariesDO!=null){
+					   map.put("assignRadio",dictionariesDO.getDicValue());
+	                }
+				}
+				/**  end 放入杠杆倍数   update 20150616*/
 			} else {
 				map.put("flag", "0");
 				map.put("debt", "");
