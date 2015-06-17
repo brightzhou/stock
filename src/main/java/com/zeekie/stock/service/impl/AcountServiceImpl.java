@@ -371,6 +371,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				String finance = account.getFinance() + "";
 				map.put("finance", (StringUtils.isBlank(finance)) ? ""
 						: finance);
+				map.put("isStock", account.getIsStock());
 			} else {
 				map.put("balance", "0.00");
 				map.put("guaranteeCash", "0.00");
@@ -378,6 +379,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("freezeCash", "0.00");
 				map.put("fee", "");
 				map.put("finance", "0.00");
+				map.put("isStock", "4");
 			}
 			if (StringUtils.isNotBlank(version)) {
 				acounter.updateUserAppVersion(nickname, version);

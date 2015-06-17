@@ -602,6 +602,7 @@ public class StockServiceImpl implements TradeService {
 			if (null != pageDO) {
 				Float profitAndLossCash = pageDO.getProfitAndLossCash();
 				Float newProfitAndLossCash = 0f;
+				// 计算补充的亏损值
 				Float loss = 0f;
 				// 如果有亏损，先填平亏损，如果没有，盈利多少就是多少
 				Float balance = 0f;
@@ -739,8 +740,8 @@ public class StockServiceImpl implements TradeService {
 				Float capitalCashNeedFloat = Float.parseFloat(transferData
 						.getCurrentOperateLimit())
 						- Float.parseFloat(orginTradeFund)
-						+ (-1 * Float.parseFloat(result.get("loss")));
-				String capitalCashNeed = capitalCashNeedFloat + "";
+						/*+ (-1 * Float.parseFloat(result.get("loss")))*/;
+				String capitalCashNeed = StringUtil.keepTwoDecimalFloat(capitalCashNeedFloat)+"";
 				if (0f == capitalCashNeedFloat) {// 如果是有亏损，刚够填平亏损或则不够填平亏损，那么配资额度就为0，下面无需再计算账户余额是否够配资
 					flag = "1";
 				} else {
@@ -819,18 +820,33 @@ public class StockServiceImpl implements TradeService {
 			trade.deductGuaranteeCash(addedGuaranteeCash, nickname);
 
 			// 6、记录流水新增配资
-			trade.recordFundflow(nickname,
+/*			trade.recordFundflow(nickname,
 					Constants.CLIENTWALLET_TO_MAINACOUNT, "-"
-							+ addedGuaranteeCash, "增加保证金");
+							+ addedGuaranteeCash, "增加保证金");*/
+			
+			// 第一笔流水记录亏损
+			String loss = result.get("loss");
+			if (!StringUtils.equals("0", loss)) {
+				trade.recordFundflow(
+						nickname,
+						Constants.REPLENISH_LOSS,
+						(StringUtils.startsWith("-", loss) ? loss : "-" + loss),
+						"补充亏损");
+			}
+
 			map.put("flag", flag);
 
 			if (log.isDebugEnabled()) {
-				log.debug("成功【记录资金流水】");
 				log.debug("客户" + nickname + "成功增加保证金结束！");
 			}
 
 			Float deductFee = Float.parseFloat(result.get("needDeductFee"));
 			if (deductFee != 0f) {
+				// 第二笔流水记录增加的保证金
+				trade.recordFundflow(nickname,
+						Constants.CLIENTWALLET_TO_MAINACOUNT, "-" + deductFee,
+						"增加保证金");
+				
 				Map<String, String> param = new HashMap<String, String>();
 				param.put("nickname", nickname);
 				param.put("needDeductFee", result.get("needDeductFee"));

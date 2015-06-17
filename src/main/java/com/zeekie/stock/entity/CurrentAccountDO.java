@@ -33,6 +33,26 @@ public class CurrentAccountDO {
 	private Float finance;
 
 	/**
+	 * 开关
+	 */
+	private String isStock;
+
+	/**
+	 * @return the isStock
+	 */
+	public String getIsStock() {
+		return isStock;
+	}
+
+	/**
+	 * @param isStock
+	 *            the isStock to set
+	 */
+	public void setIsStock(String isStock) {
+		this.isStock = isStock;
+	}
+
+	/**
 	 * @return the finance
 	 */
 	public Float getFinance() {

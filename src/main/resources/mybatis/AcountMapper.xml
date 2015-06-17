@@ -62,6 +62,7 @@
 		<result column="FREEZE_CASH" property="freezeCash" jdbcType="FLOAT"/>
 		<result column="fee" property="fee" jdbcType="FLOAT"/>
 		<result column="finance" property="finance" jdbcType="FLOAT"/>
+		<result column="isStock" property="isStock" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.WithdrawlDO" id="resultDeposit">
@@ -641,7 +642,8 @@
 		  FROM STOCK_FINANCE_RECORD R
 		 WHERE r.user_id = u.id
 		   AND R.SETTLE_DATE >
-		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) finance  
+		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) finance,
+		   u.isStock       
 	  From Stock_User_Wallet w,stock_user u
 	 Where w.Nickname = #{nickname}
 	 and w.nickname = u.nickname

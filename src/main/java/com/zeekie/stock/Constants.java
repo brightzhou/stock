@@ -50,16 +50,16 @@ public class Constants {
 	 * 余额不足 code=2 理财
 	 */
 	public static final String CODE_BALANCE_LITTLE = "2";
-	
+
 	/**
-	 * 理财额度已经用完 code=3 
+	 * 理财额度已经用完 code=3
 	 */
 	public static final String CODE_TOTAL_lIMIT_LITTLE = "3";
-	
+
 	/**
 	 * 理财额度已经达到其最大上限 code=4
 	 */
-	public static final String CODE_REACH_MAX_lIMIT= "4";
+	public static final String CODE_REACH_MAX_lIMIT = "4";
 
 	public static final String CODE_FAILURE_NO_ACCOUNT = "3#";
 
@@ -68,7 +68,7 @@ public class Constants {
 	public static final String ERROR_CODE_WRONG_TEL = "2";
 
 	public static final String ERROR_CODE_WRONG_VERIFYCODE = "3";
-	
+
 	public static final String ERROR_CODE_EXISTS_TELEPHONE = "2";
 
 	// 该用户已经存在
@@ -106,6 +106,8 @@ public class Constants {
 	public static final String TIPS_RETURN_GURANTEE_CASH = "00";// 返回剩余保证金
 
 	public static final String CLIENTWALLET_TO_MAINACOUNT = "10";// 扣除客户账户的钱（用于保证金）
+
+	public static final String REPLENISH_LOSS = "11";// 补充亏损
 
 	public static final String MAINACOUNT_TO_STOCKACCOUNT = "20";// 从主账户划出钱到子账户（配资）
 
