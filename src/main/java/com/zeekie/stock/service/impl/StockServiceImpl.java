@@ -740,7 +740,7 @@ public class StockServiceImpl implements TradeService {
 				Float capitalCashNeedFloat = Float.parseFloat(transferData
 						.getCurrentOperateLimit())
 						- Float.parseFloat(orginTradeFund)
-						/*+ (-1 * Float.parseFloat(result.get("loss")))*/;
+						+ (-1 * Float.parseFloat(result.get("loss")));
 				String capitalCashNeed = StringUtil.keepTwoDecimalFloat(capitalCashNeedFloat)+"";
 				if (0f == capitalCashNeedFloat) {// 如果是有亏损，刚够填平亏损或则不够填平亏损，那么配资额度就为0，下面无需再计算账户余额是否够配资
 					flag = "1";
@@ -830,8 +830,8 @@ public class StockServiceImpl implements TradeService {
 				trade.recordFundflow(
 						nickname,
 						Constants.REPLENISH_LOSS,
-						(StringUtils.startsWith("-", loss) ? loss : "-" + loss),
-						"补充亏损");
+						(StringUtils.startsWith(loss, "-") ? loss : "-" + loss),
+						"补充保证金（补充亏损）");
 			}
 
 			map.put("flag", flag);
@@ -845,7 +845,7 @@ public class StockServiceImpl implements TradeService {
 				// 第二笔流水记录增加的保证金
 				trade.recordFundflow(nickname,
 						Constants.CLIENTWALLET_TO_MAINACOUNT, "-" + deductFee,
-						"增加保证金");
+						"增加保证金（扩大操盘）");
 				
 				Map<String, String> param = new HashMap<String, String>();
 				param.put("nickname", nickname);

@@ -101,7 +101,7 @@
 		               T.EXPIRE_DAY,
 		               T.MAX_LIMIT,
 		               T.MIN_LIMIT,
-		               To_Char(t.Carry_Date + 1, 'yyyy-mm-dd') Carrydate,
+		               To_Char(t.Carry_Date, 'yyyy-mm-dd') Carrydate,
 		               To_Char(t.Carry_Date + t.EXPIRE_DAY, 'yyyy-mm-dd') Settle_Date,
 		               publish_date
 		          FROM STOCK_FINANCE_PRODUCT T

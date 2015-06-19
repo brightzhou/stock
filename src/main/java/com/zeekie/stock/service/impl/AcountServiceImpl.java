@@ -490,7 +490,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
 			if (!obj.isEmpty()) {
-				String statis[] = new String[] { "1", "4", "8", "a", "A", "B",
+				String statis[] = new String[] { "1", "4", "a", "A", "B",
 						"C", "D" };
 				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
