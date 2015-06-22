@@ -324,7 +324,7 @@
 	<bean id="financeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="financeJob" />
 		<!-- 每天23:30运行一次 -->
-		<property name="cronExpression" value="0 12 11 * * ?" />
+		<property name="cronExpression" value="0 56 17 * * ?" />
 	</bean>
 
 	  <!--开始调度 -->

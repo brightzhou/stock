@@ -160,55 +160,69 @@ public class EntrustTimer extends BaseImpl {
 			if (log.isDebugEnabled()) {
 				log.debug("开始计算理财收益...");
 			}
-			// 1、更新理财收益记录表
 			// financeMapper.updateCurrentIncome(StringUtil.getCurrentYearDays());
 
+			// 1、查询所有需要计算理财收益的名单
 			List<FinanceIncomeDO> result = financeMapper.queryFinanceIncome();
 
-			// 2、更新钱包余额，计算理财收益
-			batchMapper.batchInsert(FinanceMapper.class,
-					"updateFinanceIncomeBatch", result);
+			// 理财收益
+			List<FinanceIncomeDO> caculateIncome = new ArrayList<FinanceIncomeDO>();
 
-			// 3、记录流水
-			List<FundFlowDO> fee = new ArrayList<FundFlowDO>();
+			// 2、理财收益流水
+			List<FundFlowDO> caculateIncomeFlow = new ArrayList<FundFlowDO>();
+
+			// 本金和流水
 			List<FundFlowDO> feeOfCapital = new ArrayList<FundFlowDO>();
 			for (FinanceIncomeDO income : result) {
 				String nickname = income.getNickname();
-				Float currentIncomeOfDay = income.getIncome();
-				if (currentIncomeOfDay == 0f) {
-					continue;
-				}
 				String ticket = income.getTicket();
-				FundFlowDO flowDO = new FundFlowDO(nickname,
-						FundFlowEnum.FINANCE_INCOME.getType(),
-						currentIncomeOfDay + "", MessageFormat.format(
-								FundFlowEnum.FINANCE_INCOME.getDesc(), ticket));
-				fee.add(flowDO);
-
-				if (log.isDebugEnabled()) {
-					log.debug("用户【" + nickname + "】获取理财["+ticket+"]收益【"
-							+ currentIncomeOfDay + "】");
-				}
-
-				// 计算是否理财产品到期，如果到期需要归还本金
 				String money = "" + income.getFinanceLimit();
-				if (StringUtils.equals("0", income.getNum())) {
-					FundFlowDO flow = new FundFlowDO(nickname,
-							FundFlowEnum.FINANCE_CAPATAL.getType(), money,
-							MessageFormat.format(
-									FundFlowEnum.FINANCE_CAPATAL.getDesc(),
+				String leaveDays = income.getNum();
+				// 不是最后一天，最後一天不計算
+				if (!StringUtils.equals("0", leaveDays)) {
+					Float currentIncomeOfDay = income.getIncome();
+					FundFlowDO flowDO = new FundFlowDO(nickname,
+							FundFlowEnum.FINANCE_INCOME.getType(),
+							currentIncomeOfDay + "", MessageFormat.format(
+									FundFlowEnum.FINANCE_INCOME.getDesc(),
 									ticket));
-					feeOfCapital.add(flow);
+					caculateIncomeFlow.add(flowDO);
 
+					caculateIncome.add(income);
 					if (log.isDebugEnabled()) {
-						log.debug("用户【" + nickname + "】的理财["+income.getTicket()+"]到期，归还本金" + money);
+						log.debug("用户【" + nickname + "】获取理财[" + ticket + "]收益【"
+								+ currentIncomeOfDay + "】");
+					}
+					// 如果是到期前一天需要归还本金
+					if (StringUtils.equals("1", leaveDays)) {
+						FundFlowDO flow = new FundFlowDO(nickname,
+								FundFlowEnum.FINANCE_CAPATAL.getType(), money,
+								MessageFormat.format(
+										FundFlowEnum.FINANCE_CAPATAL.getDesc(),
+										ticket));
+						feeOfCapital.add(flow);
+
+						// 到期的不计算收益只归还本金,这里踢除掉
+						if (log.isDebugEnabled()) {
+							log.debug("用户【" + nickname + "】的理财["
+									+ income.getTicket() + "]到期，归还本金" + money);
+						}
 					}
 				}
 
 			}
-			// 记录流水
-			batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
 
+			// 3、更新钱包余额，计算理财收益
+			if (!caculateIncome.isEmpty()) {
+				batchMapper.batchInsert(FinanceMapper.class,
+						"updateFinanceIncomeBatch", caculateIncome);
+
+				// 4、理财收益流水
+				batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch",
+						caculateIncomeFlow);
+			}
+
+			// 5、归还本金
 			if (!feeOfCapital.isEmpty()) {
 				// 更新本金
 				batchMapper.batchInsert(FinanceMapper.class,

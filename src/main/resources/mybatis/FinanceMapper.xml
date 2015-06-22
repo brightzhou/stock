@@ -213,19 +213,20 @@
 		       FINANCE_LIMIT,
 		       ticket
 		  FROM STOCK_FINANCE_RECORD R
-		 WHERE R.CARRY_DATE &lt; TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+		   AND CURRENT_INCOME != 0
 		   
     </select>
     
-    <update id="updateCurrentIncome" parameterType="string">
+<!--     <update id="updateCurrentIncome" parameterType="string">
 	    UPDATE STOCK_FINANCE_RECORD R
 		   SET R.CURRENT_INCOME =
 		       ((TRUNC(TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) -
 		       TRUNC(R.CARRY_DATE)) * R.FINANCE_LIMIT * R.ANNUAL_INCOME) / #{currentYearDays}
 		 WHERE R.CARRY_DATE &lt;= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
 		   AND R.SETTLE_DATE >= TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')
-    </update>
+    </update> -->
     
     
     <!-- 计算收益 -->
