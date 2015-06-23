@@ -102,8 +102,8 @@
 		<result column="serviceCharge" property="serviceCharge" jdbcType="VARCHAR"/>
 		<result column="commission" property="commission" jdbcType="VARCHAR"/>
 		<result column="financialOptimization" property="financialOptimization" jdbcType="VARCHAR"/>
-		<result column="bond" property="bond" jdbcType="VARCHAR"/>
-		
+	<!-- 	<result column="bond" property="bond" jdbcType="VARCHAR"/> -->
+		<result column="debt" property="debt" jdbcType="VARCHAR"/>
 		<result column="transaction_day" property="transactionDay" jdbcType="VARCHAR"/>
 	</resultMap>
 	
@@ -119,13 +119,12 @@
 		<result column="IS_CACHE" property="isCache" jdbcType="VARCHAR"/>
 		<result column="Status" property="status" jdbcType="VARCHAR"/>
 	</resultMap>
-	
  
-	
-	
-	  
-	  
-	  
+	<resultMap type="com.zeekie.stock.entity.StatisticsDO" id="resultOtherStaticValue">
+		<result column="SUM_PROFIT_LOSS_CASH" property="profit" jdbcType="VARCHAR"/>
+		<result column="SUM_BALANCE" property="balance" jdbcType="VARCHAR"/>
+		<result column="SUM_FUND" property="bond" jdbcType="VARCHAR"/>
+	</resultMap>
 	  
 	<insert id="storeOperatorAcountInfo" parameterType="com.zeekie.stock.entity.TradeDO">
 		<!-- <selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -710,19 +709,32 @@
 
     <select id="queryStatistics" resultMap="resultStatistics" parameterType="com.zeekie.stock.web.StatisticsPage">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-			 select (select -sum(t.Fund) From Stock_Fund_Flow t
-		  Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') =  a.transaction_day
-		   And Trim(t.Transaction_Type) = '30') as serviceCharge , ( Select Sum(Fund)
-		  From Stock_Fund_Flow t
-		 Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') = a.transaction_day
-		   And Trim(t.Transaction_Type) = '120' ) as commission ,( Select Sum(Fund)
-		  From Stock_Fund_Flow t
-		 Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') =  a.transaction_day
-		   And Trim(t.Transaction_Type) = '130') as financialOptimization,(  Select -Sum(Fund)
-		  From Stock_Fund_Flow t
-		 Where To_Char(t.Transaction_Time, 'yyyy-mm-dd') = a.transaction_day
-		   And Trim(t.Transaction_Type) = '10' ) as bond  , a.transaction_day  
-		   from  ( select   To_Char(t.Transaction_Time, 'yyyy-mm-dd') as  transaction_day  from Stock_Fund_Flow t
+			SELECT (SELECT -SUM(T.FUND)
+	          FROM STOCK_FUND_FLOW T
+	         WHERE TO_CHAR(T.TRANSACTION_TIME, 'yyyy-mm-dd') = A.TRANSACTION_DAY
+	           AND TRIM(T.TRANSACTION_TYPE) = '30') AS SERVICECHARGE,
+	       (SELECT SUM(FUND)
+	          FROM STOCK_FUND_FLOW T
+	         WHERE TO_CHAR(T.TRANSACTION_TIME, 'yyyy-mm-dd') = A.TRANSACTION_DAY
+	           AND TRIM(T.TRANSACTION_TYPE) = '120') AS COMMISSION,
+	       (SELECT SUM(FUND)
+	          FROM STOCK_FUND_FLOW T
+	         WHERE TO_CHAR(T.TRANSACTION_TIME, 'yyyy-mm-dd') = A.TRANSACTION_DAY
+	           AND TRIM(T.TRANSACTION_TYPE) = '130') AS FINANCIALOPTIMIZATION,
+<!-- 	       (SELECT -SUM(FUND)
+	          FROM STOCK_FUND_FLOW T
+	         WHERE TO_CHAR(T.TRANSACTION_TIME, 'yyyy-mm-dd') = A.TRANSACTION_DAY
+	           AND TRIM(T.TRANSACTION_TYPE) = '10') AS BOND, -->
+	       A.TRANSACTION_DAY,
+	       (SELECT -SUM(S.DEBT)
+	          FROM STOCK_USER_WALLET S
+	         WHERE EXISTS (SELECT 1
+	                  FROM STOCK_USER_OPERATE_MAININFO K
+	                 WHERE K.NICKNAME = S.NICKNAME
+	                   AND K.IS_CURRENT = '1'
+	                   AND TO_CHAR(K.START_DATE, 'yyyy-mm-dd') =
+	                       A.TRANSACTION_DAY)) DEBT 
+			from  ( select   To_Char(t.Transaction_Time, 'yyyy-mm-dd') as  transaction_day  from Stock_Fund_Flow t 
 		   <where>
 			 <if test="day != null">
 			      To_Char(t.Transaction_Time, 'yyyy-mm-dd') = #{day}
@@ -738,6 +750,22 @@
 			 </if>
 		  </where>
       group by  To_Char(t.Transaction_Time, 'yyyy-mm-dd')    )  a
+    </select>
+    
+    <select id="queryOtherStaticValue" resultMap="resultOtherStaticValue">
+    	SELECT (SELECT -SUM(FUND)
+		          FROM STOCK_FUND_FLOW T
+		         WHERE TRIM(T.TRANSACTION_TYPE) = '10'
+		           AND EXISTS (SELECT 1
+		                  FROM STOCK_USER_OPERATE_MAININFO M
+		                 WHERE M.NICKNAME = T.NICKNAME
+		                   AND M.IS_CURRENT = '1')) SUM_FUND,
+		       (SELECT SUM(M.PROFIT_LOSS_CASH)
+		          FROM STOCK_USER_OPERATE_MAININFO M
+		         WHERE M.IS_CURRENT = '1') SUM_PROFIT_LOSS_CASH,
+		       (SELECT SUM(W.BALANCE) FROM STOCK_USER_WALLET W) SUM_BALANCE
+ 		 FROM DUAL
+    
     </select>
 	
 	<insert id="insertDictionaries" parameterType="com.zeekie.stock.entity.DictionariesDO" >

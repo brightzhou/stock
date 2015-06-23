@@ -50,21 +50,29 @@ System.out.println(yearMonth);
                 <div property="columns">
                     <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
                     <div  field="transactionDay"  headerAlign="center" align="center">
-                     日期
+                        日期
                     </div> 
                     <div width="15%" field="serviceCharge" headerAlign="center" align="center">
                         服务费
                     </div>
                     <div  field="commission"  headerAlign="center" align="center">
-                    提成
+                       提成
                     </div>
                     <div  field="financialOptimization"  headerAlign="center" align="center">
                         财务优化
                     </div>
-                    <div  field="bond"  headerAlign="center" align="center">
-                       保证金
+                    <div  field="debt"  headerAlign="center" align="center">
+                       欠款
                     </div>
-                             
+                    <div  field="bond"  headerAlign="center" align="center">
+                       保证金总和
+                    </div>
+                    <div  field="profit"  headerAlign="center" align="center">
+                       盈亏金额总和
+                    </div>
+                    <div  field="balance"  headerAlign="center" align="center">
+                       钱包余额总和
+                    </div>
     
                 </div>
             </div>

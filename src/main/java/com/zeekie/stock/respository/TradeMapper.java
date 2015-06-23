@@ -238,74 +238,96 @@ public interface TradeMapper {
 	 */
 	void updateStopBuyFlag(@Param("operateId") String operateId,
 			@Param("flag") String flag);
-	
-	
-    CurrentAccountDO getUserOperateAcount(@Param("nickname") String nickname) throws Exception;
-    /**
-     * 统计每天收益
-     * @return
-     * @throws Exception
-     */
-    List<StatisticsDO> queryStatistics(StatisticsPage statisticsPage) throws Exception;
-    
-    /**
-     * 统计每天收益总条数
-     * @return
-     * @throws Exception
-     */
-    Long queryStatisticsCount(StatisticsPage statisticsPage) throws Exception;
-    
-    
-    /**
-     * 添加字典信息
-     * @param dictionariesDO
-     * @return
-     * @throws Exception
-     */
-    Long  insertDictionaries(DictionariesDO dictionariesDO) throws Exception ;
-	
+
+	CurrentAccountDO getUserOperateAcount(@Param("nickname") String nickname)
+			throws Exception;
+
+	/**
+	 * 统计每天收益
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	List<StatisticsDO> queryStatistics(StatisticsPage statisticsPage)
+			throws Exception;
+
+	/**
+	 * 统计每天收益总条数
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	Long queryStatisticsCount(StatisticsPage statisticsPage) throws Exception;
+
+	/**
+	 * 添加字典信息
+	 * 
+	 * @param dictionariesDO
+	 * @return
+	 * @throws Exception
+	 */
+	Long insertDictionaries(DictionariesDO dictionariesDO) throws Exception;
+
 	/**
 	 * 删除字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	void  deleteDictionaries(@Param("id") String id);
-	
+	void deleteDictionaries(@Param("id") String id);
+
 	/**
 	 * 修改字典信息
+	 * 
 	 * @param dictionariesDO
 	 * @return
 	 */
-	Long  updateDictionaries(DictionariesDO dictionariesDO);
-	
+	Long updateDictionaries(DictionariesDO dictionariesDO);
+
 	/**
 	 * 查询字典信息
+	 * 
 	 * @param dictionariesPage
 	 * @return
 	 */
 	List<DictionariesDO> queryDictionaries(DictionariesPage dictionariesPage);
+
 	/**
 	 * 查询字典信息数量
+	 * 
 	 * @param dictionariesPage
 	 * @return
 	 */
 	Long queryDictionariesCount(DictionariesPage dictionariesPage);
+
 	/**
 	 * 查找字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public DictionariesDO  getDictionaries(@Param("id") String id);
+	public DictionariesDO getDictionaries(@Param("id") String id);
+
 	/**
 	 * 通过字典KEY查找字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public   DictionariesDO  getDictionariesByDicWord(@Param("dicWord") String dicWord);	
+	public DictionariesDO getDictionariesByDicWord(
+			@Param("dicWord") String dicWord);
+
 	/**
 	 * 查找字典信息
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public  List<DictionariesDO>  queryDictionarieList(DictionariesDO dictionariesDO);	
+	public List<DictionariesDO> queryDictionarieList(
+			DictionariesDO dictionariesDO);
+
+	/*
+	 * 其他統計值
+	 */
+	StatisticsDO queryOtherStaticValue();
 }

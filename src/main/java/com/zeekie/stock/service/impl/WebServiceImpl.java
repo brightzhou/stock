@@ -766,6 +766,14 @@ public class WebServiceImpl implements WebService {
 			total = trade.queryStatisticsCount(statisticsPage);
 			if (0 != total) {
 				result = trade.queryStatistics(statisticsPage);
+
+				StatisticsDO statisticsDO = trade.queryOtherStaticValue();
+
+				for (StatisticsDO item : result) {
+					item.setBalance(statisticsDO.getBalance());
+					item.setBond(statisticsDO.getBond());
+					item.setProfit(statisticsDO.getProfit());
+				}
 			}
 			return new DefaultPage<StatisticsDO>(total, result);
 		} catch (Exception e) {
