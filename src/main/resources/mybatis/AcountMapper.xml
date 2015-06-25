@@ -356,6 +356,13 @@
 		<result column="version" property="version" jdbcType="VARCHAR"/>
 	</resultMap> 
  
+ 	<resultMap type="com.zeekie.stock.entity.DownLineUserDO" id="resultDownUser">
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="TRADE_FUND" property="tradeFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="TOTAL_FINANCE_LIMIT" property="totalFinanceFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap> 
+	
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1675,6 +1682,24 @@
    
    <select id="queryDuplicateIdCard" parameterType="string" resultType="string">
    		select 1 from stock_id_card c where  c.ID_CARD = #{idCard} and rownum = 1
+   </select>
+   
+   <select id="getDownUser" parameterType="string" resultMap="resultDownUser">
+		SELECT S.NICKNAME,
+		       (SELECT TRADE_FUND
+		          FROM STOCK_USER_OPERATE_MAININFO M
+		         WHERE M.NICKNAME = S.NICKNAME
+		           AND M.IS_CURRENT = '1') TRADE_FUND,
+		       (SELECT SUM(R.FINANCE_LIMIT)
+		          FROM STOCK_FINANCE_RECORD R
+		         WHERE R.USER_ID = S.ID
+		           AND TO_CHAR(R.SETTLE_DATE, 'yyyy-mm-dd') >=
+		               TO_CHAR(SYSDATE, 'yyyy-mm-dd')) TOTAL_FINANCE_LIMIT
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY T.ID DESC) AS NUM, T.*
+		          FROM STOCK_USER T
+		         WHERE T.REFEREE_ID = #{userId}) S
+		 WHERE NUM &gt; = #{offset} + 1
+		   AND NUM &lt;= #{offset} + 20
    </select>
 	
 </mapper>

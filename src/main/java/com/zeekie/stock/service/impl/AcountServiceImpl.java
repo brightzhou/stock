@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,10 @@ import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.DictionariesDO;
+import com.zeekie.stock.entity.DownLineUserDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.entity.HistoryOperationDO;
 import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.RedpacketAndBalanceDO;
@@ -490,8 +493,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
 			if (!obj.isEmpty()) {
-				String statis[] = new String[] { "1", "4", "a", "A", "B",
-						"C", "D" };
+				String statis[] = new String[] { "1", "4", "a", "A", "B", "C",
+						"D" };
 				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					for (String str : statis) {
@@ -964,10 +967,20 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	@Override
 	public String getDuplicateIdCard(String idCard)
 			throws ServiceInvokerException {
-		if (StringUtils.isNotBlank(acounter
-				.queryDuplicateIdCard(idCard))) {
+		if (StringUtils.isNotBlank(acounter.queryDuplicateIdCard(idCard))) {
 			return Constants.CODE_SUCCESS;
 		}
 		return Constants.CODE_FAILURE;
+	}
+
+	@Override
+	public List<DownLineUserDO> getDownUser(String userId, String offset) {
+		List<DownLineUserDO> downlineDO = new ArrayList<DownLineUserDO>();
+		try {
+			downlineDO = acounter.getDownUser(userId, offset);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return downlineDO;
 	}
 }

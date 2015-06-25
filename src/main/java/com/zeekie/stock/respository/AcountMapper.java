@@ -16,6 +16,7 @@ import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DebtDO;
+import com.zeekie.stock.entity.DownLineUserDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.FundFlowDO;
@@ -705,5 +706,16 @@ public interface AcountMapper {
 	 * @return
 	 */
 	public String queryDuplicateIdCard(@Param("idCard") String idCard);
+
+	/**
+	 * 获取该用户的所有下线
+	 * 
+	 * @param userId
+	 * @param offset
+	 * @return
+	 * @throws Exception
+	 */
+	public List<DownLineUserDO> getDownUser(@Param("userId") String userId,
+			@Param("offset") String offset) throws Exception;
 
 }

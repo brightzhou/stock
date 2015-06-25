@@ -1,10 +1,13 @@
 package com.zeekie.stock.service;
 
+import java.util.List;
 import java.util.Map;
 
-import sitong.thinker.common.exception.ServiceInvokerException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import sitong.thinker.common.exception.ServiceInvokerException;
+
+import com.zeekie.stock.entity.DownLineUserDO;
 
 public interface AcountService {
 
@@ -222,4 +225,12 @@ public interface AcountService {
 	 */
 	public String getDuplicateIdCard(String idCard)
 			throws ServiceInvokerException;
+
+	/**
+	 * 获取
+	 * @param userId
+	 * @param offset
+	 * @return
+	 */
+	public List<DownLineUserDO> getDownUser(String userId, String offset);
 }

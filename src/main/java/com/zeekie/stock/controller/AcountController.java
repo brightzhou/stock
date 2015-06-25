@@ -2,6 +2,8 @@ package com.zeekie.stock.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,10 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.error.Message;
 import sitong.thinker.common.exception.ServiceInvokerException;
+import sitong.thinker.common.page.DefaultPage;
 
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.util.ApiUtils;
+import com.zeekie.stock.web.WithdrawlPage;
 
 /**
  * @Author zeekie
@@ -177,5 +182,13 @@ public class AcountController {
 			log.error(e.getMessage(), e);
 		}
 		return Constants.CODE_SUCCESS;
+	}
+	
+	@ResponseBody
+	@RequestMapping("getDownUser")
+	public ApiResponse getDownUser(
+			@RequestParam("userId") String userId,
+			@RequestParam("offset") String offset) {
+		return ApiUtils.good(operator.getDownUser(userId, offset));
 	}
 }
