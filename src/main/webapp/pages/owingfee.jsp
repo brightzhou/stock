@@ -47,7 +47,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         手机
                     </div>
                     <div  field="oweFee" headerAlign="center" align="center" width="10%" dataType="float" decimalPlaces="2">
-                        欠费情况
+                        拖欠的配资服务费
+                    </div>
+                    <div  field="oweFeeDays" headerAlign="center" align="center" width="10%" dataType="int">
+                        拖欠服务费天数
                     </div>
                     <div  field="profitAndLoss" headerAlign="center" align="center" width="10%" dataType="float" decimalPlaces="2">
                         支付亏损

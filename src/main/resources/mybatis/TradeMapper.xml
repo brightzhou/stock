@@ -753,18 +753,14 @@
     </select>
     
     <select id="queryOtherStaticValue" resultMap="resultOtherStaticValue">
-    	SELECT (SELECT -SUM(FUND)
-		          FROM STOCK_FUND_FLOW T
-		         WHERE TRIM(T.TRANSACTION_TYPE) = '10'
-		           AND EXISTS (SELECT 1
-		                  FROM STOCK_USER_OPERATE_MAININFO M
-		                 WHERE M.NICKNAME = T.NICKNAME
-		                   AND M.IS_CURRENT = '1')) SUM_FUND,
-		       (SELECT SUM(M.PROFIT_LOSS_CASH)
-		          FROM STOCK_USER_OPERATE_MAININFO M
-		         WHERE M.IS_CURRENT = '1') SUM_PROFIT_LOSS_CASH,
-		       (SELECT SUM(W.BALANCE) FROM STOCK_USER_WALLET W) SUM_BALANCE
- 		 FROM DUAL
+    	Select (Select Sum(m.Guarantee_Cash)
+		          From Stock_User_Operate_Maininfo m
+		         Where m.Is_Current = '1') Sum_Fund,
+		       (Select Sum(m.Profit_Loss_Cash)
+		          From Stock_User_Operate_Maininfo m
+		         Where m.Is_Current = '1') Sum_Profit_Loss_Cash,
+		       (Select Sum(w.Balance) From Stock_User_Wallet w) Sum_Balance
+  		  From Dual
     
     </select>
 	
