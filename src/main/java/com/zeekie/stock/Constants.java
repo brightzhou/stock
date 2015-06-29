@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.sf.json.JsonConfig;
 
+import com.hczq.hz.intf.AmServices;
 import com.hundsun.t2sdk.interfaces.IClient;
 import com.tencent.xinge.XingeApp;
 
@@ -273,6 +274,8 @@ public class Constants {
 	// 加密因子
 	public static String factor;
 
+	public static AmServices services;
+
 	public static List<String> user = new ArrayList<String>();
 
 	public static IClient getClient() {
@@ -281,6 +284,10 @@ public class Constants {
 
 	public static XingeApp getXinge() {
 		return new XingeApp(Long.parseLong(accessId), secretkey);
+	}
+
+	public static AmServices getAmService() {
+		return services;
 	}
 
 }

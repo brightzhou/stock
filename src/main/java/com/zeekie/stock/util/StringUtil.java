@@ -1,5 +1,6 @@
 package com.zeekie.stock.util;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -286,7 +287,7 @@ public class StringUtil {
 		}
 		return result;
 	}
-	
+
 	public static JSONArray getCalendar(String yearMonth) {
 
 		String[] ret = yearMonth.split("-");
@@ -421,4 +422,16 @@ public class StringUtil {
 		return c.getActualMaximum(Calendar.DAY_OF_YEAR);
 	}
 
+	/*
+	 * 由数字字符串构造BigDecimal的方法设置BigDecimal的小数位数的方法
+	 */
+	public static BigDecimal parseBigDecimal(String str) {
+		// 数字字符串
+		String StrBd = "1048576.1024";
+		// 构造以字符串内容为值的BigDecimal类型的变量bd
+		BigDecimal bd = new BigDecimal(StrBd);
+		// 设置小数位数，第一个变量是小数位数，第二个变量是取舍方法(四舍五入)
+		bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+		return bd;
+	}
 }
