@@ -82,6 +82,12 @@ public class AHomesEntity {
 		this.fundAccount = fundAccount;
 	}
 
+	public AHomesEntity(String investAccount, String clientNo) {
+		super();
+		this.investAccount = investAccount;
+		this.clientNo = clientNo;
+	}
+
 	public AHomesEntity() {
 		// TODO Auto-generated constructor stub
 	}
