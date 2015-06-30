@@ -43,6 +43,7 @@ import com.zeekie.stock.service.homes.StockModifyUserName;
 import com.zeekie.stock.service.lhomes.CallhomesService;
 import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
+import com.zeekie.stock.service.lhomes.entity.HomesPwd;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
@@ -114,6 +115,8 @@ public class StockServiceImpl implements TradeService {
 	private String changeIsOpen;
 
 	private Set<String> fundAccountSet = new HashSet<String>();
+	
+	private static CallhomesService service = CallhomesService.getInstance();
 
 	@Override
 	public Map<String, String> startOperate(String nickname, String tradeFund) {
@@ -345,6 +348,7 @@ public class StockServiceImpl implements TradeService {
 	private TradeDO callLittleHoms(String nickname, String moveFund) {
 		// 2.2、查詢数据库获取密码
 		String operator = "";
+		String operPwd = "";
 		String combineId = "";
 		String fundAccount = "";
 		String managerCombineId = "";
@@ -374,6 +378,7 @@ public class StockServiceImpl implements TradeService {
 				operator = client.getOperatorNo();
 				combineId = client.getCombineId();
 				managerCombineId = client.getManagerCombineId();
+				operPwd = client.getOperatorPwd();
 				// 判断该账号是否已经结束但是在HOMES却还有资金
 				if (!hasCapitalCurrentClientNo(operator, fundAccount)) {
 					if (mainAccountCashIsEnough(nickname, moveFund, fundAccount)) {
@@ -388,20 +393,22 @@ public class StockServiceImpl implements TradeService {
 			}
 			// 2.3 生成新密码更新到homes
 			// AUTO 修改密码
-			if (log.isDebugEnabled()) {
-				log.debug("访问HOMES服务，修改用户密码成功");
-			}
-			// 2.3.1修改用户名称
-			// AUTO 修改密码
-			if (log.isDebugEnabled()) {
-				log.debug("访问HOMES服务，修改用户名称成功");
-			}
-			// 2.5资金划转
-			boolean isSucc = move(moveFund, combineId, fundAccount,
-					managerCombineId);
-			if (isSucc) {
+			String newPwd = StringUtil.genRandomNum(6);
+			if (modifyPwd(operationNo, operPwd, newPwd)) {
 				if (log.isDebugEnabled()) {
-					log.debug("进行资金划转成功,成功退出！！！");
+					log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
+				}
+				client.setOperatorPwd(newPwd);
+			} else {
+				return client;
+			}
+			
+			// 2.3.1修改用户名称
+
+			// 2.5资金划转
+			if (move(moveFund, combineId, fundAccount,managerCombineId)) {
+				if (log.isDebugEnabled()) {
+					log.debug("用户 【"+nickname+"】 进行资金划转成功");
 				}
 			} else {
 				return client;
@@ -415,6 +422,15 @@ public class StockServiceImpl implements TradeService {
 
 	}
 
+	private boolean modifyPwd(String clientNo, String operPwd,String newPwd) {
+		HomesPwd homesPwd = new HomesPwd();
+		homesPwd.setClientNo(clientNo);
+		homesPwd.setOldPwd(operPwd);
+		homesPwd.setNewPwd(newPwd);
+		service.setEntity(homesPwd);
+		return service.call311Fun();
+	}
+
 	private boolean hasCapitalCurrentClientNo(String clientNo,
 			String fundAccount) {
 		AHomesEntity entity = new AHomesEntity();
@@ -425,6 +441,20 @@ public class StockServiceImpl implements TradeService {
 		return service.call210Fun();
 	}
 
+	
+	/**
+	 * 资金划转
+	 * 
+	 * @param moveFund
+	 *            划转资金
+	 * @param combineId
+	 *            客户号
+	 * @param fundAccount
+	 *            投资账号
+	 * @param managerCombineId
+	 *            划入客户号，主客户号
+	 * @return
+	 */
 	private boolean move(String moveFund, String combineId, String fundAccount,
 			String managerCombineId) {
 		EntrustMoveFund entrustMoveFund = new EntrustMoveFund();
@@ -893,9 +923,19 @@ public class StockServiceImpl implements TradeService {
 					log.info("客户【" + nickname + "】【增加保证金addCuarantee】访问HOMES,执行资金划转操作");
 					String clientCombineId = acount.queryClientCombineId(nickname);
 					// ManagerDO managerDO = acount.getStockManager();
-					boolean moveSuccess = moveFund(addedAssginCapital,
-							clientCombineId, result.get("fundAccount"),
-							result.get("managerCombineId"));
+					
+					String fundAccount = result.get("fundAccount");
+					String managerCombineId = result.get("managerCombineId");
+					boolean moveSuccess = false;
+					//切换小homs
+					if(StringUtils.equals("open", changeIsOpen)){
+						moveSuccess = move(addedAssginCapital, clientCombineId, fundAccount, managerCombineId);
+						if(log.isDebugEnabled()){
+							log.debug("向小homs划拨资金");
+						}
+					}else{
+						moveSuccess = moveFund(addedAssginCapital,clientCombineId, fundAccount,managerCombineId);
+					}
 					if (!moveSuccess) {
 						log.error("向用户" + nickname + "资金划转失败");
 						throw new RuntimeException("向用户" + nickname + "资金划转失败");

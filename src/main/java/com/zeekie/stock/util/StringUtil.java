@@ -434,4 +434,11 @@ public class StringUtil {
 		bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
 		return bd;
 	}
+
+	public static int StringToInteger(String s) {
+		if (StringUtils.isNotBlank(s)) {
+			return Integer.parseInt(s);
+		}
+		return 0;
+	}
 }

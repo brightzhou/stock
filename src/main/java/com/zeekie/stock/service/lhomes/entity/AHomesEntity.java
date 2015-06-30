@@ -21,7 +21,8 @@ public class AHomesEntity {
 	 * 资金帐号
 	 */
 	private String fundAccount;
-
+	
+	
 	/**
 	 * @return the investAccount
 	 */
