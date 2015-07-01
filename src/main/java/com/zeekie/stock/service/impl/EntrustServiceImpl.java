@@ -37,6 +37,8 @@ import com.zeekie.stock.service.homes.StockEntrustWithdraw;
 import com.zeekie.stock.service.homes.entity.EntrustAssetEntity;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
+import com.zeekie.stock.service.lhomes.CallhomesService;
+import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
 import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 
@@ -44,6 +46,8 @@ import com.zeekie.stock.util.StringUtil;
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 	static Logger log = LoggerFactory.getLogger(EntrustServiceImpl.class);
+
+	private static CallhomesService service = CallhomesService.getInstance();
 
 	@Autowired
 	private DealMapper deal;
@@ -93,6 +97,10 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Autowired
 	private AcountMapper acount;
 
+	@Autowired
+	@Value("${stock.status.changeIsOpen}")
+	private String changeIsOpen;
+
 	@Override
 	public String entrust(String nickname, String stockCode,
 			String entrustAmount, String entrustPrice, String entrustDirection,
@@ -104,6 +112,16 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			String fundAccount = accountDO.getFundAccount();
 			String exchangeType = StringUtils.startsWith(stockCode, "6") ? Constants.HOMES_EXCHANGE_TYPE_SH
 					: Constants.HOMES_EXCHANGE_TYPE_S;
+
+			if (StringUtils.equals("open", changeIsOpen)) {
+				HomesEntrust entrust = new HomesEntrust(operateNo, fundAccount,
+						exchangeType, stockCode, entrustDirection,
+						entrustAmount, entrustPrice);
+				service.setEntity(entrust);
+				service.call201Fun();
+
+			}
+
 			StockEntrust entrust = new StockEntrust(fundAccount, combineId,
 					operateNo, stockCode, entrustAmount, entrustPrice,
 					exchangeType, entrustDirection, ampriceType);
@@ -259,7 +277,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					entities.add(entity);
 					assembleResult(entity, ja);
 				}
-				
+
 			} else {
 				if (log.isDebugEnabled()) {
 					log.debug("执行委托查询，返回数据为空");
@@ -300,22 +318,21 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				for (EntrustQueryEntity entity : entities) {
 					JSONObject jo = new JSONObject();
 					jo.put("stockCode", entity.getStock_code());
-					jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entity
-							.getAmentrust_status()));
+					jo.put("amentrustStatus", AmentrustStatusEnum
+							.getDesc(entity.getAmentrust_status()));
 					jo.put("entrustPrice", entity.getEntrust_price());
 					jo.put("entrustAmount", entity.getEntrust_amount());
 					jo.put("entrustNo", entity.getEntrust_no());
 					jo.put("exchangeType",
 							ExchangeTypeEnum.getDesc(entity.getExchange_type()));
-					jo.put("entrustDirection",entity
-							.getEntrust_direction());
+					jo.put("entrustDirection", entity.getEntrust_direction());
 					jo.put("businessBalance", entity.getBusiness_balance());
 					jo.put("businessAmount", entity.getBusiness_amount());
 					jo.put("entrustTime", entity.getEntrust_time());
 					jo.put("cancelInfo", entity.getCancel_info());
 					ja.add(jo);
 				}
-				
+
 			}
 			return ja;
 		} catch (Exception e) {

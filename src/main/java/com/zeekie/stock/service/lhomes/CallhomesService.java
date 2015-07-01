@@ -2,12 +2,14 @@ package com.zeekie.stock.service.lhomes;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hczq.hz.intf.AmServiceResult;
 import com.hczq.hz.intf.AmServices;
 import com.hczq.hz.intf.Fun201Requst;
+import com.hczq.hz.intf.Fun201Response;
 import com.hczq.hz.intf.Fun210Requst;
 import com.hczq.hz.intf.Fun210Response;
 import com.hczq.hz.intf.Fun311Requst;
@@ -18,6 +20,7 @@ import com.zeekie.stock.service.lhomes.entity.EntrustEntity;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
 import com.zeekie.stock.service.lhomes.entity.HomesCapital;
 import com.zeekie.stock.service.lhomes.entity.HomesPwd;
+import com.zeekie.stock.service.lhomes.entity.HomesResponse;
 import com.zeekie.stock.util.StringUtil;
 
 public class CallhomesService {
@@ -30,6 +33,8 @@ public class CallhomesService {
 	private static AmServices amService = Constants.getAmService();
 
 	private AHomesEntity entity;
+
+	private AmServiceResult response;
 
 	public static synchronized CallhomesService getInstance() {
 		return (null == service) ? new CallhomesService() : service;
@@ -54,7 +59,8 @@ public class CallhomesService {
 		requst.setEntrustProp("0");
 		requst.setEntrustPrice(StringUtil.parseBigDecimal(entrustEntity
 				.getEntrustPrice()));
-		return isTrue(amService.fun201(requst));
+		response = amService.fun201(requst);
+		return isTrue(response);
 	}
 
 	/**
@@ -143,6 +149,16 @@ public class CallhomesService {
 		} else {
 			log.error("调用委托接口发生异常：" + response.getErrorInfo());
 			return false;
+		}
+	}
+
+	public HomesResponse getResponse(String fn) {
+		if (StringUtils.equals(Constants.FN201, fn)) {
+			Fun201Response resp = (Fun201Response) response;
+			return new HomesResponse(resp.getBranchNo(), resp.getFundAccount(),
+					resp.getEntrustNo(), resp.getBatchNo(), resp.getClientNo());
+		} else {
+			return null;
 		}
 	}
 
