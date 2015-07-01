@@ -1,10 +1,27 @@
 package com.zeekie.stock.service.lhomes.entity;
 
-public class HomesCapital {
+public class HomesCapital extends HomesResponse {
 
 	private Float marketValue;
 
 	private Float currValue;
+
+	private Float usermarket;
+
+	/**
+	 * @return the usermarket
+	 */
+	public Float getUsermarket() {
+		return usermarket;
+	}
+
+	/**
+	 * @param usermarket
+	 *            the usermarket to set
+	 */
+	public void setUsermarket(Float usermarket) {
+		this.usermarket = usermarket;
+	}
 
 	/**
 	 * @return the marketValue
@@ -34,6 +51,13 @@ public class HomesCapital {
 	 */
 	public void setCurrValue(Float currValue) {
 		this.currValue = currValue;
+	}
+
+	public HomesCapital(Float marketValue, Float currValue, Float usermarket) {
+		super();
+		this.marketValue = marketValue;
+		this.currValue = currValue;
+		this.usermarket = usermarket;
 	}
 
 	public HomesCapital(Float marketValue, Float currValue) {

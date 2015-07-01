@@ -28,15 +28,33 @@ public class HomesEntrust extends AHomesEntity {
 
 	private String entrustPrice;
 
+	private String entrustbs;
+
 	public HomesEntrust(String investAccount, String clientNo,
 			String exchangeType, String stockCode, String entrustDirection,
-			String entrustAmount, String entrustPrice) {
+			String entrustAmount, String entrustPrice, String entrustbs) {
 		super(investAccount, clientNo);
 		this.exchangeType = exchangeType;
 		this.stockCode = stockCode;
 		this.entrustDirection = entrustDirection;
 		this.entrustAmount = entrustAmount;
 		this.entrustPrice = entrustPrice;
+		this.entrustbs = entrustbs;
+	}
+
+	/**
+	 * @return the entrustbs
+	 */
+	public String getEntrustbs() {
+		return entrustbs;
+	}
+
+	/**
+	 * @param entrustbs
+	 *            the entrustbs to set
+	 */
+	public void setEntrustbs(String entrustbs) {
+		this.entrustbs = entrustbs;
 	}
 
 	/**
