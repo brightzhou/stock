@@ -22,6 +22,10 @@ public class HomesResponse {
 		this.clientNo = clientNo;
 	}
 
+	public HomesResponse() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return the branchNo
 	 */
