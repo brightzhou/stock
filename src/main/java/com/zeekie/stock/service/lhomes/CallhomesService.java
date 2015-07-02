@@ -12,6 +12,7 @@ import com.hczq.hz.intf.AmResultList;
 import com.hczq.hz.intf.AmServiceResult;
 import com.hczq.hz.intf.AmServices;
 import com.hczq.hz.intf.Fun103Requst;
+import com.hczq.hz.intf.Fun103Response;
 import com.hczq.hz.intf.Fun104Requst;
 import com.hczq.hz.intf.Fun104Response;
 import com.hczq.hz.intf.Fun105Requst;
@@ -29,6 +30,7 @@ import com.zeekie.stock.enums.RealStatusEnum;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
+import com.zeekie.stock.service.lhomes.entity.Homes103Resp;
 import com.zeekie.stock.service.lhomes.entity.Homes104Resp;
 import com.zeekie.stock.service.lhomes.entity.HomesCapital;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
@@ -36,6 +38,7 @@ import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
 import com.zeekie.stock.service.lhomes.entity.HomesPwd;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
+import com.zeekie.stock.service.lhomes.entity.HomsEntity103;
 import com.zeekie.stock.util.StringUtil;
 
 public class CallhomesService {
@@ -289,9 +292,23 @@ public class CallhomesService {
 			resp.setList(entities);
 			return resp;
 		} else if (StringUtils.equals(Constants.FN103, fn)) {
-			
-		}
-		return null;
-	}
+			AmResultList<Fun103Response> list = (AmResultList<Fun103Response>) response;
 
+			Homes103Resp resp = new Homes103Resp();
+			List<HomsEntity103> entity103s = new ArrayList<HomsEntity103>();
+			for (Fun103Response item : list) {
+				HomsEntity103 entity103 = new HomsEntity103(
+						item.getStockCode(), item.getCurrentAmount()
+								.floatValue() + "", item.getEnableAmount()
+								.floatValue() + "", item.getCostPrice()
+								.floatValue() + "", item.getCurrMarket()
+								.floatValue() + "");
+				entity103s.add(entity103);
+			}
+			resp.setList(entity103s);
+			return resp;
+		} else {
+			return null;
+		}
+	}
 }

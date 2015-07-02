@@ -4,6 +4,9 @@ public class EntrustMoveFund extends AHomesEntity {
 
 	private String clientNoTo;
 
+	/**
+	 * 借
+	 */
 	private int businessFlag = 2022;
 
 	private String occurBalance;

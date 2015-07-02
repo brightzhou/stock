@@ -42,6 +42,7 @@ import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
+import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.service.homes.StockAssetMove;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
 import com.zeekie.stock.service.homes.StockEntrustQuery;
@@ -49,6 +50,8 @@ import com.zeekie.stock.service.homes.StockModifyPwd;
 import com.zeekie.stock.service.homes.StockModifyUserName;
 import com.zeekie.stock.service.homes.StockRestrictBuyStock;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
+import com.zeekie.stock.service.lhomes.CallhomesService;
+import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.StringUtil;
 
@@ -102,6 +105,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	@Autowired
 	private SyncHandler handler;
+
+	@Autowired
+	@Value("${stock.status.changeIsOpen}")
+	private String changeIsOpen;
+
+	@Autowired
+	private EntrustService entrustService;
 
 	@Override
 	public boolean indentify(String nickname, String truename, String idCard)
@@ -484,6 +494,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			if (userDO == null) {
 				return false;
 			}
+
+			if (StringUtils.equals("open", changeIsOpen)) {
+				if (!entrustService.queryEntrust(nickname).isEmpty()) {
+					return true;
+				}
+				return false;
+			}
+
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
@@ -670,13 +688,24 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		AccountDO client = acounter.getAccount(nickname);
 		String fundAccount = client.getFundAccount();
 		String combineId = client.getCombineId();
+		String currentCash="";
+		
+		if(StringUtils.equals("open", changeIsOpen)){
+			JSONObject jo = entrustService.queryCombasset(nickname);
+			currentCash = jo.getString("currentCash");
+			if (StringUtils.isNotBlank(currentCash)
+					|| StringUtils.equals("0", currentCash)) {
+				move(currentCash,combineId,fundAccount);
+			}
+		}
+
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
 		if (log.isDebugEnabled()) {
 			log.debug("用户[" + nickname + "]开始访问homes做资金划转，修改用户未空闲用户，以便结束操盘");
 		}
 		changes.callHomes(Fn_stock_current);
-		String currentCash = changes.getDataSet().getDataset(0)
+		currentCash = changes.getDataSet().getDataset(0)
 				.getString("current_cash");
 		if (StringUtils.isNotBlank(currentCash)
 				|| !StringUtils.equals("0", currentCash)) {
@@ -709,6 +738,31 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		return true;
 	}
 
+	
+	/**
+	 * 资金划转
+	 * 
+	 * @param moveFund
+	 *            划转资金
+	 * @param combineId
+	 *            客户号
+	 * @param fundAccount
+	 *            投资账号
+	 * @param managerCombineId
+	 *            划入客户号，主客户号
+	 * @return
+	 */
+	private boolean move(String moveFund, String combineId, String fundAccount) {
+		EntrustMoveFund entrustMoveFund = new EntrustMoveFund();
+		entrustMoveFund.setClientNo(fundAccount);
+		entrustMoveFund.setClientNoTo(combineId);
+		entrustMoveFund.setOccurBalance(moveFund);
+		CallhomesService service = CallhomesService.getInstance();
+		service.setEntity(entrustMoveFund);
+		return service.call501Fun();
+	}
+	
+	
 	@Override
 	public Map<String, String> enterSpreadPage(String nickname) {
 

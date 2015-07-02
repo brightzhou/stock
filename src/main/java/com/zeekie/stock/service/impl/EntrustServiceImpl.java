@@ -36,6 +36,7 @@ import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.lhomes.CallhomesService;
 import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
+import com.zeekie.stock.service.lhomes.entity.Homes103Resp;
 import com.zeekie.stock.service.lhomes.entity.Homes104Resp;
 import com.zeekie.stock.service.lhomes.entity.HomesCapital;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
@@ -43,6 +44,7 @@ import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
 import com.zeekie.stock.util.DateUtil;
+import com.zeekie.stock.util.StringUtil;
 
 @Service
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
@@ -445,29 +447,45 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
-			StockCombostockQuery combostockQuery = new StockCombostockQuery(
-					fundAccount, combineId);
-			combostockQuery.callHomes(func_am_combostock_qry);
-			List<?> obj = returnObj(combostockQuery.getDataSet(),
-					EntrustQueryEntity.class);
-			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
-			EntrustQueryEntity entity = null;
 
-			if (!obj.isEmpty()) {
-				for (Object each : obj) {
-					entity = (EntrustQueryEntity) each;
-					entity.setBaseParam(fundAccount, combineId,
-							userDO.getTradeAcount(), nickname);
-					entities.add(entity);
+			if (StringUtils.equals("open", changeIsOpen)) {
+				AHomesEntity aentity = new AHomesEntity(fundAccount, combineId);
+				service.setEntity(aentity);
+				if (service.call103Fun()) {
+					Homes103Resp resp = (Homes103Resp) service
+							.getResponse(Constants.FN103);
+					if (resp != null) {
+						return JSONArray.fromObject(resp.getList());
+					} else {
+						return ja;
+					}
 				}
-				for (EntrustQueryEntity entrustEntity : entities) {
-					JSONObject jo = new JSONObject();
-					jo.put("stockCode", entrustEntity.getStock_code());
-					jo.put("currentAmount", entrustEntity.getCurrent_amount());
-					jo.put("enableAmount", entrustEntity.getEnable_amount());
-					jo.put("costBalance", entrustEntity.getCost_balance());
-					jo.put("marketValue", entrustEntity.getMarket_value());
-					ja.add(jo);
+			} else {
+				StockCombostockQuery combostockQuery = new StockCombostockQuery(
+						fundAccount, combineId);
+				combostockQuery.callHomes(func_am_combostock_qry);
+				List<?> obj = returnObj(combostockQuery.getDataSet(),
+						EntrustQueryEntity.class);
+				List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
+				EntrustQueryEntity entity = null;
+
+				if (!obj.isEmpty()) {
+					for (Object each : obj) {
+						entity = (EntrustQueryEntity) each;
+						entity.setBaseParam(fundAccount, combineId,
+								userDO.getTradeAcount(), nickname);
+						entities.add(entity);
+					}
+					for (EntrustQueryEntity entrustEntity : entities) {
+						JSONObject jo = new JSONObject();
+						jo.put("stockCode", entrustEntity.getStock_code());
+						jo.put("currentAmount",
+								entrustEntity.getCurrent_amount());
+						jo.put("enableAmount", entrustEntity.getEnable_amount());
+						jo.put("costBalance", entrustEntity.getCost_balance());
+						jo.put("marketValue", entrustEntity.getMarket_value());
+						ja.add(jo);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -495,13 +513,41 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 	@Override
 	public JSONArray queryEntrustComm(CurrentEntrustDO entrustDO) {
-		List<CurrentEntrustDO> list = null;
+		JSONArray ja = new JSONArray();
 		try {
-			list = deal.queryEntrustComm(entrustDO);
+			String nickname = entrustDO.getNickName();
+			CurrentOperateUserDO userDO = account
+					.getCurrentOperateUser(nickname);
+			if (StringUtils.equals("open", changeIsOpen)) {
+				String investNO = userDO.getFundAccount();
+				String clientNo = userDO.getTradeAcount();
+				HomesQueryEntrust entrust = new HomesQueryEntrust(investNO,
+						clientNo);
+				entrust.setStartDate(entrustDO.getStartDate());
+				entrust.setEndDate(entrustDO.getEndDate());
+				entrust.setCxRowcount(50);
+				service.setEntity(entrust);
+				if (service.call104Fun()) {
+					HomesResponse response = service
+							.getResponse(Constants.FN104);
+					if (null != response) {
+						Homes104Resp resp = (Homes104Resp) response;
+						List<EntrustQueryEntity> result = resp.getList();
+						for (EntrustQueryEntity item : result) {
+							item.setBaseParam(investNO, clientNo, clientNo,
+									nickname);
+							assembleResult(item, ja);
+						}
+						return ja;
+					}
+				}
+			} else {
+				return JSONArray.fromObject(deal.queryEntrustComm(entrustDO));
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
-		return JSONArray.fromObject(list);
+		return ja;
 	}
 
 }

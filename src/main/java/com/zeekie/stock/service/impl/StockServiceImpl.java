@@ -406,7 +406,7 @@ public class StockServiceImpl implements TradeService {
 			// 2.3.1修改用户名称
 
 			// 2.5资金划转
-			if (move(moveFund, combineId, fundAccount,managerCombineId)) {
+			if (move(moveFund, combineId, fundAccount)) {
 				if (log.isDebugEnabled()) {
 					log.debug("用户 【"+nickname+"】 进行资金划转成功");
 				}
@@ -455,12 +455,10 @@ public class StockServiceImpl implements TradeService {
 	 *            划入客户号，主客户号
 	 * @return
 	 */
-	private boolean move(String moveFund, String combineId, String fundAccount,
-			String managerCombineId) {
+	private boolean move(String moveFund, String combineId, String fundAccount) {
 		EntrustMoveFund entrustMoveFund = new EntrustMoveFund();
-		entrustMoveFund.setFundAccount(fundAccount);
-		entrustMoveFund.setClientNo(combineId);
-		entrustMoveFund.setClientNoTo(managerCombineId);
+		entrustMoveFund.setClientNo(fundAccount);
+		entrustMoveFund.setClientNoTo(combineId);
 		entrustMoveFund.setOccurBalance(moveFund);
 		CallhomesService service = CallhomesService.getInstance();
 		service.setEntity(entrustMoveFund);
@@ -929,7 +927,7 @@ public class StockServiceImpl implements TradeService {
 					boolean moveSuccess = false;
 					//切换小homs
 					if(StringUtils.equals("open", changeIsOpen)){
-						moveSuccess = move(addedAssginCapital, clientCombineId, fundAccount, managerCombineId);
+						moveSuccess = move(addedAssginCapital, clientCombineId, fundAccount);
 						if(log.isDebugEnabled()){
 							log.debug("向小homs划拨资金");
 						}

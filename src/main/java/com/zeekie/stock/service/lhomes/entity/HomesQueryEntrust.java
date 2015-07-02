@@ -2,6 +2,7 @@ package com.zeekie.stock.service.lhomes.entity;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.util.DateUtils;
 
 import com.zeekie.stock.util.StringUtil;
@@ -42,8 +43,11 @@ public class HomesQueryEntrust extends AHomesEntity {
 	 * @param startDate
 	 *            the startDate to set
 	 */
-	public void setStartDate(int startDate) {
-		this.startDate = startDate;
+	public void setStartDate(String startDate) {
+		if (StringUtils.isNotBlank(startDate) && startDate.indexOf("-") != -1) {
+			startDate = startDate.replace("-", "");
+			this.startDate = StringUtil.StringToInteger(startDate);
+		}
 	}
 
 	/**
@@ -57,8 +61,11 @@ public class HomesQueryEntrust extends AHomesEntity {
 	 * @param endDate
 	 *            the endDate to set
 	 */
-	public void setEndDate(int endDate) {
-		this.endDate = endDate;
+	public void setEndDate(String endDate) {
+		if (StringUtils.isNotBlank(endDate) && endDate.indexOf("-") != -1) {
+			endDate = endDate.replace("-", "");
+			this.endDate = StringUtil.StringToInteger(endDate);
+		}
 	}
 
 	/**
