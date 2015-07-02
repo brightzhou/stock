@@ -44,7 +44,6 @@ import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
 import com.zeekie.stock.util.DateUtil;
-import com.zeekie.stock.util.StringUtil;
 
 @Service
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
