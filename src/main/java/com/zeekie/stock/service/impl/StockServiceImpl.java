@@ -161,10 +161,8 @@ public class StockServiceImpl implements TradeService {
 				} else {
 					stopRadio = new BigDecimal(1 - stopRadio / assignRadio)
 							.setScale(4, BigDecimal.ROUND_HALF_UP).floatValue();
-					;
 					warnRadio = new BigDecimal(1 - warnRadio / assignRadio)
 							.setScale(4, BigDecimal.ROUND_HALF_UP).floatValue();
-					;
 					long count = acount.updateAssignRadio(nickname, stopRadio,
 							warnRadio, assignRadio);
 					if (count != 1) {

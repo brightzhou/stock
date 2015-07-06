@@ -507,8 +507,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
 					combineId);
 			entrustQuery.callHomes(func_am_entrust_qry);
-			List<?> obj = returnObj(entrustQuery.getDataSet(),
-					EntrustQueryEntity.class);
+			List<?> obj = returnObj(entrustQuery.getDataSet(),EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
 			if (!obj.isEmpty()) {
 				String statis[] = new String[] { "1", "4", "a", "A", "B", "C",
@@ -546,14 +545,12 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				msg = "你还有委托的股票，不能结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
 				result.put("msg", msg);
-
 			} else if (StringUtils.equals(Constants.CODE_SUCCESS,
-					acounter.operationIsEnded(nickname))) {// 1、判断是否已经结束操盘，即判断股票市值是否为0；
-
+					acounter.operationIsEnded(nickname))) {
+				// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 				if (log.isDebugEnabled()) {
 					log.debug("1、用户" + nickname + "开始结束操盘");
 				}
-
 				// 1、1结束操盘将资金划到HOMES
 				if (!moveCashForEndStock(nickname)) {
 					result.put("msg", "【9001】结束操盘时资金划转失败！");
@@ -561,10 +558,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				}
 				// 1、2计算我们的钱和用户的钱
 				EndStockCashDO cashDO = acounter.queryUserLastCash(nickname);
-
 				// 1、3判断用户是否有欠款
 				String userCash = StringUtil.keepThreeDot(cashDO.getUserCash());
-
 				// 1、4如果有欠款，就计入冻结金额
 				if (cashDO.getUserCash() < 0) {
 					acounter.updateDebt(userCash, nickname);
@@ -584,19 +579,18 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					}
 				}
 
-				String assginCash = StringUtil.keepThreeDot(cashDO
-						.getAssginCash());
+				String assginCash = StringUtil.keepThreeDot(cashDO.getAssginCash());
 
+				String fundAccount = cashDO.getFundAccount();
 				// 3、把我们的配资的钱划到我们的总资金
-				acounter.addTotalFund("0", assginCash, cashDO.getFundAccount(),
-						"从HOMES划回配资的钱", "recharge");
+				acounter.addTotalFund("0", assginCash, fundAccount,"从HOMES划回配资的钱", "recharge");
 				if (log.isDebugEnabled()) {
 					log.debug("4、将资金【" + assginCash + "】划回到主单元");
 				}
 				// 更新历史金额状态为N
-				acounter.updateStatusToN(cashDO.getFundAccount());
+				acounter.updateStatusToN(fundAccount);
 				// 更新当前金额状态为Y
-				acounter.updateStatusToY(cashDO.getFundAccount());
+				acounter.updateStatusToY(fundAccount);
 
 				// 4、计算推荐人的收益，如果该用户有推荐人。计算规则：每笔服务费的乘以一个百分比
 				trade.caculateRefereeIncome(nickname);
@@ -617,10 +611,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				if (log.isDebugEnabled()) {
 					log.debug("更新用户" + nickname + "的操盘为历史操盘，结束操盘结束");
 				}
-				// 结束操盘，如果有限制买入的操盘账号，要恢复可以买入股票
-				relieve(cashDO.getOperateNO(), cashDO.getStopBuy());
-
-				modifyHomesPwd(nickname, cashDO.getOperateNO());
+				
+				if (!StringUtils.equals("open", changeIsOpen)) {
+					// 结束操盘，如果有限制买入的操盘账号，要恢复可以买入股票
+					String tradeCount = cashDO.getOperateNO();
+					relieve(tradeCount, cashDO.getStopBuy());
+					modifyHomesPwd(nickname, tradeCount);
+				}
 			} else {
 				msg = "你还有未卖出的股票，请卖出所有股票后再结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
@@ -695,40 +692,46 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			currentCash = jo.getString("currentCash");
 			if (StringUtils.isNotBlank(currentCash)
 					|| StringUtils.equals("0", currentCash)) {
-				move(currentCash,combineId,fundAccount);
+				if(move(currentCash,combineId,fundAccount)){
+					log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId
+							+ " 的资金[" + currentCash + "]划转到主单元成功！！！");
+				}else{
+					return false;
+				}
 			}
-		}
-
-		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
-				combineId);
-		if (log.isDebugEnabled()) {
-			log.debug("用户[" + nickname + "]开始访问homes做资金划转，修改用户未空闲用户，以便结束操盘");
-		}
-		changes.callHomes(Fn_stock_current);
-		currentCash = changes.getDataSet().getDataset(0)
-				.getString("current_cash");
-		if (StringUtils.isNotBlank(currentCash)
-				|| !StringUtils.equals("0", currentCash)) {
-			log.warn("用户【" + nickname + "】的操盘账号为：" + client.getTradeAcount()
-					+ " 的操盘仍然有有资金在HOMES中，需将资金划转到主单元！！！");
-			StockAssetMove assetMove = new StockAssetMove(fundAccount,
-					combineId, client.getManagerCombineId(), currentCash);
-			assetMove.callHomes(Fn_asset_move);
-			if (assetMove.visitSuccess(Fn_stock_current)) {
-				log.warn("将用户【" + nickname + "】的操盘账号为："
-						+ client.getTradeAcount() + " 的资金[" + currentCash
-						+ "]划转到主单元成功！！！");
-			} else {
-				return false;
-			}
-		}
-
-		if (modifyUserName(fundAccount, combineId)) {
+		}else{
+			StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
+					combineId);
 			if (log.isDebugEnabled()) {
-				log.debug("修改用户名称为【空闲用户】");
+				log.debug("用户[" + nickname + "]开始访问homes做资金划转，修改用户未空闲用户，以便结束操盘");
 			}
-		} else {
-			log.warn("修改用户名称为【空闲用户】失败，调用HOMES发生异常.但是主程序继续进行！！！");
+			changes.callHomes(Fn_stock_current);
+			currentCash = changes.getDataSet().getDataset(0)
+					.getString("current_cash");
+			if (StringUtils.isNotBlank(currentCash)
+					|| !StringUtils.equals("0", currentCash)) {
+				log.warn("用户【" + nickname + "】的操盘账号为：" + client.getTradeAcount()
+						+ " 的操盘仍然有有资金在HOMES中，需将资金划转到主单元！！！");
+				StockAssetMove assetMove = new StockAssetMove(fundAccount,
+						combineId, client.getManagerCombineId(), currentCash);
+				assetMove.callHomes(Fn_asset_move);
+				if (assetMove.visitSuccess(Fn_stock_current)) {
+					log.warn("将用户【" + nickname + "】的操盘账号为："
+							+ client.getTradeAcount() + " 的资金[" + currentCash
+							+ "]划转到主单元成功！！！");
+				} else {
+					return false;
+				}
+			}
+			
+			if (modifyUserName(fundAccount, combineId)) {
+				if (log.isDebugEnabled()) {
+					log.debug("修改用户名称为【空闲用户】");
+				}
+			} else {
+				log.warn("修改用户名称为【空闲用户】失败，调用HOMES发生异常.但是主程序继续进行！！！");
+			}
+			
 		}
 
 		if (log.isDebugEnabled()) {
@@ -754,8 +757,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	 */
 	private boolean move(String moveFund, String combineId, String fundAccount) {
 		EntrustMoveFund entrustMoveFund = new EntrustMoveFund();
-		entrustMoveFund.setClientNo(fundAccount);
-		entrustMoveFund.setClientNoTo(combineId);
+		entrustMoveFund.setClientNo(combineId);
+		entrustMoveFund.setClientNoTo(fundAccount);
 		entrustMoveFund.setOccurBalance(moveFund);
 		CallhomesService service = CallhomesService.getInstance();
 		service.setEntity(entrustMoveFund);

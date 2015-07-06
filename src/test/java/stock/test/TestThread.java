@@ -9,25 +9,27 @@ public class TestThread {
 
 	public static void main(String args[]) {
 
-		for (int i = 0; i < 20; i++) {
-			list.add("" + i);
+		for (int i = 0; i <= 5; i++) {
+			new Thread(new TT()).start();
 		}
 
-		TicketSouce mt = new TicketSouce();
-
-		for (int j = 0; j < 13; j++) {
-			new Thread(mt, "thread" + j).start();
-		}
+		/*
+		 * for (int i = 0; i < 20; i++) { list.add("" + i); }
+		 * 
+		 * TicketSouce mt = new TicketSouce();
+		 * 
+		 * for (int j = 0; j < 13; j++) { new Thread(mt, "thread" + j).start();
+		 * }
+		 */
 	}
 
 	public static List<String> getList() {
 		return list;
 	}
 
-	public static void remove(String item) {
-
-		synchronized (list) {
-			list.remove(item);
-		}
-	}
+	/*
+	 * public static void remove(String item) {
+	 * 
+	 * synchronized (list) { list.remove(item); } }
+	 */
 }

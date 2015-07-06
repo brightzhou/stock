@@ -1,4 +1,3 @@
-
 package stock.test;
 
 import java.io.File;
@@ -22,19 +21,19 @@ public class TestStock {
 
 	public static void main(String[] args) {
 
-//		entrustQuery();
-//	 	combostock();
-//		entrustTradedQuery();
-//		historyTradedQuery();
-//		entrustTradedQuery();
-//		login();
-//		deal();
-//		cxdeal();
-//		queryCombasset();
-//		queryEntrust();
-//		queryEntrustHistory();
+		// entrustQuery();
+		// combostock();
+		// entrustTradedQuery();
+		// historyTradedQuery();
+		// entrustTradedQuery();
+		// login();
+		// deal();
+		// cxdeal();
+		// queryCombasset();
+		// queryEntrust();
+		// queryEntrustHistory();
 
-//		 String ss = getVerifyCode();
+		// String ss = getVerifyCode();
 		// System.out.println(ss);
 		// REGISTER();
 		// updatePwd();
@@ -47,12 +46,12 @@ public class TestStock {
 		// withdrawPageEnter();
 
 		// setDepositPwd();
-//		getCurrentAccount();
+		// getCurrentAccount();
 		// record();
 		// withdraw();
 
-		// startOperate();
-		// storeOperationInfo();
+//		 startOperate();
+		 storeOperationInfo();
 		// getCurrentOperation();
 		// modifyDepositPwd();
 		// getOperateAcount();
@@ -61,7 +60,7 @@ public class TestStock {
 		// add();
 		// getapkpath();
 		// getHistoryOperation();
-//		 getFundFlow();
+		// getFundFlow();
 		// endStock();
 		// enterSpreadPage();
 		// spread();
@@ -94,7 +93,7 @@ public class TestStock {
 		// "lexical error at position {0}, encountered {1}, expected {2}";
 		// String result = MessageFormat.format(template, 123,"aaa","bbb");
 		// System.out.println(result);
-//		 bindPhone(ss);
+		// bindPhone(ss);
 
 		// getId();
 		// getbindCreditCard();
@@ -106,9 +105,9 @@ public class TestStock {
 
 		// getVersionPic();
 		// testapi();
-//		saveCurrentFinance();
-//		getDuplicateIdCard();
-		getCurrentFinance();
+		// saveCurrentFinance();
+		// getDuplicateIdCard();
+		// getCurrentFinance();
 	}
 
 	public static void getDuplicateIdCard() {
@@ -132,22 +131,20 @@ public class TestStock {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
 	public static void getCurrentFinance() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		try {
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/finance/get",
-							datas);
+			String result = req.post(
+					"http://121.40.71.84:8083/stock/api/stock/finance/get",
+					datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void saveCurrentFinance() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -160,15 +157,15 @@ public class TestStock {
 		datas.put("income", "10");
 		datas.put("userId", "1523");
 		try {
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/finance/save",
-							datas);
+			String result = req.post(
+					"http://121.40.71.84:8083/stock/api/stock/finance/save",
+					datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void queryEntrustHistory() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -338,9 +335,9 @@ public class TestStock {
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req.post(
-					"http://121.40.71.84:8083/stock/api/stock/user/telephone/bind",
-					datas);
+			String result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/user/telephone/bind",
+							datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -592,7 +589,7 @@ public class TestStock {
 	public static void startOperate() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "��136");
+		datas.put("nickname", "ceshi10");
 		datas.put("tradeFund", "10");
 		try {
 			String result = req
@@ -607,7 +604,7 @@ public class TestStock {
 	public static void storeOperationInfo() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
+		datas.put("nickname", "Token");
 		datas.put("guaranteeCash", "1");
 		datas.put("tradeFund", "10");
 		datas.put("stopCash", "9.3");
@@ -615,7 +612,7 @@ public class TestStock {
 		datas.put("startDate", "2015-12-23");
 		try {
 			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/info/store",
+					.post("http://localhost:8080/stock/api/stock/trade/operation/info/store",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -871,9 +868,9 @@ public class TestStock {
 					"saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			result = req.post(
-					"http://121.40.71.84:8083/stock/api/stock/user/verifyCode/get",
-					datas);
+			result = req
+					.post("http://121.40.71.84:8083/stock/api/stock/user/verifyCode/get",
+							datas);
 			System.out.println("获取的验证码是：" + result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -958,4 +955,3 @@ public class TestStock {
 	}
 
 }
-
