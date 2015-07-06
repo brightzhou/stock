@@ -304,8 +304,7 @@ public class StockServiceImpl implements TradeService {
 			currentOperateInfo.put("currentAsset", guaranteeCash);// 当前资产
 			currentOperateInfo.put("actualFund", tradeFund);// 实盘金额
 			currentOperateInfo.put("profitAndLossCash", Constants.CODE_FAILURE);// 盈亏金额
-			currentOperateInfo
-					.put("profitAndLossRadio", Constants.CODE_FAILURE);// 盈亏比例
+			currentOperateInfo.put("profitAndLossRadio", Constants.CODE_FAILURE);// 盈亏比例
 			currentOperateInfo.put("progressBar", Constants.CODE_SUCCESS);// 进度条
 			currentOperateInfo.put("flag", Constants.CODE_SUCCESS);
 
@@ -395,6 +394,7 @@ public class StockServiceImpl implements TradeService {
 			}
 			for (int i = 0; i < item.size(); i++) {
 				client = item.get(i);
+				client.setFlag(Constants.CODE_FAILURE);
 				fundAccount = client.getFundAccount();
 				if (fundAccountSet.contains(fundAccount)) {
 					continue;
@@ -434,7 +434,7 @@ public class StockServiceImpl implements TradeService {
 			if (!modifyUserName(nickname, fundAccount, combineId)) {
 				log.error("modify homes name failure for user" + nickname
 						+ ",operation NO:" + operator);
-				client.setFlag(Constants.CODE_FAILURE);
+				//client.setFlag(Constants.CODE_FAILURE);
 				return client;
 			}
 			if (log.isDebugEnabled()) {
