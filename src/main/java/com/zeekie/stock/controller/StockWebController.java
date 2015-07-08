@@ -31,6 +31,7 @@ import sitong.thinker.common.page.DefaultPage;
 import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.entity.AddCashErrorDO;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DictionariesDO;
@@ -946,6 +947,28 @@ public class StockWebController {
 		} catch (ServiceInvokerException e) {
 			log.error("query getEveningUp error happened:", e.getMessage());
 			return new DefaultPage<FlbDO>();
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping("getError")
+	public DefaultPage<AddCashErrorDO> getError(
+			HttpServletRequest request,
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname) {
+
+		try {
+			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
+			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+			ClientPage errorPage = new ClientPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder,nickname);
+			return webService.getError(errorPage);
+		} catch (ServiceInvokerException e) {
+			log.error("query getError error happened:", e.getMessage());
+			return new DefaultPage<AddCashErrorDO>();
 		}
 	}
 }

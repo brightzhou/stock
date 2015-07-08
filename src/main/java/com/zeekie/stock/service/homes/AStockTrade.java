@@ -79,7 +79,7 @@ public class AStockTrade {
 				dataset.updateString(entry.getKey(), entry.getValue());
 			}
 			resp.putEventData(dataset);
-			resp = client.sendReceive(resp, 6000);
+			resp = client.sendReceive(resp, 60000);
 			if (null == callApi())
 				throw new Exception();
 		}

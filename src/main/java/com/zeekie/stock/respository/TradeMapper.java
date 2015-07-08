@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.zeekie.stock.entity.AddCashErrorDO;
 import com.zeekie.stock.entity.AddGuaranteePageDO;
 import com.zeekie.stock.entity.AutoAddGuaranteeCashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
@@ -22,6 +23,7 @@ import com.zeekie.stock.entity.WarnLineDO;
 import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.entity.form.AddCuaranteeForm;
 import com.zeekie.stock.mybatis.MyBatisRepository;
+import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.StatisticsPage;
 
@@ -330,4 +332,24 @@ public interface TradeMapper {
 	 * 其他統計值
 	 */
 	StatisticsDO queryOtherStaticValue();
+
+	void insertError(@Param("nickname") String nickname,
+			@Param("addedAssginCapital") String addedAssginCapital,
+			@Param("message") String message);
+
+	/**
+	 * 获取增加保证金错误条数
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	long getErrorCount(@Param("nickname") String nickname);
+
+	/**
+	 * 获取列表
+	 * 
+	 * @param errorPage
+	 * @return
+	 */
+	List<AddCashErrorDO> getErrorList(ClientPage errorPage);
 }

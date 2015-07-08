@@ -84,6 +84,12 @@
 		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.AddCashErrorDO" id="resultErrorList">
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="CASH" property="cash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="REASION" property="reason" jdbcType="VARCHAR"/>
+		<result column="OPERATE_DATE" property="dates" jdbcType="VARCHAR"/>
+	</resultMap>
 <!-- 	<resultMap type="com.zeekie.stock.entity.WarnLineDO" id="resultSwingUser">
 		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
 	</resultMap> -->
@@ -831,4 +837,29 @@
 		    order by Order_No asc
    </select>
 	
+	<insert id="insertError" parameterType="string">
+		insert into ADD_CASH_ERROR_LOG(NICKNAME,CASH,REASION)
+		values(#{nickname},to_number(#{addedAssginCapital}),#{message,jdbcType=VARCHAR})
+	</insert>
+	
+    <select id="getErrorCount"  resultType="long" parameterType="string">
+		   select count(1)   from ADD_CASH_ERROR_LOG
+		   <where>
+			 <if test="nickname != null  and  nickname != ''">
+			      nickname=#{nickname} 
+			 </if>
+		   </where>
+    </select>
+    
+    <select id="getErrorList"  resultMap="resultErrorList"  parameterType="com.zeekie.stock.web.ClientPage">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+	     select nickname,CASH,REASION,to_char(OPERATE_DATE,'yyyy-mm-dd HH24:MI:ss')OPERATE_DATE from ADD_CASH_ERROR_LOG 
+         	<where>
+				<if test="nickname != null  and  nickname != ''">
+			      nickname=#{nickname} 
+				 </if>
+	    	</where>
+	    order by OPERATE_DATE desc
+	    <include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+   </select>
 </mapper>

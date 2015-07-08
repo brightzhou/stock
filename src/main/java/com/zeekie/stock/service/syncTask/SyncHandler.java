@@ -178,6 +178,9 @@ public class SyncHandler {
 			ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN,
 					param.get("telephone"), param.get("message"));
 
+		} else if (StringUtils.equals(Constants.TYPE_JOB_RECORD_ERROR, type)) {
+			trade.insertError(param.get("nickname"),
+					param.get("addedAssginCapital"), param.get("message"));
 		}
 	}
 

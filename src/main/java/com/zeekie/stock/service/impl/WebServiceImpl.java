@@ -21,6 +21,7 @@ import sitong.thinker.common.page.PageQuery;
 import sitong.thinker.common.util.mybatis.BatchMapper;
 
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.entity.AddCashErrorDO;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DayDO;
@@ -925,6 +926,23 @@ public class WebServiceImpl implements WebService {
 				result = financeMapper.queryFlbUnit(flbPage);
 			}
 			return new DefaultPage<FlbDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public DefaultPage<AddCashErrorDO> getError(ClientPage errorPage)
+			throws ServiceInvokerException {
+		List<AddCashErrorDO> result = new ArrayList<AddCashErrorDO>();
+		long total = 0;
+		try {
+			total = trade.getErrorCount(errorPage.getNickname());
+			if (0 != total) {
+				result = trade.getErrorList(errorPage);
+			}
+			return new DefaultPage<AddCashErrorDO>(total, result);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);

@@ -208,6 +208,8 @@ public class Constants {
 	// 戒除限制买入股票
 	public static final String OPERATE_RIGHT_ZERO = "0";
 
+	public static final String TYPE_JOB_RECORD_ERROR = "record_add_error";
+
 	/**
 	 * 发给推荐人的信息，告知是否成为推荐人
 	 */

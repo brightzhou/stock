@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.AccountDO;
+import com.zeekie.stock.entity.AddCashErrorDO;
 import com.zeekie.stock.entity.BankInfoDO;
 import com.zeekie.stock.entity.BasicInfoDO;
 import com.zeekie.stock.entity.BindBankDO;

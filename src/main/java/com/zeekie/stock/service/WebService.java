@@ -8,6 +8,7 @@ import sitong.thinker.common.exception.ServiceInvokerException;
 import sitong.thinker.common.page.DefaultPage;
 import sitong.thinker.common.page.PageQuery;
 
+import com.zeekie.stock.entity.AddCashErrorDO;
 import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
 import com.zeekie.stock.entity.DictionariesDO;
@@ -419,6 +420,15 @@ public interface WebService {
 	 * @return
 	 */
 	public DefaultPage<FlbDO> getFlb(PageQuery flbPage)
+			throws ServiceInvokerException;
+
+	/**
+	 * 获取错误信息增加保证金
+	 * 
+	 * @param errorPage
+	 * @return
+	 */
+	public DefaultPage<AddCashErrorDO> getError(ClientPage errorPage)
 			throws ServiceInvokerException;
 
 }
