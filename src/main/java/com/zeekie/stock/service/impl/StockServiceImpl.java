@@ -797,11 +797,6 @@ public class StockServiceImpl implements TradeService {
 							result.get("managerCombineId"));
 					if (!moveSuccess) {
 						log.error("向用户" + nickname + "资金划转失败");
-						Map<String,String> param = new HashMap<String, String>();
-						param.put("nickname", nickname);
-						param.put("addedAssginCapital", addedAssginCapital);
-						param.put("message", "资金划转正常失败");
-						jobHandler.handleOtherJob(Constants.TYPE_JOB_RECORD_ERROR, param);
 						throw new RuntimeException("向用户" + nickname + "资金划转失败");
 					}
 					if (log.isDebugEnabled()) {
