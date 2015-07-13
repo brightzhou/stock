@@ -270,23 +270,22 @@ public class Constants {
 
 	// 接口访问时间
 	public static int range = 120;
-	
-	
-	// little homs fn 
+
+	// little homs fn
 	public static final String FN201 = "201";
-	
+
 	public static final String FN103 = "103";
-	
+
 	public static final String FN104 = "104";
-	
+
 	public static final String FN105 = "105";
 
 	public static final String FN202 = "202";
-	
+
 	public static final String FN210 = "210";
-	
+
 	public static final String FN501 = "501";
-	
+
 	// 加密因子
 	public static String factor;
 
@@ -300,10 +299,6 @@ public class Constants {
 
 	public static XingeApp getXinge() {
 		return new XingeApp(Long.parseLong(accessId), secretkey);
-	}
-
-	public static AmServices getAmService() {
-		return services;
 	}
 
 }

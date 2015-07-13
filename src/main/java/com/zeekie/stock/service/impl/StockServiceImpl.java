@@ -351,7 +351,6 @@ public class StockServiceImpl implements TradeService {
 		String operPwd = "";
 		String combineId = "";
 		String fundAccount = "";
-		String managerCombineId = "";
 		Integer total;
 		TradeDO client = null;
 		try {
@@ -377,10 +376,9 @@ public class StockServiceImpl implements TradeService {
 				}
 				operator = client.getOperatorNo();
 				combineId = client.getCombineId();
-				managerCombineId = client.getManagerCombineId();
 				operPwd = client.getOperatorPwd();
 				// 判断该账号是否已经结束但是在HOMES却还有资金
-				if (!hasCapitalCurrentClientNo(operator, fundAccount)) {
+				if (hasCapitalCurrentClientNo(operator, fundAccount)) {
 					if (mainAccountCashIsEnough(nickname, moveFund, fundAccount)) {
 						haveOperator = true;
 						break;

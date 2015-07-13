@@ -48,8 +48,6 @@ public class CallhomesService {
 
 	private static CallhomesService service = null;
 
-	private static AmServices amService = Constants.getAmService();
-
 	private AHomesEntity entity;
 
 	private AmServiceResult response;
@@ -76,7 +74,7 @@ public class CallhomesService {
 		requst.setEntrustProp("0");
 		requst.setEntrustPrice(StringUtil.parseBigDecimal(entrustEntity
 				.getEntrustPrice()));
-		response = amService.fun201(requst);
+		response = Constants.services.fun201(requst);
 		return isTrue(response);
 	}
 
@@ -95,7 +93,7 @@ public class CallhomesService {
 		requst.setEndDate(param.getEndDate());
 		requst.setCxRowcount(param.getCxRowcount());
 		requst.setPageNo(param.getPageNo());
-		response = amService.fun104(requst);
+		response = Constants.services.fun104(requst);
 		return isTrue(response);
 	}
 
@@ -114,7 +112,7 @@ public class CallhomesService {
 		requst.setEndDate(param.getEndDate());
 		requst.setCxRowcount(param.getCxRowcount());
 		requst.setPageNo(param.getPageNo());
-		response = amService.fun105(requst);
+		response = Constants.services.fun105(requst);
 		return isTrue(response);
 	}
 
@@ -129,7 +127,7 @@ public class CallhomesService {
 		requst.setClientNo(param.getClientNo());
 		requst.setInvestAccount(StringUtil.StringToInteger(param
 				.getInvestAccount()));
-		response = amService.fun103(requst);
+		response = Constants.services.fun103(requst);
 		return isTrue(response);
 	}
 
@@ -145,7 +143,7 @@ public class CallhomesService {
 		requst.setInvestAccount(StringUtil.StringToInteger(param
 				.getInvestAccount()));
 		requst.setEntrustNo(StringUtil.StringToInteger(param.getEntrustNo()));
-		response = amService.fun202(requst);
+		response = Constants.services.fun202(requst);
 		return isTrue(response);
 	}
 
@@ -159,7 +157,7 @@ public class CallhomesService {
 		requst.setClientNo(entity.getClientNo());
 		requst.setInvestAccount(StringUtil.StringToInteger(entity
 				.getFundAccount()));
-		Fun210Response resp = amService.fun210(requst);
+		Fun210Response resp = Constants.services.fun210(requst);
 		response = resp;
 		if (isTrue(resp)) {
 			if (resp.getCurrmarket().compareTo(BigDecimal.ZERO) == 0
@@ -204,7 +202,7 @@ public class CallhomesService {
 				.getOccurBalance()));
 		requst.setBusinessFlag(entrustMoveFund.getBusinessFlag());
 		requst.setRemark(entrustMoveFund.getRemark());
-		return isTrue(amService.fun501(requst));
+		return isTrue(Constants.services.fun501(requst));
 	}
 
 	/**
@@ -218,7 +216,7 @@ public class CallhomesService {
 		requst.setClientNo(homesPwd.getClientNo());
 		requst.setOldpassword(homesPwd.getOldPwd());
 		requst.setNewpassword(homesPwd.getNewPwd());
-		return isTrue(amService.fun311(requst));
+		return isTrue(Constants.services.fun311(requst));
 	}
 
 	public void setEntity(AHomesEntity entity) {
