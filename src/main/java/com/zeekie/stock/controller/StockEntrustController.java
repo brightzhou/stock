@@ -48,7 +48,7 @@ public class StockEntrustController {
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice,
 			@RequestParam("entrustDirection") String entrustDirection,
-			@RequestParam("entrustDirection") String ampriceType) {
+			@RequestParam("ampriceType") String ampriceType) {
 		return entrust.entrust(nickname, stockCode, entrustAmount,
 				entrustPrice, entrustDirection, ampriceType);
 	}

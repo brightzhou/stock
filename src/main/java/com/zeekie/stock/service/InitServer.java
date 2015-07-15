@@ -119,7 +119,7 @@ public class InitServer implements InitializingBean {
 		if (StringUtils.equals(Constants.CODE_SUCCESS, loaduser)) {
 			loadAllUser();
 		}
-		
+
 		initLittleHoms();
 	}
 

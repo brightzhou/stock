@@ -25,7 +25,6 @@ public class TestStock {
 		// combostock();
 		// entrustTradedQuery();
 		// historyTradedQuery();
-		// entrustTradedQuery();
 		// login();
 		// deal();
 		// cxdeal();
@@ -51,7 +50,7 @@ public class TestStock {
 		// withdraw();
 
 //		 startOperate();
-		 storeOperationInfo();
+//		 storeOperationInfo();
 		// getCurrentOperation();
 		// modifyDepositPwd();
 		// getOperateAcount();

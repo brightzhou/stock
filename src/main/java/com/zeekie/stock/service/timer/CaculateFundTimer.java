@@ -86,7 +86,7 @@ public class CaculateFundTimer {
 			entity.setFundAccount(trade.getFundAccount());
 			CallhomesService service = CallhomesService.getInstance();
 			service.setEntity(entity);
-			if (service.call210Fun()) {
+			if (service.call210FunResp()) {
 				HomesCapital capital = (HomesCapital) service
 						.getResponse(Constants.FN210);
 				if (null != capital) {

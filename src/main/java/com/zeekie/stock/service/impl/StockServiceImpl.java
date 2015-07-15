@@ -115,7 +115,7 @@ public class StockServiceImpl implements TradeService {
 	private String changeIsOpen;
 
 	private Set<String> fundAccountSet = new HashSet<String>();
-	
+
 	private static CallhomesService service = CallhomesService.getInstance();
 
 	@Override
@@ -349,7 +349,6 @@ public class StockServiceImpl implements TradeService {
 		String operPwd = "";
 		String combineId = "";
 		String fundAccount = "";
-		String managerCombineId = "";
 		Integer total;
 		TradeDO client = null;
 		try {
@@ -375,10 +374,9 @@ public class StockServiceImpl implements TradeService {
 				}
 				operator = client.getOperatorNo();
 				combineId = client.getCombineId();
-				managerCombineId = client.getManagerCombineId();
 				operPwd = client.getOperatorPwd();
 				// 判断该账号是否已经结束但是在HOMES却还有资金
-				if (!hasCapitalCurrentClientNo(operator, fundAccount)) {
+				if (hasCapitalCurrentClientNo(operator, fundAccount)) {
 					if (mainAccountCashIsEnough(nickname, moveFund, fundAccount)) {
 						haveOperator = true;
 						break;
@@ -394,19 +392,19 @@ public class StockServiceImpl implements TradeService {
 			String newPwd = StringUtil.genRandomNum(6);
 			if (modifyPwd(operationNo, operPwd, newPwd)) {
 				if (log.isDebugEnabled()) {
-					log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
+					log.debug("用户 【" + nickname + "】 修改密码成功,新密码：" + newPwd);
 				}
 				client.setOperatorPwd(newPwd);
 			} else {
 				return client;
 			}
-			
+
 			// 2.3.1修改用户名称
 
 			// 2.5资金划转
 			if (move(moveFund, combineId, fundAccount)) {
 				if (log.isDebugEnabled()) {
-					log.debug("用户 【"+nickname+"】 进行资金划转成功");
+					log.debug("用户 【" + nickname + "】 进行资金划转成功");
 				}
 			} else {
 				return client;
@@ -420,7 +418,7 @@ public class StockServiceImpl implements TradeService {
 
 	}
 
-	private boolean modifyPwd(String clientNo, String operPwd,String newPwd) {
+	private boolean modifyPwd(String clientNo, String operPwd, String newPwd) {
 		HomesPwd homesPwd = new HomesPwd();
 		homesPwd.setClientNo(clientNo);
 		homesPwd.setOldPwd(operPwd);
@@ -439,7 +437,6 @@ public class StockServiceImpl implements TradeService {
 		return service.call210Fun();
 	}
 
-	
 	/**
 	 * 资金划转
 	 * 
@@ -609,10 +606,6 @@ public class StockServiceImpl implements TradeService {
 		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
 		if (!StringUtils
 				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			/*
-			 * ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
-			 * stock_manager_phone, fundAccount);
-			 */
 			if (log.isDebugEnabled()) {
 				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
 			}
@@ -833,7 +826,7 @@ public class StockServiceImpl implements TradeService {
 				}
 				return map;
 			}
-			
+
 			String isEnough = trade.isEnoughCashForClient(nickname,
 					addedGuaranteeCash);
 			if (!StringUtils.equals(flag, isEnough)) {
@@ -846,8 +839,10 @@ public class StockServiceImpl implements TradeService {
 				return map;
 			}
 
-			Map<String, String> result = enterAddGuaranteePage(nickname,addedGuaranteeCash);
-			Float currentOperateLimit = Float.parseFloat(result.get("currentOperateLimit"));
+			Map<String, String> result = enterAddGuaranteePage(nickname,
+					addedGuaranteeCash);
+			Float currentOperateLimit = Float.parseFloat(result
+					.get("currentOperateLimit"));
 			Float assignCash = Float.parseFloat(result.get("assignCash"));
 			if (StringUtil.compareNum(currentOperateLimit, assignCash)) {
 				map.put("msg", "增加保证金后，您当前操盘额度【" + currentOperateLimit
@@ -858,27 +853,32 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			String profitAndLossCash = result.get("profitAndLossCash");
-			transferData.setCurrentOperateLimit(result.get("currentOperateLimit"));
-			transferData.setCurrentGuaranteeCash(result.get("currentGuaranteeCash"));
+			transferData.setCurrentOperateLimit(result
+					.get("currentOperateLimit"));
+			transferData.setCurrentGuaranteeCash(result
+					.get("currentGuaranteeCash"));
 			transferData.setProfitAndLossCash(profitAndLossCash);
 
 			// 1、原始操盘额度
 			String orginTradeFund = trade.queryOrginTradeFund(nickname);
 
 			Float profitAndLossCashFloat = Float.parseFloat(profitAndLossCash);
-			
+
 			// 新增配资额度
 			String addedAssginCapital = "";
-			
+
 			// 如果盈亏金额小于0，那么证明填充的钱未填平亏损，只是将增加的钱划转到HOMES
 			if (profitAndLossCashFloat < 0f) {
 				addedAssginCapital = addedGuaranteeCash;
 			} else {
 				// 如果盈亏的钱够填平亏损或则是原来就在盈利，那么就需要计算新增的配资额度
 				// 1、1.需要配资的钱
-				Float capitalCashNeedFloat = Float.parseFloat(transferData.getCurrentOperateLimit())
-						- Float.parseFloat(orginTradeFund) + (-1 * Float.parseFloat(result.get("loss")));
-				String capitalCashNeed = StringUtil.keepTwoDecimalFloat(capitalCashNeedFloat) + "";
+				Float capitalCashNeedFloat = Float.parseFloat(transferData
+						.getCurrentOperateLimit())
+						- Float.parseFloat(orginTradeFund)
+						+ (-1 * Float.parseFloat(result.get("loss")));
+				String capitalCashNeed = StringUtil
+						.keepTwoDecimalFloat(capitalCashNeedFloat) + "";
 				// 如果是有亏损，刚够填平亏损或则不够填平亏损，那么配资额度就为0，下面无需再计算账户余额是否够配资
 				if (0f == capitalCashNeedFloat) {
 					flag = "1";
@@ -916,21 +916,25 @@ public class StockServiceImpl implements TradeService {
 			if (StringUtils.isNotBlank(addedAssginCapital)) {
 				moveCash = Float.parseFloat(addedAssginCapital);
 				if (moveCash != 0f) {
-					log.info("客户【" + nickname + "】【增加保证金addCuarantee】访问HOMES,执行资金划转操作");
-					String clientCombineId = acount.queryClientCombineId(nickname);
+					log.info("客户【" + nickname
+							+ "】【增加保证金addCuarantee】访问HOMES,执行资金划转操作");
+					String clientCombineId = acount
+							.queryClientCombineId(nickname);
 					// ManagerDO managerDO = acount.getStockManager();
-					
+
 					String fundAccount = result.get("fundAccount");
 					String managerCombineId = result.get("managerCombineId");
 					boolean moveSuccess = false;
-					//切换小homs
-					if(StringUtils.equals("open", changeIsOpen)){
-						moveSuccess = move(addedAssginCapital, clientCombineId, fundAccount);
-						if(log.isDebugEnabled()){
+					// 切换小homs
+					if (StringUtils.equals("open", changeIsOpen)) {
+						moveSuccess = move(addedAssginCapital, clientCombineId,
+								fundAccount);
+						if (log.isDebugEnabled()) {
 							log.debug("向小homs划拨资金");
 						}
-					}else{
-						moveSuccess = moveFund(addedAssginCapital,clientCombineId, fundAccount,managerCombineId);
+					} else {
+						moveSuccess = moveFund(addedAssginCapital,
+								clientCombineId, fundAccount, managerCombineId);
 					}
 					if (!moveSuccess) {
 						log.error("向用户" + nickname + "资金划转失败");
