@@ -45,7 +45,7 @@ public class HomesQueryEntrust extends AHomesEntity {
 	 */
 	public void setStartDate(String startDate) {
 		if (StringUtils.isNotBlank(startDate) && startDate.indexOf("-") != -1) {
-			startDate = startDate.replace("-", "");
+			startDate = startDate.replace("-", "").substring(0,8);
 			this.startDate = StringUtil.StringToInteger(startDate);
 		}
 	}
@@ -63,7 +63,7 @@ public class HomesQueryEntrust extends AHomesEntity {
 	 */
 	public void setEndDate(String endDate) {
 		if (StringUtils.isNotBlank(endDate) && endDate.indexOf("-") != -1) {
-			endDate = endDate.replace("-", "");
+			endDate = endDate.replace("-", "").substring(0,8);
 			this.endDate = StringUtil.StringToInteger(endDate);
 		}
 	}

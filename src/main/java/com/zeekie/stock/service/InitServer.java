@@ -20,7 +20,6 @@ import com.hundsun.t2sdk.impl.client.T2Services;
 import com.hundsun.t2sdk.interfaces.T2SDKException;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.service.dao.Mapper;
-import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
 import com.zeekie.stock.service.sensitive.SensitiveWordInit;
 import com.zeekie.stock.util.FloatJsonValueProcessor;
 
@@ -120,7 +119,7 @@ public class InitServer implements InitializingBean {
 		if (StringUtils.equals(Constants.CODE_SUCCESS, loaduser)) {
 			loadAllUser();
 		}
-		
+
 		initLittleHoms();
 	}
 

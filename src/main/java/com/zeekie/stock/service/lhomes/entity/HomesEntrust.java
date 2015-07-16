@@ -28,6 +28,9 @@ public class HomesEntrust extends AHomesEntity {
 
 	private String entrustPrice;
 
+	/**
+	 * 委托买卖 1：买入 2：卖出
+	 */
 	private String entrustbs;
 
 	public HomesEntrust(String investAccount, String clientNo,

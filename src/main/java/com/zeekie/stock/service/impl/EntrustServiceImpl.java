@@ -234,7 +234,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			if (StringUtils.equals("open", changeIsOpen)) {
 				AHomesEntity param = new AHomesEntity(fundAccount, combineId);
 				service.setEntity(param);
-				if (service.call210Fun()) {
+				if (service.call210FunResp()) {
 					HomesCapital resp = (HomesCapital) service
 							.getResponse(Constants.FN210);
 					Float marketValue = resp.getMarketValue();
@@ -372,7 +372,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				service.setEntity(queryEntrust);
 				if (service.call105Fun()) {
 					Homes104Resp list = (Homes104Resp) service
-							.getResponse(Constants.FN104);
+							.getResponse(Constants.FN105);
 					List<EntrustQueryEntity> entities = list.getList();
 					for (EntrustQueryEntity entity : entities) {
 						entity.setBaseParam(fundAccount, combineId,

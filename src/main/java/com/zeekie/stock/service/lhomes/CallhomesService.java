@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hczq.hz.intf.AmResultList;
 import com.hczq.hz.intf.AmServiceResult;
-import com.hczq.hz.intf.AmServices;
 import com.hczq.hz.intf.Fun103Requst;
 import com.hczq.hz.intf.Fun103Response;
 import com.hczq.hz.intf.Fun104Requst;
@@ -67,7 +66,7 @@ public class CallhomesService {
 		requst.setClientNo(entrustEntity.getClientNo());
 		requst.setInvestAccount(StringUtil.StringToInteger(entrustEntity
 				.getInvestAccount()));
-		requst.setExchangeType("0");
+		requst.setExchangeType(entrustEntity.getExchangeType());
 		requst.setEntrustBs(entrustEntity.getEntrustbs());
 		requst.setStockCode(entrustEntity.getStockCode());
 		requst.setEntrustType("0");
@@ -122,10 +121,9 @@ public class CallhomesService {
 	 * @return true/false
 	 */
 	public boolean call103Fun() {
-		HomesQueryEntrust param = (HomesQueryEntrust) entity;
 		Fun103Requst requst = new Fun103Requst();
-		requst.setClientNo(param.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(param
+		requst.setClientNo(entity.getClientNo());
+		requst.setInvestAccount(StringUtil.StringToInteger(entity
 				.getInvestAccount()));
 		response = Constants.services.fun103(requst);
 		return isTrue(response);
@@ -168,6 +166,21 @@ public class CallhomesService {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 查询可用资产
+	 * 
+	 * @return
+	 */
+	public boolean call210FunResp() {
+		Fun210Requst requst = new Fun210Requst();
+		requst.setClientNo(entity.getClientNo());
+		requst.setInvestAccount(StringUtil.StringToInteger(entity
+				.getFundAccount()));
+		Fun210Response resp = Constants.services.fun210(requst);
+		response = resp;
+		return isTrue(resp);
 	}
 
 	/*	*//**
