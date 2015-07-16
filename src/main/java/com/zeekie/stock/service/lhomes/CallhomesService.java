@@ -45,14 +45,12 @@ public class CallhomesService {
 	private static final Logger log = LoggerFactory
 			.getLogger(CallhomesService.class);
 
-	private static CallhomesService service = null;
-
 	private AHomesEntity entity;
 
 	private AmServiceResult response;
 
-	public static synchronized CallhomesService getInstance() {
-		return (null == service) ? new CallhomesService() : service;
+	public CallhomesService(AHomesEntity entity) {
+		this.entity = entity;
 	}
 
 	/**
@@ -71,8 +69,10 @@ public class CallhomesService {
 		requst.setStockCode(entrustEntity.getStockCode());
 		requst.setEntrustType("0");
 		requst.setEntrustProp("0");
-		requst.setEntrustPrice(StringUtil.parseBigDecimal(entrustEntity
-				.getEntrustPrice()));
+		requst.setEntrustPrice(StringUtil.parseBigDecimal(
+				entrustEntity.getEntrustPrice(), 2));
+		requst.setEntrustAmount(StringUtil.parseBigDecimal(
+				entrustEntity.getEntrustAmount(), 0));
 		response = Constants.services.fun201(requst);
 		return isTrue(response);
 	}
@@ -211,8 +211,8 @@ public class CallhomesService {
 		Fun501Requst requst = new Fun501Requst();
 		requst.setClientNoFrom(entrustMoveFund.getClientNo());
 		requst.setClientNoTo(entrustMoveFund.getClientNoTo());
-		requst.setOccurBalance(StringUtil.parseBigDecimal(entrustMoveFund
-				.getOccurBalance()));
+		requst.setOccurBalance(StringUtil.parseBigDecimal(
+				entrustMoveFund.getOccurBalance(), 2));
 		requst.setBusinessFlag(entrustMoveFund.getBusinessFlag());
 		requst.setRemark(entrustMoveFund.getRemark());
 		return isTrue(Constants.services.fun501(requst));
@@ -230,10 +230,6 @@ public class CallhomesService {
 		requst.setOldpassword(homesPwd.getOldPwd());
 		requst.setNewpassword(homesPwd.getNewPwd());
 		return isTrue(Constants.services.fun311(requst));
-	}
-
-	public void setEntity(AHomesEntity entity) {
-		this.entity = entity;
 	}
 
 	public boolean isTrue(AmServiceResult response) {

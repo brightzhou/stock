@@ -4,7 +4,7 @@
 	<comment>互联网金融服务系统客户端配置参数.</comment>
 	
 	<!-- 0普通接入 1安全接入 -->
-	<entry key="am.httpClient.requestType">1</entry>
+	<entry key="am.httpClient.requestType">0</entry>
 	
 	<!-- 安全接入 
 		keystoreFile 与 truststoreFile的格式为(classpath|file|http):(.+)

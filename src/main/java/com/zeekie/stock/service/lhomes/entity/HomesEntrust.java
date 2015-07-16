@@ -33,7 +33,7 @@ public class HomesEntrust extends AHomesEntity {
 	 */
 	private String entrustbs;
 
-	public HomesEntrust(String investAccount, String clientNo,
+	public HomesEntrust(String clientNo, String investAccount,
 			String exchangeType, String stockCode, String entrustDirection,
 			String entrustAmount, String entrustPrice, String entrustbs) {
 		super(investAccount, clientNo);

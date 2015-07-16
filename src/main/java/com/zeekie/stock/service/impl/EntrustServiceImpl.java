@@ -50,8 +50,6 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 	static Logger log = LoggerFactory.getLogger(EntrustServiceImpl.class);
 
-	private static CallhomesService service = CallhomesService.getInstance();
-
 	@Autowired
 	private DealMapper deal;
 
@@ -121,7 +119,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				HomesEntrust entrust = new HomesEntrust(operateNo, fundAccount,
 						exchangeType, stockCode, entrustDirection,
 						entrustAmount, entrustPrice, ampriceType);
-				service.setEntity(entrust);
+				CallhomesService service = new CallhomesService(entrust);
 				if (service.call201Fun()) {
 					HomesResponse resp = service.getResponse(Constants.FN201);
 					EntrustEntity entity = new EntrustEntity();
@@ -187,7 +185,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				HomesEntrustWithdraw req = new HomesEntrustWithdraw(
 						entrustDO.getFundAccount(), entrustDO.getOperatorNo(),
 						entrustNo);
-				service.setEntity(req);
+				CallhomesService service = new CallhomesService(req);
 				if (service.call202Fun()) {
 					if (log.isDebugEnabled()) {
 						log.debug("用户【" + nickname + "】委托撤销成功，委托编号："
@@ -233,7 +231,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 			if (StringUtils.equals("open", changeIsOpen)) {
 				AHomesEntity param = new AHomesEntity(fundAccount, combineId);
-				service.setEntity(param);
+				CallhomesService service = new CallhomesService(param);
 				if (service.call210FunResp()) {
 					HomesCapital resp = (HomesCapital) service
 							.getResponse(Constants.FN210);
@@ -254,8 +252,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						EntrustAssetEntity entity = (EntrustAssetEntity) each;
-						if (entity != null
-								&& entity.getAsset_total_value() != null)
+						if (entity != null && entity.getAsset_total_value() != null)
 							combassetDO.setAssetTotalValue(Float.valueOf(entity
 									.getAsset_total_value()));
 						combassetDO.setCurrentCash(Float.valueOf(entity
@@ -313,7 +310,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			if (StringUtils.equals("open", changeIsOpen)) {
 				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(
 						fundAccount, combineId);
-				service.setEntity(queryEntrust);
+				CallhomesService service = new CallhomesService(queryEntrust);
 				if (service.call104Fun()) {
 					Homes104Resp list = (Homes104Resp) service
 							.getResponse(Constants.FN104);
@@ -329,7 +326,6 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				StockEntrustQuery entrustQuery = new StockEntrustQuery(
 						fundAccount, combineId);
 				entrustQuery.callHomes(func_am_entrust_qry);
-
 				List<?> obj = returnObj(entrustQuery.getDataSet(),
 						EntrustQueryEntity.class);
 				List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
@@ -369,7 +365,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			if (StringUtils.equals("open", changeIsOpen)) {
 				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(
 						fundAccount, combineId);
-				service.setEntity(queryEntrust);
+				CallhomesService service = new CallhomesService(queryEntrust);
 				if (service.call105Fun()) {
 					Homes104Resp list = (Homes104Resp) service
 							.getResponse(Constants.FN105);
@@ -449,7 +445,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 			if (StringUtils.equals("open", changeIsOpen)) {
 				AHomesEntity aentity = new AHomesEntity(fundAccount, combineId);
-				service.setEntity(aentity);
+				CallhomesService service = new CallhomesService(aentity);
 				if (service.call103Fun()) {
 					Homes103Resp resp = (Homes103Resp) service
 							.getResponse(Constants.FN103);
@@ -525,7 +521,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				entrust.setStartDate(entrustDO.getStartDate());
 				entrust.setEndDate(entrustDO.getEndDate());
 				entrust.setCxRowcount(50);
-				service.setEntity(entrust);
+				CallhomesService service = new CallhomesService(entrust);
 				if (service.call104Fun()) {
 					HomesResponse response = service
 							.getResponse(Constants.FN104);
