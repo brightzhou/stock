@@ -58,7 +58,7 @@ public class TestStock {
 		// getOperateAcount();
 
 		// enter();
-		// add();
+		 add();
 		// getapkpath();
 		// getHistoryOperation();
 //		 getFundFlow();
@@ -108,7 +108,7 @@ public class TestStock {
 		// testapi();
 //		saveCurrentFinance();
 //		getDuplicateIdCard();
-		getCurrentFinance();
+//		getCurrentFinance();
 	}
 
 	public static void getDuplicateIdCard() {
@@ -512,8 +512,8 @@ public class TestStock {
 	public static void add() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "letaojin");
-		datas.put("addedGuaranteeCash", "199.5");
+		datas.put("nickname", "Lee");
+		datas.put("addedGuaranteeCash", "100");
 		// datas.put("currentGuaranteeCash", "100");
 		// datas.put("currentOperateLimit", "1000");
 		// datas.put("profitAndLossCash", "-15.0");
@@ -521,7 +521,7 @@ public class TestStock {
 
 		try {
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/guaranteeCash/add/",
+					.post("http://localhost:8085/stock/api/stock/trade/operation/guaranteeCash/add/",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {

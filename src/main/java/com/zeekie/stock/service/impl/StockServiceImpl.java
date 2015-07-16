@@ -392,14 +392,14 @@ public class StockServiceImpl implements TradeService {
 			// 2.3 生成新密码更新到homes
 			// AUTO 修改密码
 			String newPwd = StringUtil.genRandomNum(6);
-			if (modifyPwd(operationNo, operPwd, newPwd)) {
-				if (log.isDebugEnabled()) {
-					log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
-				}
+//			if (modifyPwd(operator, operPwd, newPwd)) {
+//				if (log.isDebugEnabled()) {
+//					log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
+//				}
 				client.setOperatorPwd(newPwd);
-			} else {
-				return client;
-			}
+//			} else {
+//				return client;
+//			}
 			
 			// 2.3.1修改用户名称
 

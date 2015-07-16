@@ -18,10 +18,9 @@
 	<entry key="am.httpClient.truststorePass">1234567890</entry>	
 	<entry key="am.httpClient.truststoreType">JKS</entry>	
 	
-	<!-- 普通接入 
-	<entry key="am.httpClient.serverHostName">127.0.0.1</entry>
-	<entry key="am.httpClient.serverPort">8080</entry>
-	-->
+	<!-- 普通接入 -->
+	<entry key="am.httpClient.serverHostName">115.236.31.82</entry>
+	<entry key="am.httpClient.serverPort">9095</entry>
 	<entry key="am.httpClient.userName">jhclient</entry>
 	<entry key="am.httpClient.password">jhclient</entry>	
  	
