@@ -65,12 +65,7 @@ public class CaculateFundTimer {
 			if (log.isDebugEnabled()) {
 				log.debug("=========start visit homes get profit and loss========");
 			}
-
-			if (StringUtils.equals("open", changeIsOpen)) {
-				cal2(result);
-			} else {
-				cal1(result);
-			}
+			cal(result);
 			handler.handleJob(Constants.TYPE_JOB_NOTICE_REACH_WARNLINE, "");
 		} catch (Exception e1) {
 			log.error(e1.getMessage(), e1);
@@ -79,50 +74,59 @@ public class CaculateFundTimer {
 
 	}
 
-	private void cal2(List<TradeDO> result) throws Exception {
+	private void cal(List<TradeDO> result) throws Exception {
 		for (TradeDO trade : result) {
-			AHomesEntity entity = new AHomesEntity();
-			entity.setClientNo(trade.getOperatorNo());
-			entity.setFundAccount(trade.getFundAccount());
-			CallhomesService service = CallhomesService.getInstance();
-			service.setEntity(entity);
-			if (service.call210FunResp()) {
-				HomesCapital capital = (HomesCapital) service
-						.getResponse(Constants.FN210);
-				if (null != capital) {
-					storeCapitalChanges(capital.getMarketValue(),
-							capital.getCurrValue(), trade.getNickname());
-				}
+			String tradeAccouunt = trade.getOperatorNo();
+			if (StringUtils.startsWith(tradeAccouunt, "6")) {
+				cal1(trade);
+			} else if (StringUtils.equals("open", changeIsOpen)) {
+				cal2(trade);
+			} else {
+				log.warn("没有任何通道可以处理");
 			}
 		}
 
 	}
 
-	private void cal1(List<TradeDO> result) throws Exception {
-		for (TradeDO each : result) {
-			StockCapitalChanges changes = new StockCapitalChanges(
-					each.getFundAccount(), each.getCombineId());
-			changes.callHomes(Fn_stock_current);
-			IDatasets dataSet = changes.getDataSet();
-			IDataset ds = dataSet.getDataset(0);
-			String currentCash = ds.getString("current_cash");// 现金资产
-			String marketValue = StringUtils.defaultIfBlank(
-					ds.getString("market_value"), "0");// 股票市值
-
-			if (StringUtils.isBlank(currentCash)) {
-				if (log.isDebugEnabled()) {
-					log.debug("visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
-				}
-				continue;
+	private void cal2(TradeDO trade) throws Exception {
+		AHomesEntity entity = new AHomesEntity();
+		entity.setClientNo(trade.getOperatorNo());
+		entity.setFundAccount(trade.getFundAccount());
+		CallhomesService service = new CallhomesService(entity);
+		if (service.call210FunResp()) {
+			HomesCapital capital = (HomesCapital) service
+					.getResponse(Constants.FN210);
+			if (null != capital) {
+				storeCapitalChanges(capital.getMarketValue(),
+						capital.getCurrValue(), trade.getNickname());
 			}
-
-			Float market = StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat(marketValue));
-			Float money = StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat(currentCash));
-
-			storeCapitalChanges(market, money, each.getNickname());
 		}
+
+	}
+
+	private void cal1(TradeDO trade) throws Exception {
+		StockCapitalChanges changes = new StockCapitalChanges(
+				trade.getFundAccount(), trade.getCombineId());
+		changes.callHomes(Fn_stock_current);
+		IDatasets dataSet = changes.getDataSet();
+		IDataset ds = dataSet.getDataset(0);
+		String currentCash = ds.getString("current_cash");// 现金资产
+		String marketValue = StringUtils.defaultIfBlank(
+				ds.getString("market_value"), "0");// 股票市值
+
+		if (StringUtils.isBlank(currentCash)) {
+			if (log.isDebugEnabled()) {
+				log.debug("visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
+			}
+			return;
+		}
+
+		Float market = StringUtil.keepTwoDecimalFloat(Float
+				.parseFloat(marketValue));
+		Float money = StringUtil.keepTwoDecimalFloat(Float
+				.parseFloat(currentCash));
+
+		storeCapitalChanges(market, money, trade.getNickname());
 	}
 
 	private void storeCapitalChanges(Float market, Float money, String nickname)

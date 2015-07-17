@@ -507,7 +507,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
 					combineId);
 			entrustQuery.callHomes(func_am_entrust_qry);
-			List<?> obj = returnObj(entrustQuery.getDataSet(),EntrustQueryEntity.class);
+			List<?> obj = returnObj(entrustQuery.getDataSet(),
+					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
 			if (!obj.isEmpty()) {
 				String statis[] = new String[] { "1", "4", "a", "A", "B", "C",
@@ -579,11 +580,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					}
 				}
 
-				String assginCash = StringUtil.keepThreeDot(cashDO.getAssginCash());
+				String assginCash = StringUtil.keepThreeDot(cashDO
+						.getAssginCash());
 
 				String fundAccount = cashDO.getFundAccount();
 				// 3、把我们的配资的钱划到我们的总资金
-				acounter.addTotalFund("0", assginCash, fundAccount,"从HOMES划回配资的钱", "recharge");
+				acounter.addTotalFund("0", assginCash, fundAccount,
+						"从HOMES划回配资的钱", "recharge");
 				if (log.isDebugEnabled()) {
 					log.debug("4、将资金【" + assginCash + "】划回到主单元");
 				}
@@ -611,7 +614,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				if (log.isDebugEnabled()) {
 					log.debug("更新用户" + nickname + "的操盘为历史操盘，结束操盘结束");
 				}
-				
+
 				if (!StringUtils.equals("open", changeIsOpen)) {
 					// 结束操盘，如果有限制买入的操盘账号，要恢复可以买入股票
 					String tradeCount = cashDO.getOperateNO();
@@ -685,21 +688,24 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		AccountDO client = acounter.getAccount(nickname);
 		String fundAccount = client.getFundAccount();
 		String combineId = client.getCombineId();
-		String currentCash="";
-		
-		if(StringUtils.equals("open", changeIsOpen)){
+		String tradeAccount = client.getTradeAcount();
+		String currentCash = "";
+
+		if (StringUtils.equals("open", changeIsOpen)
+				&& !StringUtils.startsWith(tradeAccount, "6")) {
 			JSONObject jo = entrustService.queryCombasset(nickname);
 			currentCash = jo.getString("currentCash");
 			if (StringUtils.isNotBlank(currentCash)
 					|| StringUtils.equals("0", currentCash)) {
-				if(move(currentCash,combineId,fundAccount)){
-					log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId
-							+ " 的资金[" + currentCash + "]划转到主单元成功！！！");
-				}else{
+				if (move(currentCash, combineId, fundAccount)) {
+					log.warn("littleHoms将用户【" + nickname + "】的操盘账号为："
+							+ combineId + " 的资金[" + currentCash
+							+ "]划转到主单元成功！！！");
+				} else {
 					return false;
 				}
 			}
-		}else{
+		} else {
 			StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 					combineId);
 			if (log.isDebugEnabled()) {
@@ -710,7 +716,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					.getString("current_cash");
 			if (StringUtils.isNotBlank(currentCash)
 					|| !StringUtils.equals("0", currentCash)) {
-				log.warn("用户【" + nickname + "】的操盘账号为：" + client.getTradeAcount()
+				log.warn("用户【" + nickname + "】的操盘账号为："
+						+ client.getTradeAcount()
 						+ " 的操盘仍然有有资金在HOMES中，需将资金划转到主单元！！！");
 				StockAssetMove assetMove = new StockAssetMove(fundAccount,
 						combineId, client.getManagerCombineId(), currentCash);
@@ -723,7 +730,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					return false;
 				}
 			}
-			
+
 			if (modifyUserName(fundAccount, combineId)) {
 				if (log.isDebugEnabled()) {
 					log.debug("修改用户名称为【空闲用户】");
@@ -731,7 +738,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			} else {
 				log.warn("修改用户名称为【空闲用户】失败，调用HOMES发生异常.但是主程序继续进行！！！");
 			}
-			
+
 		}
 
 		if (log.isDebugEnabled()) {
@@ -741,7 +748,6 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		return true;
 	}
 
-	
 	/**
 	 * 资金划转
 	 * 
@@ -760,12 +766,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		entrustMoveFund.setClientNo(combineId);
 		entrustMoveFund.setClientNoTo(fundAccount);
 		entrustMoveFund.setOccurBalance(moveFund);
-		CallhomesService service = CallhomesService.getInstance();
-		service.setEntity(entrustMoveFund);
+		CallhomesService service = new CallhomesService(entrustMoveFund);
 		return service.call501Fun();
 	}
-	
-	
+
 	@Override
 	public Map<String, String> enterSpreadPage(String nickname) {
 

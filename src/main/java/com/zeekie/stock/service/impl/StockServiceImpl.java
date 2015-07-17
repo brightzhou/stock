@@ -116,8 +116,6 @@ public class StockServiceImpl implements TradeService {
 
 	private Set<String> fundAccountSet = new HashSet<String>();
 
-	private static CallhomesService service = CallhomesService.getInstance();
-
 	@Override
 	public Map<String, String> startOperate(String nickname, String tradeFund) {
 		Map<String, String> currentOperate = new HashMap<String, String>();
@@ -423,7 +421,7 @@ public class StockServiceImpl implements TradeService {
 		homesPwd.setClientNo(clientNo);
 		homesPwd.setOldPwd(operPwd);
 		homesPwd.setNewPwd(newPwd);
-		service.setEntity(homesPwd);
+		CallhomesService service = new CallhomesService(homesPwd);
 		return service.call311Fun();
 	}
 
@@ -432,8 +430,7 @@ public class StockServiceImpl implements TradeService {
 		AHomesEntity entity = new AHomesEntity();
 		entity.setClientNo(clientNo);
 		entity.setFundAccount(fundAccount);
-		CallhomesService service = CallhomesService.getInstance();
-		service.setEntity(entity);
+		CallhomesService service = new CallhomesService(entity);
 		return service.call210Fun();
 	}
 
@@ -455,8 +452,7 @@ public class StockServiceImpl implements TradeService {
 		entrustMoveFund.setClientNo(fundAccount);
 		entrustMoveFund.setClientNoTo(combineId);
 		entrustMoveFund.setOccurBalance(moveFund);
-		CallhomesService service = CallhomesService.getInstance();
-		service.setEntity(entrustMoveFund);
+		CallhomesService service = new CallhomesService(entrustMoveFund);
 		return service.call501Fun();
 	}
 

@@ -241,6 +241,7 @@ public class CallhomesService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public HomesResponse getResponse(String fn) {
 		if (StringUtils.equals(Constants.FN201, fn)) {
 			Fun201Response resp = (Fun201Response) response;
@@ -257,7 +258,8 @@ public class CallhomesService {
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 			for (Fun104Response item : list) {
 				EntrustQueryEntity homes104Resp = new EntrustQueryEntity();
-				homes104Resp.setAmentrust_status(item.getEntrustStatus());
+				homes104Resp.setAmentrust_status(StringUtil.convertStatus(item
+						.getEntrustStatus()));
 				homes104Resp.setEntrust_price(item.getEntrustPrice()
 						.floatValue() + "");
 				homes104Resp.setEntrust_amount(item.getEntrustAmount()
@@ -283,7 +285,7 @@ public class CallhomesService {
 			for (Fun105Response item : list) {
 				EntrustQueryEntity homes104Resp = new EntrustQueryEntity();
 				homes104Resp.setStock_code(item.getStockCode());
-				homes104Resp.setAmentrust_status(RealStatusEnum.getDesc(item
+				homes104Resp.setAmentrust_status(StringUtil.dealStatus(item
 						.getRealStatus()));
 				homes104Resp.setEntrust_direction(item.getEntrustBs());
 				homes104Resp.setExchange_type(ExchangeTypeEnum.getDesc(item
@@ -300,7 +302,6 @@ public class CallhomesService {
 			return resp;
 		} else if (StringUtils.equals(Constants.FN103, fn)) {
 			AmResultList<Fun103Response> list = (AmResultList<Fun103Response>) response;
-
 			Homes103Resp resp = new Homes103Resp();
 			List<HomsEntity103> entity103s = new ArrayList<HomsEntity103>();
 			for (Fun103Response item : list) {

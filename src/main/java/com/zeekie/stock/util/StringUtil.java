@@ -441,4 +441,43 @@ public class StringUtil {
 		}
 		return 0;
 	}
+
+	public static String convertStatus(String orginStatus) {
+
+		if (StringUtils.equals(orginStatus, "0")) {
+			return "1";
+		} else if (StringUtils.equals(orginStatus, "1")) {
+			return "1";
+		} else if (StringUtils.equals(orginStatus, "2")) {
+			return "4";
+		} else if (StringUtils.equals(orginStatus, "3")) {
+			return "a";
+		} else if (StringUtils.equals(orginStatus, "4")) {
+			return "8";
+		} else if (StringUtils.equals(orginStatus, "5")) {
+			return "8";
+		} else if (StringUtils.equals(orginStatus, "6")) {
+			return "9";
+		} else if (StringUtils.equals(orginStatus, "7")) {
+			return "6";
+		} else if (StringUtils.equals(orginStatus, "8")) {
+			return "7";
+		} else if (StringUtils.equals(orginStatus, "9")) {
+			return "5";
+		} else if (StringUtils.equals(orginStatus, "A")) {
+			return "";
+		}
+		return "";
+	}
+
+	public static String dealStatus(String orginStatus) {
+		if (StringUtils.equals(orginStatus, "0")) {
+			return "7";
+		} else if (StringUtils.equals(orginStatus, "2")) {
+			return "5";
+		} else if (StringUtils.equals(orginStatus, "4")) {
+			return "4";
+		}
+		return "";
+	}
 }

@@ -26,11 +26,11 @@ public class TestStock {
 		// entrustTradedQuery();
 		// historyTradedQuery();
 		// login();
-		// deal();
+//		 deal();
 		// cxdeal();
-		// queryCombasset();
-		// queryEntrust();
-		// queryEntrustHistory();
+		 queryCombasset();
+//		 queryEntrust();
+//		 queryEntrustHistory();
 
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
@@ -56,7 +56,7 @@ public class TestStock {
 		// getOperateAcount();
 
 		// enter();
-		add();
+		// add();
 		// getapkpath();
 		// getHistoryOperation();
 		// getFundFlow();
@@ -168,12 +168,12 @@ public class TestStock {
 	public static void queryEntrustHistory() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
-		datas.put("startDate", "2015-05-19");
-		datas.put("endDate", "2015-05-26");
+		datas.put("nickname", "ceshi007");
+		datas.put("startDate", "2015-07-17");
+		datas.put("endDate", "2015-07-17");
 		try {
 			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/entrust/history/query",
+					.post("http://localhost:8085/stock/api/stock/entrust/history/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -184,10 +184,10 @@ public class TestStock {
 	public static void queryEntrust() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi");
+		datas.put("nickname", "ceshi007");
 		try {
 			String result = req.post(
-					"http://localhost:8080/stock/api/stock/entrust/query",
+					"http://localhost:8085/stock/api/stock/entrust/query",
 					datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -198,10 +198,10 @@ public class TestStock {
 	public static void queryCombasset() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "呵呵");
+		datas.put("nickname", "ceshi007");
 		try {
 			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/entrust/combasset/query",
+					.post("http://localhost:8085/stock/api/stock/entrust/combasset/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -811,10 +811,12 @@ public class TestStock {
 	public static void deal() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "实5");
+		datas.put("nickname", "ceshi007");
 		datas.put("stockCode", "600005");
 		datas.put("entrustPrice", "6.39");
 		datas.put("entrustAmount", "100");
+		datas.put("entrustDirection", "1");
+		datas.put("ampriceType", "1");
 		Map<String, String> headers = new HashMap<String, String>();
 		JSONObject item = new JSONObject();
 
@@ -824,7 +826,7 @@ public class TestStock {
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
 			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/common/entrust",
+					.post("http://localhost:8085/stock/api/stock/entrust/common/entrust",
 							datas);
 			System.out.println(result);
 		} catch (Exception e) {
