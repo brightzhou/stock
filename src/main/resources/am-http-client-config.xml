@@ -9,7 +9,7 @@
 	<!-- 安全接入 
 		keystoreFile 与 truststoreFile的格式为(classpath|file|http):(.+)
 	-->
-	<entry key="am.httpClient.requestUrl">https://115.236.31.82:9096/am-server/c6e5f356d809e48cedf1763da79f77e8/</entry>
+	<entry key="am.httpClient.requestUrl">https://115.236.31.82:9097/am-server/c6e5f356d809e48cedf1763da79f77e8/</entry>
 	<entry key="am.httpClient.keystoreFile">classpath:jhclient.jks</entry>
 	<entry key="am.httpClient.keystorePass">1234567890</entry>
 	<entry key="am.httpClient.keystoreType">JKS</entry>
@@ -20,7 +20,7 @@
 	
 	<!-- 普通接入 -->
 	<entry key="am.httpClient.serverHostName">115.236.31.82</entry>
-	<entry key="am.httpClient.serverPort">9095</entry>
+	<entry key="am.httpClient.serverPort">9098</entry>
 	<entry key="am.httpClient.userName">jhclient</entry>
 	<entry key="am.httpClient.password">jhclient</entry>	
  	

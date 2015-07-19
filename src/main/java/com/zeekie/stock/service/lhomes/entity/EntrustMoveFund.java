@@ -7,11 +7,63 @@ public class EntrustMoveFund extends AHomesEntity {
 	/**
 	 * 借
 	 */
-	private int businessFlag = 2022;
+	private int businessFlagPay = 2022;
+	
+	/**
+	 * 还
+	 */
+	private int businessFlagBack = 2021;
+	
+	
+	private String flag;
 
 	private String occurBalance;
 
 	private String remark = "";
+
+	
+	
+	/**
+	 * @return the businessFlagPay
+	 */
+	public int getBusinessFlagPay() {
+		return businessFlagPay;
+	}
+
+	/**
+	 * @param businessFlagPay the businessFlagPay to set
+	 */
+	public void setBusinessFlagPay(int businessFlagPay) {
+		this.businessFlagPay = businessFlagPay;
+	}
+
+	/**
+	 * @return the businessFlagBack
+	 */
+	public int getBusinessFlagBack() {
+		return businessFlagBack;
+	}
+
+	/**
+	 * @param businessFlagBack the businessFlagBack to set
+	 */
+	public void setBusinessFlagBack(int businessFlagBack) {
+		this.businessFlagBack = businessFlagBack;
+	}
+
+	/**
+	 * @return the flag
+	 */
+	public String getFlag() {
+		return flag;
+	}
+
+	/**
+	 * @param flag the flag to set
+	 */
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 
 	/**
 	 * @return the clientNoTo
@@ -28,20 +80,7 @@ public class EntrustMoveFund extends AHomesEntity {
 		this.clientNoTo = clientNoTo;
 	}
 
-	/**
-	 * @return the businessFlag
-	 */
-	public int getBusinessFlag() {
-		return businessFlag;
-	}
 
-	/**
-	 * @param businessFlag
-	 *            the businessFlag to set
-	 */
-	public void setBusinessFlag(int businessFlag) {
-		this.businessFlag = businessFlag;
-	}
 
 	/**
 	 * @return the occurBalance

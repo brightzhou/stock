@@ -452,6 +452,7 @@ public class StockServiceImpl implements TradeService {
 		entrustMoveFund.setClientNo(fundAccount);
 		entrustMoveFund.setClientNoTo(combineId);
 		entrustMoveFund.setOccurBalance(moveFund);
+		entrustMoveFund.setFlag("pay");
 		CallhomesService service = new CallhomesService(entrustMoveFund);
 		return service.call501Fun();
 	}

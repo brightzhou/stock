@@ -25,7 +25,6 @@ import com.hczq.hz.intf.Fun311Requst;
 import com.hczq.hz.intf.Fun501Requst;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.enums.ExchangeTypeEnum;
-import com.zeekie.stock.enums.RealStatusEnum;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
@@ -213,7 +212,11 @@ public class CallhomesService {
 		requst.setClientNoTo(entrustMoveFund.getClientNoTo());
 		requst.setOccurBalance(StringUtil.parseBigDecimal(
 				entrustMoveFund.getOccurBalance(), 2));
-		requst.setBusinessFlag(entrustMoveFund.getBusinessFlag());
+		if(StringUtils.equals("pay", entrustMoveFund.getFlag())){
+			requst.setBusinessFlag(entrustMoveFund.getBusinessFlagPay());
+		}else{
+			requst.setBusinessFlag(entrustMoveFund.getBusinessFlagBack());
+		}
 		requst.setRemark(entrustMoveFund.getRemark());
 		return isTrue(Constants.services.fun501(requst));
 	}

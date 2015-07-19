@@ -766,6 +766,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		entrustMoveFund.setClientNo(combineId);
 		entrustMoveFund.setClientNoTo(fundAccount);
 		entrustMoveFund.setOccurBalance(moveFund);
+		entrustMoveFund.setFlag("back");
 		CallhomesService service = new CallhomesService(entrustMoveFund);
 		return service.call501Fun();
 	}
