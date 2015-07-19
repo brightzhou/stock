@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import sitong.thinker.common.api.ApiResponse;
 
+import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.EntrustService;
@@ -47,10 +48,16 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice,
-			@RequestParam("entrustDirection") String entrustDirection,
-			@RequestParam("ampriceType") String ampriceType) {
+			@RequestParam("entrustDirection") String entrustDirection) {
+		if (!StringUtils.startsWith(stockCode, "0")
+				&& !StringUtils.startsWith(stockCode, "6")) {
+			if(log.isDebugEnabled()){
+				log.debug("不能买入"+stockCode+"的股票");
+			}
+			return Constants.CODE_STOCK_lIMIT;
+		}
 		return entrust.entrust(nickname, stockCode, entrustAmount,
-				entrustPrice, entrustDirection, ampriceType);
+				entrustPrice, entrustDirection);
 	}
 
 	@ResponseBody

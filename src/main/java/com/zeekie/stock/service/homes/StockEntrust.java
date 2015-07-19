@@ -49,7 +49,7 @@ public class StockEntrust extends AStockTrade {
 		this.entrustPrice = entrustPrice;
 		this.exchangeType = exchangeType;
 		this.entrustDirection = entrustDirection;
-		if(StringUtil.isBlank(ampriceType))
+		if(StringUtil.isNotBlank(ampriceType))
 		this.ampriceType = ampriceType;
 	}
 

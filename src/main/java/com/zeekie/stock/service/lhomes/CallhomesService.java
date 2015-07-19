@@ -64,7 +64,7 @@ public class CallhomesService {
 		requst.setInvestAccount(StringUtil.StringToInteger(entrustEntity
 				.getInvestAccount()));
 		requst.setExchangeType(entrustEntity.getExchangeType());
-		requst.setEntrustBs(entrustEntity.getEntrustbs());
+		requst.setEntrustBs(entrustEntity.getEntrustDirection());
 		requst.setStockCode(entrustEntity.getStockCode());
 		requst.setEntrustType("0");
 		requst.setEntrustProp("0");

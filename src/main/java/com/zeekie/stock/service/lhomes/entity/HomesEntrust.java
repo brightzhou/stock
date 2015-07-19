@@ -22,42 +22,24 @@ public class HomesEntrust extends AHomesEntity {
 
 	private String stockCode;
 
+	/**
+	 * 委托买卖 1：买入 2：卖出
+	 */
 	private String entrustDirection;
 
 	private String entrustAmount;
 
 	private String entrustPrice;
 
-	/**
-	 * 委托买卖 1：买入 2：卖出
-	 */
-	private String entrustbs;
-
 	public HomesEntrust(String clientNo, String investAccount,
 			String exchangeType, String stockCode, String entrustDirection,
-			String entrustAmount, String entrustPrice, String entrustbs) {
+			String entrustAmount, String entrustPrice) {
 		super(investAccount, clientNo);
 		this.exchangeType = exchangeType;
 		this.stockCode = stockCode;
 		this.entrustDirection = entrustDirection;
 		this.entrustAmount = entrustAmount;
 		this.entrustPrice = entrustPrice;
-		this.entrustbs = entrustbs;
-	}
-
-	/**
-	 * @return the entrustbs
-	 */
-	public String getEntrustbs() {
-		return entrustbs;
-	}
-
-	/**
-	 * @param entrustbs
-	 *            the entrustbs to set
-	 */
-	public void setEntrustbs(String entrustbs) {
-		this.entrustbs = entrustbs;
 	}
 
 	/**

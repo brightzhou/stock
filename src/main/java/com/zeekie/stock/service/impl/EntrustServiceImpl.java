@@ -104,8 +104,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 	@Override
 	public String entrust(String nickname, String stockCode,
-			String entrustAmount, String entrustPrice, String entrustDirection,
-			String ampriceType) {
+			String entrustAmount, String entrustPrice, String entrustDirection) {
 		try {
 			AccountDO accountDO = account.getAccount(nickname);
 			String combineId = accountDO.getCombineId();
@@ -118,7 +117,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			if (StringUtils.equals("open", changeIsOpen)) {
 				HomesEntrust entrust = new HomesEntrust(operateNo, fundAccount,
 						exchangeType, stockCode, entrustDirection,
-						entrustAmount, entrustPrice, ampriceType);
+						entrustAmount, entrustPrice);
 				CallhomesService service = new CallhomesService(entrust);
 				if (service.call201Fun()) {
 					HomesResponse resp = service.getResponse(Constants.FN201);
@@ -132,7 +131,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			} else {
 				StockEntrust entrust = new StockEntrust(fundAccount, combineId,
 						operateNo, stockCode, entrustAmount, entrustPrice,
-						exchangeType, entrustDirection, ampriceType);
+						exchangeType, entrustDirection, "");
 				entrust.callHomes(fn_entrust);
 
 				if (!entrust.visitSuccess(fn_entrust)) {
@@ -235,12 +234,12 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				if (service.call210FunResp()) {
 					HomesCapital resp = (HomesCapital) service
 							.getResponse(Constants.FN210);
-					Float marketValue = resp.getMarketValue();
+					// Float marketValue = resp.getMarketValue();
 					Float currValue = resp.getCurrValue();
-					combassetDO.setAssetTotalValue(currValue
-							+ resp.getUsermarket());
-					combassetDO.setAssetValue(marketValue);
-					combassetDO.setCurrentCash(currValue);
+					Float userMarket = resp.getUsermarket();
+					combassetDO.setAssetTotalValue(currValue + userMarket);
+					combassetDO.setAssetValue(currValue);
+					combassetDO.setCurrentCash(userMarket);
 				}
 			} else {
 
@@ -252,7 +251,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						EntrustAssetEntity entity = (EntrustAssetEntity) each;
-						if (entity != null && entity.getAsset_total_value() != null)
+						if (entity != null
+								&& entity.getAsset_total_value() != null)
 							combassetDO.setAssetTotalValue(Float.valueOf(entity
 									.getAsset_total_value()));
 						combassetDO.setCurrentCash(Float.valueOf(entity

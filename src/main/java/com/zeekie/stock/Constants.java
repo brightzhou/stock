@@ -58,6 +58,11 @@ public class Constants {
 	public static final String CODE_TOTAL_lIMIT_LITTLE = "3";
 
 	/**
+	 * 不能买0和6之外开头的股票 code=2
+	 */
+	public static final String CODE_STOCK_lIMIT = "2";
+
+	/**
 	 * 理财额度已经达到其最大上限 code=4
 	 */
 	public static final String CODE_REACH_MAX_lIMIT = "4";
