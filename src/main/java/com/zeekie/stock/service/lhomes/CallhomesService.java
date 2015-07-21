@@ -277,6 +277,7 @@ public class CallhomesService {
 				homes104Resp.setBusiness_amount(item.getBusinessAmount()
 						.intValue() + "");
 				homes104Resp.setCancel_info(item.getSecuErrorInfo());
+				homes104Resp.setStock_code(item.getStockCode());
 				entities.add(homes104Resp);
 			}
 			resp.setList(entities);
