@@ -13,7 +13,6 @@ deploy
 weblogic.jar
 /bin
 artifacts
-pom.xml
 /target
 /.settings
 t2sdk-config.xml
