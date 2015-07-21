@@ -427,34 +427,49 @@ public class StockServiceImpl implements TradeService {
 			}
 			// 2.3 生成新密码更新到homes
 			String newOperatePwd = genNewPassword();
+			long startTime = System.currentTimeMillis();
 			if (!modifyClientPwd(client, operatorPwd, operator, newOperatePwd)) {
 				log.error("modify homes password failure for user[" + nickname
 						+ "],operation NO:" + operator);
 				return client;
 			}
+
 			if (log.isDebugEnabled()) {
+				log.debug("修改账户"+operator+"密码，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
 				log.debug("访问HOMES服务，修改用户密码成功");
 			}
+			
 			client.setOperatorPwd(newOperatePwd);
 			// 2.3.1修改用户名称
+			startTime = System.currentTimeMillis();
 			if (!modifyUserName(nickname, fundAccount, combineId)) {
 				log.error("modify homes name failure for user" + nickname
 						+ ",operation NO:" + operator);
 				// client.setFlag(Constants.CODE_FAILURE);
 				return client;
 			}
+			
 			if (log.isDebugEnabled()) {
+				log.debug("修改账户"+operator+"名称，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
 				log.debug("访问HOMES服务，修改用户名称成功");
 			}
 			// 2.4 获取单号相关信息
+			startTime = System.currentTimeMillis();
 			if (!setCombineInfo(client, fundAccount)) {
 				return client;
 			}
+			if (log.isDebugEnabled()) {
+				log.debug("修改账户"+operator+"其他信息，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+			}
+			
+			
 			// 2.5资金划转
+			startTime = System.currentTimeMillis();
 			if (!moveFund(moveFund, combineId, fundAccount, managerCombineId)) {
 				return client;
 			}
 			if (log.isDebugEnabled()) {
+				log.debug("账户"+operator+"资金划转，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
 				log.debug("访问HOMES服务，进行资金划转成功");
 				log.debug("访问HOMES服务结束,处理过程正常，成功推出！！！");
 			}
@@ -498,6 +513,7 @@ public class StockServiceImpl implements TradeService {
 
 	private boolean canUse(String operator, String combineId, String fundAccount)
 			throws Exception {
+		long startTime = System.currentTimeMillis();
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
 		if (log.isDebugEnabled()) {
@@ -528,6 +544,9 @@ public class StockServiceImpl implements TradeService {
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("访问HOMES结束,该操盘账号[" + operator + "]可用!");
+		}
+		if(log.isDebugEnabled()){
+			log.debug("判断该账户"+operator+"是否还有余额，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
 		}
 		return true;
 	}
