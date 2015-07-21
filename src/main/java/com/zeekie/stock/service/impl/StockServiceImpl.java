@@ -398,6 +398,7 @@ public class StockServiceImpl implements TradeService {
 				}
 				return client;
 			}
+			long startTime = System.currentTimeMillis();
 			for (int i = 0; i < item.size(); i++) {
 				client = item.get(i);
 				client.setFlag(Constants.CODE_FAILURE);
@@ -425,9 +426,12 @@ public class StockServiceImpl implements TradeService {
 			if (!haveOperator) {
 				return client;
 			}
+			if(log.isDebugEnabled()){
+				log.debug("判断该账户"+operator+"是否还有余额，选择一个可以用的账号，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+			}
 			// 2.3 生成新密码更新到homes
 			String newOperatePwd = genNewPassword();
-			long startTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
 			if (!modifyClientPwd(client, operatorPwd, operator, newOperatePwd)) {
 				log.error("modify homes password failure for user[" + nickname
 						+ "],operation NO:" + operator);
@@ -513,7 +517,6 @@ public class StockServiceImpl implements TradeService {
 
 	private boolean canUse(String operator, String combineId, String fundAccount)
 			throws Exception {
-		long startTime = System.currentTimeMillis();
 		StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
 				combineId);
 		if (log.isDebugEnabled()) {
@@ -544,9 +547,6 @@ public class StockServiceImpl implements TradeService {
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("访问HOMES结束,该操盘账号[" + operator + "]可用!");
-		}
-		if(log.isDebugEnabled()){
-			log.debug("判断该账户"+operator+"是否还有余额，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
 		}
 		return true;
 	}
