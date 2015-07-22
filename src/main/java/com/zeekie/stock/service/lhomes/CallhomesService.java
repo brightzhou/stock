@@ -310,7 +310,7 @@ public class CallhomesService {
 			List<HomsEntity103> entity103s = new ArrayList<HomsEntity103>();
 			for (Fun103Response item : list) {
 				HomsEntity103 entity103 = new HomsEntity103(
-						item.getStockCode(), item.getCurrentAmount()
+						item.getStockCode(), item.getRealBuyAmount()
 								.floatValue() + "", item.getEnableAmount()
 								.floatValue() + "", item.getCostPrice()
 								.floatValue() + "", item.getCurrMarket()
