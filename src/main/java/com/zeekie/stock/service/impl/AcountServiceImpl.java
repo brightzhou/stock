@@ -462,7 +462,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				return false;
 			}
 
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				if (!entrustService.queryEntrust(nickname).isEmpty()) {
 					return true;
 				}
@@ -541,7 +542,6 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						log.debug("3、用户" + nickname + "产生利润，划到钱包：" + userCash);
 					}
 				}
-
 				String assginCash = StringUtil.keepThreeDot(cashDO.getAssginCash());
 
 				String fundAccount = cashDO.getFundAccount();
@@ -645,7 +645,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		String tradeAccount = client.getTradeAcount();
 		String currentCash = "";
 
-		if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(tradeAccount, "6")) {
+		if (StringUtils.equals("open", changeIsOpen)
+				&& !StringUtils.startsWith(tradeAccount, "6")) {
 			JSONObject jo = entrustService.queryCombasset(nickname);
 			currentCash = jo.getString("assetValue");
 			if (StringUtils.equals("0", currentCash)) {

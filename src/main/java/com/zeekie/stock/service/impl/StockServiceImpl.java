@@ -235,7 +235,8 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			// 判断是否存在可用的操盘账号
-			if (!StringUtils.equals("1", acount.getOperateAccount())) {
+			String tradeAccount = acount.getOperateAccount();
+			if (!StringUtils.equals("1", tradeAccount)) {
 				currentOperateInfo.put("flag", "2");
 				// ApiUtils.send(Constants.MODEL_ACCOUNT_EMPTY_FN,
 				// stock_manager_phone);
@@ -250,7 +251,8 @@ public class StockServiceImpl implements TradeService {
 			 */
 			TradeDO tradeDO = null;
 			// 1、保存操盘账号信息 资金划转
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(tradeAccount, "6")) {
 				tradeDO = callLittleHoms(nickname, tradeFund);
 			} else {
 				tradeDO = callHomesInterface(nickname, tradeFund);
@@ -388,14 +390,14 @@ public class StockServiceImpl implements TradeService {
 			// 2.3 生成新密码更新到homes
 			// AUTO 修改密码
 			String newPwd = StringUtil.genRandomNum(6);
-//			if (modifyPwd(operator, operPwd, newPwd)) {
-//				if (log.isDebugEnabled()) {
-//					log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
-//				}
-				client.setOperatorPwd(newPwd);
-//			} else {
-//				return client;
-//			}
+			// if (modifyPwd(operator, operPwd, newPwd)) {
+			// if (log.isDebugEnabled()) {
+			// log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
+			// }
+			client.setOperatorPwd(newPwd);
+			// } else {
+			// return client;
+			// }
 			
 			// 2.3.1修改用户名称
 
@@ -923,7 +925,8 @@ public class StockServiceImpl implements TradeService {
 					String managerCombineId = result.get("managerCombineId");
 					boolean moveSuccess = false;
 					// 切换小homs
-					if (StringUtils.equals("open", changeIsOpen)) {
+					if (StringUtils.equals("open", changeIsOpen)
+							&& !StringUtils.startsWith(operationNo, "6")) {
 						moveSuccess = move(addedAssginCapital, clientCombineId,
 								fundAccount);
 						if (log.isDebugEnabled()) {
@@ -1050,11 +1053,17 @@ public class StockServiceImpl implements TradeService {
 		Map<String, String> map = new HashMap<String, String>();
 		try {
 			EveningEndDO eveningEndDO = trade.getEveningFlag(nickname);
-			map.put("id", eveningEndDO.getId());
-			map.put("assetId", eveningEndDO.getAssetId());
-			map.put("capital",
-					StringUtil.keepThreeDot(eveningEndDO.getCapital()));
-			map.put("stopPercent", eveningEndDO.getStopPercent());
+			if (null != eveningEndDO) {
+				map.put("id", eveningEndDO.getId());
+				map.put("assetId", eveningEndDO.getAssetId());
+				map.put("capital", StringUtil.keepThreeDot(eveningEndDO.getCapital()));
+				map.put("stopPercent", eveningEndDO.getStopPercent());
+			} else {
+				map.put("id", "");
+				map.put("assetId", "");
+				map.put("capital", "");
+				map.put("stopPercent", "");
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

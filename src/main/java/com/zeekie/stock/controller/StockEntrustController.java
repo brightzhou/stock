@@ -1,7 +1,5 @@
 package com.zeekie.stock.controller;
 
-import java.util.Date;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -21,7 +19,6 @@ import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.util.ApiUtils;
-import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 
 /**

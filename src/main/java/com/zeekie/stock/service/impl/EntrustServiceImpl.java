@@ -114,7 +114,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					: Constants.HOMES_EXCHANGE_TYPE_S;
 			List<EntrustEntity> entities = new ArrayList<EntrustEntity>();
 
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(operateNo, "6")) {
 				HomesEntrust entrust = new HomesEntrust(operateNo, fundAccount,
 						exchangeType, stockCode, entrustDirection,
 						entrustAmount, entrustPrice);
@@ -180,7 +181,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			if (null == entrustDO) {
 				return Constants.CODE_FAILURE;
 			}
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(entrustDO.getOperatorNo(), "6")) {
 				HomesEntrustWithdraw req = new HomesEntrustWithdraw(
 						entrustDO.getFundAccount(), entrustDO.getOperatorNo(),
 						entrustNo);
@@ -228,7 +230,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				AHomesEntity param = new AHomesEntity(fundAccount, combineId);
 				CallhomesService service = new CallhomesService(param);
 				if (service.call210FunResp()) {
@@ -307,7 +310,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(
 						fundAccount, combineId);
 				CallhomesService service = new CallhomesService(queryEntrust);
@@ -362,7 +366,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(
 						fundAccount, combineId);
 				CallhomesService service = new CallhomesService(queryEntrust);
@@ -443,7 +448,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				AHomesEntity aentity = new AHomesEntity(fundAccount, combineId);
 				CallhomesService service = new CallhomesService(aentity);
 				if (service.call103Fun()) {
@@ -513,7 +519,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			String nickname = entrustDO.getNickName();
 			CurrentOperateUserDO userDO = account
 					.getCurrentOperateUser(nickname);
-			if (StringUtils.equals("open", changeIsOpen)) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				String investNO = userDO.getFundAccount();
 				String clientNo = userDO.getTradeAcount();
 				HomesQueryEntrust entrust = new HomesQueryEntrust(investNO,
