@@ -61,6 +61,11 @@ public class Constants {
 	 * 不能买0和6之外开头的股票 code=2
 	 */
 	public static final String CODE_STOCK_lIMIT = "2";
+	
+	/**
+	 * 到达警戒线禁止买入股票
+	 */
+	public static final String CODE_STOCK_STOP = "3";
 
 	/**
 	 * 理财额度已经达到其最大上限 code=4
