@@ -16,8 +16,6 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.TradeDO;
 import com.zeekie.stock.respository.AcountMapper;
 import com.zeekie.stock.respository.StockMapper;
-import com.zeekie.stock.respository.TradeMapper;
-import com.zeekie.stock.service.TradeService;
 import com.zeekie.stock.service.homes.StockCapitalChanges;
 import com.zeekie.stock.service.lhomes.CallhomesService;
 import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
@@ -36,12 +34,6 @@ public class CaculateFundTimer {
 
 	@Autowired
 	private StockMapper mapper;
-
-	@Autowired
-	private TradeMapper trade;
-
-	@Autowired
-	private TradeService service;
 
 	@Autowired
 	private SyncHandler handler;

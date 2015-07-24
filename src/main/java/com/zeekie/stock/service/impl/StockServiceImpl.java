@@ -236,7 +236,7 @@ public class StockServiceImpl implements TradeService {
 
 			// 判断是否存在可用的操盘账号
 			String tradeAccount = acount.getOperateAccount();
-			if (!StringUtils.equals("1", tradeAccount)) {
+			if (StringUtils.isBlank(tradeAccount)) {
 				currentOperateInfo.put("flag", "2");
 				// ApiUtils.send(Constants.MODEL_ACCOUNT_EMPTY_FN,
 				// stock_manager_phone);

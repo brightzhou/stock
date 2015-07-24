@@ -779,13 +779,13 @@
 		   select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries
 		   <where>
 			 <if test="dicName != null  and  dicName != ''">
-			      dic_Name=#{dicName} and
+			      dic_Name=#{dicName} 
 			 </if>
 			 <if test="dicWord != null and dicWord != ''">
-			      dic_Word=#{dicWord} and
+			    and  dic_Word=#{dicWord} 
 			 </if>
 			 <if test="dicType != null  and  dicType != ''">
-				      DIC_TYPE=#{dicType}  
+				 and     DIC_TYPE=#{dicType}  
 			  </if>
 		   </where>
 	</select>
@@ -793,13 +793,13 @@
 		   select count(id)   from stock_dictionaries
 		   <where>
 			 <if test="dicName != null  and  dicName != ''">
-			      dic_Name=#{dicName} and
+			      dic_Name=#{dicName} 
 			 </if>
 			 <if test="dicWord != null and dicWord != ''">
-			      dic_Word=#{dicWord} and
+			    and  dic_Word=#{dicWord} 
 			 </if>
 			 <if test="dicType != null  and  dicType != ''">
-				      DIC_TYPE=#{dicType}   
+				    and  DIC_TYPE=#{dicType}   
 				 </if>
 		   </where>
     </select>
@@ -820,16 +820,16 @@
 		     select ID,DIC_TYPE,dic_Word,dic_Value,dic_Name,Order_No,DES,IS_CACHE,Status   from stock_dictionaries 
              <where>
 	             <if test="dicType != null  and  dicType != ''">
-				      DIC_TYPE=#{dicType}  and
+				      DIC_TYPE=#{dicType}  
 				 </if>
 	             <if test="dicName != null  and  dicName != ''">
-				      dic_Name=#{dicName} and
+				    and  dic_Name=#{dicName} 
 				 </if>
 				 <if test="dicWord != null and dicWord != ''">
-				      dic_Word=#{dicWord} and
+				    and  dic_Word=#{dicWord} 
 				 </if>
 				 <if test="status != null and status != ''">
-				      status=#{status}
+				    and  status=#{status}
 				 </if>
 		    </where>
 		    order by Order_No asc

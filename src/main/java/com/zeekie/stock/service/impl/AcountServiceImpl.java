@@ -649,11 +649,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				&& !StringUtils.startsWith(tradeAccount, "6")) {
 			JSONObject jo = entrustService.queryCombasset(nickname);
 			currentCash = jo.getString("assetValue");
-			if (StringUtils.equals("0", currentCash)) {
+			
+			if(log.isDebugEnabled()){
+				log.debug("用户"+nickname+"进行资金划转，调用小HOMS获取assetValue="+currentCash);
+			}
+			Float fvalue = Float.parseFloat(currentCash);
+			if (0==fvalue) {
 				log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId + " 的资金[" + currentCash + "]不用划转！！！");
 				return true;
-			}
-			if (StringUtils.isNotBlank(currentCash) || StringUtils.equals("0", currentCash)) {
+			}else{
 				if (move(currentCash, combineId, fundAccount)) {
 					log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId + " 的资金[" + currentCash
 							+ "]划转到主单元成功！！！");
