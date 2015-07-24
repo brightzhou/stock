@@ -84,6 +84,7 @@ public interface DealMapper {
 
 	/**
 	 * 通过组合ID查询交易信息
+	 * 
 	 * @param combineId
 	 * @param entrustTime
 	 * @return
@@ -92,5 +93,15 @@ public interface DealMapper {
 	public List<CurrentEntrustDO> queryTradeInfoByCombineId(
 			@Param("combineId") String combineId,
 			@Param("entrustTime") String entrustTime) throws Exception;
+
+	/**
+	 * 查询禁止买卖标志
+	 * 
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	public String queryStopFlag(@Param("nickname") String nickname)
+			throws Exception;
 
 }

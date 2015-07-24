@@ -16,6 +16,7 @@ import sitong.thinker.common.api.ApiResponse;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.util.ApiUtils;
@@ -38,6 +39,9 @@ public class StockEntrustController {
 
 	@Autowired
 	private AcountService account;
+	
+	@Autowired
+	private DealMapper deal;
 
 	@ResponseBody
 	@RequestMapping("common/entrust")
@@ -45,7 +49,15 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice,
-			@RequestParam("entrustDirection") String entrustDirection) {
+			@RequestParam("entrustDirection") String entrustDirection) throws Exception {
+		
+		//判断是否已经禁止买入
+		if(StringUtils.equals(entrustDirection, "1")){
+			if(StringUtils.equals("1", deal.queryStopFlag(nickname))){
+				return Constants.CODE_STOCK_STOP;
+			}
+		}
+		
 		if (!StringUtils.startsWith(stockCode, "0")
 				&& !StringUtils.startsWith(stockCode, "6")) {
 			if(log.isDebugEnabled()){

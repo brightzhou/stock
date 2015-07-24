@@ -197,5 +197,8 @@
 	    where  m.start_date &lt;=   to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss') and   m.end_date &gt;= to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss')  and  a.combie_id= #{combineId}
     </select>
    
+   <select id="queryStopFlag" parameterType="string" resultType="string">
+   	select STOP_BUY from stock_user_operate_maininfo where nickname#{nickname}
+   </select>
     
 </mapper>
