@@ -203,7 +203,7 @@
     </select>
    
    <select id="queryStopFlag" parameterType="string" resultType="string">
-   	select STOP_BUY from stock_user_operate_maininfo where nickname#{nickname}
+   	select STOP_BUY from stock_user_operate_maininfo where nickname=#{nickname}
    </select>
    
 	<select id="queryStockCode" parameterType="com.zeekie.stock.web.StockCodePage" resultMap="resultStockCode">

@@ -198,10 +198,10 @@ public class TestStock {
 	public static void queryCombasset() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "ceshi007");
+		datas.put("nickname", "test2");
 		try {
 			String result = req
-					.post("http://localhost:8085/stock/api/stock/entrust/combasset/query",
+					.post("http://localhost:8080/stock/api/stock/entrust/combasset/query",
 							datas);
 			System.out.println(result);
 		} catch (IOException e) {
@@ -826,7 +826,7 @@ public class TestStock {
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
 			String result = req
-					.post("http://localhost:8085/stock/api/stock/entrust/common/entrust",
+					.post("http://localhost:8080/stock/api/stock/entrust/common/entrust",
 							datas);
 			System.out.println(result);
 		} catch (Exception e) {

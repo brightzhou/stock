@@ -239,10 +239,11 @@ public class CallhomesService {
 			Fun201Response resp = (Fun201Response) response;
 			return new HomesResponse(resp.getBranchNo(), resp.getFundAccount(), resp.getEntrustNo(), resp.getBatchNo(),
 					resp.getClientNo());
-		} else if (StringUtils.equals(Constants.FN210, fn)) {
+		} else if (StringUtils.equals(Constants.FN210, fn)) {// 资产
 			Fun210Response resp = (Fun210Response) response;
 			return new HomesCapital(resp.getFetfund().floatValue(), resp.getUserfund().floatValue(),
-					resp.getUsermarket().floatValue());
+					resp.getUsermarket().floatValue(), resp.getCurrfund().floatValue(),
+					resp.getCurrmarket().floatValue());
 		} else if (StringUtils.equals(Constants.FN104, fn)) {
 			AmResultList<Fun104Response> list = (AmResultList<Fun104Response>) response;
 			Homes104Resp resp = new Homes104Resp();
@@ -282,15 +283,19 @@ public class CallhomesService {
 			}
 			resp.setList(entities);
 			return resp;
-		} else if (StringUtils.equals(Constants.FN103, fn)) {
+		} else if (StringUtils.equals(Constants.FN103, fn)) {// 持仓
 			AmResultList<Fun103Response> list = (AmResultList<Fun103Response>) response;
 			Homes103Resp resp = new Homes103Resp();
 			List<HomsEntity103> entity103s = new ArrayList<HomsEntity103>();
 			for (Fun103Response item : list) {
-				int buyAmout = item.getRealBuyAmount().intValue();
-				HomsEntity103 entity103 = new HomsEntity103(item.getStockCode(), buyAmout + "",
-						item.getCurrentAmount().floatValue() + "", item.getCostPrice().floatValue() * buyAmout + "",
-						item.getLastPrice().floatValue() * buyAmout + "");
+				int buyAmount = item.getRealBuyAmount().intValue();
+				int current = item.getCurrentAmount().intValue();
+				int sellAmount = item.getRealSellAmount().intValue();
+				int lastCurrent = current + buyAmount - sellAmount;
+				HomsEntity103 entity103 = new HomsEntity103(item.getStockCode(), lastCurrent + "",
+						item.getEnableAmount().intValue() + "",
+						StringUtil.keepTwoDecimalFloat(item.getCostPrice().floatValue() * lastCurrent) + "",
+						item.getCurrMarket().floatValue() + "");
 				entity103s.add(entity103);
 			}
 			resp.setList(entity103s);

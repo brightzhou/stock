@@ -2,68 +2,71 @@ package com.zeekie.stock.service.lhomes.entity;
 
 public class HomesCapital extends HomesResponse {
 
-	private Float marketValue;
+	private Float fetfund;
 
-	private Float currValue;
+	private Float userfund;
 
 	private Float usermarket;
 
 	/**
-	 * @return the usermarket
+	 * 当前资金
 	 */
+	private Float currMarket;
+
+	/**
+	 * 当前市值
+	 */
+	private Float currFund;
+
+	public Float getFetfund() {
+		return fetfund;
+	}
+
+	public void setFetfund(Float fetfund) {
+		this.fetfund = fetfund;
+	}
+
+	public Float getUserfund() {
+		return userfund;
+	}
+
+	public void setUserfund(Float userfund) {
+		this.userfund = userfund;
+	}
+
 	public Float getUsermarket() {
 		return usermarket;
 	}
 
-	/**
-	 * @param usermarket
-	 *            the usermarket to set
-	 */
 	public void setUsermarket(Float usermarket) {
 		this.usermarket = usermarket;
 	}
 
-	/**
-	 * @return the marketValue
-	 */
-	public Float getMarketValue() {
-		return marketValue;
+	public Float getCurrMarket() {
+		return currMarket;
 	}
 
-	/**
-	 * @param marketValue
-	 *            the marketValue to set
-	 */
-	public void setMarketValue(Float marketValue) {
-		this.marketValue = marketValue;
+	public void setCurrMarket(Float currMarket) {
+		this.currMarket = currMarket;
 	}
 
-	/**
-	 * @return the currValue
-	 */
-	public Float getCurrValue() {
-		return currValue;
+	public Float getCurrFund() {
+		return currFund;
 	}
 
-	/**
-	 * @param currValue
-	 *            the currValue to set
-	 */
-	public void setCurrValue(Float currValue) {
-		this.currValue = currValue;
+	public void setCurrFund(Float currFund) {
+		this.currFund = currFund;
 	}
 
-	public HomesCapital(Float marketValue, Float currValue, Float usermarket) {
+	public HomesCapital(Float fetfund, Float userfund, Float usermarket, Float currMarket, Float currFund) {
 		super();
-		this.marketValue = marketValue;
-		this.currValue = currValue;
+		this.fetfund = fetfund;
+		this.userfund = userfund;
 		this.usermarket = usermarket;
+		this.currMarket = currMarket;
+		this.currFund = currFund;
 	}
 
-	public HomesCapital(Float marketValue, Float currValue) {
-		super();
-		this.marketValue = marketValue;
-		this.currValue = currValue;
-	}
-
+	
+	
 }
