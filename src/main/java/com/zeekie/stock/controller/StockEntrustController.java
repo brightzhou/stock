@@ -1,5 +1,7 @@
 package com.zeekie.stock.controller;
 
+import java.util.List;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -39,7 +41,7 @@ public class StockEntrustController {
 
 	@Autowired
 	private AcountService account;
-	
+
 	@Autowired
 	private DealMapper deal;
 
@@ -49,21 +51,25 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice,
-			@RequestParam("entrustDirection") String entrustDirection) throws Exception {
-		
-		//判断是否已经禁止买入
-		if(StringUtils.equals(entrustDirection, "1")){
-			if(StringUtils.equals("1", deal.queryStopFlag(nickname))){
+			@RequestParam("entrustDirection") String entrustDirection)
+			throws Exception {
+
+		// 判断是否已经禁止买入
+		if (StringUtils.equals(entrustDirection, "1")) {
+			if (StringUtils.equals("1", deal.queryStopFlag(nickname))) {
 				return Constants.CODE_STOCK_STOP;
 			}
 		}
-		
-		if (!StringUtils.startsWith(stockCode, "0")
-				&& !StringUtils.startsWith(stockCode, "6")) {
-			if(log.isDebugEnabled()){
-				log.debug("不能买入"+stockCode+"的股票");
+		List<String> code = deal.queryAllStockCode();
+
+		for (String item : code) {
+			if (StringUtils.startsWith(stockCode, item)
+					|| StringUtils.equals(stockCode, item)) {
+				if (log.isDebugEnabled()) {
+					log.debug("不能买入" + stockCode + "的股票");
+				}
+				return Constants.CODE_STOCK_lIMIT;
 			}
-			return Constants.CODE_STOCK_lIMIT;
 		}
 		return entrust.entrust(nickname, stockCode, entrustAmount,
 				entrustPrice, entrustDirection);

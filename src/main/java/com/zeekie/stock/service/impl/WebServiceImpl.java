@@ -1,6 +1,7 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +38,14 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.StatisticsDO;
+import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.respository.AcountMapper;
+import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.respository.FinanceMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
@@ -59,6 +62,7 @@ import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.StatisticsPage;
+import com.zeekie.stock.web.StockCodePage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -86,8 +90,12 @@ public class WebServiceImpl implements WebService {
 	@Autowired
 	private FinanceMapper financeMapper;
 
+	@Autowired
+	private DealMapper dealMapper;
+
 	@Override
-	public DefaultPage<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage) throws ServiceInvokerException {
+	public DefaultPage<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage)
+			throws ServiceInvokerException {
 		List<WithdrawlDO> result = new ArrayList<WithdrawlDO>();
 		long total = 0;
 		try {
@@ -109,7 +117,8 @@ public class WebServiceImpl implements WebService {
 
 			account.deductWithdrawCahs(nickname, cash);
 
-			trade.recordFundflow(nickname, Constants.TRANS_FROM_WALET_TO_CLIENT, "-" + cash, "用户提现");
+			trade.recordFundflow(nickname,
+					Constants.TRANS_FROM_WALET_TO_CLIENT, "-" + cash, "用户提现");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;
@@ -118,7 +127,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<TotalFundDO> getTotalFund(TotalFundPage totalFundPage) throws ServiceInvokerException {
+	public DefaultPage<TotalFundDO> getTotalFund(TotalFundPage totalFundPage)
+			throws ServiceInvokerException {
 		List<TotalFundDO> result = new ArrayList<TotalFundDO>();
 		long total = 0;
 		try {
@@ -134,8 +144,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<MovecashToRefereeDO> queryMoveCashToReferee(MoveToRefereePage moveToRefereePage)
-			throws ServiceInvokerException {
+	public DefaultPage<MovecashToRefereeDO> queryMoveCashToReferee(
+			MoveToRefereePage moveToRefereePage) throws ServiceInvokerException {
 		List<MovecashToRefereeDO> result = new ArrayList<MovecashToRefereeDO>();
 		long total = 0;
 		try {
@@ -151,7 +161,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public boolean addTotalFund(String fund, String fundAccount, String desc, String storeType) {
+	public boolean addTotalFund(String fund, String fundAccount, String desc,
+			String storeType) {
 		try {
 			account.addTotalFund("1", fund, fundAccount, desc, storeType);
 			// 更新历史金额状态为N
@@ -166,7 +177,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<PayDO> getPayList(PayPage payPage) throws ServiceInvokerException {
+	public DefaultPage<PayDO> getPayList(PayPage payPage)
+			throws ServiceInvokerException {
 		List<PayDO> result = new ArrayList<PayDO>();
 		long total = 0;
 		try {
@@ -190,7 +202,8 @@ public class WebServiceImpl implements WebService {
 
 			trade.recharge(nickname, fund);
 
-			trade.recordFundflow(nickname, Constants.TRANS_FROM_CLIENT_TO_WALET, "+" + fund, "用戶充值");
+			trade.recordFundflow(nickname,
+					Constants.TRANS_FROM_CLIENT_TO_WALET, "+" + fund, "用戶充值");
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -200,11 +213,13 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<CurrentOperationWebDO> getEveningUp(EveningUpPage eveningUpPage) throws ServiceInvokerException {
+	public DefaultPage<CurrentOperationWebDO> getEveningUp(
+			EveningUpPage eveningUpPage) throws ServiceInvokerException {
 		List<CurrentOperationWebDO> result = new ArrayList<CurrentOperationWebDO>();
 		long total = 0;
 		try {
-			total = account.queryCurrentOperationCount(eveningUpPage.getNickname());
+			total = account.queryCurrentOperationCount(eveningUpPage
+					.getNickname());
 			if (0 != total) {
 				result = account.queryCurrentOperation(eveningUpPage);
 			}
@@ -216,10 +231,12 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public boolean eveningUp(String id, String nickname) throws RuntimeException {
+	public boolean eveningUp(String id, String nickname)
+			throws RuntimeException {
 		try {
 			// 结束操盘,更新操盘为主动结束操盘
-			Map<String, String> result = service.endStock(nickname, Constants.EVENING_UP);
+			Map<String, String> result = service.endStock(nickname,
+					Constants.EVENING_UP);
 			if (!StringUtils.equals(Constants.CODE_SUCCESS, result.get("flag"))) {
 				return false;
 			}
@@ -234,7 +251,8 @@ public class WebServiceImpl implements WebService {
 
 	@Override
 	public void setFeeCalendar(String yearMonth, String days) {
-		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarBatch", parseDays(yearMonth, days));
+		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarBatch",
+				parseDays(yearMonth, days));
 	}
 
 	private List<DayDO> parseDays(String yearMonth, String days) {
@@ -270,7 +288,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<ClientPercentDO> getClient(ClientPage clientPage) throws ServiceInvokerException {
+	public DefaultPage<ClientPercentDO> getClient(ClientPage clientPage)
+			throws ServiceInvokerException {
 		List<ClientPercentDO> result = new ArrayList<ClientPercentDO>();
 		long total = 0;
 		try {
@@ -292,8 +311,10 @@ public class WebServiceImpl implements WebService {
 		try {
 			percentDO = account.getClientById(id);
 			if (null != percentDO) {
-				JSONObject jo = JSONObject.fromObject(percentDO, Constants.jsonConfig);
-				jo.put("managementFeePercent", StringUtil.keepFourDot(percentDO.getManagementFeePercent()));
+				JSONObject jo = JSONObject.fromObject(percentDO,
+						Constants.jsonConfig);
+				jo.put("managementFeePercent", StringUtil.keepFourDot(percentDO
+						.getManagementFeePercent()));
 				result = jo.toString();
 			}
 		} catch (Exception e) {
@@ -308,18 +329,25 @@ public class WebServiceImpl implements WebService {
 		try {
 			JSONObject jo = JSONObject.fromObject(data);
 
-			JSONObject dbdata = JSONObject.fromObject(getClientById(jo.getString("id")));
+			JSONObject dbdata = JSONObject.fromObject(getClientById(jo
+					.getString("id")));
 
 			String range = StringUtils.trim(jo.getString("range"));
 			String stopLine = StringUtils.trim(jo.getString("stopLine"));
 			String warnLine = StringUtils.trim(jo.getString("warnLine"));
-			String assignPercent = StringUtils.trim(jo.getString("assignPercent"));
-			String toRefereePacket = StringUtils.trim(StringUtils.trim(jo.getString("toRefereePacket")));
-			String registerPacket = StringUtils.trim(jo.getString("registerPacket"));
+			String assignPercent = StringUtils.trim(jo
+					.getString("assignPercent"));
+			String toRefereePacket = StringUtils.trim(StringUtils.trim(jo
+					.getString("toRefereePacket")));
+			String registerPacket = StringUtils.trim(jo
+					.getString("registerPacket"));
 			String assignCash = StringUtils.trim(jo.getString("assignCash"));
-			String managementFeePercent = StringUtils.trim(jo.getString("managementFeePercent"));
-			String upLinePercent = StringUtils.trim(jo.getString("upLinePercent"));
-			String downLinePercent = StringUtils.trim(jo.getString("downLinePercent"));
+			String managementFeePercent = StringUtils.trim(jo
+					.getString("managementFeePercent"));
+			String upLinePercent = StringUtils.trim(jo
+					.getString("upLinePercent"));
+			String downLinePercent = StringUtils.trim(jo
+					.getString("downLinePercent"));
 
 			ClientPercentDO clientPercentDO = new ClientPercentDO();
 			if (!StringUtils.equals(range, dbdata.getString("range"))) {
@@ -331,26 +359,38 @@ public class WebServiceImpl implements WebService {
 			if (!StringUtils.equals(warnLine, dbdata.getString("warnLine"))) {
 				clientPercentDO.setWarnLine(Float.parseFloat(warnLine));
 			}
-			if (!StringUtils.equals(assignPercent, dbdata.getString("assignPercent"))) {
-				clientPercentDO.setAssignPercent(Float.parseFloat(assignPercent));
+			if (!StringUtils.equals(assignPercent,
+					dbdata.getString("assignPercent"))) {
+				clientPercentDO.setAssignPercent(Float
+						.parseFloat(assignPercent));
 			}
-			if (!StringUtils.equals(toRefereePacket, dbdata.getString("toRefereePacket"))) {
-				clientPercentDO.setToRefereePacket(Float.parseFloat(toRefereePacket));
+			if (!StringUtils.equals(toRefereePacket,
+					dbdata.getString("toRefereePacket"))) {
+				clientPercentDO.setToRefereePacket(Float
+						.parseFloat(toRefereePacket));
 			}
-			if (!StringUtils.equals(registerPacket, dbdata.getString("registerPacket"))) {
-				clientPercentDO.setRegisterPacket(Float.parseFloat(registerPacket));
+			if (!StringUtils.equals(registerPacket,
+					dbdata.getString("registerPacket"))) {
+				clientPercentDO.setRegisterPacket(Float
+						.parseFloat(registerPacket));
 			}
 			if (!StringUtils.equals(assignCash, dbdata.getString("assignCash"))) {
 				clientPercentDO.setAssignCash(Float.parseFloat(assignCash));
 			}
-			if (!StringUtils.equals(managementFeePercent, dbdata.getString("managementFeePercent"))) {
-				clientPercentDO.setManagementFeePercent(Float.parseFloat(managementFeePercent));
+			if (!StringUtils.equals(managementFeePercent,
+					dbdata.getString("managementFeePercent"))) {
+				clientPercentDO.setManagementFeePercent(Float
+						.parseFloat(managementFeePercent));
 			}
-			if (!StringUtils.equals(upLinePercent, dbdata.getString("upLinePercent"))) {
-				clientPercentDO.setUpLinePercent(Float.parseFloat(upLinePercent));
+			if (!StringUtils.equals(upLinePercent,
+					dbdata.getString("upLinePercent"))) {
+				clientPercentDO.setUpLinePercent(Float
+						.parseFloat(upLinePercent));
 			}
-			if (!StringUtils.equals(downLinePercent, dbdata.getString("downLinePercent"))) {
-				clientPercentDO.setDownLinePercent(Float.parseFloat(downLinePercent));
+			if (!StringUtils.equals(downLinePercent,
+					dbdata.getString("downLinePercent"))) {
+				clientPercentDO.setDownLinePercent(Float
+						.parseFloat(downLinePercent));
 			}
 			clientPercentDO.setId(jo.getString("id"));
 			account.saveClientInfo(clientPercentDO);
@@ -415,7 +455,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<OwingFeeDO> getOwingFee(ClientPage clientPage) throws ServiceInvokerException {
+	public DefaultPage<OwingFeeDO> getOwingFee(ClientPage clientPage)
+			throws ServiceInvokerException {
 		List<OwingFeeDO> result = new ArrayList<OwingFeeDO>();
 		long total = 0;
 		try {
@@ -436,7 +477,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<PercentDO> caculatePercent(PercentDOPage page) throws ServiceInvokerException {
+	public DefaultPage<PercentDO> caculatePercent(PercentDOPage page)
+			throws ServiceInvokerException {
 		List<PercentDO> result = new ArrayList<PercentDO>();
 		long total = 0;
 		try {
@@ -444,11 +486,13 @@ public class WebServiceImpl implements WebService {
 			if (0 != total) {
 				result = account.queryList(page);
 
-				List<OperateAccountDO> operateAccountDO = account.queryOperateAccountByFlag();
+				List<OperateAccountDO> operateAccountDO = account
+						.queryOperateAccountByFlag();
 
 				for (PercentDO item : result) {
 					for (OperateAccountDO each : operateAccountDO) {
-						if (StringUtils.equals(each.getFundAccount(), item.getFundAcount())) {
+						if (StringUtils.equals(each.getFundAccount(),
+								item.getFundAcount())) {
 							String num = each.getNums();
 							if (StringUtils.equals(each.getFlag(), "1")) {
 								item.setUseCount(num);
@@ -471,7 +515,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<UserInfoDO> getClientInfo(ClientPage clientPage) throws ServiceInvokerException {
+	public DefaultPage<UserInfoDO> getClientInfo(ClientPage clientPage)
+			throws ServiceInvokerException {
 		List<UserInfoDO> result = new ArrayList<UserInfoDO>();
 		long total = 0;
 		try {
@@ -487,7 +532,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<OtherFundFlowDO> getFundFlowInfo(ClientPage clientPage) throws ServiceInvokerException {
+	public DefaultPage<OtherFundFlowDO> getFundFlowInfo(ClientPage clientPage)
+			throws ServiceInvokerException {
 		List<OtherFundFlowDO> result = new ArrayList<OtherFundFlowDO>();
 		long total = 0;
 		try {
@@ -558,11 +604,13 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<OperationInfoDO> getOperationInfo(OperationInfoPage infoPage) throws ServiceInvokerException {
+	public DefaultPage<OperationInfoDO> getOperationInfo(
+			OperationInfoPage infoPage) throws ServiceInvokerException {
 		List<OperationInfoDO> result = new ArrayList<OperationInfoDO>();
 		long total = 0;
 		try {
-			total = account.queryOperationInfoCount(infoPage.getNickname(), infoPage.getRange());
+			total = account.queryOperationInfoCount(infoPage.getNickname(),
+					infoPage.getRange());
 			if (0 != total) {
 				result = account.queryOperationInfo(infoPage);
 			}
@@ -584,7 +632,8 @@ public class WebServiceImpl implements WebService {
 			if (StringUtils.isNotBlank(fund)) {
 				account.moveProfitToUserWallet(nickname, fund);
 
-				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, fund, "平台财务优化");
+				trade.recordFundflow(nickname, Constants.SEND_RED_PACKET, fund,
+						"平台财务优化");
 			}
 
 			if (StringUtils.isNotBlank(message)) {
@@ -618,13 +667,15 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public boolean undoWithDrawal(String id, String nickname, String cash) throws ServiceInvokerException {
+	public boolean undoWithDrawal(String id, String nickname, String cash)
+			throws ServiceInvokerException {
 		try {
 			account.deleteWithdral(id);
 
 			account.updateWithdrawCash(nickname, cash);
 
-			trade.recordFundflow(nickname, Constants.SEND_UNDO_WITHDRAWL, cash, "用户撤销提现");
+			trade.recordFundflow(nickname, Constants.SEND_UNDO_WITHDRAWL, cash,
+					"用户撤销提现");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;
@@ -633,7 +684,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public void updateReceiptStatus(Map<String, String> param) throws ServiceInvokerException {
+	public void updateReceiptStatus(Map<String, String> param)
+			throws ServiceInvokerException {
 		String nickname = "";
 		try {
 			nickname = account.queryNickname(param.get("userId"));
@@ -645,12 +697,15 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public void setFreeDays(String yearMonth, String days) throws ServiceInvokerException {
-		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarFreeBatch", parseDays(yearMonth, days));
+	public void setFreeDays(String yearMonth, String days)
+			throws ServiceInvokerException {
+		batchMapper.batchInsert(TradeMapper.class, "setFeeCalendarFreeBatch",
+				parseDays(yearMonth, days));
 	}
 
 	@Override
-	public DefaultPage<TransactionDO> getTransactionInfo(ClientPage clientPage) throws ServiceInvokerException {
+	public DefaultPage<TransactionDO> getTransactionInfo(ClientPage clientPage)
+			throws ServiceInvokerException {
 		List<TransactionDO> result = new ArrayList<TransactionDO>();
 		long total = 0;
 		try {
@@ -666,7 +721,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<UserBankDO> getUserbank(ClientPage clientPage) throws ServiceInvokerException {
+	public DefaultPage<UserBankDO> getUserbank(ClientPage clientPage)
+			throws ServiceInvokerException {
 		List<UserBankDO> result = new ArrayList<UserBankDO>();
 		long total = 0;
 		try {
@@ -706,7 +762,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<StatisticsDO> queryStatistics(StatisticsPage statisticsPage) throws ServiceInvokerException {
+	public DefaultPage<StatisticsDO> queryStatistics(
+			StatisticsPage statisticsPage) throws ServiceInvokerException {
 		List<StatisticsDO> result = new ArrayList<StatisticsDO>();
 		long total = 0;
 		try {
@@ -738,7 +795,8 @@ public class WebServiceImpl implements WebService {
 	 */
 	public String insertDictionaries(DictionariesDO dictionariesDO) {
 		try {
-			DictionariesPage dictionariesPage = new DictionariesPage(0, 10, null, null, null, null);
+			DictionariesPage dictionariesPage = new DictionariesPage(0, 10,
+					null, null, null, null);
 			dictionariesPage.setDicWord(dictionariesDO.getDicWord());
 			long count = trade.queryDictionariesCount(dictionariesPage);
 			if (count == 0) {
@@ -782,8 +840,8 @@ public class WebServiceImpl implements WebService {
 	 * @param dictionariesPage
 	 * @return
 	 */
-	public DefaultPage<DictionariesDO> queryDictionaries(DictionariesPage dictionariesPage)
-			throws ServiceInvokerException {
+	public DefaultPage<DictionariesDO> queryDictionaries(
+			DictionariesPage dictionariesPage) throws ServiceInvokerException {
 		List<DictionariesDO> result = new ArrayList<DictionariesDO>();
 		long total = 0;
 		try {
@@ -806,12 +864,14 @@ public class WebServiceImpl implements WebService {
 	 */
 	public String getDictionaries(String id) {
 		DictionariesDO dictionariesDO = trade.getDictionaries(id);
-		JSONObject jo = JSONObject.fromObject(dictionariesDO, Constants.jsonConfig);
+		JSONObject jo = JSONObject.fromObject(dictionariesDO,
+				Constants.jsonConfig);
 		return jo.toString();
 	}
 
 	@Override
-	public DefaultPage<FinanceProductDO> getAllCurrentFinance(FinancePage page) throws ServiceInvokerException {
+	public DefaultPage<FinanceProductDO> getAllCurrentFinance(FinancePage page)
+			throws ServiceInvokerException {
 
 		List<FinanceProductDO> result = new ArrayList<FinanceProductDO>();
 		long total = 0;
@@ -828,21 +888,25 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public String saveProduct(String financeProduct, String financeTotalLimit, String annualIncome, String expireDay,
-			String carryDate, String maxLimit, String minLimit) throws ServiceInvokerException {
+	public String saveProduct(String financeProduct, String financeTotalLimit,
+			String annualIncome, String expireDay, String carryDate,
+			String maxLimit, String minLimit) throws ServiceInvokerException {
 		String productCode = StringUtil.genRandomNum(6);
-		financeMapper.insertProduct(productCode, financeProduct, financeTotalLimit, annualIncome, expireDay, carryDate,
+		financeMapper.insertProduct(productCode, financeProduct,
+				financeTotalLimit, annualIncome, expireDay, carryDate,
 				maxLimit, minLimit);
 		return Constants.CODE_SUCCESS;
 	}
 
 	@Override
-	public DefaultPage<FinanceProductDetailDO> getFinanceDetail(FinanceDetailPage page) throws ServiceInvokerException {
+	public DefaultPage<FinanceProductDetailDO> getFinanceDetail(
+			FinanceDetailPage page) throws ServiceInvokerException {
 
 		List<FinanceProductDetailDO> result = new ArrayList<FinanceProductDetailDO>();
 		long total = 0;
 		try {
-			total = financeMapper.queryFinanceDetailCount(page.getProductCode());
+			total = financeMapper
+					.queryFinanceDetailCount(page.getProductCode());
 			if (0 != total) {
 				result = financeMapper.queryFinanceDetail(page);
 			}
@@ -854,7 +918,8 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<FlbDO> getFlb(PageQuery flbPage) throws ServiceInvokerException {
+	public DefaultPage<FlbDO> getFlb(PageQuery flbPage)
+			throws ServiceInvokerException {
 
 		List<FlbDO> result = new ArrayList<FlbDO>();
 		long total = 0;
@@ -869,4 +934,64 @@ public class WebServiceImpl implements WebService {
 			throw new ServiceInvokerException(e);
 		}
 	}
+
+	@Override
+	public DefaultPage<StockCodeDO> queryStockCode(StockCodePage stockPage)
+			throws ServiceInvokerException {
+		List<StockCodeDO> result = new ArrayList<StockCodeDO>();
+		long total = 0;
+		try {
+			total = dealMapper.queryStockCodeNum(stockPage.getStockCode());
+			if (0 != total) {
+				result = dealMapper.queryStockCode(stockPage);
+			}
+			return new DefaultPage<StockCodeDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String saveStockCode(String stockCode)
+			throws ServiceInvokerException {
+		JSONArray ja = JSONArray.fromObject(stockCode);
+		List<StockCodeDO> addList = new ArrayList<StockCodeDO>();
+		List<StockCodeDO> modifyList = new ArrayList<StockCodeDO>();
+		List<StockCodeDO> delList = new ArrayList<StockCodeDO>();
+		for (int i = 0; i < ja.size(); i++) {
+			StockCodeDO codeDO = new StockCodeDO();
+			JSONObject jo = ja.getJSONObject(i);
+			String state = jo.getString("_state");
+			String code = jo.getString("stockCode");
+			if (StringUtils.equals("added", state)) {
+				codeDO.setStockCode(code);
+				addList.add(codeDO);
+			} else if (StringUtils.equals("modified", state)) {
+				String id = jo.getString("id");
+				codeDO.setStockCode(code);
+				codeDO.setId(Long.parseLong(id));
+				modifyList.add(codeDO);
+			} else if (StringUtils.equals("removed", state)) {
+				codeDO.setStockCode(code);
+				delList.add(codeDO);
+			}
+
+		}
+		if (!addList.isEmpty()) {
+			batchMapper.batchInsert(DealMapper.class, "saveStockCode",
+					addList);
+		}
+		if (!modifyList.isEmpty()) {
+			batchMapper.batchInsert(DealMapper.class, "updateStock",
+					modifyList);
+		}
+		if (!delList.isEmpty()) {
+			batchMapper.batchDelete(DealMapper.class, "updateStockCode",
+					delList);
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
 }

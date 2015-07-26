@@ -20,6 +20,7 @@ import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
+import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
@@ -36,6 +37,7 @@ import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.StatisticsPage;
+import com.zeekie.stock.web.StockCodePage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -420,5 +422,24 @@ public interface WebService {
 	 */
 	public DefaultPage<FlbDO> getFlb(PageQuery flbPage)
 			throws ServiceInvokerException;
+
+	/**
+	 * 查询股票代码
+	 * 
+	 * @param stockPage
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public DefaultPage<StockCodeDO> queryStockCode(StockCodePage stockPage)
+			throws ServiceInvokerException;
+
+	/**
+	 * 保存代码
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public String saveStockCode(String string) throws ServiceInvokerException;
+
 
 }

@@ -7,9 +7,11 @@ import org.apache.ibatis.annotations.Param;
 import com.zeekie.stock.entity.BaseEntrustDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
+import com.zeekie.stock.web.StockCodePage;
 
 @MyBatisRepository
 public interface DealMapper {
@@ -103,5 +105,29 @@ public interface DealMapper {
 	 */
 	public String queryStopFlag(@Param("nickname") String nickname)
 			throws Exception;
+
+	/**
+	 * 获取行数
+	 * 
+	 * @param stockCode
+	 * @return
+	 */
+	public long queryStockCodeNum(@Param("stockCode") String stockCode)
+			throws Exception;
+
+	/**
+	 * 获取列表
+	 * 
+	 * @param stockPage
+	 * @return
+	 */
+	public List<StockCodeDO> queryStockCode(StockCodePage stockPage)
+			throws Exception;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> queryAllStockCode();
 
 }
