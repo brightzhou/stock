@@ -50,6 +50,10 @@ public class StockEntrustController {
 			@RequestParam("entrustDirection") String entrustDirection)
 			throws Exception {
 
+		Float value = Float.parseFloat(entrustPrice);
+		if (value == 0f) {
+			return "不允以0元下单";
+		}
 		// 判断是否已经禁止买入
 		if (StringUtils.equals(entrustDirection, "1")) {
 			if (StringUtils.equals("1", deal.queryStopFlag(nickname))) {
@@ -64,7 +68,8 @@ public class StockEntrustController {
 				if (log.isDebugEnabled()) {
 					log.debug("不能买入" + stockCode + "的股票");
 				}
-				return Constants.CODE_STOCK_lIMIT;
+				return "该股票限制买入";
+				// return Constants.CODE_STOCK_lIMIT;
 			}
 		}
 		return entrust.entrust(nickname, stockCode, entrustAmount,

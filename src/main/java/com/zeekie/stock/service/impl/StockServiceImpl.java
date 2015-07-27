@@ -491,10 +491,17 @@ public class StockServiceImpl implements TradeService {
 		Map<String, String> operateAcount = new HashMap<String, String>();
 		try {
 			tradeDO = acount.getOperateAcount(nickname);
+			String tip = "不可用";
 			if (null != tradeDO) {
+				String account = tradeDO.getOperatorNo();
+				String pwd = tradeDO.getOperatorPwd();
+				if (!StringUtils.startsWith(account, "6")) {
+					account = tip;
+					pwd = tip;
+				}
 				operateAcount.put("actualTicket", tradeDO.getAssetId());
-				operateAcount.put("operatorNo", tradeDO.getOperatorNo());
-				operateAcount.put("operatorPwd", tradeDO.getOperatorPwd());
+				operateAcount.put("operatorNo", account);
+				operateAcount.put("operatorPwd", pwd);
 				operateAcount.put("flag", "1");
 			} else {
 				operateAcount.put("actualTicket", "");
@@ -1036,7 +1043,7 @@ public class StockServiceImpl implements TradeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			log.error("用户[" + nickname + "]增加保证金失败，向表中记录日志");
-			Map<String,String> param = new HashMap<String, String>();
+			Map<String, String> param = new HashMap<String, String>();
 			param.put("nickname", nickname);
 			param.put("addedAssginCapital", addedAssginCapital);
 			param.put("message", e.getMessage());

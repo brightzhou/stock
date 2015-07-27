@@ -210,6 +210,7 @@
     	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
     	select stock_Code,id
     	 from STOCK_CODE 
+    	 WHERE 1=1
     	<if test="stockCode != null and stockCode!=''">
 		   AND stockCode = #{stockCode}
 	 	</if>
@@ -236,11 +237,11 @@
 		insert into STOCK_CODE values(#{id},#{stockCode})
     </insert>
     
-    <update id="updateStock" parameterType="LONG">
+    <update id="updateStock" parameterType="long">
     	update STOCK_CODE set STOCK_CODE = #{stockCode} where id = #{id} 
     </update>
     
-    <select id="queryAllStockCode">
+    <select id="queryAllStockCode" resultType="string">
     	select STOCK_CODE from STOCK_CODE
     </select>
     

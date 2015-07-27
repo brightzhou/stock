@@ -16,13 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.error.Message;
 import sitong.thinker.common.exception.ServiceInvokerException;
-import sitong.thinker.common.page.DefaultPage;
 
 import com.zeekie.stock.Constants;
-import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.util.ApiUtils;
-import com.zeekie.stock.web.WithdrawlPage;
 
 /**
  * @Author zeekie

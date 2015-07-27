@@ -88,7 +88,7 @@ public class CaculateFundTimer {
 		if (service.call210FunResp()) {
 			HomesCapital capital = (HomesCapital) service.getResponse(Constants.FN210);
 			if (null != capital) {
-				storeCapitalChanges(capital.getUsermarket(), capital.getUserfund(), trade.getNickname());
+				storeCapitalChanges(capital.getUsermarket(), capital.getFetfund(), trade.getNickname());
 			}
 		}
 
