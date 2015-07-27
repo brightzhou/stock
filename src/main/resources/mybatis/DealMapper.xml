@@ -31,6 +31,11 @@
 		<result column="ENTRUST_TIME" property="entrustTime" jdbcType="VARCHAR"/>
 		<result column="CANCEL_INFO" property="cancelInfo" jdbcType="VARCHAR"/>
 	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.StockCodeDO" id="resultStockCode">
+		<result column="stock_Code" property="stockCode" jdbcType="VARCHAR"/>
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -197,5 +202,46 @@
 	    where  m.start_date &lt;=   to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss') and   m.end_date &gt;= to_date(#{entrustTime} , 'yyyy-mm-dd hh24:mi:ss')  and  a.combie_id= #{combineId}
     </select>
    
+   <select id="queryStopFlag" parameterType="string" resultType="string">
+   	select STOP_BUY from stock_user_operate_maininfo where nickname=#{nickname} and is_current='1' and rownum=1
+   </select>
+   
+	<select id="queryStockCode" parameterType="com.zeekie.stock.web.StockCodePage" resultMap="resultStockCode">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+    	select stock_Code,id
+    	 from STOCK_CODE 
+    	<if test="stockCode != null and stockCode!=''">
+		   AND stockCode = #{stockCode}
+	 	</if>
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+    </select>
+    
+    <select id="queryStockCodeNum" parameterType="string" resultType="long">
+        select count(1)
+    	 from STOCK_CODE r 
+    	where 1=1
+   	 <if test="stockCode != null and stockCode!=''">
+		   AND stockCode = #{stockCode}
+	 </if>
+    </select>
+    
+    <delete id="updateStockCode" parameterType="string">
+    	delete from STOCK_CODE where stock_code = #{stockCode}
+    </delete>
+    
+    <insert id="saveStockCode">
+    	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_CODE_ID.Nextval from dual
+		</selectKey> 
+		insert into STOCK_CODE values(#{id},#{stockCode})
+    </insert>
+    
+    <update id="updateStock" parameterType="LONG">
+    	update STOCK_CODE set STOCK_CODE = #{stockCode} where id = #{id} 
+    </update>
+    
+    <select id="queryAllStockCode">
+    	select STOCK_CODE from STOCK_CODE
+    </select>
     
 </mapper>

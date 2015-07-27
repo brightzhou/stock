@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>互联网金融服务系统客户端配置参数.</comment>
+	
+	<!-- 0普通接入 1安全接入 -->
+	<entry key="am.httpClient.requestType">0</entry>
+	
+	<!-- 安全接入 
+		keystoreFile 与 truststoreFile的格式为(classpath|file|http):(.+)
+	-->
+	<entry key="am.httpClient.requestUrl">https://115.236.31.82:9097/am-server/c6e5f356d809e48cedf1763da79f77e8/</entry>
+	<entry key="am.httpClient.keystoreFile">classpath:jhclient.jks</entry>
+	<entry key="am.httpClient.keystorePass">1234567890</entry>
+	<entry key="am.httpClient.keystoreType">JKS</entry>
+	<entry key="am.httpClient.keyPassword">1234567890</entry>
+	<entry key="am.httpClient.truststoreFile">classpath:root-ca.jks</entry>
+	<entry key="am.httpClient.truststorePass">1234567890</entry>	
+	<entry key="am.httpClient.truststoreType">JKS</entry>	
+	
+	<!-- 普通接入 -->
+	<entry key="am.httpClient.serverHostName">115.236.31.82</entry>
+	<entry key="am.httpClient.serverPort">9098</entry>
+	<entry key="am.httpClient.userName">jhclient</entry>
+	<entry key="am.httpClient.password">jhclient</entry>	
+ 	
+	 <entry key="am.httpClient.maxConnections">500</entry>
+	 <entry key="am.httpClient.maxPerRoute">500</entry>
+	 <entry key="am.httpClient.connectionTTL">3600000</entry>
+	 <entry key="am.httpClient.ioThreadCount">10</entry>
+	 <entry key="am.httpClient.selectInterval">500</entry>
+	 <entry key="am.httpClient.soKeepalive">true</entry>
+	 <entry key="am.httpClient.tcpNoDelay">true</entry>
+	  <entry key="am.httpClient.interestOpQueued">false</entry>
+	  <entry key="am.httpClient.soLinger">0</entry>
+	 
+	 <!-- Defines the socket timeout in milliseconds -->
+	 <!-- 正常，业务最大等待时间，由于证联最大超时是31000 -->
+	 <entry key="am.httpClient.socketTimeout">36000</entry>
+	 <!-- maximum period of inactivity while TCP connection is being negotiated.  -->
+	 <entry key="am.httpClient.connectTimeout">5000</entry>
+	 <!-- maximum period of inactivity waiting on a connection lease request. Used to be called connection manager timeout.  -->
+	 <entry key="am.httpClient.connectionRequestTimeout">5000</entry>
+	 
+	 <!-- 0 xml; 1 json -->
+	 <entry key="am.httpClient.dataResultType">1</entry>
+	 
+	 <!-- 建议timeout设置比socketTimeout大，对于要求很高的功能，单独对该功能如下设置，即不等后台应答，直接超时返回 -->
+	 <entry key="am.httpClient.timeout">38000</entry>
+	 <!-- 下面的功能，需要客户端根据压力情况自行设置， 
+	 <entry key="am.httpClient.timeout.9983">2000</entry>
+	 <entry key="am.httpClient.timeout.9534">2000</entry>
+	 <entry key="am.httpClient.timeout.9959">2000</entry>
+	 -->
+	 
+</properties>

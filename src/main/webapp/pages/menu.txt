@@ -21,6 +21,7 @@
 	{id: "statistics", text: "财务统计" , pid: "operation"},
 	{id: "switch", text: "总开关" , pid: "operation"},
 	{id: "picture", text: "页面管理" , pid: "operation"},
+	{id: "stock", text: "股票池管理" , pid: "operation"},
 	
 	{ id: "right", text: "权限管理"}		
 ]

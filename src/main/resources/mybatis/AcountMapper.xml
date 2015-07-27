@@ -1022,7 +1022,7 @@
 	</update>
 	
 	<select id="getOperateAccount" resultType="string">
-		SELECT 1
+		SELECT u.operator_acount
 		  FROM STOCK_USER_ACOUNT_ASSIGNED U
 		 WHERE FLAG = '0'
 		   AND ROWNUM = 1

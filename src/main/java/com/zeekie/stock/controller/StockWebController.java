@@ -45,6 +45,7 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.StatisticsDO;
+import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
@@ -65,6 +66,7 @@ import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.StatisticsPage;
+import com.zeekie.stock.web.StockCodePage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -949,26 +951,57 @@ public class StockWebController {
 			return new DefaultPage<FlbDO>();
 		}
 	}
-	
+
 	@ResponseBody
-	@RequestMapping("getError")
-	public DefaultPage<AddCashErrorDO> getError(
+	@RequestMapping("stockCode/get")
+	public DefaultPage<StockCodeDO> queryStockCode(
 			HttpServletRequest request,
 			@RequestParam(value = "pageIndex", required = false) String pageIndex,
 			@RequestParam(value = "pageSize", required = false) String pageSize,
 			@RequestParam(value = "sortField", required = false) String sortField,
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
-			@RequestParam(value = "nickname", required = false) String nickname) {
+			@RequestParam(value = "stockCode", required = false) String stockCode) {
 
 		try {
 			pageIndex = StringUtils.defaultIfBlank(pageIndex, "0");
 			pageSize = StringUtils.defaultIfBlank(pageSize, "10");
+			StockCodePage stockPage = new StockCodePage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, stockCode);
+			return webService.queryStockCode(stockPage);
+		} catch (ServiceInvokerException e) {
+			log.error("queryStockCode error happened:", e.getMessage());
+			return new DefaultPage<StockCodeDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("getError")
+	public DefaultPage<AddCashErrorDO> getError(
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "nickname", required = false) String nickname) {
+		try {
 			ClientPage errorPage = new ClientPage(Long.valueOf(pageIndex),
-					Long.valueOf(pageSize), sortField, sortOrder,nickname);
+					Long.valueOf(pageSize), sortField, sortOrder, nickname);
 			return webService.getError(errorPage);
 		} catch (ServiceInvokerException e) {
 			log.error("query getError error happened:", e.getMessage());
 			return new DefaultPage<AddCashErrorDO>();
 		}
+	}
+
+	@ResponseBody
+	@RequestMapping("stockCode/save")
+	public String saveStockCode(
+			@RequestParam(value = "data", required = false) String data) {
+		try {
+			return webService.saveStockCode(data);
+		} catch (ServiceInvokerException e) {
+			log.error("saveStockCode error happened:", e.getMessage());
+		}
+		return Constants.CODE_FAILURE;
 	}
 }

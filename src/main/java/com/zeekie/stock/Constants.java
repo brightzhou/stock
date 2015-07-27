@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.sf.json.JsonConfig;
 
+import com.hczq.hz.intf.AmServices;
 import com.hundsun.t2sdk.interfaces.IClient;
 import com.tencent.xinge.XingeApp;
 
@@ -55,6 +56,16 @@ public class Constants {
 	 * 理财额度已经用完 code=3
 	 */
 	public static final String CODE_TOTAL_lIMIT_LITTLE = "3";
+
+	/**
+	 * 不能买0和6之外开头的股票 code=2
+	 */
+	public static final String CODE_STOCK_lIMIT = "2";
+	
+	/**
+	 * 到达警戒线禁止买入股票
+	 */
+	public static final String CODE_STOCK_STOP = "3";
 
 	/**
 	 * 理财额度已经达到其最大上限 code=4
@@ -272,8 +283,25 @@ public class Constants {
 	// 接口访问时间
 	public static int range = 120;
 
+	// little homs fn
+	public static final String FN201 = "201";
+
+	public static final String FN103 = "103";
+
+	public static final String FN104 = "104";
+
+	public static final String FN105 = "105";
+
+	public static final String FN202 = "202";
+
+	public static final String FN210 = "210";
+
+	public static final String FN501 = "501";
+
 	// 加密因子
 	public static String factor;
+
+	public static AmServices services;
 
 	public static List<String> user = new ArrayList<String>();
 

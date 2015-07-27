@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import com.hczq.hz.client.AmHttpServicesStub;
 import com.hundsun.t2sdk.impl.client.T2Services;
 import com.hundsun.t2sdk.interfaces.T2SDKException;
 import com.zeekie.stock.Constants;
@@ -91,6 +92,10 @@ public class InitServer implements InitializingBean {
 	private String loaduser;
 
 	@Autowired
+	@Value("${stock.status.changeIsOpen}")
+	private String open;
+
+	@Autowired
 	private Mapper<String, String> dao;
 
 	@Override
@@ -114,6 +119,8 @@ public class InitServer implements InitializingBean {
 		if (StringUtils.equals(Constants.CODE_SUCCESS, loaduser)) {
 			loadAllUser();
 		}
+
+		initLittleHoms();
 	}
 
 	private void loadAllUser() {
@@ -187,6 +194,19 @@ public class InitServer implements InitializingBean {
 		String xml = FileUtils.readFileToString(file);
 		// 内容
 		Constants.XML = new String(xml.getBytes("utf-8"));
+	}
+
+	private void initLittleHoms() {
+		if (StringUtils.equals("open", open)) {
+			try {
+				Constants.services = AmHttpServicesStub.createAmServices();
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+			if (log.isDebugEnabled()) {
+				log.debug("初始化小homs成功");
+			}
+		}
 	}
 
 }

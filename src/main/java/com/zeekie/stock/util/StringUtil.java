@@ -1,5 +1,6 @@
 package com.zeekie.stock.util;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -286,7 +287,7 @@ public class StringUtil {
 		}
 		return result;
 	}
-	
+
 	public static JSONArray getCalendar(String yearMonth) {
 
 		String[] ret = yearMonth.split("-");
@@ -421,4 +422,62 @@ public class StringUtil {
 		return c.getActualMaximum(Calendar.DAY_OF_YEAR);
 	}
 
+	/*
+	 * 由数字字符串构造BigDecimal的方法设置BigDecimal的小数位数的方法
+	 */
+	public static BigDecimal parseBigDecimal(String str, int pos) {
+		// 构造以字符串内容为值的BigDecimal类型的变量bd
+		BigDecimal bd = new BigDecimal(str);
+		// 设置小数位数，第一个变量是小数位数，第二个变量是取舍方法(四舍五入)
+		if (pos != 0) {
+			bd = bd.setScale(pos, BigDecimal.ROUND_HALF_UP);
+		}
+		return bd;
+	}
+
+	public static int StringToInteger(String s) {
+		if (StringUtils.isNotBlank(s)) {
+			return Integer.parseInt(s);
+		}
+		return 0;
+	}
+
+	public static String convertStatus(String orginStatus) {
+
+		if (StringUtils.equals(orginStatus, "0")) {
+			return "1";
+		} else if (StringUtils.equals(orginStatus, "1")) {
+			return "1";
+		} else if (StringUtils.equals(orginStatus, "2")) {
+			return "4";
+		} else if (StringUtils.equals(orginStatus, "3")) {
+			return "a";
+		} else if (StringUtils.equals(orginStatus, "4")) {
+			return "8";
+		} else if (StringUtils.equals(orginStatus, "5")) {
+			return "8";
+		} else if (StringUtils.equals(orginStatus, "6")) {
+			return "9";
+		} else if (StringUtils.equals(orginStatus, "7")) {
+			return "6";
+		} else if (StringUtils.equals(orginStatus, "8")) {
+			return "7";
+		} else if (StringUtils.equals(orginStatus, "9")) {
+			return "5";
+		} else if (StringUtils.equals(orginStatus, "A")) {
+			return "";
+		}
+		return "";
+	}
+
+	public static String dealStatus(String orginStatus) {
+		if (StringUtils.equals(orginStatus, "0")) {
+			return "7";
+		} else if (StringUtils.equals(orginStatus, "2")) {
+			return "5";
+		} else if (StringUtils.equals(orginStatus, "4")) {
+			return "4";
+		}
+		return "";
+	}
 }

@@ -1,6 +1,7 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +39,14 @@ import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
 import com.zeekie.stock.entity.StatisticsDO;
+import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
 import com.zeekie.stock.respository.AcountMapper;
+import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.respository.FinanceMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.AcountService;
@@ -60,6 +63,7 @@ import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
 import com.zeekie.stock.web.PercentDOPage;
 import com.zeekie.stock.web.StatisticsPage;
+import com.zeekie.stock.web.StockCodePage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
 
@@ -86,6 +90,9 @@ public class WebServiceImpl implements WebService {
 
 	@Autowired
 	private FinanceMapper financeMapper;
+
+	@Autowired
+	private DealMapper dealMapper;
 
 	@Override
 	public DefaultPage<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage)
@@ -650,10 +657,7 @@ public class WebServiceImpl implements WebService {
 		String message = jo.getString("message");
 		try {
 			if (StringUtils.isNotBlank(message)) {
-				if (StringUtils.isNotBlank(message)) {
-					handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE,
-							message);
-				}
+				handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE, message);
 			}
 
 		} catch (Exception e) {
@@ -947,5 +951,64 @@ public class WebServiceImpl implements WebService {
 			log.error(e.getMessage(), e);
 			throw new ServiceInvokerException(e);
 		}
+
 	}
+
+	public DefaultPage<StockCodeDO> queryStockCode(StockCodePage stockPage)
+			throws ServiceInvokerException {
+		List<StockCodeDO> result = new ArrayList<StockCodeDO>();
+		long total = 0;
+		try {
+			total = dealMapper.queryStockCodeNum(stockPage.getStockCode());
+			if (0 != total) {
+				result = dealMapper.queryStockCode(stockPage);
+			}
+			return new DefaultPage<StockCodeDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String saveStockCode(String stockCode)
+			throws ServiceInvokerException {
+		JSONArray ja = JSONArray.fromObject(stockCode);
+		List<StockCodeDO> addList = new ArrayList<StockCodeDO>();
+		List<StockCodeDO> modifyList = new ArrayList<StockCodeDO>();
+		List<StockCodeDO> delList = new ArrayList<StockCodeDO>();
+		for (int i = 0; i < ja.size(); i++) {
+			StockCodeDO codeDO = new StockCodeDO();
+			JSONObject jo = ja.getJSONObject(i);
+			String state = jo.getString("_state");
+			String code = jo.getString("stockCode");
+			if (StringUtils.equals("added", state)) {
+				codeDO.setStockCode(code);
+				addList.add(codeDO);
+			} else if (StringUtils.equals("modified", state)) {
+				String id = jo.getString("id");
+				codeDO.setStockCode(code);
+				codeDO.setId(Long.parseLong(id));
+				modifyList.add(codeDO);
+			} else if (StringUtils.equals("removed", state)) {
+				codeDO.setStockCode(code);
+				delList.add(codeDO);
+			}
+
+		}
+		if (!addList.isEmpty()) {
+			batchMapper.batchInsert(DealMapper.class, "saveStockCode", addList);
+		}
+		if (!modifyList.isEmpty()) {
+			batchMapper
+					.batchInsert(DealMapper.class, "updateStock", modifyList);
+		}
+		if (!delList.isEmpty()) {
+			batchMapper.batchDelete(DealMapper.class, "updateStockCode",
+					delList);
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
 }

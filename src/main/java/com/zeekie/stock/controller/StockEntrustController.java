@@ -1,8 +1,11 @@
 package com.zeekie.stock.controller;
 
+import java.util.List;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import sitong.thinker.common.api.ApiResponse;
 
+import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
-import com.zeekie.stock.service.AcountService;
+import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.StringUtil;
@@ -35,7 +39,7 @@ public class StockEntrustController {
 	private EntrustService entrust;
 
 	@Autowired
-	private AcountService account;
+	private DealMapper deal;
 
 	@ResponseBody
 	@RequestMapping("common/entrust")
@@ -43,10 +47,28 @@ public class StockEntrustController {
 			@RequestParam("stockCode") String stockCode,
 			@RequestParam("entrustAmount") String entrustAmount,
 			@RequestParam("entrustPrice") String entrustPrice,
-			@RequestParam("entrustDirection") String entrustDirection,
-			@RequestParam("entrustDirection") String ampriceType) {
+			@RequestParam("entrustDirection") String entrustDirection)
+			throws Exception {
+
+		// 判断是否已经禁止买入
+		if (StringUtils.equals(entrustDirection, "1")) {
+			if (StringUtils.equals("1", deal.queryStopFlag(nickname))) {
+				return Constants.CODE_STOCK_STOP;
+			}
+		}
+		List<String> code = deal.queryAllStockCode();
+
+		for (String item : code) {
+			if (StringUtils.startsWith(stockCode, item)
+					|| StringUtils.equals(stockCode, item)) {
+				if (log.isDebugEnabled()) {
+					log.debug("不能买入" + stockCode + "的股票");
+				}
+				return Constants.CODE_STOCK_lIMIT;
+			}
+		}
 		return entrust.entrust(nickname, stockCode, entrustAmount,
-				entrustPrice, entrustDirection, ampriceType);
+				entrustPrice, entrustDirection);
 	}
 
 	@ResponseBody

@@ -23,7 +23,7 @@ public interface EntrustService {
 	 * @return 1:成功/0：失败
 	 */
 	String entrust(String nickname, String stockCode, String entrustAmount,
-			String entrustPrice, String entrustDirection,String ampriceType);
+			String entrustPrice, String entrustDirection);
 
 	/**
 	 * 撤销委托

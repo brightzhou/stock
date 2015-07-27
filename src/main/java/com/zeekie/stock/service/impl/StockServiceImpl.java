@@ -40,6 +40,10 @@ import com.zeekie.stock.service.homes.StockCapitalChanges;
 import com.zeekie.stock.service.homes.StockCombineInfo;
 import com.zeekie.stock.service.homes.StockModifyPwd;
 import com.zeekie.stock.service.homes.StockModifyUserName;
+import com.zeekie.stock.service.lhomes.CallhomesService;
+import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
+import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
+import com.zeekie.stock.service.lhomes.entity.HomesPwd;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
@@ -101,9 +105,14 @@ public class StockServiceImpl implements TradeService {
 	@Autowired
 	@Value("${isShowEntrust}")
 	private String isShowEntrust;
+
 	@Autowired
 	@Value("${isDownload}")
 	private String isDownload;
+
+	@Autowired
+	@Value("${stock.status.changeIsOpen}")
+	private String changeIsOpen;
 
 	private Set<String> fundAccountSet = new HashSet<String>();
 
@@ -150,10 +159,8 @@ public class StockServiceImpl implements TradeService {
 				} else {
 					stopRadio = new BigDecimal(1 - stopRadio / assignRadio)
 							.setScale(4, BigDecimal.ROUND_HALF_UP).floatValue();
-					;
 					warnRadio = new BigDecimal(1 - warnRadio / assignRadio)
 							.setScale(4, BigDecimal.ROUND_HALF_UP).floatValue();
-					;
 					long count = acount.updateAssignRadio(nickname, stopRadio,
 							warnRadio, assignRadio);
 					if (count != 1) {
@@ -228,7 +235,8 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			// 判断是否存在可用的操盘账号
-			if (!StringUtils.equals("1", acount.getOperateAccount())) {
+			String tradeAccount = acount.getOperateAccount();
+			if (StringUtils.isBlank(tradeAccount)) {
 				currentOperateInfo.put("flag", "2");
 				// ApiUtils.send(Constants.MODEL_ACCOUNT_EMPTY_FN,
 				// stock_manager_phone);
@@ -238,8 +246,18 @@ public class StockServiceImpl implements TradeService {
 				return currentOperateInfo;
 			}
 
+			/**
+			 * 是否开启了小homes
+			 */
+			TradeDO tradeDO = null;
 			// 1、保存操盘账号信息 资金划转
-			TradeDO tradeDO = callHomesInterface(nickname, tradeFund);
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(tradeAccount, "6")) {
+				tradeDO = callLittleHoms(nickname, tradeFund);
+			} else {
+				tradeDO = callHomesInterface(nickname, tradeFund);
+			}
+
 			if (null == tradeDO) {
 				currentOperateInfo.put("flag", "2");
 				return currentOperateInfo;
@@ -273,7 +291,6 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			// 5、保存操盘信息
-
 			StockRadioDO radioDO = acount.getAssignRadioForCurrUser(nickname);
 			tradeForm.setWarnRadio(radioDO.getWarnRadio());
 			tradeForm.setStopRadio(radioDO.getStopRadio());
@@ -324,6 +341,122 @@ public class StockServiceImpl implements TradeService {
 			log.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}
+	}
+
+	private TradeDO callLittleHoms(String nickname, String moveFund) {
+		// 2.2、查詢数据库获取密码
+		String operator = "";
+		String operPwd = "";
+		String combineId = "";
+		String fundAccount = "";
+		Integer total;
+		TradeDO client = null;
+		try {
+			total = acount.queryTotalFundAccount();
+			boolean haveOperator = false;
+			List<TradeDO> item = acount.getAllUserInfo();
+			if (null == item || item.isEmpty()) {
+				if (log.isDebugEnabled()) {
+					log.debug("已经无可用的资金账号，请管理员注意了");
+				}
+				return client;
+			}
+			for (int i = 0; i < item.size(); i++) {
+				client = item.get(i);
+				fundAccount = client.getFundAccount();
+				if (fundAccountSet.contains(fundAccount)) {
+					continue;
+				}
+				if (total == fundAccountSet.size()) {
+					fundAccountSet.clear();
+					client.setFlag(Constants.CODE_FAILURE_NO_ACCOUNT);
+					return client;
+				}
+				operator = client.getOperatorNo();
+				combineId = client.getCombineId();
+				operPwd = client.getOperatorPwd();
+				// 判断该账号是否已经结束但是在HOMES却还有资金
+				if (hasCapitalCurrentClientNo(operator, fundAccount)) {
+					if (mainAccountCashIsEnough(nickname, moveFund, fundAccount)) {
+						haveOperator = true;
+						break;
+					}
+				}
+			}
+			fundAccountSet.clear();
+			if (!haveOperator) {
+				return client;
+			}
+			// 2.3 生成新密码更新到homes
+			// AUTO 修改密码
+			String newPwd = StringUtil.genRandomNum(6);
+			// if (modifyPwd(operator, operPwd, newPwd)) {
+			// if (log.isDebugEnabled()) {
+			// log.debug("用户 【" + nickname + "】 修改密码成功,新密码："+newPwd);
+			// }
+			client.setOperatorPwd(newPwd);
+			// } else {
+			// return client;
+			// }
+
+			// 2.3.1修改用户名称
+
+			// 2.5资金划转
+			if (move(moveFund, combineId, fundAccount)) {
+				if (log.isDebugEnabled()) {
+					log.debug("用户 【" + nickname + "】 进行资金划转成功");
+				}
+			} else {
+				return client;
+			}
+			client.setFlag(Constants.CODE_SUCCESS);
+			return client;
+		} catch (Exception e) {
+			log.error("调用小homs发生错误：" + e);
+			return client;
+		}
+
+	}
+
+	private boolean modifyPwd(String clientNo, String operPwd, String newPwd) {
+		HomesPwd homesPwd = new HomesPwd();
+		homesPwd.setClientNo(clientNo);
+		homesPwd.setOldPwd(operPwd);
+		homesPwd.setNewPwd(newPwd);
+		CallhomesService service = new CallhomesService(homesPwd);
+		return service.call311Fun();
+	}
+
+	private boolean hasCapitalCurrentClientNo(String clientNo,
+			String fundAccount) {
+		AHomesEntity entity = new AHomesEntity();
+		entity.setClientNo(clientNo);
+		entity.setFundAccount(fundAccount);
+		CallhomesService service = new CallhomesService(entity);
+		return service.call210Fun();
+	}
+
+	/**
+	 * 资金划转
+	 * 
+	 * @param moveFund
+	 *            划转资金
+	 * @param combineId
+	 *            客户号
+	 * @param fundAccount
+	 *            投资账号
+	 * @param managerCombineId
+	 *            划入客户号，主客户号
+	 * @return
+	 */
+	private boolean move(String moveFund, String combineId, String fundAccount) {
+		EntrustMoveFund entrustMoveFund = new EntrustMoveFund();
+		entrustMoveFund.setClientNo(fundAccount);
+		entrustMoveFund.setClientNoTo(combineId);
+		entrustMoveFund.setOccurBalance(moveFund);
+		entrustMoveFund.setFlag("pay");
+		CallhomesService service = new CallhomesService(entrustMoveFund);
+		return service.call501Fun();
 	}
 
 	@Override
@@ -416,7 +549,7 @@ public class StockServiceImpl implements TradeService {
 				combineId = client.getCombineId();
 				managerCombineId = client.getManagerCombineId();
 				if (canUse(operator, combineId, fundAccount)) {
-					if (mainFundCashIsEnough(nickname, moveFund, fundAccount)) {
+					if (mainAccountCashIsEnough(nickname, moveFund, fundAccount)) {
 						haveOperator = true;
 						break;
 					}
@@ -426,8 +559,9 @@ public class StockServiceImpl implements TradeService {
 			if (!haveOperator) {
 				return client;
 			}
-			if(log.isDebugEnabled()){
-				log.debug("判断该账户"+operator+"是否还有余额，选择一个可以用的账号，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+			if (log.isDebugEnabled()) {
+				log.debug("判断该账户" + operator + "是否还有余额，选择一个可以用的账号，消耗时间："
+						+ (System.currentTimeMillis() - startTime) / 1000 + "s");
 			}
 			// 2.3 生成新密码更新到homes
 			String newOperatePwd = genNewPassword();
@@ -439,10 +573,11 @@ public class StockServiceImpl implements TradeService {
 			}
 
 			if (log.isDebugEnabled()) {
-				log.debug("修改账户"+operator+"密码，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+				log.debug("修改账户" + operator + "密码，消耗时间："
+						+ (System.currentTimeMillis() - startTime) / 1000 + "s");
 				log.debug("访问HOMES服务，修改用户密码成功");
 			}
-			
+
 			client.setOperatorPwd(newOperatePwd);
 			// 2.3.1修改用户名称
 			startTime = System.currentTimeMillis();
@@ -452,9 +587,10 @@ public class StockServiceImpl implements TradeService {
 				// client.setFlag(Constants.CODE_FAILURE);
 				return client;
 			}
-			
+
 			if (log.isDebugEnabled()) {
-				log.debug("修改账户"+operator+"名称，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+				log.debug("修改账户" + operator + "名称，消耗时间："
+						+ (System.currentTimeMillis() - startTime) / 1000 + "s");
 				log.debug("访问HOMES服务，修改用户名称成功");
 			}
 			// 2.4 获取单号相关信息
@@ -463,17 +599,18 @@ public class StockServiceImpl implements TradeService {
 				return client;
 			}
 			if (log.isDebugEnabled()) {
-				log.debug("修改账户"+operator+"其他信息，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+				log.debug("修改账户" + operator + "其他信息，消耗时间："
+						+ (System.currentTimeMillis() - startTime) / 1000 + "s");
 			}
-			
-			
+
 			// 2.5资金划转
 			startTime = System.currentTimeMillis();
 			if (!moveFund(moveFund, combineId, fundAccount, managerCombineId)) {
 				return client;
 			}
 			if (log.isDebugEnabled()) {
-				log.debug("账户"+operator+"资金划转，消耗时间："+(System.currentTimeMillis()-startTime)/1000+"s");
+				log.debug("账户" + operator + "资金划转，消耗时间："
+						+ (System.currentTimeMillis() - startTime) / 1000 + "s");
 				log.debug("访问HOMES服务，进行资金划转成功");
 				log.debug("访问HOMES服务结束,处理过程正常，成功推出！！！");
 			}
@@ -487,15 +624,11 @@ public class StockServiceImpl implements TradeService {
 
 	}
 
-	private boolean mainFundCashIsEnough(String nickname, String moveFund,
+	private boolean mainAccountCashIsEnough(String nickname, String moveFund,
 			String fundAccount) throws Exception {
 		// 判断管理账户资金是否充足,资金充足，可以操盤,插入操盘数据
 		if (!StringUtils
 				.equals("1", acount.cashIsEnough(moveFund, fundAccount))) {
-			/*
-			 * ApiUtils.send(Constants.MODEL_MANAAGER_RECHARGE_FN,
-			 * stock_manager_phone, fundAccount);
-			 */
 			if (log.isDebugEnabled()) {
 				log.debug("资金账户[" + fundAccount + "]不足，不能操盘,操盘用户：" + nickname);
 			}
@@ -576,7 +709,6 @@ public class StockServiceImpl implements TradeService {
 		StockAssetMove move = new StockAssetMove(managerAcount,
 				managerCombineId, clientCombineId, moveFund);
 		move.callHomes(Fn_asset_move);
-		// move.over();
 		return move.visitSuccess(Fn_asset_move);
 	}
 
@@ -708,9 +840,9 @@ public class StockServiceImpl implements TradeService {
 			// 判断当前账户是否有足够的钱
 			String addedGuaranteeCash = transferData.getAddedGuaranteeCash();
 			// 判断用户输入的保证金额是否正确
-			if (addedGuaranteeCash == null
+			if (StringUtils.isBlank(addedGuaranteeCash)
 					|| !addedGuaranteeCash.matches("[1-9]\\d*")) {
-				String msg = "亲爱的" + nickname + " 请正确输入保证金";
+				String msg = "亲爱的【" + nickname + "】请正确输入保证金";
 				map.put("msg", msg);
 				map.put("flag", Constants.CODE_ERROR_MONEY);
 				if (log.isDebugEnabled()) {
@@ -733,7 +865,6 @@ public class StockServiceImpl implements TradeService {
 
 			Map<String, String> result = enterAddGuaranteePage(nickname,
 					addedGuaranteeCash);
-
 			Float currentOperateLimit = Float.parseFloat(result
 					.get("currentOperateLimit"));
 			Float assignCash = Float.parseFloat(result.get("assignCash"));
@@ -756,14 +887,13 @@ public class StockServiceImpl implements TradeService {
 			String orginTradeFund = trade.queryOrginTradeFund(nickname);
 
 			Float profitAndLossCashFloat = Float.parseFloat(profitAndLossCash);
-			// 新增配资额度
 
 			// 如果盈亏金额小于0，那么证明填充的钱未填平亏损，只是将增加的钱划转到HOMES
 			if (profitAndLossCashFloat < 0f) {
 				addedAssginCapital = addedGuaranteeCash;
 			} else {
-				// 如果盈亏的钱够填平亏损或则是原来就在盈利，那么就需要计算新增的配资额度。
-				// 1、1需要配资的钱
+				// 如果盈亏的钱够填平亏损或则是原来就在盈利，那么就需要计算新增的配资额度
+				// 1、1.需要配资的钱
 				Float capitalCashNeedFloat = Float.parseFloat(transferData
 						.getCurrentOperateLimit())
 						- Float.parseFloat(orginTradeFund)
@@ -791,7 +921,7 @@ public class StockServiceImpl implements TradeService {
 				}
 
 				// 资金不足，只划转用户的保证金,不去进行配资
-				if (!StringUtils.equals("1", flag)) {
+				if (!StringUtils.equals(Constants.CODE_SUCCESS, flag)) {
 					addedAssginCapital = addedGuaranteeCash;
 				} else {
 					// 新增的配资的钱
@@ -806,14 +936,27 @@ public class StockServiceImpl implements TradeService {
 			if (StringUtils.isNotBlank(addedAssginCapital)) {
 				moveCash = Float.parseFloat(addedAssginCapital);
 				if (moveCash != 0f) {
-					log.info("客户" + nickname
-							+ "【增加保证金addCuarantee】访问HOMES,执行资金划转操作");
+					log.info("客户【" + nickname
+							+ "】【增加保证金addCuarantee】访问HOMES,执行资金划转操作");
 					String clientCombineId = acount
 							.queryClientCombineId(nickname);
 					// ManagerDO managerDO = acount.getStockManager();
-					boolean moveSuccess = moveFund(addedAssginCapital,
-							clientCombineId, result.get("fundAccount"),
-							result.get("managerCombineId"));
+
+					String fundAccount = result.get("fundAccount");
+					String managerCombineId = result.get("managerCombineId");
+					boolean moveSuccess = false;
+					// 切换小homs
+					if (StringUtils.equals("open", changeIsOpen)
+							&& !StringUtils.startsWith(operationNo, "6")) {
+						moveSuccess = move(addedAssginCapital, clientCombineId,
+								fundAccount);
+						if (log.isDebugEnabled()) {
+							log.debug("向小homs划拨资金");
+						}
+					} else {
+						moveSuccess = moveFund(addedAssginCapital,
+								clientCombineId, fundAccount, managerCombineId);
+					}
 					if (!moveSuccess) {
 						log.error("向用户" + nickname + "资金划转失败");
 						throw new RuntimeException("向用户" + nickname + "资金划转失败");
@@ -938,11 +1081,18 @@ public class StockServiceImpl implements TradeService {
 		Map<String, String> map = new HashMap<String, String>();
 		try {
 			EveningEndDO eveningEndDO = trade.getEveningFlag(nickname);
-			map.put("id", eveningEndDO.getId());
-			map.put("assetId", eveningEndDO.getAssetId());
-			map.put("capital",
-					StringUtil.keepThreeDot(eveningEndDO.getCapital()));
-			map.put("stopPercent", eveningEndDO.getStopPercent());
+			if (null != eveningEndDO) {
+				map.put("id", eveningEndDO.getId());
+				map.put("assetId", eveningEndDO.getAssetId());
+				map.put("capital",
+						StringUtil.keepThreeDot(eveningEndDO.getCapital()));
+				map.put("stopPercent", eveningEndDO.getStopPercent());
+			} else {
+				map.put("id", "");
+				map.put("assetId", "");
+				map.put("capital", "");
+				map.put("stopPercent", "");
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
