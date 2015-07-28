@@ -719,4 +719,13 @@ public interface AcountMapper {
 	public List<DownLineUserDO> getDownUser(@Param("userId") String userId,
 			@Param("offset") String offset) throws Exception;
 
+	/**
+	 * 更新用户手机号
+	 * 
+	 * @param nickname
+	 * @param phone
+	 * @throws Exception
+	 */
+	public void updateUserphone(@Param("nickname") String nickname,
+			@Param("phone") String phone) throws Exception;
 }
