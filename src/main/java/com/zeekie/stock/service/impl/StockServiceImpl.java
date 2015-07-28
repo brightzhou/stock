@@ -954,7 +954,7 @@ public class StockServiceImpl implements TradeService {
 					boolean moveSuccess = false;
 					// 切换小homs
 					if (StringUtils.equals("open", changeIsOpen)
-							&& !StringUtils.startsWith(operationNo, "6")) {
+							&& !StringUtils.startsWith(fundAccount, "6")) {
 						moveSuccess = move(addedAssginCapital, clientCombineId,
 								fundAccount);
 						if (log.isDebugEnabled()) {
