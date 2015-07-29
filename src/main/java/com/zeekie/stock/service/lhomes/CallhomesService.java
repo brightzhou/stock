@@ -64,14 +64,17 @@ public class CallhomesService {
 		HomesEntrust entrustEntity = (HomesEntrust) entity;
 		Fun201Requst requst = new Fun201Requst();
 		requst.setClientNo(entrustEntity.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(entrustEntity.getInvestAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(entrustEntity
+				.getInvestAccount()));
 		requst.setExchangeType(entrustEntity.getExchangeType());
 		requst.setEntrustBs(entrustEntity.getEntrustDirection());
 		requst.setStockCode(entrustEntity.getStockCode());
 		requst.setEntrustType("0");
 		requst.setEntrustProp("0");
-		requst.setEntrustPrice(StringUtil.parseBigDecimal(entrustEntity.getEntrustPrice(), 2));
-		requst.setEntrustAmount(StringUtil.parseBigDecimal(entrustEntity.getEntrustAmount(), 0));
+		requst.setEntrustPrice(StringUtil.parseBigDecimal(
+				entrustEntity.getEntrustPrice(), 2));
+		requst.setEntrustAmount(StringUtil.parseBigDecimal(
+				entrustEntity.getEntrustAmount(), 0));
 		response = Constants.services.fun201(requst);
 		return isTrue(response);
 	}
@@ -85,7 +88,8 @@ public class CallhomesService {
 		HomesQueryEntrust param = (HomesQueryEntrust) entity;
 		Fun104Requst requst = new Fun104Requst();
 		requst.setClientNo(param.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(param.getInvestAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(param
+				.getInvestAccount()));
 		requst.setStartDate(param.getStartDate());
 		requst.setEndDate(param.getEndDate());
 		requst.setCxRowcount(param.getCxRowcount());
@@ -103,7 +107,8 @@ public class CallhomesService {
 		HomesQueryEntrust param = (HomesQueryEntrust) entity;
 		Fun105Requst requst = new Fun105Requst();
 		requst.setClientNo(param.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(param.getInvestAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(param
+				.getInvestAccount()));
 		requst.setStartDate(param.getStartDate());
 		requst.setEndDate(param.getEndDate());
 		requst.setCxRowcount(param.getCxRowcount());
@@ -120,7 +125,8 @@ public class CallhomesService {
 	public boolean call103Fun() {
 		Fun103Requst requst = new Fun103Requst();
 		requst.setClientNo(entity.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(entity.getInvestAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(entity
+				.getInvestAccount()));
 		response = Constants.services.fun103(requst);
 		return isTrue(response);
 	}
@@ -134,7 +140,8 @@ public class CallhomesService {
 		HomesEntrustWithdraw param = (HomesEntrustWithdraw) entity;
 		Fun202Requst requst = new Fun202Requst();
 		requst.setClientNo(param.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(param.getInvestAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(param
+				.getInvestAccount()));
 		requst.setEntrustNo(StringUtil.StringToInteger(param.getEntrustNo()));
 		response = Constants.services.fun202(requst);
 		return isTrue(response);
@@ -148,7 +155,8 @@ public class CallhomesService {
 	public boolean call210Fun() {
 		Fun210Requst requst = new Fun210Requst();
 		requst.setClientNo(entity.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(entity.getFundAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(entity
+				.getFundAccount()));
 		Fun210Response resp = Constants.services.fun210(requst);
 		response = resp;
 		if (isTrue(resp)) {
@@ -170,17 +178,18 @@ public class CallhomesService {
 	public boolean call210FunResp() {
 		Fun210Requst requst = new Fun210Requst();
 		requst.setClientNo(entity.getClientNo());
-		requst.setInvestAccount(StringUtil.StringToInteger(entity.getFundAccount()));
+		requst.setInvestAccount(StringUtil.StringToInteger(entity
+				.getFundAccount()));
 		Fun210Response resp = Constants.services.fun210(requst);
 		response = resp;
 		return isTrue(resp);
 	}
 
 	/*	*//**
-			 * 查询可用资产
-			 * 
-			 * @return
-			 */
+	 * 查询可用资产
+	 * 
+	 * @return
+	 */
 	/*
 	 * public HomesCapital call210FunResponse() { Fun210Requst requst = new
 	 * Fun210Requst(); requst.setClientNo(entity.getClientNo());
@@ -204,7 +213,8 @@ public class CallhomesService {
 		Fun501Requst requst = new Fun501Requst();
 		requst.setClientNoFrom(entrustMoveFund.getClientNo());
 		requst.setClientNoTo(entrustMoveFund.getClientNoTo());
-		requst.setOccurBalance(StringUtil.parseBigDecimal(entrustMoveFund.getOccurBalance(), 2));
+		requst.setOccurBalance(StringUtil.parseBigDecimal(
+				entrustMoveFund.getOccurBalance(), 2));
 		if (StringUtils.equals("pay", entrustMoveFund.getFlag())) {
 			requst.setBusinessFlag(entrustMoveFund.getBusinessFlagPay());
 		} else {
@@ -227,7 +237,7 @@ public class CallhomesService {
 		requst.setNewpassword(homesPwd.getNewPwd());
 		return isTrue(Constants.services.fun311(requst));
 	}
-	
+
 	/**
 	 * 查行情
 	 * 
@@ -255,30 +265,40 @@ public class CallhomesService {
 	public HomesResponse getResponse(String fn) {
 		if (StringUtils.equals(Constants.FN201, fn)) {
 			Fun201Response resp = (Fun201Response) response;
-			return new HomesResponse(resp.getBranchNo(), resp.getFundAccount(), resp.getEntrustNo(), resp.getBatchNo(),
-					resp.getClientNo());
+			return new HomesResponse(resp.getBranchNo(), resp.getFundAccount(),
+					resp.getEntrustNo(), resp.getBatchNo(), resp.getClientNo());
 		} else if (StringUtils.equals(Constants.FN210, fn)) {// 资产
 			Fun210Response resp = (Fun210Response) response;
-			return new HomesCapital(resp.getFetfund().floatValue(), resp.getUserfund().floatValue(),
-					resp.getUsermarket().floatValue(), resp.getCurrfund().floatValue(),
-					resp.getCurrmarket().floatValue(),resp.getAssetValue().floatValue());
+			return new HomesCapital(resp.getFetfund().floatValue(), resp
+					.getUserfund().floatValue(), resp.getUsermarket()
+					.floatValue(), resp.getCurrfund().floatValue(), resp
+					.getCurrmarket().floatValue(), resp.getAssetValue()
+					.floatValue());
 		} else if (StringUtils.equals(Constants.FN104, fn)) {
 			AmResultList<Fun104Response> list = (AmResultList<Fun104Response>) response;
 			Homes104Resp resp = new Homes104Resp();
 			List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 			for (Fun104Response item : list) {
 				EntrustQueryEntity homes104Resp = new EntrustQueryEntity();
-				homes104Resp.setAmentrust_status(StringUtil.convertStatus(item.getEntrustStatus()));
-				homes104Resp.setEntrust_price(item.getEntrustPrice().floatValue() + "");
-				homes104Resp.setEntrust_amount(item.getEntrustAmount().intValue() + "");
+				homes104Resp.setAmentrust_status(StringUtil.convertStatus(item
+						.getEntrustStatus()));
+				homes104Resp.setEntrust_price(item.getEntrustPrice()
+						.floatValue() + "");
+				homes104Resp.setEntrust_amount(item.getEntrustAmount()
+						.intValue() + "");
 				homes104Resp.setEntrust_time(item.getEntrustTime() + "");
 				homes104Resp.setEntrust_direction(item.getEntrustBs());
-				homes104Resp.setExchange_type(ExchangeTypeEnum.getDesc(item.getExchangeType()));
+				homes104Resp.setExchange_type(ExchangeTypeEnum.getDesc(item
+						.getExchangeType()));
 				homes104Resp.setEntrust_no(item.getEntrustNo() + "");
-				homes104Resp.setBusiness_balance(item.getBusinessBalance().floatValue() + "");
-				homes104Resp.setBusiness_amount(item.getBusinessAmount().intValue() + "");
+				homes104Resp.setBusiness_balance(item.getBusinessBalance()
+						.floatValue() + "");
+				homes104Resp.setBusiness_amount(item.getBusinessAmount()
+						.intValue() + "");
 				homes104Resp.setCancel_info(item.getSecuErrorInfo());
 				homes104Resp.setStock_code(item.getStockCode());
+				homes104Resp.setEntrust_day(item.getDate() + "");
+				homes104Resp.setReport_time(item.getReportTime()+"");
 				entities.add(homes104Resp);
 			}
 			resp.setList(entities);
@@ -290,13 +310,18 @@ public class CallhomesService {
 			for (Fun105Response item : list) {
 				EntrustQueryEntity homes104Resp = new EntrustQueryEntity();
 				homes104Resp.setStock_code(item.getStockCode());
-				homes104Resp.setAmentrust_status(StringUtil.dealStatus(item.getRealStatus()));
+				homes104Resp.setAmentrust_status(StringUtil.dealStatus(item
+						.getRealStatus()));
 				homes104Resp.setEntrust_direction(item.getEntrustBs());
-				homes104Resp.setExchange_type(ExchangeTypeEnum.getDesc(item.getExchangeType()));
+				homes104Resp.setExchange_type(ExchangeTypeEnum.getDesc(item
+						.getExchangeType()));
 				homes104Resp.setEntrust_no(item.getEntrustNo() + "");
-				homes104Resp.setBusiness_balance(item.getBusinessBalance().floatValue() + "");
-				homes104Resp.setBusiness_amount(item.getBusinessAmount().intValue() + "");
+				homes104Resp.setBusiness_balance(item.getBusinessBalance()
+						.floatValue() + "");
+				homes104Resp.setBusiness_amount(item.getBusinessAmount()
+						.intValue() + "");
 				homes104Resp.setBusiness_time(item.getBusinessTime() + "");
+				homes104Resp.setEntrust_day(item.getDate() + "");
 				entities.add(homes104Resp);
 			}
 			resp.setList(entities);
@@ -310,18 +335,20 @@ public class CallhomesService {
 				int current = item.getCurrentAmount().intValue();
 				int sellAmount = item.getRealSellAmount().intValue();
 				int lastCurrent = current + buyAmount - sellAmount;
-				HomsEntity103 entity103 = new HomsEntity103(item.getStockCode(), lastCurrent + "",
-						item.getEnableAmount().intValue() + "",
-						StringUtil.keepTwoDecimalFloat(item.getCostPrice().floatValue() * lastCurrent) + "",
-						item.getCurrMarket().floatValue() + "");
+				HomsEntity103 entity103 = new HomsEntity103(
+						item.getStockCode(), lastCurrent + "", item
+								.getEnableAmount().intValue() + "",
+						StringUtil.keepTwoDecimalFloat(item.getCostPrice()
+								.floatValue() * lastCurrent)
+								+ "", item.getCurrMarket().floatValue() + "");
 				entity103s.add(entity103);
 			}
 			resp.setList(entity103s);
 			return resp;
-		} else if(StringUtils.equals(Constants.FN400, fn)){
-			Fun400Response resp = (Fun400Response)response;
+		} else if (StringUtils.equals(Constants.FN400, fn)) {
+			Fun400Response resp = (Fun400Response) response;
 			return new Homes400Resp(resp.getClosePrice().floatValue());
-		}else{
+		} else {
 			return null;
 		}
 	}

@@ -383,12 +383,12 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 						jo.put("amentrustStatus", entity.getAmentrust_status());
 						jo.put("entrustNo", entity.getEntrust_no());
 						jo.put("exchangeType", entity.getExchange_type());
-						jo.put("entrustDirection",
-								entity.getEntrust_direction());
+						jo.put("entrustDirection",entity.getEntrust_direction());
 						jo.put("businessBalance", entity.getBusiness_balance());
 						jo.put("businessAmount", entity.getBusiness_amount());
-						jo.put("entrustTime", entity.getBusiness_time());
+						jo.put("businessTime", entity.getBusiness_time());
 						jo.put("cancelInfo", entity.getCancel_info());
+						jo.put("entrustDate", entity.getEntrust_day());
 						ja.add(jo);
 					}
 
@@ -508,7 +508,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 		jo.put("businessAmount", entity.getBusiness_amount());
 		jo.put("entrustTime", entity.getEntrust_time());
 		jo.put("cancelInfo", entity.getCancel_info());
-		jo.put("entrusteDate", DateUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+		jo.put("entrusteDate", entity.getEntrust_day());
+		jo.put("reportTime", entity.getReport_time());
 		ja.add(jo);
 	}
 

@@ -98,23 +98,7 @@ public class StockEntrustController {
 				entrustPrice, entrustDirection);
 	}
 
-	private boolean verifyPrice(String stockCode, Float value) {
-		String exchangeType = StringUtils.startsWith(stockCode, "6") ? Constants.HOMES_EXCHANGE_TYPE_SH
-				: Constants.HOMES_EXCHANGE_TYPE_S;
-		HomsEntity400 entity400 = new HomsEntity400(stockCode, exchangeType);
-		CallhomesService service = new CallhomesService(entity400);
-		if (service.call400Fun()) {
-			Homes400Resp resp = (Homes400Resp) service
-					.getResponse(Constants.FN400);
-			Float closePrice = resp.getClosePrice();
-			Float endPrice = StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat((closePrice * 1.1) + ""));
-			Float startPrice = StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat((closePrice * 0.9) + ""));
-			return (startPrice <= value && value <= endPrice);
-		}
-		return false;
-	}
+
 
 	@ResponseBody
 	@RequestMapping("common/entrust/withdraw")
@@ -257,6 +241,24 @@ public class StockEntrustController {
 			log.error(e.getMessage(), e);
 		}
 		return ApiUtils.good(new JSONArray());
+	}
+	
+	private boolean verifyPrice(String stockCode, Float value) {
+		String exchangeType = StringUtils.startsWith(stockCode, "6") ? Constants.HOMES_EXCHANGE_TYPE_SH
+				: Constants.HOMES_EXCHANGE_TYPE_S;
+		HomsEntity400 entity400 = new HomsEntity400(stockCode, exchangeType);
+		CallhomesService service = new CallhomesService(entity400);
+		if (service.call400Fun()) {
+			Homes400Resp resp = (Homes400Resp) service
+					.getResponse(Constants.FN400);
+			Float closePrice = resp.getClosePrice();
+			Float endPrice = StringUtil.keepTwoDecimalFloat(Float
+					.parseFloat((closePrice * 1.1) + ""));
+			Float startPrice = StringUtil.keepTwoDecimalFloat(Float
+					.parseFloat((closePrice * 0.9) + ""));
+			return (startPrice <= value && value <= endPrice);
+		}
+		return false;
 	}
 
 }
