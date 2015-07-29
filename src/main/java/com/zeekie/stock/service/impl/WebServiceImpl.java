@@ -1011,4 +1011,21 @@ public class WebServiceImpl implements WebService {
 		return Constants.CODE_SUCCESS;
 	}
 
+	@Override
+	public String editUserphone(String data) throws ServiceInvokerException {
+		JSONArray ja = JSONArray.fromObject(data);
+		List<UserInfoDO> list = new ArrayList<UserInfoDO>();
+		for (int i = 0; i < ja.size(); i++) {
+			JSONObject jo = ja.getJSONObject(i);
+			UserInfoDO infoDO = new UserInfoDO();
+			infoDO.setNickname(jo.getString("nickname"));
+			infoDO.setPhone(jo.getString("phone"));
+			list.add(infoDO);
+		}
+		if (!list.isEmpty()) {
+			batchMapper.batchInsert(AcountMapper.class, "updateUserphone", list);
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
 }

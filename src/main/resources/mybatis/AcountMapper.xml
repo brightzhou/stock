@@ -1701,6 +1701,10 @@
 		 WHERE NUM &gt; = #{offset} + 1
 		   AND NUM &lt;= #{offset} + 20
    </select>
+   
+   <update id="updateUserphone" parameterType="com.zeekie.stock.entity.UserInfoDO">
+   		update stock_user u set u.telephone = #{phone,jdbcType=VARCHAR} where u.nickname=#{nickname}
+   </update>
 	
 </mapper>
 

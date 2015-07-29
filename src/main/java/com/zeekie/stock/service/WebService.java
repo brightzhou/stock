@@ -453,4 +453,13 @@ public interface WebService {
 	 */
 	public String saveStockCode(String string) throws ServiceInvokerException;
 
+	/**
+	 * 修改用户手机
+	 * 
+	 * @param data
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public String editUserphone(String data) throws ServiceInvokerException;
+
 }

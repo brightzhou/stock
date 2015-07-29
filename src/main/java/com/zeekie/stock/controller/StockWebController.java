@@ -1004,4 +1004,16 @@ public class StockWebController {
 		}
 		return Constants.CODE_FAILURE;
 	}
+	
+	@ResponseBody
+	@RequestMapping("userphone/edit")
+	public String editUserphone(
+			@RequestParam(value = "data", required = false) String data) {
+		try {
+			return webService.editUserphone(data);
+		} catch (ServiceInvokerException e) {
+			log.error("editUserphone error happened:", e.getMessage());
+		}
+		return Constants.CODE_FAILURE;
+	}
 }

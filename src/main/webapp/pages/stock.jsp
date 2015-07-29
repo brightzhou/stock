@@ -50,8 +50,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div name="id"  field="id" headerAlign="center" allowSort="true" width="30" style="display: none">序号
                 <input class="mini-textbox" style="width:10%;" minWidth="200" />
             </div>
-            <div name="stockCode"  field="stockCode" headerAlign="center"  width="150" required="true" vtype="int">股票代码
-                <input property="editor" class="mini-textbox" style="width:100%;" minWidth="200" minValue="1" maxValue="6"/>
+            <div name="stockCode"  field="stockCode" headerAlign="center"  width="150" required="true" vtype="int;rangeLength:1,6;">股票代码
+                <input property="editor" class="mini-textbox" style="width:100%;" minWidth="200" />
             </div>
         </div>
     </div>
@@ -59,7 +59,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <script type="text/javascript">
      
         mini.parse();
-        var form = new mini.Form("form1");
         var grid = mini.get("datagrid1");
         grid.load();
         grid.setShowEmptyText(true);
@@ -102,10 +101,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             }
         }
         function saveData() {
+        	
+        	 grid.validate();
+             if (grid.isValid() == false) {
+             	 mini.alert('输入代码不合法，必须是数字，长度在1-6位之间');
+                 var error = grid.getCellErrors()[0];
+                 grid.beginEditCell(error.record, error.column);
+                 return;
+             }
             
             var data = grid.getChanges();
-            form.validate();
-            if (form.isValid() == false) return;
             
             if(data.length <= 0){
             	mini.alert('没有可以更新的记录');
