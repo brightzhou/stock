@@ -499,7 +499,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				JSONArray ja = entrustService.queryEntrust(nickname);
 
 				if (ja.isEmpty()) {
-					return true;
+					return false;
 				} else {
 					for (int i = 0; i < ja.size(); i++) {
 						JSONObject jo = ja.getJSONObject(i);
@@ -507,10 +507,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						if (!StringUtils.equals(amentrustStatus, "5")
 								&& !StringUtils.equals(amentrustStatus, "7")
 								&& !StringUtils.equals(amentrustStatus, "9")) {
-							return false;
+							return true;
 						}
 					}
-					return true;
+					return false;
 				}
 			}
 
