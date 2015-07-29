@@ -239,10 +239,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 							.getResponse(Constants.FN210);
 					Float fetFund = resp.getFetfund();
 					Float userFund = resp.getUserfund();
-					Float userMarket = resp.getUsermarket();
-//					Float currMarket = resp.getCurrMarket();
-//					Float currFund = resp.getCurrFund();
-					combassetDO.setAssetTotalValue(userMarket + fetFund);
+//					Float userMarket = resp.getUsermarket();
+					combassetDO.setAssetTotalValue(resp.getAssetValue());
 					combassetDO.setAssetValue(userFund);
 					combassetDO.setCurrentCash(fetFund);
 				}

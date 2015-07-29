@@ -10,10 +10,10 @@ import com.zeekie.stock.util.StringUtil;
 public class HomesQueryEntrust extends AHomesEntity {
 
 	private int startDate = StringUtil.StringToInteger(DateUtils.format(
-			new Date(), "yyyymmdd"));
+			new Date(), "yyyyMMdd"));
 
 	private int endDate = StringUtil.StringToInteger(DateUtils.format(
-			new Date(), "yyyymmdd"));
+			new Date(), "yyyyMMdd"));
 
 	private int cxRowcount = 10;
 

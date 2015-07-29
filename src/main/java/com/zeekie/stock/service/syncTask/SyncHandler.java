@@ -66,7 +66,7 @@ public class SyncHandler {
 	@Autowired
 	@Value("${stopDeal}")
 	private String stopDeal;
-	
+
 	@Autowired
 	@Value("${stock.status.changeIsOpen}")
 	private String changeIsOpen;
@@ -80,7 +80,8 @@ public class SyncHandler {
 		}.start();
 	}
 
-	public void handleOtherJob(final String type,final Map<String, String> param) {
+	public void handleOtherJob(final String type,
+			final Map<String, String> param) {
 		new Thread() {
 			@Override
 			public void run() {
@@ -93,7 +94,8 @@ public class SyncHandler {
 		}.start();
 	}
 
-	public void handleJobOfList(final String type,final List<Map<String, String>> list) {
+	public void handleJobOfList(final String type,
+			final List<Map<String, String>> list) {
 		new Thread() {
 			@Override
 			public void run() {
@@ -107,7 +109,8 @@ public class SyncHandler {
 
 	}
 
-	private void handle(String type, List<Map<String, String>> list) throws Exception {
+	private void handle(String type, List<Map<String, String>> list)
+			throws Exception {
 		if (StringUtils.equals(Constants.TYPE_JOB_RECEIPT, type)) {
 			int index = 0;
 			for (; index < list.size(); index++) {
@@ -129,7 +132,8 @@ public class SyncHandler {
 		}
 	}
 
-	private void handle(String type, Map<String, String> param) throws Exception {
+	private void handle(String type, Map<String, String> param)
+			throws Exception {
 
 		if (StringUtils.equals(Constants.TYPE_JOB_EVENING_UP_REMIND, type)) {
 			eveningUpRemind(param);
@@ -158,7 +162,8 @@ public class SyncHandler {
 
 		} else if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE,
 				type)) {
-			deductFeeWhenAddGuarantee(param.get("nickname"),param.get("needDeductFee"));
+			deductFeeWhenAddGuarantee(param.get("nickname"),
+					param.get("needDeductFee"));
 		} else if (StringUtils.equals(Constants.TYPE_JOB_TO_REFEREE, type)) {
 			String flag = param.get("flag");
 			String referee = param.get("referee");
@@ -172,7 +177,8 @@ public class SyncHandler {
 				ApiUtils.send(Constants.MODEL_TO_BE_REFEREE_FN, telephone,
 						referee, nickname, nickname, packet);
 			}
-		} else if (StringUtils.equals(Constants.TYPE_JOB_REDPACKET_NOTICE, type)) {
+		} else if (StringUtils
+				.equals(Constants.TYPE_JOB_REDPACKET_NOTICE, type)) {
 			ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN,
 					param.get("telephone"), param.get("message"));
 
@@ -267,20 +273,23 @@ public class SyncHandler {
 				String flag = item.getStopBuy();
 				Float warnFund = Float.valueOf(item.getWarnFund());
 				Float assetFund = Float.valueOf(item.getActualAsset());
+				String tradeAccount = item.getOperateNO();
 				if (StringUtils.equals(Constants.CODE_FAILURE, flag)) {
 					// 未限制买入，且实际资产小于警戒金额，控制買入
 					if (warnFund > assetFund) {
-						if(StringUtils.equals("open", changeIsOpen)){
+						if (StringUtils.equals("open", changeIsOpen)
+								&& !StringUtils.startsWith(tradeAccount, "6")) {
 							trade.updateStopBuyFlag(item.getOperateId(), "1");
-						}else{
+						} else {
 							visitHomes(item, Constants.OPERATE_RIGHT_ONE, "1");
 						}
 					}
 				} else {
 					// 如果已經限制買入，那麼當实际资产大于警戒金额的时候，需要修改标志，并允许他买入
-					if(StringUtils.equals("open", changeIsOpen)){
+					if (StringUtils.equals("open", changeIsOpen)
+							&& !StringUtils.startsWith(tradeAccount, "6")) {
 						trade.updateStopBuyFlag(item.getOperateId(), "0");
-					}else{
+					} else {
 						if (warnFund < assetFund) {
 							visitHomes(item, Constants.OPERATE_RIGHT_ZERO, "0");
 						}
@@ -359,7 +368,7 @@ public class SyncHandler {
 				}
 				return;
 			}
-			if (DateUtil.compareDate()) {
+			if (DateUtil.compareDate("08:45:00", "14:59:00")) {
 				StockRadioDO radioDO = account
 						.getAssignRadioForCurrUser(nickname);
 				Float deductFee = (Float.parseFloat(needCaculateMoney)
@@ -374,7 +383,8 @@ public class SyncHandler {
 
 				String referee = account.queryRefereeNickname(nickname);
 				if (StringUtils.isNotBlank(referee)) {
-					String refereeDrawFee = "" + radioDO.getUpLinePercent() * deductFee;
+					String refereeDrawFee = "" + radioDO.getUpLinePercent()
+							* deductFee;
 					String type = Fund.AMORTIZATION.getType();
 					trade.recharge(referee, refereeDrawFee);
 					trade.recordFundflow(referee, type, refereeDrawFee + "",
@@ -402,7 +412,7 @@ public class SyncHandler {
 					log.debug("用户操盘，但是今天[" + rightNow + "]未设置收取服务费，故不进行时间比较了");
 				}
 			} else {
-				if (DateUtil.compareDate()) {
+				if (DateUtil.compareDate("08:45:00", "14:59:00")) {
 					trade.updateManageFeeByUser(nickname);
 					DeductDO fee = trade.queryNewStocker(nickname);
 					trade.deductManageFee(fee);

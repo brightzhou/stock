@@ -66,6 +66,11 @@ public class Constants {
 	 * 到达警戒线禁止买入股票
 	 */
 	public static final String CODE_STOCK_STOP = "3";
+	
+	/**
+	 * 不在交易时间内
+	 */
+	public static final String CODE_STOCK_NOTIN_DEAL_TIME = "4";
 
 	/**
 	 * 理财额度已经达到其最大上限 code=4
@@ -297,6 +302,8 @@ public class Constants {
 	public static final String FN210 = "210";
 
 	public static final String FN501 = "501";
+	
+	public static final String FN400 = "400";
 
 	// 加密因子
 	public static String factor;

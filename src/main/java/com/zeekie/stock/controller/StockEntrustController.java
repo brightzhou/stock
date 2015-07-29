@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +21,11 @@ import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.service.EntrustService;
+import com.zeekie.stock.service.lhomes.CallhomesService;
+import com.zeekie.stock.service.lhomes.entity.Homes400Resp;
+import com.zeekie.stock.service.lhomes.entity.HomsEntity400;
 import com.zeekie.stock.util.ApiUtils;
+import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 
 /**
@@ -41,6 +46,14 @@ public class StockEntrustController {
 	@Autowired
 	private DealMapper deal;
 
+	@Autowired
+	@Value("${stock.little.homes.limit.end}")
+	private String endTime;
+
+	@Autowired
+	@Value("${stock.little.homes.limit.start}")
+	private String startTime;
+
 	@ResponseBody
 	@RequestMapping("common/entrust")
 	public String entrust(@RequestParam("nickname") String nickname,
@@ -50,9 +63,18 @@ public class StockEntrustController {
 			@RequestParam("entrustDirection") String entrustDirection)
 			throws Exception {
 
+		if (!DateUtil.compareDate(startTime, endTime)) {
+			return "不在交易时间内";
+			// return Constants.CODE_STOCK_NOTIN_DEAL_TIME;
+		}
+
 		Float value = Float.parseFloat(entrustPrice);
 		if (value == 0f) {
-			return "不允以0元下单";
+			return "不允许以0元下单";
+		} else {
+			if (!verifyPrice(stockCode, value)) {
+				return "输入价格非法";
+			}
 		}
 		// 判断是否已经禁止买入
 		if (StringUtils.equals(entrustDirection, "1")) {
@@ -74,6 +96,24 @@ public class StockEntrustController {
 		}
 		return entrust.entrust(nickname, stockCode, entrustAmount,
 				entrustPrice, entrustDirection);
+	}
+
+	private boolean verifyPrice(String stockCode, Float value) {
+		String exchangeType = StringUtils.startsWith(stockCode, "6") ? Constants.HOMES_EXCHANGE_TYPE_SH
+				: Constants.HOMES_EXCHANGE_TYPE_S;
+		HomsEntity400 entity400 = new HomsEntity400(stockCode, exchangeType);
+		CallhomesService service = new CallhomesService(entity400);
+		if (service.call400Fun()) {
+			Homes400Resp resp = (Homes400Resp) service
+					.getResponse(Constants.FN400);
+			Float closePrice = resp.getClosePrice();
+			Float endPrice = StringUtil.keepTwoDecimalFloat(Float
+					.parseFloat((closePrice * 1.1) + ""));
+			Float startPrice = StringUtil.keepTwoDecimalFloat(Float
+					.parseFloat((closePrice * 0.9) + ""));
+			return (startPrice <= value && value <= endPrice);
+		}
+		return false;
 	}
 
 	@ResponseBody

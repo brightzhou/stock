@@ -18,6 +18,26 @@ public class HomesCapital extends HomesResponse {
 	 */
 	private Float currFund;
 
+	/**
+	 * 总资产
+	 */
+	private Float assetValue;
+
+	/**
+	 * @return the assetValue
+	 */
+	public Float getAssetValue() {
+		return assetValue;
+	}
+
+	/**
+	 * @param assetValue
+	 *            the assetValue to set
+	 */
+	public void setAssetValue(Float assetValue) {
+		this.assetValue = assetValue;
+	}
+
 	public Float getFetfund() {
 		return fetfund;
 	}
@@ -58,15 +78,15 @@ public class HomesCapital extends HomesResponse {
 		this.currFund = currFund;
 	}
 
-	public HomesCapital(Float fetfund, Float userfund, Float usermarket, Float currMarket, Float currFund) {
+	public HomesCapital(Float fetfund, Float userfund, Float usermarket,
+			Float currMarket, Float currFund, Float assetValue) {
 		super();
 		this.fetfund = fetfund;
 		this.userfund = userfund;
 		this.usermarket = usermarket;
 		this.currMarket = currMarket;
 		this.currFund = currFund;
+		this.assetValue = assetValue;
 	}
 
-	
-	
 }

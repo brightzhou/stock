@@ -173,11 +173,12 @@ public class DateUtil {
 		return new SimpleDateFormat(format).format(date);
 	}
 
-	public static boolean compareDate() throws ParseException {
+	public static boolean compareDate(String start, String enddate)
+			throws ParseException {
 		Date date = new Date();
 		String now = formatDate(date, DATE_FORMATS[0]);
-		String begin = formatDate(date, DATE_FORMATS[1]) + " 08:45:00";
-		String end = formatDate(date, DATE_FORMATS[1]) + " 14:59:00";
+		String begin = formatDate(date, DATE_FORMATS[1]) + " " + start;
+		String end = formatDate(date, DATE_FORMATS[1]) + " " + enddate;
 		try {
 			Date d1 = df.parse(now);
 			Date d2 = df.parse(end);
@@ -188,4 +189,5 @@ public class DateUtil {
 			throw new ParseException(e.getMessage(), 0);
 		}
 	}
+	
 }
