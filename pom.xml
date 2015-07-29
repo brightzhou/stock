@@ -304,7 +304,7 @@
 			  <artifactId>commons-lang3</artifactId>
 			  <version>3.1</version>
 			</dependency>
-		  <dependency>
+		  <!-- <dependency>
 			  <groupId>org.apache.httpcomponents</groupId>
 			  <artifactId>httpcore-nio</artifactId>
 			  <version>4.3.3</version>
@@ -323,7 +323,7 @@
 			  <groupId>org.bouncycastle</groupId>
 			  <artifactId>bcprov-jdk16</artifactId>
 			  <version>1.46</version>
-			</dependency> 
+			</dependency>  -->
 			<dependency>
 				<groupId>javax.validation</groupId>
 				<artifactId>validation-api</artifactId>
