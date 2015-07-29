@@ -55,7 +55,7 @@ public class FinanceServiceImpl implements FinanceService {
 
 	@Autowired
 	@Value("${apk_down_path}")
-	private String contextpath;
+	private String apkPath;
 
 	@Autowired
 	@Value("${finance.protocal}")
@@ -160,8 +160,9 @@ public class FinanceServiceImpl implements FinanceService {
 	@Override
 	public JSONArray getHistoryFinance(String userId, String offset)
 			throws ServiceInvokerException {
+		String path = root + apkPath + File.separator + financeProtocal;
 		List<HistoryFinanceDO> list = financeMapper.getHistoryFinance(userId,
-				offset, root + contextpath + File.separator + financeProtocal);
+				offset, path);
 		if (null != list) {
 			return JSONArray.fromObject(list, Constants.jsonConfig);
 		}

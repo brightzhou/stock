@@ -22,6 +22,8 @@ import com.hczq.hz.intf.Fun202Requst;
 import com.hczq.hz.intf.Fun210Requst;
 import com.hczq.hz.intf.Fun210Response;
 import com.hczq.hz.intf.Fun311Requst;
+import com.hczq.hz.intf.Fun400Requst;
+import com.hczq.hz.intf.Fun400Response;
 import com.hczq.hz.intf.Fun501Requst;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.enums.ExchangeTypeEnum;
@@ -30,6 +32,7 @@ import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
 import com.zeekie.stock.service.lhomes.entity.Homes103Resp;
 import com.zeekie.stock.service.lhomes.entity.Homes104Resp;
+import com.zeekie.stock.service.lhomes.entity.Homes400Resp;
 import com.zeekie.stock.service.lhomes.entity.HomesCapital;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
@@ -37,6 +40,7 @@ import com.zeekie.stock.service.lhomes.entity.HomesPwd;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
 import com.zeekie.stock.service.lhomes.entity.HomsEntity103;
+import com.zeekie.stock.service.lhomes.entity.HomsEntity400;
 import com.zeekie.stock.util.StringUtil;
 
 public class CallhomesService {
@@ -223,6 +227,20 @@ public class CallhomesService {
 		requst.setNewpassword(homesPwd.getNewPwd());
 		return isTrue(Constants.services.fun311(requst));
 	}
+	
+	/**
+	 * 查行情
+	 * 
+	 * @return
+	 */
+	public boolean call400Fun() {
+		HomsEntity400 entity400 = (HomsEntity400) entity;
+		Fun400Requst requst = new Fun400Requst();
+		requst.setStockCode(entity400.getStockCode());
+		requst.setExchangeType(entity400.getExchangeType());
+		response = Constants.services.fun400(requst);
+		return isTrue(response);
+	}
 
 	public boolean isTrue(AmServiceResult response) {
 		if (response.getErrorNo() == 0) {
@@ -243,7 +261,7 @@ public class CallhomesService {
 			Fun210Response resp = (Fun210Response) response;
 			return new HomesCapital(resp.getFetfund().floatValue(), resp.getUserfund().floatValue(),
 					resp.getUsermarket().floatValue(), resp.getCurrfund().floatValue(),
-					resp.getCurrmarket().floatValue());
+					resp.getCurrmarket().floatValue(),resp.getAssetValue().floatValue());
 		} else if (StringUtils.equals(Constants.FN104, fn)) {
 			AmResultList<Fun104Response> list = (AmResultList<Fun104Response>) response;
 			Homes104Resp resp = new Homes104Resp();
@@ -300,9 +318,11 @@ public class CallhomesService {
 			}
 			resp.setList(entity103s);
 			return resp;
-		} else {
+		} else if(StringUtils.equals(Constants.FN400, fn)){
+			Fun400Response resp = (Fun400Response)response;
+			return new Homes400Resp(resp.getClosePrice().floatValue());
+		}else{
 			return null;
-
 		}
 	}
 }

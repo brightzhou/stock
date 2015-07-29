@@ -104,8 +104,7 @@ public class CaculateFundTimer {
 
 		if (StringUtils.isBlank(currentCash)) {
 			if (log.isDebugEnabled()) {
-				log.debug(
-						"visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
+				log.debug("visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
 			}
 			return;
 		}
