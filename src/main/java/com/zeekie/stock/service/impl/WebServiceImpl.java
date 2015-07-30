@@ -1,7 +1,6 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1023,9 +1022,23 @@ public class WebServiceImpl implements WebService {
 			list.add(infoDO);
 		}
 		if (!list.isEmpty()) {
-			batchMapper.batchInsert(AcountMapper.class, "updateUserphone", list);
+			batchMapper
+					.batchInsert(AcountMapper.class, "updateUserphone", list);
 		}
 		return Constants.CODE_SUCCESS;
+	}
+
+	@Override
+	public String setProductStatus(String data) throws ServiceInvokerException {
+		JSONObject jo = JSONObject.fromObject(data);
+		try {
+			dealMapper.updateProductStatus(jo.getString("code"),
+					jo.getString("status"));
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
 	}
 
 }

@@ -54,6 +54,14 @@ public class StockEntrustController {
 	@Value("${stock.little.homes.limit.start}")
 	private String startTime;
 
+	@Autowired
+	@Value("${stock.guess.start}")
+	private String guessStartTime;
+
+	@Autowired
+	@Value("${stock.guess.end}")
+	private String guessEndTime;
+
 	@ResponseBody
 	@RequestMapping("common/entrust")
 	public String entrust(@RequestParam("nickname") String nickname,
@@ -97,8 +105,6 @@ public class StockEntrustController {
 		return entrust.entrust(nickname, stockCode, entrustAmount,
 				entrustPrice, entrustDirection);
 	}
-
-
 
 	@ResponseBody
 	@RequestMapping("common/entrust/withdraw")
@@ -242,7 +248,46 @@ public class StockEntrustController {
 		}
 		return ApiUtils.good(new JSONArray());
 	}
-	
+
+	/**
+	 * 返回对应产品
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("combostock/query")
+	public ApiResponse getProduct(@RequestParam("nickname") String nickname) {
+		try {
+			return ApiUtils.good(entrust.getProduct(nickname));
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
+	}
+
+	/**
+	 * 购买哈哈币
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("hhb/purchase")
+	public String purchaseHhb(@RequestParam("nickname") String nickname,
+			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+		try {
+			// 判断是否在购买时间范围内 15:30到第二天早上9:00
+			if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
+				return Constants.CODE_GUESS_NOT_INTIME;
+			}
+			return entrust.purchaseHhb(nickname, num, cash);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
 	private boolean verifyPrice(String stockCode, Float value) {
 		String exchangeType = StringUtils.startsWith(stockCode, "6") ? Constants.HOMES_EXCHANGE_TYPE_SH
 				: Constants.HOMES_EXCHANGE_TYPE_S;

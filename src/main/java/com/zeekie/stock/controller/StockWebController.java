@@ -1016,4 +1016,16 @@ public class StockWebController {
 		}
 		return Constants.CODE_FAILURE;
 	}
+	
+	@ResponseBody
+	@RequestMapping("productStatus/set")
+	public String setProductStatus(
+			@RequestParam(value = "data", required = false) String data) {
+		try {
+			return webService.setProductStatus(data);
+		} catch (ServiceInvokerException e) {
+			log.error("setProductStatus error happened:", e.getMessage());
+		}
+		return Constants.CODE_FAILURE;
+	}
 }

@@ -36,6 +36,12 @@
 		<result column="stock_Code" property="stockCode" jdbcType="VARCHAR"/>
 		<result column="id" property="id" jdbcType="VARCHAR"/>
 	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.ProductDO" id="resultProduct">
+		<result column="Financeincome" property="financeIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Stockincome" property="stockIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Guessincome" property="guessIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -245,4 +251,38 @@
     	select STOCK_CODE from STOCK_CODE
     </select>
     
+    <update id="updateProductStatus" parameterType="string">
+    	update STOCK_PRODUCT set STATUS = #{status} where PRODUCT_CODE = #{code}
+    </update>
+    
+    <select id="queryProduct" parameterType="string" resultMap="resultProduct">
+    	Select (Select Sum(r.Current_Income)
+	          From Stock_Finance_Record r
+	         Where r.Carry_Date >= Sysdate
+	           And Exists (Select 1
+	                  From Stock_Product p
+	                 Where p.Product_Code = '10'
+	                   And p.Status == 'Y')
+	           And r.User_Id = u.Id) Financeincome,
+	       (Select m.Profit_Loss_Radio
+	          From Stock_User_Operate_Maininfo m
+	         Where m.Is_Current = '1'
+	           And m.Nickname = u.Nickname
+	           And Exists (Select 1
+	                  From Stock_Product p
+	                 Where p.Product_Code = '11'
+	                   And p.Status == 'Y')) Stockincome,
+	       (Select Count(1)
+	          From Stock_Guess_Up_Down g
+	         Where g.User_Id = u.Id
+	           And g.Actual_Result = g.Guess_Status
+	           And p.Status == 'Y') Guessincome
+	  From Stock_User u
+	 Where u.Nickname = #{nickname}
+    </select>
+    
+    <update id="updateHhb" parameterType="string">
+    	update stock_user_wallet w set w.hhb = #{cash} ,w.wallet = w.wallet - to_number(#{cash})
+    	where NICKNAME = #{nickname}
+    </update>
 </mapper>

@@ -59,18 +59,39 @@ public interface EntrustService {
 	 * @return
 	 */
 	JSONArray tradedQuery(String nickname);
-    /**
-     * 持仓查询
-     * @param nickname
-     * @return
-     */
+
+	/**
+	 * 持仓查询
+	 * 
+	 * @param nickname
+	 * @return
+	 */
 	JSONArray queryCombostock(String nickname);
-	 /**
-     * 委托查询公交服务接口
-     * @param nickname
-     * @return
-     */
+
+	/**
+	 * 委托查询公交服务接口
+	 * 
+	 * @param nickname
+	 * @return
+	 */
 	JSONArray queryEntrustComm(CurrentEntrustDO entrustDO);
 
+	/**
+	 * 返回产品
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	JSONObject getProduct(String nickname);
+
+	/**
+	 * 购买哈哈币
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param cash
+	 * @return
+	 */
+	String purchaseHhb(String nickname, String num, String cash);
 
 }

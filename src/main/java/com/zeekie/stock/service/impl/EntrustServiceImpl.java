@@ -1,7 +1,6 @@
 package com.zeekie.stock.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -22,6 +21,7 @@ import com.zeekie.stock.entity.BaseEntrustDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
+import com.zeekie.stock.entity.ProductDO;
 import com.zeekie.stock.enums.AmentrustStatusEnum;
 import com.zeekie.stock.enums.ExchangeTypeEnum;
 import com.zeekie.stock.respository.AcountMapper;
@@ -43,7 +43,6 @@ import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
-import com.zeekie.stock.util.DateUtil;
 
 @Service
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
@@ -239,7 +238,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 							.getResponse(Constants.FN210);
 					Float fetFund = resp.getFetfund();
 					Float userFund = resp.getUserfund();
-//					Float userMarket = resp.getUsermarket();
+					// Float userMarket = resp.getUsermarket();
 					combassetDO.setAssetTotalValue(resp.getAssetValue());
 					combassetDO.setAssetValue(userFund);
 					combassetDO.setCurrentCash(fetFund);
@@ -383,7 +382,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 						jo.put("amentrustStatus", entity.getAmentrust_status());
 						jo.put("entrustNo", entity.getEntrust_no());
 						jo.put("exchangeType", entity.getExchange_type());
-						jo.put("entrustDirection",entity.getEntrust_direction());
+						jo.put("entrustDirection",
+								entity.getEntrust_direction());
 						jo.put("businessBalance", entity.getBusiness_balance());
 						jo.put("businessAmount", entity.getBusiness_amount());
 						jo.put("businessTime", entity.getBusiness_time());
@@ -551,6 +551,30 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			log.error(e.getMessage(), e);
 		}
 		return ja;
+	}
+
+	@Override
+	public JSONObject getProduct(String nickname) {
+		try {
+			ProductDO product = deal.queryProduct(nickname);
+			if (null != product) {
+				return JSONObject.fromObject(product);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return new JSONObject();
+	}
+
+	@Override
+	public String purchaseHhb(String nickname, String num, String cash) {
+		try {
+			deal.updateHhb(nickname,num,cash);
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
 	}
 
 }

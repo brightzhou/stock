@@ -61,12 +61,12 @@ public class Constants {
 	 * 不能买0和6之外开头的股票 code=2
 	 */
 	public static final String CODE_STOCK_lIMIT = "2";
-	
+
 	/**
 	 * 到达警戒线禁止买入股票
 	 */
 	public static final String CODE_STOCK_STOP = "3";
-	
+
 	/**
 	 * 不在交易时间内
 	 */
@@ -302,8 +302,13 @@ public class Constants {
 	public static final String FN210 = "210";
 
 	public static final String FN501 = "501";
-	
+
 	public static final String FN400 = "400";
+
+	/**
+	 * 不在购买时间范围内
+	 */
+	public static final String CODE_GUESS_NOT_INTIME = "2";
 
 	// 加密因子
 	public static String factor;

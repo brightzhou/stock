@@ -503,7 +503,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				} else {
 					for (int i = 0; i < ja.size(); i++) {
 						JSONObject jo = ja.getJSONObject(i);
-						String amentrustStatus = jo.getString("amentrustStatus");
+						String amentrustStatus = jo
+								.getString("amentrustStatus");
+						if (log.isDebugEnabled()) {
+							log.debug("用户[" + nickname + "]结束操盘,操盘账号["
+									+ userDO.getTradeAcount() + "]，查看当前的委托状态是："
+									+ amentrustStatus);
+						}
 						if (!StringUtils.equals(amentrustStatus, "5")
 								&& !StringUtils.equals(amentrustStatus, "7")
 								&& !StringUtils.equals(amentrustStatus, "9")) {
@@ -1065,5 +1071,5 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 		return downlineDO;
 	}
-	
+
 }

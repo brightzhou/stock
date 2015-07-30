@@ -462,4 +462,13 @@ public interface WebService {
 	 */
 	public String editUserphone(String data) throws ServiceInvokerException;
 
+	/**
+	 * 设置产品状态
+	 * 
+	 * @param data
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public String setProductStatus(String data) throws ServiceInvokerException;
+
 }

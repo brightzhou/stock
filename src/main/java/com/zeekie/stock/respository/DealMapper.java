@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.zeekie.stock.entity.BaseEntrustDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.entity.ProductDO;
 import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
@@ -129,5 +130,34 @@ public interface DealMapper {
 	 * @return
 	 */
 	public List<String> queryAllStockCode();
+
+	/**
+	 * 设置产品状态
+	 * 
+	 * @param string
+	 * @param string2
+	 */
+	public void updateProductStatus(@Param("code") String string,
+			@Param("status") String string2) throws Exception;
+
+	/**
+	 * 获取产品
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	public ProductDO queryProduct(@Param("nickname") String nickname)
+			throws Exception;
+
+	/**
+	 * 
+	 * @param nickname
+	 * @param cash
+	 * @param num
+	 * @throws Exception
+	 */
+	public void updateHhb(@Param("nickname") String nickname,
+			@Param("num") String num, @Param("cash") String cash)
+			throws Exception;
 
 }
