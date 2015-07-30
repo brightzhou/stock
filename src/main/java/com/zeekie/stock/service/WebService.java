@@ -15,6 +15,7 @@ import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.FinanceProductDO;
 import com.zeekie.stock.entity.FinanceProductDetailDO;
 import com.zeekie.stock.entity.FlbDO;
+import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
@@ -470,5 +471,22 @@ public interface WebService {
 	 * @throws ServiceInvokerException
 	 */
 	public String setProductStatus(String data) throws ServiceInvokerException;
+
+	/**
+	 * 获取理财列表
+	 * 
+	 * @param product
+	 * @return
+	 */
+	public DefaultPage<GuessProductDO> queryGuessproduct(FinancePage product)
+			throws ServiceInvokerException;
+
+	/**
+	 * 保存新的竞猜产品
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public String saveGuessProduct(String data) throws ServiceInvokerException;
 
 }

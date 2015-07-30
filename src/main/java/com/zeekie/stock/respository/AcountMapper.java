@@ -728,4 +728,14 @@ public interface AcountMapper {
 	 */
 	public void updateUserphone(@Param("nickname") String nickname,
 			@Param("phone") String phone) throws Exception;
+
+	/**
+	 * 查询钱包金额是否充足
+	 * 
+	 * @param nickname
+	 * @param cash
+	 * @throws Exception
+	 */
+	public String queryCash(@Param("nickname") String nickname,
+			@Param("cash") String cash) throws Exception;
 }

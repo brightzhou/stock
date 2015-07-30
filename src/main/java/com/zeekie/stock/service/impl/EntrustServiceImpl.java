@@ -569,7 +569,11 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public String purchaseHhb(String nickname, String num, String cash) {
 		try {
-			deal.updateHhb(nickname,num,cash);
+			if (!StringUtils.equals(Constants.CODE_SUCCESS,
+					account.queryCash(nickname, cash))) {
+				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
+			}
+			deal.updateHhb(nickname, num, cash);
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

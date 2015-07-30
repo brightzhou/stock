@@ -3,6 +3,7 @@ package com.zeekie.stock.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -175,7 +176,19 @@ public class DateUtil {
 
 	public static boolean compareDate(String start, String enddate)
 			throws ParseException {
+
 		Date date = new Date();
+		int pos = enddate.indexOf("+");
+		if (pos != -1) {
+			Calendar cal = Calendar.getInstance();
+			String time = enddate.substring(0, pos);
+			int days = Integer.valueOf(enddate.substring(pos));
+			cal.setTime(date);
+			cal.add(Calendar.DATE, days);
+			enddate = time;
+			date = cal.getTime();
+		}
+
 		String now = formatDate(date, DATE_FORMATS[0]);
 		String begin = formatDate(date, DATE_FORMATS[1]) + " " + start;
 		String end = formatDate(date, DATE_FORMATS[1]) + " " + enddate;
@@ -189,5 +202,5 @@ public class DateUtil {
 			throw new ParseException(e.getMessage(), 0);
 		}
 	}
-	
+
 }

@@ -38,6 +38,7 @@ import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.FinanceProductDO;
 import com.zeekie.stock.entity.FinanceProductDetailDO;
 import com.zeekie.stock.entity.FlbDO;
+import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
 import com.zeekie.stock.entity.OtherFundFlowDO;
@@ -1004,7 +1005,7 @@ public class StockWebController {
 		}
 		return Constants.CODE_FAILURE;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("userphone/edit")
 	public String editUserphone(
@@ -1016,7 +1017,7 @@ public class StockWebController {
 		}
 		return Constants.CODE_FAILURE;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("productStatus/set")
 	public String setProductStatus(
@@ -1025,6 +1026,35 @@ public class StockWebController {
 			return webService.setProductStatus(data);
 		} catch (ServiceInvokerException e) {
 			log.error("setProductStatus error happened:", e.getMessage());
+		}
+		return Constants.CODE_FAILURE;
+	}
+
+	@ResponseBody
+	@RequestMapping("guessProduct/query")
+	public DefaultPage<GuessProductDO> queryGuessproduct(
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "date", required = false) String date) {
+		try {
+			FinancePage product = new FinancePage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, date);
+			return webService.queryGuessproduct(product);
+		} catch (ServiceInvokerException e) {
+			log.error("queryGuessproduct error happened:", e.getMessage());
+			return new DefaultPage<GuessProductDO>();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("guessProduct/save")
+	public String saveGuessProduct(@RequestParam("data") String data) {
+		try {
+			return webService.saveGuessProduct(data);
+		} catch (ServiceInvokerException e) {
+			log.error("saveGuessProduct error happened:", e.getMessage());
 		}
 		return Constants.CODE_FAILURE;
 	}

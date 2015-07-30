@@ -310,6 +310,11 @@ public class Constants {
 	 */
 	public static final String CODE_GUESS_NOT_INTIME = "2";
 
+	/**
+	 * 钱包余额不足以购买哈哈币
+	 */
+	public static final String CODE_GUESS_FUND_NOT_ENOUGH = "2";
+
 	// 加密因子
 	public static String factor;
 

@@ -42,6 +42,16 @@
 		<result column="Stockincome" property="stockIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Guessincome" property="guessIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.GuessProductDO" id="resultGuessproduct">
+		<result column="BID_CODE" property="code" jdbcType="VARCHAR"/>
+		<result column="NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="RISENUM" property="riseNum" jdbcType="VARCHAR"/>
+		<result column="FAILNUM" property="failNum" jdbcType="VARCHAR"/>
+		<result column="PUBLISH_TIME" property="publishTime" jdbcType="VARCHAR"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="GUESSRESULT" property="guessResult" jdbcType="VARCHAR"/>
+	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -285,4 +295,50 @@
     	update stock_user_wallet w set w.hhb = #{cash} ,w.wallet = w.wallet - to_number(#{cash})
     	where NICKNAME = #{nickname}
     </update>
+    
+    <select id="queryGuessproduct" parameterType="com.zeekie.stock.web.FinancePage" resultMap="resultGuessproduct">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+			SELECT BID_CODE,
+			       NAME,
+			       STATUS,
+			       (CASE
+			         WHEN GUESS_RESULT = 'rise' THEN
+			          '涨'
+			         ELSE
+			          '跌'
+			       END) GUESSRESULT,
+			       (SELECT COUNT(1)
+			          FROM STOCK_GUESS_UP_DOWN G
+			         WHERE G.BID_CODE = C.BID_CODE
+			           AND G.GUESS_STATUS = 'rise') RISENUM,
+			       (SELECT COUNT(1)
+			          FROM STOCK_GUESS_UP_DOWN G
+			         WHERE G.BID_CODE = C.BID_CODE
+			           AND G.GUESS_STATUS = 'fail') FAILNUM,
+			       TO_DATE(PUBLISH_TIME, 'yyyy-MM-dd hh24:mi:ss') PUBLISH_TIME
+			  FROM STOCK_CRAZY_GUESS C
+			 WHERE STATUS = 'Y'
+    	<if test="stockCode != null and stockCode!=''">
+		   AND to_char(PUBLISH_TIME,'yyyy-MM-dd') = #{date}
+	 	</if>
+	 	order by PUBLISH_TIME desc
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+    </select>
+    
+    <select id="queryGuessproductTotal" parameterType="string" resultType="long">
+        select count(1)
+    	 from STOCK_CRAZY_GUESS r 
+    	where 1=1
+   	 <if test="date != null and date!=''">
+		   AND to_char(PUBLISH_TIME,'yyyy-MM-dd') = #{date}
+	 </if>
+    </select>
+    
+    <insert id="saveGuessProduct" parameterType="string">
+    	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select SEQ_STOCK_CRAZY_GUESS_ID.Nextval from dual
+		</selectKey> 
+		insert into STOCK_CRAZY_GUESS(id,bid_code,name) values(#{id},#{code},#{name})
+    </insert>
+    
 </mapper>

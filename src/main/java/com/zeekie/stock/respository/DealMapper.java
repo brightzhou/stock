@@ -7,11 +7,13 @@ import org.apache.ibatis.annotations.Param;
 import com.zeekie.stock.entity.BaseEntrustDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.ProductDO;
 import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
+import com.zeekie.stock.web.FinancePage;
 import com.zeekie.stock.web.StockCodePage;
 
 @MyBatisRepository
@@ -150,6 +152,7 @@ public interface DealMapper {
 			throws Exception;
 
 	/**
+	 * 更新哈哈币
 	 * 
 	 * @param nickname
 	 * @param cash
@@ -159,5 +162,34 @@ public interface DealMapper {
 	public void updateHhb(@Param("nickname") String nickname,
 			@Param("num") String num, @Param("cash") String cash)
 			throws Exception;
+
+	/**
+	 * 获取竞猜产品列表总数
+	 * 
+	 * @param date
+	 * @return
+	 * @throws Exception
+	 */
+	public long queryGuessproductTotal(@Param("date") String date)
+			throws Exception;
+
+	/**
+	 * 获取竞猜产品列表
+	 * 
+	 * @param product
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GuessProductDO> queryGuessproduct(FinancePage product)
+			throws Exception;
+
+	/**
+	 * 保存竞猜彩票
+	 * 
+	 * @param string
+	 * @param string2
+	 */
+	public void saveGuessProduct(@Param("code") String code,
+			@Param("name") String name) throws Exception;
 
 }

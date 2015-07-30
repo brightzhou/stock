@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ import com.zeekie.stock.entity.FinanceProductDO;
 import com.zeekie.stock.entity.FinanceProductDetailDO;
 import com.zeekie.stock.entity.FlbDO;
 import com.zeekie.stock.entity.FundAccountDO;
+import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperateAccountDO;
 import com.zeekie.stock.entity.OperationInfoDO;
@@ -92,6 +94,9 @@ public class WebServiceImpl implements WebService {
 
 	@Autowired
 	private DealMapper dealMapper;
+
+	@Value("${stock.finance.code}")
+	private String guessCode;
 
 	@Override
 	public DefaultPage<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage)
@@ -1041,4 +1046,33 @@ public class WebServiceImpl implements WebService {
 		return Constants.CODE_FAILURE;
 	}
 
+	@Override
+	public DefaultPage<GuessProductDO> queryGuessproduct(FinancePage product)
+			throws ServiceInvokerException {
+		List<GuessProductDO> result = new ArrayList<GuessProductDO>();
+		long total = 0;
+		try {
+			total = dealMapper.queryGuessproductTotal(product.getDate());
+			if (0 != total) {
+				result = dealMapper.queryGuessproduct(product);
+			}
+			return new DefaultPage<GuessProductDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
+	}
+
+	@Override
+	public String saveGuessProduct(String data) throws ServiceInvokerException {
+		try {
+			JSONObject jo = JSONObject.fromObject(data);
+			dealMapper.saveGuessProduct(guessCode + StringUtil.genRandomNum(4),
+					jo.getString("guessName"));
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
+	}
 }

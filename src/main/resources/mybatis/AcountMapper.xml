@@ -1705,6 +1705,10 @@
    <update id="updateUserphone" parameterType="com.zeekie.stock.entity.UserInfoDO">
    		update stock_user u set u.telephone = #{phone,jdbcType=VARCHAR} where u.nickname=#{nickname}
    </update>
+   
+   <select id="queryCash" parameterType="string" resultType="string">
+   		select 1 from stock_user_wallet w where w.BALANCE>=to_number(#{cash})
+   </select>
 	
 </mapper>
 

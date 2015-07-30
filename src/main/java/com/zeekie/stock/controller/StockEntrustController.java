@@ -277,6 +277,24 @@ public class StockEntrustController {
 	public String purchaseHhb(@RequestParam("nickname") String nickname,
 			@RequestParam("num") String num, @RequestParam("cash") String cash) {
 		try {
+			return entrust.purchaseHhb(nickname, num, cash);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_SUCCESS;
+	}
+
+	/**
+	 * 购买哈哈币
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("up/down/guess")
+	public String guess(@RequestParam("nickname") String nickname,
+			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+		try {
 			// 判断是否在购买时间范围内 15:30到第二天早上9:00
 			if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
 				return Constants.CODE_GUESS_NOT_INTIME;
