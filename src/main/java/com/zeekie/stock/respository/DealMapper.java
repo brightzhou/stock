@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.zeekie.stock.entity.BaseEntrustDO;
+import com.zeekie.stock.entity.CUrrentGuessProductDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.entity.GuessProductDO;
@@ -160,7 +161,7 @@ public interface DealMapper {
 	 * @throws Exception
 	 */
 	public void updateHhb(@Param("nickname") String nickname,
-			@Param("num") String num, @Param("cash") String cash)
+			@Param("num") String num, @Param("unitPrice") String unitPrice)
 			throws Exception;
 
 	/**
@@ -186,10 +187,33 @@ public interface DealMapper {
 	/**
 	 * 保存竞猜彩票
 	 * 
+	 * @param pumpedPercent
+	 * 
+	 * @param string
+	 * 
 	 * @param string
 	 * @param string2
 	 */
 	public void saveGuessProduct(@Param("code") String code,
-			@Param("name") String name) throws Exception;
+			@Param("name") String name,
+			@Param("purchaseNum") String purchaseNum,
+			@Param("pumpedPercent") String pumpedPercent) throws Exception;
+
+	/**
+	 * 获取哈哈币的单价
+	 * 
+	 * @return
+	 */
+	public String queryUnitPrice() throws Exception;
+
+	/**
+	 * 获取当前竞猜
+	 * 
+	 * @param nickname
+	 * @return
+	 * @throws Exception
+	 */
+	public CUrrentGuessProductDO queryGuessProduct(
+			@Param("nickname") String nickname) throws Exception;
 
 }

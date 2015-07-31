@@ -40,7 +40,9 @@
 	<resultMap type="com.zeekie.stock.entity.ProductDO" id="resultProduct">
 		<result column="Financeincome" property="financeIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Stockincome" property="stockIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
-		<result column="Guessincome" property="guessIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Guessincome" property="guessIncome" jdbcType="VARCHAR"/>
+		<result column="code" property="code"  jdbcType="VARCHAR"/>
+		<result column="ISSTOCK" property="flag"  jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.GuessProductDO" id="resultGuessproduct">
@@ -51,6 +53,17 @@
 		<result column="PUBLISH_TIME" property="publishTime" jdbcType="VARCHAR"/>
 		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
 		<result column="GUESSRESULT" property="guessResult" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.CUrrentGuessProductDO" id="resultGuessProduct">
+		<result column="BID_CODE" property="bidCode" jdbcType="VARCHAR"/>
+		<result column="Status" property="status" jdbcType="VARCHAR"/>
+		<result column="Risepercent" property="risePercent" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="Failpercent" property="failPercent" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="Purchase_Num" property="perNum" jdbcType="VARCHAR"/>
+		<result column="Guess_Status" property="isGuessed" jdbcType="VARCHAR"/>
+		<result column="Guess_Result" property="guessResult" jdbcType="VARCHAR"/>
 	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
@@ -272,7 +285,7 @@
 	           And Exists (Select 1
 	                  From Stock_Product p
 	                 Where p.Product_Code = '10'
-	                   And p.Status == 'Y')
+	                   And p.Status = 'Y')
 	           And r.User_Id = u.Id) Financeincome,
 	       (Select m.Profit_Loss_Radio
 	          From Stock_User_Operate_Maininfo m
@@ -281,18 +294,20 @@
 	           And Exists (Select 1
 	                  From Stock_Product p
 	                 Where p.Product_Code = '11'
-	                   And p.Status == 'Y')) Stockincome,
+	                   And p.Status = 'Y')) Stockincome,
 	       (Select Count(1)
 	          From Stock_Guess_Up_Down g
 	         Where g.User_Id = u.Id
 	           And g.Actual_Result = g.Guess_Status
-	           And p.Status == 'Y') Guessincome
+	           And g.GUESS_STATUS = 'rise') Guessincome,
+	       (Select wmsys.wm_concat(product_code) From Stock_Product t Where t.status='Y') code,
+	       u.ISSTOCK 
 	  From Stock_User u
 	 Where u.Nickname = #{nickname}
     </select>
     
     <update id="updateHhb" parameterType="string">
-    	update stock_user_wallet w set w.hhb = #{cash} ,w.wallet = w.wallet - to_number(#{cash})
+    	update stock_user_wallet w set w.hhb = #{unitPrice} ,w.wallet = w.wallet - to_number(#{unitPrice})
     	where NICKNAME = #{nickname}
     </update>
     
@@ -338,7 +353,44 @@
     	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select SEQ_STOCK_CRAZY_GUESS_ID.Nextval from dual
 		</selectKey> 
-		insert into STOCK_CRAZY_GUESS(id,bid_code,name) values(#{id},#{code},#{name})
+		insert into STOCK_CRAZY_GUESS(id,bid_code,name,PURCHASE_NUM,PUMPED_PERCENT) 
+		values(#{id},#{code},#{name},#{purchaseNum},#{pumpedPercent})
     </insert>
+    
+    <select id="queryUnitPrice" resultType="string">
+    	select p.UNIT_PRICE from STOCK_GUESS_PERCENT p
+    </select>
+    
+    <select id="queryGuessProduct" parameterType="string" resultMap="resultGuessProduct">
+	    Select g.Bid_Code,
+		       Name,
+		       Purchase_Num,
+		       Status,
+		       Guess_Result,
+		       ((Select Count(1)
+		           From Stock_Guess_Up_Down s
+		          Where s.Bid_Code = g.Bid_Code
+		            And s.Guess_Status = 'rise') /
+		       (Select Count(1)
+		           From Stock_Guess_Up_Down s
+		          Where s.Bid_Code = g.Bid_Code) * 100) Risepercent,
+		       ((Select Count(1)
+		           From Stock_Guess_Up_Down s
+		          Where s.Bid_Code = g.Bid_Code
+		            And s.Guess_Status = 'fail') /
+		       (Select Count(1)
+		           From Stock_Guess_Up_Down s
+		          Where s.Bid_Code = g.Bid_Code) * 100) Failpercent,
+		       (Select u.Guess_Status
+		          From Stock_Guess_Up_Down u
+		         Where u.Bid_Code = g.Bid_Code
+		           And Exists (Select 1
+		                  From Stock_User k
+		                 Where k.Id = u.User_Id
+		                   And k.Nickname = #{nickname})) Guess_Status
+		  From Stock_Crazy_Guess g
+		 Where Rownum = 1
+		 Order By g.Publish_Time Desc
+    </select>
     
 </mapper>

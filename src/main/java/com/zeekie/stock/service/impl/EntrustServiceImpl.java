@@ -18,6 +18,7 @@ import sitong.thinker.common.util.mybatis.BatchMapper;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
 import com.zeekie.stock.entity.BaseEntrustDO;
+import com.zeekie.stock.entity.CUrrentGuessProductDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
@@ -43,6 +44,7 @@ import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
+import com.zeekie.stock.util.StringUtil;
 
 @Service
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
@@ -554,31 +556,76 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public JSONObject getProduct(String nickname) {
+	public JSONArray getProduct(String nickname) {
+		JSONArray ja = new JSONArray();
 		try {
 			ProductDO product = deal.queryProduct(nickname);
 			if (null != product) {
-				return JSONObject.fromObject(product);
+				String code = product.getCode();
+				if (StringUtils.isNotBlank(code)) {
+					String[] codes = code.split(",");
+					for (String item : codes) {
+						JSONObject jo = new JSONObject();
+						if (item.equals("10")) {
+							jo.put("financeIncome", product.getFinanceIncome()
+									+ "");
+							jo.put("code", "10");
+						} else if (item.equals("11")) {
+							jo.put("stockIncome", product.getStockIncome() + "");
+							jo.put("code", "11");
+						} else if (item.equals("12")) {
+							jo.put("guessIncome", product.getGuessIncome() + "");
+							jo.put("code", "12");
+						} else if (item.equals("13")) {
+							jo.put("futures", "");
+							jo.put("code", "13");
+						}
+						ja.add(jo);
+					}
+				}
+
+				JSONObject jo = new JSONObject();
+				jo.put("flag", product.getFlag());
+				ja.add(jo);
+				return ja;
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		return new JSONObject();
+		return ja;
 	}
 
 	@Override
-	public String purchaseHhb(String nickname, String num, String cash) {
+	public String purchaseHhb(String nickname, String num, String unitPrice) {
 		try {
 			if (!StringUtils.equals(Constants.CODE_SUCCESS,
-					account.queryCash(nickname, cash))) {
+					account.queryCash(nickname, unitPrice))) {
 				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
 			}
-			deal.updateHhb(nickname, num, cash);
+			deal.updateHhb(nickname, num, unitPrice);
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return Constants.CODE_FAILURE;
+	}
+
+	@Override
+	public String guess(String nickname, String num, String type) {
+		return null;
+	}
+
+	@Override
+	public JSONObject getGuessProduct(String nickname) {
+		try {
+			CUrrentGuessProductDO productDO = deal.queryGuessProduct(nickname);
+			if (null != productDO) {
+				return JSONObject.fromObject(productDO);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return new JSONObject();
 	}
 
 }

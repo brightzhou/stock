@@ -82,16 +82,33 @@ public interface EntrustService {
 	 * @param nickname
 	 * @return
 	 */
-	JSONObject getProduct(String nickname);
+	JSONArray getProduct(String nickname);
 
 	/**
 	 * 购买哈哈币
 	 * 
 	 * @param nickname
 	 * @param num
-	 * @param cash
+	 * @param unitPrice
 	 * @return
 	 */
-	String purchaseHhb(String nickname, String num, String cash);
+	String purchaseHhb(String nickname, String num, String unitPrice);
+
+	/**
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param type
+	 * @return
+	 */
+	String guess(String nickname, String num, String type);
+
+	/**
+	 * 返回当前竞猜的产品
+	 * @param nickname 
+	 * 
+	 * @return
+	 */
+	JSONObject getGuessProduct(String nickname);
 
 }

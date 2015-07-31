@@ -1356,7 +1356,13 @@
 		         WHERE S.FUND_ACOUNT = A.FUND_ACCOUNT) STATUS,
 		       S.FUND_ACOUNT,
 		       S.TOTAL,
-		       TRIM(TO_CHAR((S.TOTAL_FUND / S.TOTAL * 100), 'fm9999999990.99')) || '%' PERCENTS
+		       (Case
+                  When s.Total_Fund = 0 Or s.Total = 0 Then
+                   '0%'
+                  Else
+                   Trim(To_Char((s.Total_Fund / s.Total * 100),
+                                'fm9999999990.99')) || '%'
+                End) Percents
 		  FROM STOCK_TOTAL_FUND S
 		 WHERE S.IS_CURRENT = 'Y'
 		 <if test="assetName!=null and assetName!=''">
@@ -1707,7 +1713,7 @@
    </update>
    
    <select id="queryCash" parameterType="string" resultType="string">
-   		select 1 from stock_user_wallet w where w.BALANCE>=to_number(#{cash})
+   		select 1 from stock_user_wallet w where w.BALANCE>=to_number(#{queryCash})
    </select>
 	
 </mapper>

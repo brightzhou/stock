@@ -28,10 +28,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                               竞猜名称：
                     </td>
                     <td class="mini-content_32">
-                     <input id="guessName" class="mini-textbox" style="width: 60%;" required="true" vtype="minLength:30" minLengthErrorText="密码不能少于30个字符"/>  
+                     <input id="guessName" class="mini-textbox" style="width: 60%;" required="true" vtype="maxLength:30" maxLengthErrorText="密码不能大于30个字符"/>  
                     </td>
                 </tr>
-				<tr></tr>
+				<tr>
+					<td class="mini-item_18">
+                                             押注个数：
+                    </td>
+                    <td class="mini-content_32">
+                     <input id="purchaseNum" class="mini-textbox" style="width: 60%;" required="true" emptyText="20" vtype="int;maxLength:3" maxLengthErrorText="不能大于3位数"/>  
+                    </td>
+				</tr>
+				<tr>
+					<td class="mini-item_18">
+                                            抽成比例：
+                    </td>
+                    <td class="mini-content_32">
+                     <input id="pumpedPercent" class="mini-textbox" style="width: 60%;" required="true"  emptyText="0.1" vtype="float;maxLength:6" decimalPlaces="2" />  
+                    </td>
+				</tr>
 				<tr>
 					<td style="text-align: center;" colspan="2">
 						<a class="mini-button font13 blue"

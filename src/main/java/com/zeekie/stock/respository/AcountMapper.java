@@ -737,5 +737,5 @@ public interface AcountMapper {
 	 * @throws Exception
 	 */
 	public String queryCash(@Param("nickname") String nickname,
-			@Param("cash") String cash) throws Exception;
+			@Param("unitPrice") String unitPrice) throws Exception;
 }

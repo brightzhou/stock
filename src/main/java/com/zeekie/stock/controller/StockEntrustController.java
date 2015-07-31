@@ -250,13 +250,13 @@ public class StockEntrustController {
 	}
 
 	/**
-	 * 返回对应产品
+	 * 返回产品列表
 	 * 
 	 * @param nickname
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("combostock/query")
+	@RequestMapping("currentProduct/query")
 	public ApiResponse getProduct(@RequestParam("nickname") String nickname) {
 		try {
 			return ApiUtils.good(entrust.getProduct(nickname));
@@ -265,7 +265,43 @@ public class StockEntrustController {
 		}
 		return ApiUtils.good(new JSONArray());
 	}
+	
+	/**
+	 * 返回竞猜产品
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("currentGuessProduct/query")
+	public ApiResponse getGuessProduct(@RequestParam("nickname") String nickname) {
+		try {
+			return ApiUtils.good(entrust.getGuessProduct(nickname));
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return ApiUtils.good(new JSONArray());
+	}
 
+
+	
+	/**
+	 * 进入购买页面
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("hhb/purchase/enter")
+	public String purchaseHhb() {
+		try {
+			return deal.queryUnitPrice();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_SUCCESS;
+	}
+	
 	/**
 	 * 购买哈哈币
 	 * 
@@ -275,7 +311,7 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("hhb/purchase")
 	public String purchaseHhb(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+			@RequestParam("num") String num, @RequestParam("unitPrice") String cash) {
 		try {
 			return entrust.purchaseHhb(nickname, num, cash);
 		} catch (Exception e) {
@@ -293,13 +329,13 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("up/down/guess")
 	public String guess(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+			@RequestParam("num") String num, @RequestParam("type") String type) {
 		try {
 			// 判断是否在购买时间范围内 15:30到第二天早上9:00
 			if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
 				return Constants.CODE_GUESS_NOT_INTIME;
 			}
-			return entrust.purchaseHhb(nickname, num, cash);
+			return entrust.guess(nickname, num, type);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

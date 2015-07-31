@@ -2,11 +2,45 @@ package com.zeekie.stock.entity;
 
 public class ProductDO {
 
+	private String code;
+
 	private Float financeIncome;
 
 	private Float stockIncome;
 
-	private Float guessIncome;
+	private String guessIncome;
+
+	private String flag;
+
+	/**
+	 * @return the flag
+	 */
+	public String getFlag() {
+		return flag;
+	}
+
+	/**
+	 * @param flag
+	 *            the flag to set
+	 */
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * @param code
+	 *            the code to set
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	/**
 	 * @return the financeIncome
@@ -41,7 +75,7 @@ public class ProductDO {
 	/**
 	 * @return the guessIncome
 	 */
-	public Float getGuessIncome() {
+	public String getGuessIncome() {
 		return guessIncome;
 	}
 
@@ -49,7 +83,7 @@ public class ProductDO {
 	 * @param guessIncome
 	 *            the guessIncome to set
 	 */
-	public void setGuessIncome(Float guessIncome) {
+	public void setGuessIncome(String guessIncome) {
 		this.guessIncome = guessIncome;
 	}
 

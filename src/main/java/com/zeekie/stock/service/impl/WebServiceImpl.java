@@ -1068,7 +1068,7 @@ public class WebServiceImpl implements WebService {
 		try {
 			JSONObject jo = JSONObject.fromObject(data);
 			dealMapper.saveGuessProduct(guessCode + StringUtil.genRandomNum(4),
-					jo.getString("guessName"));
+					jo.getString("guessName"),jo.getString("purchaseNum"),jo.getString("pumpedPercent"));
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
