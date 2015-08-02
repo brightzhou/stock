@@ -174,28 +174,29 @@ public class DateUtil {
 		return new SimpleDateFormat(format).format(date);
 	}
 
-	public static boolean compareDate(String start, String enddate)
+	public static boolean compareDate(String start, String end)
 			throws ParseException {
 
 		Date date = new Date();
-		int pos = enddate.indexOf("+");
+		int pos = end.indexOf("+");
+		Date endDate = date;
 		if (pos != -1) {
 			Calendar cal = Calendar.getInstance();
-			String time = enddate.substring(0, pos);
-			int days = Integer.valueOf(enddate.substring(pos));
+			String time = end.substring(0, pos).trim();
+			int days = Integer.valueOf(end.substring(pos + 1).trim());
 			cal.setTime(date);
 			cal.add(Calendar.DATE, days);
-			enddate = time;
-			date = cal.getTime();
+			end = time;
+			endDate = cal.getTime();
 		}
 
 		String now = formatDate(date, DATE_FORMATS[0]);
-		String begin = formatDate(date, DATE_FORMATS[1]) + " " + start;
-		String end = formatDate(date, DATE_FORMATS[1]) + " " + enddate;
+		String beginTime = formatDate(date, DATE_FORMATS[1]) + " " + start;
+		String endTime = formatDate(endDate, DATE_FORMATS[1]) + " " + end;
 		try {
 			Date d1 = df.parse(now);
-			Date d2 = df.parse(end);
-			Date d3 = df.parse(begin);
+			Date d2 = df.parse(endTime);
+			Date d3 = df.parse(beginTime);
 			return ((d2.getTime() - d1.getTime()) > 0l)
 					&& ((d1.getTime() - d3.getTime()) > 0l);
 		} catch (ParseException e) {

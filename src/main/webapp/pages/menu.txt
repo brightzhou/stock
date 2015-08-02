@@ -12,6 +12,7 @@
 	{id: "dictionaries", text: "字典管理" , pid: "wallet"},
 	{id: "finance", text: "理财管理" , pid: "wallet"},
 	{id: "errorcash", text: "增加保证金错误信息查询" , pid: "wallet"},
+	{id: "guess", text: "猜大盘" , pid: "wallet"},
 	
 	{id: "operation", text: "操盘管理"},
 	{id: "eveningUp", text: "结束操盘" , pid: "operation"},

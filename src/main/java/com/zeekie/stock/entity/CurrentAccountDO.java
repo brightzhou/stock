@@ -36,6 +36,27 @@ public class CurrentAccountDO {
 	 * 开关
 	 */
 	private String isStock;
+	
+	/**
+	 * 哈哈币
+	 */
+	private String hhb;
+	
+	
+
+	/**
+	 * @return the hhb
+	 */
+	public String getHhb() {
+		return hhb;
+	}
+
+	/**
+	 * @param hhb the hhb to set
+	 */
+	public void setHhb(String hhb) {
+		this.hhb = hhb;
+	}
 
 	/**
 	 * @return the isStock

@@ -308,13 +308,17 @@ public class Constants {
 	/**
 	 * 不在购买时间范围内
 	 */
-	public static final String CODE_GUESS_NOT_INTIME = "2";
+	public static final String CODE_GUESS_NOT_INTIME = "3";
 
 	/**
 	 * 钱包余额不足以购买哈哈币
 	 */
 	public static final String CODE_GUESS_FUND_NOT_ENOUGH = "2";
 
+	/**
+	 * 非法类型
+	 */
+	public static String CODE_GUESS_INVALID_TYPE = "4";
 	// 加密因子
 	public static String factor;
 

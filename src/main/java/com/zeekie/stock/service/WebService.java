@@ -1,6 +1,5 @@
 package com.zeekie.stock.service;
 
-import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
@@ -22,18 +21,19 @@ import com.zeekie.stock.entity.OtherFundFlowDO;
 import com.zeekie.stock.entity.OwingFeeDO;
 import com.zeekie.stock.entity.PayDO;
 import com.zeekie.stock.entity.PercentDO;
+import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.entity.TotalFundDO;
 import com.zeekie.stock.entity.TransactionDO;
 import com.zeekie.stock.entity.UserBankDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawlDO;
-import com.zeekie.stock.entity.StatisticsDO;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.FinanceDetailPage;
 import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -478,7 +478,7 @@ public interface WebService {
 	 * @param product
 	 * @return
 	 */
-	public DefaultPage<GuessProductDO> queryGuessproduct(FinancePage product)
+	public DefaultPage<GuessProductDO> queryGuessproduct(GuessPage product)
 			throws ServiceInvokerException;
 
 	/**
@@ -488,5 +488,15 @@ public interface WebService {
 	 * @return
 	 */
 	public String saveGuessProduct(String data) throws ServiceInvokerException;
+
+	/**
+	 * 设置猜测结果
+	 * 
+	 * @param type
+	 * @param code 
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public String updateGuessResult(String type, String code) throws ServiceInvokerException;
 
 }

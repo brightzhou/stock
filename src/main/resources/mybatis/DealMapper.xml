@@ -45,7 +45,7 @@
 		<result column="ISSTOCK" property="flag"  jdbcType="VARCHAR"/>
 	</resultMap>
 	
-	<resultMap type="com.zeekie.stock.entity.GuessProductDO" id="resultGuessproduct">
+	<resultMap type="com.zeekie.stock.entity.GuessProductDO" id="resultguess">
 		<result column="BID_CODE" property="code" jdbcType="VARCHAR"/>
 		<result column="NAME" property="name" jdbcType="VARCHAR"/>
 		<result column="RISENUM" property="riseNum" jdbcType="VARCHAR"/>
@@ -53,9 +53,11 @@
 		<result column="PUBLISH_TIME" property="publishTime" jdbcType="VARCHAR"/>
 		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
 		<result column="GUESSRESULT" property="guessResult" jdbcType="VARCHAR"/>
+		<result column="PURCHASE_NUM" property="perNum" jdbcType="VARCHAR"/>
+		<result column="PUMPED_PERCENT" property="pumpedPercent" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
-	<resultMap type="com.zeekie.stock.entity.CUrrentGuessProductDO" id="resultGuessProduct">
+	<resultMap type="com.zeekie.stock.entity.CUrrentGuessProductDO" id="resultCurrentGuessProduct">
 		<result column="BID_CODE" property="bidCode" jdbcType="VARCHAR"/>
 		<result column="Status" property="status" jdbcType="VARCHAR"/>
 		<result column="Risepercent" property="risePercent" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
@@ -64,6 +66,18 @@
 		<result column="Purchase_Num" property="perNum" jdbcType="VARCHAR"/>
 		<result column="Guess_Status" property="isGuessed" jdbcType="VARCHAR"/>
 		<result column="Guess_Result" property="guessResult" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.GuessHistoryDO" id="resultHistoryGuess">
+	<!-- 	<result column="BID_CODE" property="code" jdbcType="VARCHAR"/>
+		<result column="NAME" property="name" jdbcType="VARCHAR"/> -->
+		<result column="GUESS_STATUS" property="guessStatus" jdbcType="VARCHAR"/>
+		<result column="ACTUAL_RESULT" property="actualStatus" jdbcType="VARCHAR"/>
+		<result column="PROFIT_NUM" property="profitNum" jdbcType="VARCHAR"/>
+		<!-- <result column="PURCHASE_NUM" property="purchaseNum" jdbcType="VARCHAR"/> -->
+		<result column="PURCHASE_TIME" property="purchaseTime" jdbcType="VARCHAR"/>
+		<result column="CORRECTNUM" property="correctNum" jdbcType="VARCHAR"/>
+		<result column="FAILNUM" property="failNum" jdbcType="VARCHAR"/>
 	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
@@ -307,11 +321,16 @@
     </select>
     
     <update id="updateHhb" parameterType="string">
-    	update stock_user_wallet w set w.hhb = #{unitPrice} ,w.wallet = w.wallet - to_number(#{unitPrice})
+    	update stock_user_wallet w set w.hhb = (CASE
+                 WHEN W.HHB IS NULL THEN
+                  0
+                 ELSE
+                  W.HHB
+               END)  + to_number(#{num}) ,w.BALANCE = w.BALANCE - (SELECT TO_NUMBER(#{num}) * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P)
     	where NICKNAME = #{nickname}
     </update>
     
-    <select id="queryGuessproduct" parameterType="com.zeekie.stock.web.FinancePage" resultMap="resultGuessproduct">
+    <select id="queryGuessproduct" parameterType="com.zeekie.stock.web.GuessPage" resultMap="resultguess">
     	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
 			SELECT BID_CODE,
 			       NAME,
@@ -319,8 +338,8 @@
 			       (CASE
 			         WHEN GUESS_RESULT = 'rise' THEN
 			          '涨'
-			         ELSE
-			          '跌'
+			          WHEN GUESS_RESULT = 'fail' THEN
+          			  '跌'
 			       END) GUESSRESULT,
 			       (SELECT COUNT(1)
 			          FROM STOCK_GUESS_UP_DOWN G
@@ -330,9 +349,11 @@
 			          FROM STOCK_GUESS_UP_DOWN G
 			         WHERE G.BID_CODE = C.BID_CODE
 			           AND G.GUESS_STATUS = 'fail') FAILNUM,
-			       TO_DATE(PUBLISH_TIME, 'yyyy-MM-dd hh24:mi:ss') PUBLISH_TIME
+			       TO_CHAR(PUBLISH_TIME, 'yyyy-mm-dd hh24:mi:ss') PUBLISH_TIME,
+			       PURCHASE_NUM,
+			       PUMPED_PERCENT
 			  FROM STOCK_CRAZY_GUESS C
-			 WHERE STATUS = 'Y'
+			 <!-- WHERE STATUS = 'Y' -->
     	<if test="stockCode != null and stockCode!=''">
 		   AND to_char(PUBLISH_TIME,'yyyy-MM-dd') = #{date}
 	 	</if>
@@ -361,26 +382,36 @@
     	select p.UNIT_PRICE from STOCK_GUESS_PERCENT p
     </select>
     
-    <select id="queryGuessProduct" parameterType="string" resultMap="resultGuessProduct">
+    <select id="queryCurrentGuessProduct" parameterType="string" resultMap="resultCurrentGuessProduct">
 	    Select g.Bid_Code,
 		       Name,
 		       Purchase_Num,
 		       Status,
 		       Guess_Result,
-		       ((Select Count(1)
+		       round(((Select Count(1)
 		           From Stock_Guess_Up_Down s
 		          Where s.Bid_Code = g.Bid_Code
 		            And s.Guess_Status = 'rise') /
-		       (Select Count(1)
+		       (Select (CASE
+		                  WHEN COUNT(1) = 0 THEN
+		                   1
+		                  ELSE
+		                   COUNT(1)
+		                END)
 		           From Stock_Guess_Up_Down s
-		          Where s.Bid_Code = g.Bid_Code) * 100) Risepercent,
-		       ((Select Count(1)
+		          Where s.Bid_Code = g.Bid_Code)),2) Risepercent,
+		       round(((Select Count(1)
 		           From Stock_Guess_Up_Down s
 		          Where s.Bid_Code = g.Bid_Code
 		            And s.Guess_Status = 'fail') /
-		       (Select Count(1)
+		       (Select (CASE
+		                  WHEN COUNT(1) = 0 THEN
+		                   1
+		                  ELSE
+		                   COUNT(1)
+		                END)
 		           From Stock_Guess_Up_Down s
-		          Where s.Bid_Code = g.Bid_Code) * 100) Failpercent,
+		          Where s.Bid_Code = g.Bid_Code)),2)Failpercent,
 		       (Select u.Guess_Status
 		          From Stock_Guess_Up_Down u
 		         Where u.Bid_Code = g.Bid_Code
@@ -393,4 +424,113 @@
 		 Order By g.Publish_Time Desc
     </select>
     
+    <insert id="updateGuess" parameterType="string">
+    	<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+			select seq_stock_guess_up_down_id.Nextval from dual
+		</selectKey> 
+		INSERT INTO STOCK_GUESS_UP_DOWN
+		  (ID, USER_ID, BID_CODE, GUESS_STATUS, PURCHASE_CASH, PURCHASE_NUM)
+		VALUES
+		  (#{id},
+		   (SELECT ID FROM STOCK_USER U WHERE U.NICKNAME = #{nickname}),
+		   #{bidCode},
+		   #{type},
+		   (SELECT TO_NUMBER(#{num}) * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P),
+		   #{num})
+    </insert>
+    
+    <update id="updateGuessResult" parameterType="string">
+    	update stock_crazy_guess c set c.STATUS='N' ,c.GUESS_RESULT=#{type}
+    	where c.BID_CODE = #{code}
+    </update>
+    
+    <update id="updateGuessRecord" parameterType="string">
+		UPDATE STOCK_GUESS_UP_DOWN C
+		   SET C.PROFIT_NUM = (CASE
+		                        WHEN C.GUESS_STATUS = #{type} THEN
+		                         (SELECT decode(SUM(K.PURCHASE_NUM),null,0)
+		                            FROM STOCK_GUESS_UP_DOWN K
+		                           WHERE K.GUESS_STATUS != #{type}
+		                             AND K.BID_CODE = C.BID_CODE) /
+		                         (SELECT COUNT(1)
+		                            FROM STOCK_GUESS_UP_DOWN U
+		                           WHERE u.GUESS_STATUS = #{type}
+		                             AND u.BID_CODE = C.BID_CODE)*
+		                             (1 - (SELECT P.PUMPED_PERCENT
+					                   FROM STOCK_CRAZY_GUESS P
+					                  WHERE P.BID_CODE = C.BID_CODE))
+		                        ELSE
+		                          -C.PURCHASE_NUM
+		                      END),
+		       C.ACTUAL_RESULT = #{type}
+		 WHERE C.BID_CODE = #{code}
+    </update>
+    
+    <update id="addHhb" parameterType="string">
+		UPDATE STOCK_USER_WALLET W
+		   SET W.HHB = W.HHB + (CASE
+		                 WHEN (SELECT G.PURCHASE_NUM + G.PROFIT_NUM
+		                         FROM STOCK_GUESS_UP_DOWN G
+		                        WHERE EXISTS (SELECT 1
+		                                 FROM STOCK_USER U
+		                                WHERE U.ID = G.USER_ID
+		                                  AND W.NICKNAME = U.NICKNAME)
+		                          AND G.GUESS_STATUS = G.ACTUAL_RESULT
+		                          AND G.BID_CODE = #{code}) IS NULL THEN
+		                  0
+		                 ELSE
+		                  (SELECT G.PURCHASE_NUM + G.PROFIT_NUM
+		                     FROM STOCK_GUESS_UP_DOWN G
+		                    WHERE EXISTS (SELECT 1
+		                             FROM STOCK_USER U
+		                            WHERE U.ID = G.USER_ID
+		                              AND W.NICKNAME = U.NICKNAME)
+		                      AND G.GUESS_STATUS = G.ACTUAL_RESULT
+		                      AND G.BID_CODE = #{code})
+		               END)
+    </update>
+    
+    <select id="queryHhb" parameterType="string" resultType="string">
+    	select 1 from stock_user_wallet w where w.hhb>=to_number(#{num}) and w.nickname =#{nickname}
+    </select>
+    
+    <update id="modifyhhb" parameterType="string">
+    	update STOCK_USER_WALLET w set w.hhb = w.hhb - to_number(#{num}) where w.nickname =#{nickname}
+    </update> 
+    
+     <update id="modifyhhbAndBalance" parameterType="string">
+    	update STOCK_USER_WALLET w set w.hhb = w.hhb - to_number(#{num}),W.BALANCE = W.BALANCE + #{cash}  where w.nickname =#{nickname}
+    </update> 
+    
+	<select id="getHistoryGuess" resultMap="resultHistoryGuess" parameterType="string">
+		SELECT U.BID_CODE,
+			   (SELECT G.NAME FROM STOCK_CRAZY_GUESS G WHERE G.BID_CODE = U.BID_CODE) NAME,
+			   U.GUESS_STATUS,
+			   U.ACTUAL_RESULT,
+			   U.PROFIT_NUM,
+			   U.PURCHASE_NUM,
+			   TO_CHAR(u.PURCHASE_TIME, 'yyyy-mm-dd') PURCHASE_TIME,
+			   (SELECT COUNT(1)
+		          FROM STOCK_GUESS_UP_DOWN K
+		         WHERE K.USER_ID =#{userId}
+		           AND K.GUESS_STATUS = K.ACTUAL_RESULT) CORRECTNUM,
+		       (SELECT COUNT(1)
+		          FROM STOCK_GUESS_UP_DOWN K 
+		         WHERE K.USER_ID = #{userId}
+		           AND K.GUESS_STATUS != K.ACTUAL_RESULT) FAILNUM
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY T.PURCHASE_TIME DESC) AS NUM, T.*
+				  FROM STOCK_GUESS_UP_DOWN T
+				 WHERE T.USER_ID = #{userId}) U
+		 WHERE NUM &gt;= #{offset} + 1 
+		   AND NUM &lt;= #{offset} + 20
+    </select>
+    
+    <insert id="updateSignTable" parameterType="string">
+    	insert into STOCK_USER_SIGN(USER_ID) values(#{userId})
+    </insert>
+    
+    <select id="querySignFlag" resultType="string">
+    	select 1 from STOCK_USER_SIGN s where to_char(s.SIGN_DATE,'yyyy-MM-dd')=to_char(sysdate,'yyyy-MM-dd')
+    	and s.USER_ID = #{userId} and rownum = 1
+    </select>
 </mapper>

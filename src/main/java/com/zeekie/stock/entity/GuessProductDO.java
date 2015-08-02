@@ -18,6 +18,40 @@ public class GuessProductDO {
 
 	private String guessResult;
 
+	private String perNum;
+
+	private Float pumpedPercent;
+
+	/**
+	 * @return the perNum
+	 */
+	public String getPerNum() {
+		return perNum;
+	}
+
+	/**
+	 * @param perNum
+	 *            the perNum to set
+	 */
+	public void setPerNum(String perNum) {
+		this.perNum = perNum;
+	}
+
+	/**
+	 * @return the pumpedPercent
+	 */
+	public Float getPumpedPercent() {
+		return pumpedPercent;
+	}
+
+	/**
+	 * @param pumpedPercent
+	 *            the pumpedPercent to set
+	 */
+	public void setPumpedPercent(Float pumpedPercent) {
+		this.pumpedPercent = pumpedPercent;
+	}
+
 	/**
 	 * @return the id
 	 */

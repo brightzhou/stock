@@ -63,6 +63,7 @@
 		<result column="fee" property="fee" jdbcType="FLOAT"/>
 		<result column="finance" property="finance" jdbcType="FLOAT"/>
 		<result column="isStock" property="isStock" jdbcType="VARCHAR"/>
+		<result column="hhb" property="hhb" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.WithdrawlDO" id="resultDeposit">
@@ -650,7 +651,7 @@
 		 WHERE r.user_id = u.id
 		   AND R.SETTLE_DATE >
 		       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'), 'yyyy-mm-dd')) finance,
-		   u.isStock       
+		   u.isStock,w.hhb       
 	  From Stock_User_Wallet w,stock_user u
 	 Where w.Nickname = #{nickname}
 	 and w.nickname = u.nickname
@@ -1713,7 +1714,11 @@
    </update>
    
    <select id="queryCash" parameterType="string" resultType="string">
-   		select 1 from stock_user_wallet w where w.BALANCE>=to_number(#{queryCash})
+   		SELECT 1
+		  FROM STOCK_USER_WALLET W
+		 WHERE W.BALANCE >=
+		       (SELECT TO_NUMBER(#{num}) * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P)
+		   AND W.NICKNAME = #{nickname}
    </select>
 	
 </mapper>

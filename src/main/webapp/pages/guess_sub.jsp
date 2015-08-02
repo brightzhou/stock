@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                               竞猜名称：
                     </td>
                     <td class="mini-content_32">
-                     <input id="guessName" class="mini-textbox" style="width: 60%;" required="true" vtype="maxLength:30" maxLengthErrorText="密码不能大于30个字符"/>  
+                     <input id="guessName" name="guessName" class="mini-textbox" style="width: 60%;" required="true" vtype="maxLength:30" maxLengthErrorText="密码不能大于30个字符"/>  
                     </td>
                 </tr>
 				<tr>
@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                              押注个数：
                     </td>
                     <td class="mini-content_32">
-                     <input id="purchaseNum" class="mini-textbox" style="width: 60%;" required="true" emptyText="20" vtype="int;maxLength:3" maxLengthErrorText="不能大于3位数"/>  
+                     <input id="purchaseNum" name="purchaseNum" class="mini-textbox" style="width: 60%;" required="true" emptyText="20" vtype="int;maxLength:3" maxLengthErrorText="不能大于3位数"/>  
                     </td>
 				</tr>
 				<tr>
@@ -44,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                             抽成比例：
                     </td>
                     <td class="mini-content_32">
-                     <input id="pumpedPercent" class="mini-textbox" style="width: 60%;" required="true"  emptyText="0.1" vtype="float;maxLength:6" decimalPlaces="2" />  
+                     <input id="pumpedPercent" name="pumpedPercent" class="mini-textbox" style="width: 60%;" required="true"  emptyText="0.1" vtype="float;maxLength:6" decimalPlaces="2" />  
                     </td>
 				</tr>
 				<tr>

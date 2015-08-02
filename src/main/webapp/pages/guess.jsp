@@ -59,16 +59,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="7%" field="name" headerAlign="center" align="center">
                         产品名称
                     </div>
-                    <div width="6%" field="riseNum" headerAlign="center" align="center" renderer="queryDetail('rise')">
+                    <div width="6%" field="riseNum" headerAlign="center" align="center" >
                         参与人数(涨)
                     </div>
-                    <div width="6%" field="failNum" headerAlign="center" align="center" renderer="queryDetail('fail')">
+                    <div width="6%" field="failNum" headerAlign="center" align="center" >
                         参与人数(跌)
+                    </div>
+                    <div width="6%" field="perNum" headerAlign="center" align="center" >
+                       押注个数
+                    </div>
+                    <div width="6%" field="pumpedPercent" headerAlign="center" align="center" >
+                       抽成比例
                     </div>
                     <div width="7%" field="publishTime" headerAlign="center" align="center" renderer="onBirthdayRenderer">
                         发布日期
                     </div>
-                    <div width="10%" field="status" headerAlign="center" align="center" renderer="changeStatus" allowSort="true">
+                    <div width="10%" field="status" headerAlign="center" align="center" renderer="changeStatus" >
                         状态
                     </div>
                     <div field="guessResult" width="10%"  headerAlign="center" align="center" renderer="setResult">
@@ -101,39 +107,72 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	return '<span><font color=gray>已经结束</font></span>';
         }
     }
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString()+" 15:05:00"; 
+    var dB = new Date(date.replace(/-/g, "/"));
     
     function setResult(e){
     	var re = e.record;
-    	if(re.guessResult!=''){
-			return  '<a class="New_Button" href="javascript:newRow('1')">涨</a>'
-                    + ' <a class="Edit_Button" href="javascript:editRow('0')" >跌</a>';  		
+    	if(re==null||re==undefined){
+    		return;
+    	}
+    	if(re.status!='N'){
+    		//提前不可设置
+    		if(new Date()<Date.parse(dB)){
+    			return  '未到公布结果时间';  		
+    		}else{
+    			return  "<a class='New_Button' href=javascript:setResults('rise','"+re.code+"')><font size=3px color=blue>涨</font></a>"
+                + "&nbsp;&nbsp;&nbsp;&nbsp;<a class='New_Button' href=javascript:setResults('fail','"+re.code+"')><font size=3px color=blue>跌</font></a>"  	
+    		}
     	}else{
-    		return '<span><font size=20px color=red>'+re.guessResult+'</font></span>';
+    		return '<span><font size=4px color=red>'+re.guessResult+'</font></span>';
     	}
     }
     
-    
-    function queryDetail(type){
-    	window.location.href='/pages/guessDetail.jsp?type='+type;
+    function setResults(type,code){
+    	
+    	$.ajax({
+            url: 'api/stock/web/guessResult/update',
+            type: "POST",
+            data: {
+                "type": type,
+                "code": code
+            },
+            success: function(data) {
+            	if(data=='1'){
+					grid.load();
+            	}else{
+            		mini.alert('设置失败，请联系管理员');
+            	}
+            }
+        });
     }
-    
+
     function onBirthdayRenderer(e) {
         var value = e.value;
         if (value) return mini.formatDate(value, 'yyyy-MM-dd HH:mm:ss');
         return "";
     }
+    var date = myDate.toLocaleDateString()+" 15:30:00"; 
+    var dB = new Date(date.replace(/-/g, "/"));
     function add(){
-    	var line = grid.select(1,null);
-    	if(line.status=='Y'){
+    	var line = grid.data[0];
+    	if(line!=null&&line.status=='Y'){
     		mini.alert('已经发布了一个竞猜，不能新增');
     		return;
     	}
+    	
+    	if(new Date()<Date.parse(dB)){
+    		mini.alert('15:30以后方可设置');
+    		//return;
+    	}
+    	
     	var url = "pages/guess_sub.jsp";
 		mini.open({
 			url : url,
 			title : "新增竞猜",
 			width : 600,
-			height : 500,
+			height : 300,
 			onload : function() {
 				/* var iframe = this.getIFrameEl();
 				var data = { value: mini.get("type").getValue(),

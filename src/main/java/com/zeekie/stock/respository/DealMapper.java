@@ -8,13 +8,14 @@ import com.zeekie.stock.entity.BaseEntrustDO;
 import com.zeekie.stock.entity.CUrrentGuessProductDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
+import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.ProductDO;
 import com.zeekie.stock.entity.StockCodeDO;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
-import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.StockCodePage;
 
 @MyBatisRepository
@@ -161,8 +162,7 @@ public interface DealMapper {
 	 * @throws Exception
 	 */
 	public void updateHhb(@Param("nickname") String nickname,
-			@Param("num") String num, @Param("unitPrice") String unitPrice)
-			throws Exception;
+			@Param("num") String num) throws Exception;
 
 	/**
 	 * 获取竞猜产品列表总数
@@ -181,7 +181,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<GuessProductDO> queryGuessproduct(FinancePage product)
+	public List<GuessProductDO> queryGuessproduct(GuessPage product)
 			throws Exception;
 
 	/**
@@ -207,13 +207,105 @@ public interface DealMapper {
 	public String queryUnitPrice() throws Exception;
 
 	/**
+	 * 猜猜看
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param type
+	 * @param bidCode
+	 */
+	public void updateGuess(@Param("nickname") String nickname,
+			@Param("num") String num, @Param("type") String type,
+			@Param("bidCode") String bidCode) throws Exception;
+
+	/**
 	 * 获取当前竞猜
 	 * 
 	 * @param nickname
 	 * @return
+	 */
+	public CUrrentGuessProductDO queryCurrentGuessProduct(
+			@Param("nickname") String nickname);
+
+	public void updateGuessResult(@Param("type") String type,
+			@Param("code") String code) throws Exception;
+
+	/**
+	 * 更新所有猜测结果
+	 * 
+	 * @param type
+	 * @param code
+	 */
+	public void updateGuessRecord(@Param("type") String type,
+			@Param("code") String code) throws Exception;
+
+	/**
+	 * 更新钱包哈哈币
+	 * 
+	 * @param code
+	 * 
 	 * @throws Exception
 	 */
-	public CUrrentGuessProductDO queryGuessProduct(
-			@Param("nickname") String nickname) throws Exception;
+	public void addHhb(@Param("code") String code) throws Exception;
+
+	/**
+	 * 查看哈哈币是否够投注
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @return
+	 * @throws Exception
+	 */
+	public String queryHhb(@Param("nickname") String nickname,
+			@Param("num") String num) throws Exception;
+
+	/**
+	 * 扣除哈哈币用于投注
+	 * 
+	 * @param nickname
+	 * @param num
+	 */
+	public void modifyhhb(@Param("nickname") String nickname,
+			@Param("num") String num) throws Exception;
+
+	/**
+	 * 卖出哈哈币，计算钱包余额
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param cash
+	 */
+	public void modifyhhbAndBalance(@Param("nickname") String nickname,
+			@Param("num") String num, @Param("cash") String cash)
+			throws Exception;
+
+	/**
+	 * 获取历史押注
+	 * 
+	 * @param userId
+	 * @param offset
+	 * @return
+	 */
+	public List<GuessHistoryDO> getHistoryGuess(@Param("userId") String userId,
+			@Param("offset") String offset);
+
+	/**
+	 * 用户签到表
+	 * 
+	 * @param userId
+	 * @throws Exception
+	 */
+	public void updateSignTable(@Param("userId") String userId)
+			throws Exception;
+
+	/**
+	 * 查询签到情况
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public String querySignFlag(@Param("userId") String userId)
+			throws Exception;
 
 }

@@ -88,6 +88,21 @@ public class CUrrentGuessProductDO {
 	}
 
 	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * @return the risePercent
 	 */
 	public Float getRisePercent() {
@@ -115,21 +130,6 @@ public class CUrrentGuessProductDO {
 	 */
 	public void setFailPercent(Float failPercent) {
 		this.failPercent = failPercent;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**

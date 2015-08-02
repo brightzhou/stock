@@ -733,9 +733,10 @@ public interface AcountMapper {
 	 * 查询钱包金额是否充足
 	 * 
 	 * @param nickname
-	 * @param cash
+	 * @param num
+	 *            哈哈币个数
 	 * @throws Exception
 	 */
 	public String queryCash(@Param("nickname") String nickname,
-			@Param("unitPrice") String unitPrice) throws Exception;
+			@Param("num") String num) throws Exception;
 }

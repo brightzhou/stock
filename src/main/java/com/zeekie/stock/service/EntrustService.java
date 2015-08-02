@@ -89,26 +89,62 @@ public interface EntrustService {
 	 * 
 	 * @param nickname
 	 * @param num
-	 * @param unitPrice
 	 * @return
 	 */
-	String purchaseHhb(String nickname, String num, String unitPrice);
+	String purchaseHhb(String nickname, String num, String cash);
 
 	/**
 	 * 
 	 * @param nickname
 	 * @param num
 	 * @param type
+	 * @param bidCode
 	 * @return
 	 */
-	String guess(String nickname, String num, String type);
+	String updateGuess(String nickname, String num, String type, String bidCode);
 
 	/**
 	 * 返回当前竞猜的产品
-	 * @param nickname 
+	 * 
+	 * @param nickname
 	 * 
 	 * @return
 	 */
 	JSONObject getGuessProduct(String nickname);
+
+	/**
+	 * 卖出哈哈币
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param cash
+	 * @return
+	 */
+	String sell(String nickname, String num, String cash);
+
+	/**
+	 * 获取历史下注记录
+	 * 
+	 * @param userId
+	 * @param offset
+	 * @return
+	 */
+	JSONArray getHistoryGuess(String userId, String offset);
+
+	/**
+	 * 签到
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	String sign(String nickname);
+
+	/**
+	 * 查询签到情况
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	String querySignFlag(String userId);
 
 }

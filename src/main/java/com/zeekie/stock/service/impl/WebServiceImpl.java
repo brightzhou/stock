@@ -59,6 +59,7 @@ import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.FinanceDetailPage;
 import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -1047,7 +1048,7 @@ public class WebServiceImpl implements WebService {
 	}
 
 	@Override
-	public DefaultPage<GuessProductDO> queryGuessproduct(FinancePage product)
+	public DefaultPage<GuessProductDO> queryGuessproduct(GuessPage product)
 			throws ServiceInvokerException {
 		List<GuessProductDO> result = new ArrayList<GuessProductDO>();
 		long total = 0;
@@ -1068,11 +1069,29 @@ public class WebServiceImpl implements WebService {
 		try {
 			JSONObject jo = JSONObject.fromObject(data);
 			dealMapper.saveGuessProduct(guessCode + StringUtil.genRandomNum(4),
-					jo.getString("guessName"),jo.getString("purchaseNum"),jo.getString("pumpedPercent"));
+					jo.getString("guessName"), jo.getString("purchaseNum"),
+					jo.getString("pumpedPercent"));
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return Constants.CODE_FAILURE;
+	}
+
+	@Override
+	public String updateGuessResult(String type, String code)
+			throws ServiceInvokerException {
+		try {
+			// 更新猜测表
+			dealMapper.updateGuessResult(type, code);
+			// 更新猜测记录
+			dealMapper.updateGuessRecord(type, code);
+			// 更新钱包哈哈币
+			dealMapper.addHhb(code);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e.getMessage());
+		}
+		return Constants.CODE_SUCCESS;
 	}
 }

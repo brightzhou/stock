@@ -265,7 +265,7 @@ public class StockEntrustController {
 		}
 		return ApiUtils.good(new JSONArray());
 	}
-	
+
 	/**
 	 * 返回竞猜产品
 	 * 
@@ -273,8 +273,8 @@ public class StockEntrustController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("currentGuessProduct/query")
-	public ApiResponse getGuessProduct(@RequestParam("nickname") String nickname) {
+	@RequestMapping("guess/enter")
+	public ApiResponse enterGuessPage(@RequestParam("nickname") String nickname) {
 		try {
 			return ApiUtils.good(entrust.getGuessProduct(nickname));
 		} catch (Exception e) {
@@ -283,17 +283,15 @@ public class StockEntrustController {
 		return ApiUtils.good(new JSONArray());
 	}
 
-
-	
 	/**
-	 * 进入购买页面
+	 * 进入购买页面获取单个哈哈币单价
 	 * 
 	 * @param nickname
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("hhb/purchase/enter")
-	public String purchaseHhb() {
+	public String enterPurchaseHhbPage() {
 		try {
 			return deal.queryUnitPrice();
 		} catch (Exception e) {
@@ -301,7 +299,7 @@ public class StockEntrustController {
 		}
 		return Constants.CODE_SUCCESS;
 	}
-	
+
 	/**
 	 * 购买哈哈币
 	 * 
@@ -311,7 +309,7 @@ public class StockEntrustController {
 	@ResponseBody
 	@RequestMapping("hhb/purchase")
 	public String purchaseHhb(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("unitPrice") String cash) {
+			@RequestParam("num") String num, @RequestParam("cash") String cash) {
 		try {
 			return entrust.purchaseHhb(nickname, num, cash);
 		} catch (Exception e) {
@@ -327,19 +325,43 @@ public class StockEntrustController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("up/down/guess")
+	@RequestMapping("guess")
 	public String guess(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("type") String type) {
+			@RequestParam("num") String num, @RequestParam("type") String type,
+			@RequestParam("bidCode") String bidCode) {
 		try {
 			// 判断是否在购买时间范围内 15:30到第二天早上9:00
 			if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
 				return Constants.CODE_GUESS_NOT_INTIME;
 			}
-			return entrust.guess(nickname, num, type);
+
+			if (!StringUtils.equals("rise", type)
+					&& !StringUtils.equals("fail", type)) {
+				return Constants.CODE_GUESS_INVALID_TYPE;
+			}
+			return entrust.updateGuess(nickname, num, type, bidCode);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 卖出哈哈币
+	 * 
+	 * @param nickname
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("hhb/sell")
+	public String guess(@RequestParam("nickname") String nickname,
+			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+		try {
+			return entrust.sell(nickname, num, cash);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		return Constants.CODE_SUCCESS;
+		return Constants.CODE_FAILURE;
 	}
 
 	private boolean verifyPrice(String stockCode, Float value) {
@@ -360,4 +382,22 @@ public class StockEntrustController {
 		return false;
 	}
 
+	@ResponseBody
+	@RequestMapping("guess/history/query")
+	public ApiResponse getHistoryGuess(@RequestParam("userId") String userId,
+			@RequestParam("offset") String offset) {
+		return ApiUtils.good(entrust.getHistoryGuess(userId, offset));
+	}
+
+	@ResponseBody
+	@RequestMapping("sign")
+	public String sign(@RequestParam("userId") String userId) {
+		return entrust.sign(userId);
+	}
+
+	@ResponseBody
+	@RequestMapping("sign/query")
+	public String querySign(@RequestParam("userId") String userId) {
+		return entrust.querySignFlag(userId);
+	}
 }

@@ -62,6 +62,7 @@ import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.FinanceDetailPage;
 import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -1039,7 +1040,7 @@ public class StockWebController {
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
 			@RequestParam(value = "date", required = false) String date) {
 		try {
-			FinancePage product = new FinancePage(Long.valueOf(pageIndex),
+			GuessPage product = new GuessPage(Long.valueOf(pageIndex),
 					Long.valueOf(pageSize), sortField, sortOrder, date);
 			return webService.queryGuessproduct(product);
 		} catch (ServiceInvokerException e) {
@@ -1057,5 +1058,17 @@ public class StockWebController {
 			log.error("saveGuessProduct error happened:", e.getMessage());
 		}
 		return Constants.CODE_FAILURE;
+	}
+
+	@ResponseBody
+	@RequestMapping("guessResult/update")
+	public String updateGuessResult(@RequestParam("type") String type,
+			@RequestParam("code") String code) {
+		try {
+			return webService.updateGuessResult(type, code);
+		} catch (ServiceInvokerException e) {
+			log.error("updateGuessResult error happened:", e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 }

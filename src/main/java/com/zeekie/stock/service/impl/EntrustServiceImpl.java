@@ -22,6 +22,7 @@ import com.zeekie.stock.entity.CUrrentGuessProductDO;
 import com.zeekie.stock.entity.CombassetDO;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
+import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.ProductDO;
 import com.zeekie.stock.enums.AmentrustStatusEnum;
 import com.zeekie.stock.enums.ExchangeTypeEnum;
@@ -44,7 +45,6 @@ import com.zeekie.stock.service.lhomes.entity.HomesEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesEntrustWithdraw;
 import com.zeekie.stock.service.lhomes.entity.HomesQueryEntrust;
 import com.zeekie.stock.service.lhomes.entity.HomesResponse;
-import com.zeekie.stock.util.StringUtil;
 
 @Service
 public class EntrustServiceImpl extends BaseImpl implements EntrustService {
@@ -596,13 +596,13 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public String purchaseHhb(String nickname, String num, String unitPrice) {
+	public String purchaseHhb(String nickname, String num, String cash) {
 		try {
 			if (!StringUtils.equals(Constants.CODE_SUCCESS,
-					account.queryCash(nickname, unitPrice))) {
+					account.queryCash(nickname, num))) {
 				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
 			}
-			deal.updateHhb(nickname, num, unitPrice);
+			deal.updateHhb(nickname, num);
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -611,21 +611,91 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public String guess(String nickname, String num, String type) {
-		return null;
+	public String updateGuess(String nickname, String num, String type,
+			String bidCode) throws RuntimeException {
+		try {
+			// 判断哈哈币是否充足
+			if (!StringUtils.equals(Constants.CODE_SUCCESS,
+					deal.queryHhb(nickname, num))) {
+				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
+			}
+			// 扣除哈哈币
+			deal.modifyhhb(nickname, num);
+			// 下注
+			deal.updateGuess(nickname, num, type, bidCode);
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	@Override
 	public JSONObject getGuessProduct(String nickname) {
 		try {
-			CUrrentGuessProductDO productDO = deal.queryGuessProduct(nickname);
+			CUrrentGuessProductDO productDO = deal
+					.queryCurrentGuessProduct(nickname);
 			if (null != productDO) {
-				return JSONObject.fromObject(productDO);
+				return JSONObject.fromObject(productDO, Constants.jsonConfig);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return new JSONObject();
+	}
+
+	@Override
+	public String sell(String nickname, String num, String cash) {
+		// 判断哈哈币是否充足
+		try {
+			if (!StringUtils.equals(Constants.CODE_SUCCESS,
+					deal.queryHhb(nickname, num))) {
+				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
+			}
+			deal.modifyhhbAndBalance(nickname, num, cash);
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
+	}
+
+	@Override
+	public JSONArray getHistoryGuess(String userId, String offset) {
+		JSONArray jo = new JSONArray();
+		try {
+			List<GuessHistoryDO> flow = deal.getHistoryGuess(userId, offset);
+			if (null != flow) {
+				return jo.fromObject(flow);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return jo;
+	}
+
+	@Override
+	public String sign(String userId) {
+		try {
+			deal.updateSignTable(userId);
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
+	}
+
+	@Override
+	public String querySignFlag(String userId) {
+
+		try {
+			if (StringUtils.equals(Constants.CODE_SUCCESS,
+					deal.querySignFlag(userId))) {
+				return Constants.CODE_SUCCESS;
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
 	}
 
 }
