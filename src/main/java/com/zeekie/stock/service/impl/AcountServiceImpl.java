@@ -384,7 +384,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("finance", (StringUtils.isBlank(finance)) ? ""
 						: finance);
 				map.put("isStock", account.getIsStock());
-				map.put("hhb", account.getHhb());
+				map.put("hhb", account.getHhb()+"");
 			} else {
 				map.put("balance", "0.00");
 				map.put("guaranteeCash", "0.00");

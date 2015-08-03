@@ -40,21 +40,21 @@ public class CurrentAccountDO {
 	/**
 	 * 哈哈币
 	 */
-	private String hhb;
+	private Float hhb;
 	
 	
 
 	/**
 	 * @return the hhb
 	 */
-	public String getHhb() {
+	public Float getHhb() {
 		return hhb;
 	}
 
 	/**
 	 * @param hhb the hhb to set
 	 */
-	public void setHhb(String hhb) {
+	public void setHhb(Float hhb) {
 		this.hhb = hhb;
 	}
 

@@ -63,7 +63,7 @@
 		<result column="fee" property="fee" jdbcType="FLOAT"/>
 		<result column="finance" property="finance" jdbcType="FLOAT"/>
 		<result column="isStock" property="isStock" jdbcType="VARCHAR"/>
-		<result column="hhb" property="hhb" jdbcType="VARCHAR"/>
+		<result column="hhb" property="hhb" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.WithdrawlDO" id="resultDeposit">

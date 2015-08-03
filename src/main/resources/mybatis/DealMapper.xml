@@ -330,6 +330,16 @@
     	where NICKNAME = #{nickname}
     </update>
     
+   <update id="updateHhbbyId" parameterType="string">
+    	update stock_user_wallet w set w.hhb = (CASE
+                 WHEN W.HHB IS NULL THEN
+                  0
+                 ELSE
+                  W.HHB
+               END)  + (select p.SIGN_FOR_HHB from stock_guess_percent p )
+    	where exists(select 1 from stock_user u where u.id = #{userId} and u.nickname = w.nickname)
+    </update>
+    
     <select id="queryGuessproduct" parameterType="com.zeekie.stock.web.GuessPage" resultMap="resultguess">
     	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
 			SELECT BID_CODE,
@@ -420,7 +430,7 @@
 		                 Where k.Id = u.User_Id
 		                   And k.Nickname = #{nickname})) Guess_Status
 		  From Stock_Crazy_Guess g
-		 Where Rownum = 1
+		 Where status = 'Y'
 		 Order By g.Publish_Time Desc
     </select>
     
@@ -448,7 +458,7 @@
 		UPDATE STOCK_GUESS_UP_DOWN C
 		   SET C.PROFIT_NUM = (CASE
 		                        WHEN C.GUESS_STATUS = #{type} THEN
-		                         (SELECT decode(SUM(K.PURCHASE_NUM),null,0)
+		                         (SELECT decode(SUM(K.PURCHASE_NUM),null,0,SUM(K.PURCHASE_NUM))
 		                            FROM STOCK_GUESS_UP_DOWN K
 		                           WHERE K.GUESS_STATUS != #{type}
 		                             AND K.BID_CODE = C.BID_CODE) /

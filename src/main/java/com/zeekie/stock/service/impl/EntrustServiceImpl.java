@@ -677,6 +677,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public String sign(String userId) {
 		try {
 			deal.updateSignTable(userId);
+			
+			deal.updateHhbbyId(userId);
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

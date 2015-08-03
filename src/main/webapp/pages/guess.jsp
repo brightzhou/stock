@@ -108,9 +108,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         }
     }
     var myDate = new Date();
+    //第二天三点后
+    myDate.setDate(myDate.getDate()+1);  
     var date = myDate.toLocaleDateString()+" 15:05:00"; 
     var dB = new Date(date.replace(/-/g, "/"));
     
+    //第三天9点前
+    var myDate1 = new Date();
+    myDate1.setDate(myDate1.getDate()+2);
+    var date1 = myDate1.toLocaleDateString()+" 9:00:00";
+    var db1 = new Date(date1.replace(/-/g, "/"));
     function setResult(e){
     	var re = e.record;
     	if(re==null||re==undefined){
@@ -118,11 +125,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	}
     	if(re.status!='N'){
     		//提前不可设置
-    		if(new Date()<Date.parse(dB)){
-    			return  '未到公布结果时间';  		
-    		}else{
+    		var curr = new Date();
+    		if(Date.parse(dB) < curr && curr< Date.parse(db1)){
     			return  "<a class='New_Button' href=javascript:setResults('rise','"+re.code+"')><font size=3px color=blue>涨</font></a>"
                 + "&nbsp;&nbsp;&nbsp;&nbsp;<a class='New_Button' href=javascript:setResults('fail','"+re.code+"')><font size=3px color=blue>跌</font></a>"  	
+    		}else{
+    			return  '未到公布结果时间';  		
     		}
     	}else{
     		return '<span><font size=4px color=red>'+re.guessResult+'</font></span>';
@@ -164,7 +172,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	
     	if(new Date()<Date.parse(dB)){
     		mini.alert('15:30以后方可设置');
-    		//return;
+    		return;
     	}
     	
     	var url = "pages/guess_sub.jsp";
