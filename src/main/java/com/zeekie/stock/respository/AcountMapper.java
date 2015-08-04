@@ -16,11 +16,13 @@ import com.zeekie.stock.entity.ClientPercentDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
 import com.zeekie.stock.entity.CurrentOperationWebDO;
+import com.zeekie.stock.entity.CustomerCareDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.DownLineUserDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.entity.ManagerDO;
@@ -48,6 +50,7 @@ import com.zeekie.stock.entity.form.TradeForm;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
+import com.zeekie.stock.web.GuessDetailPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -739,4 +742,12 @@ public interface AcountMapper {
 	 */
 	public String queryCash(@Param("nickname") String nickname,
 			@Param("num") String num) throws Exception;
+
+	public List<CustomerCareDO> queryCustomerCare() throws Exception;
+
+	public void updateAdvise(@Param("id") String id,
+			@Param("username") String username,
+			@Param("servicename") String servicename,
+			@Param("grade") String grade) throws Exception;
+
 }

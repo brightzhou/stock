@@ -18,6 +18,7 @@ import sitong.thinker.common.error.Message;
 import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.chat.jersey.apidemo.EasemobMessages;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.util.ApiUtils;
 
@@ -178,12 +179,33 @@ public class AcountController {
 		}
 		return Constants.CODE_SUCCESS;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("getDownUser")
-	public ApiResponse getDownUser(
-			@RequestParam("userId") String userId,
+	public ApiResponse getDownUser(@RequestParam("userId") String userId,
 			@RequestParam("offset") String offset) {
 		return ApiUtils.good(operator.getDownUser(userId, offset));
+	}
+
+	@ResponseBody
+	@RequestMapping("hx/getCustomerCare")
+	public ApiResponse getCustomerCare() {
+		return ApiUtils.good(operator.getCustomerCare());
+	}
+
+	@ResponseBody
+	@RequestMapping("hx/advise")
+	public String advise(@RequestParam("id") String id,
+			@RequestParam("username") String username,
+			@RequestParam("servicename") String servicename,
+			@RequestParam("grade") String grade) {
+		return operator.advise(id, username, servicename, grade);
+	}
+
+	@ResponseBody
+	@RequestMapping("hx/sendCMDMsg")
+	public void sendCMDMsg(@RequestParam("serviceid") String serviceid,
+			@RequestParam("newServiceId") String newServiceId) {
+		EasemobMessages.sendCMDMsg(serviceid, newServiceId);
 	}
 }

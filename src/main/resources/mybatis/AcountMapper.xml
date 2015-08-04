@@ -363,6 +363,11 @@
 		<result column="TOTAL_FINANCE_LIMIT" property="totalFinanceFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap> 
 	
+	<resultMap type="com.zeekie.stock.entity.CustomerCareDO" id="resultCustomerCare">
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="username" property="name" jdbcType="VARCHAR"/>
+		<result column="isonline" property="isOnline" jdbcType="VARCHAR"/>
+	</resultMap>
 	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
@@ -1720,6 +1725,14 @@
 		       (SELECT TO_NUMBER(#{num}) * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P)
 		   AND W.NICKNAME = #{nickname}
    </select>
+   
+   <select id="queryCustomerCare" resultMap="resultCustomerCare">
+   		select id ,username,isonline from STOCK_CUSTOMER_CARE
+   </select>
+   
+   <insert id="updateAdvise" parameterType="string">
+   		insert into STOCK_CUSTOMER_CARE_Evaluation values(#{username},#{id},#{servicename},#{grade})
+   </insert>
 	
 </mapper>
 

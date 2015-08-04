@@ -228,9 +228,20 @@ public interface AcountService {
 
 	/**
 	 * 获取
+	 * 
 	 * @param userId
 	 * @param offset
 	 * @return
 	 */
 	public List<DownLineUserDO> getDownUser(String userId, String offset);
+
+	/**
+	 * 返回所有客服
+	 * 
+	 * @return
+	 */
+	public JSONArray getCustomerCare();
+
+	public String advise(String id, String username, String servicename,
+			String grade);
 }

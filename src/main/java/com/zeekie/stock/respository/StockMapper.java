@@ -64,4 +64,6 @@ public interface StockMapper {
 	public void updateLoginStatus(@Param("userId") String userId)
 			throws Exception;
 
+	public long querySeq(@Param("seq") String seq) throws Exception;
+
 }

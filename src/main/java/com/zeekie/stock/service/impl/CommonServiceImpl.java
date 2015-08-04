@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.zeekie.stock.Constants;
+import com.zeekie.stock.chat.HxRegister;
 import com.zeekie.stock.entity.LoginDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.form.RegisterForm;
@@ -78,6 +79,9 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 				return new ReturnMsg(Constants.CODE_ERROR_NICKNAME,
 						Constants.CODE_ERROR_NICKNAME_MSG);
 			}
+			
+			long id = trade.querySeq("SEQ_USER.Nextval");
+			register.setId(id);
 			trade.register(register);
 
 			String nickname = register.getNickname();
@@ -89,6 +93,9 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 
 			// 将新注册的用户加入到内存中
 			Constants.user.add(nickname);
+			
+			//注册到环信
+			HxRegister.registhx(String.valueOf(id));
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

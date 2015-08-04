@@ -1,5 +1,6 @@
 package com.zeekie.stock.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -20,6 +21,7 @@ import sitong.thinker.common.api.ApiResponse;
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.CurrentEntrustDO;
 import com.zeekie.stock.respository.DealMapper;
+import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.service.EntrustService;
 import com.zeekie.stock.service.lhomes.CallhomesService;
 import com.zeekie.stock.service.lhomes.entity.Homes400Resp;
@@ -42,6 +44,9 @@ public class StockEntrustController {
 
 	@Autowired
 	private EntrustService entrust;
+
+	@Autowired
+	private TradeMapper trade;
 
 	@Autowired
 	private DealMapper deal;
@@ -330,15 +335,25 @@ public class StockEntrustController {
 			@RequestParam("num") String num, @RequestParam("type") String type,
 			@RequestParam("bidCode") String bidCode) {
 		try {
-			// 判断是否在购买时间范围内 15:30到第二天早上9:00
-			if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
-				return Constants.CODE_GUESS_NOT_INTIME;
-			}
-
 			if (!StringUtils.equals("rise", type)
 					&& !StringUtils.equals("fail", type)) {
 				return Constants.CODE_GUESS_INVALID_TYPE;
 			}
+
+			String rightNow = DateUtil.dateToStr(new Date(),
+					DateUtil.FORMAT_YYYY_MM_DD);
+
+			if (StringUtils.isNotBlank(trade.selectFeeDay(rightNow))) {
+				// 判断是否在购买时间范围内 15:30到第二天早上9:00
+				if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
+					return Constants.CODE_GUESS_NOT_INTIME;
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("今天[" + rightNow + "]是非交易日，不用设置时间门槛");
+				}
+			}
+
 			return entrust.updateGuess(nickname, num, type, bidCode);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

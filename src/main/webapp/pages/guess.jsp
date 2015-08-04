@@ -59,10 +59,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div width="7%" field="name" headerAlign="center" align="center">
                         产品名称
                     </div>
-                    <div width="6%" field="riseNum" headerAlign="center" align="center" >
+                    <div width="6%" field="riseNum" headerAlign="center" align="center" renderer="joinDetailRise">
                         参与人数(涨)
                     </div>
-                    <div width="6%" field="failNum" headerAlign="center" align="center" >
+                    <div width="6%" field="failNum" headerAlign="center" align="center" renderer="joinDetailFail">
                         参与人数(跌)
                     </div>
                     <div width="6%" field="perNum" headerAlign="center" align="center" >
@@ -107,26 +107,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	return '<span><font color=gray>已经结束</font></span>';
         }
     }
-    var myDate = new Date();
-    //第二天三点后
-    myDate.setDate(myDate.getDate()+1);  
-    var date = myDate.toLocaleDateString()+" 15:05:00"; 
-    var dB = new Date(date.replace(/-/g, "/"));
-    
-    //第三天9点前
-    var myDate1 = new Date();
-    myDate1.setDate(myDate1.getDate()+2);
-    var date1 = myDate1.toLocaleDateString()+" 9:00:00";
-    var db1 = new Date(date1.replace(/-/g, "/"));
+
     function setResult(e){
     	var re = e.record;
     	if(re==null||re==undefined){
     		return;
     	}
+    	var publishdate = mini.formatDate(re.publishTime, 'yyyy-MM-dd HH:mm:ss');
+    	var beginstr = re.publishTime.toLocaleDateString()+" 15:05:00";
+    	var begin = new Date(beginstr.replace(/-/g, "/"));
+    	
+    	var db1 = new Date(publishdate);
+    	db1.setDate(db1.getDate()+1);
+        var endstr = db1.toLocaleDateString()+" 9:00:00";
+        var end = new Date(endstr.replace(/-/g, "/"));
+    	
     	if(re.status!='N'){
     		//提前不可设置
     		var curr = new Date();
-    		if(Date.parse(dB) < curr && curr< Date.parse(db1)){
+    		if(Date.parse(begin) < curr && curr< Date.parse(end)){
     			return  "<a class='New_Button' href=javascript:setResults('rise','"+re.code+"')><font size=3px color=blue>涨</font></a>"
                 + "&nbsp;&nbsp;&nbsp;&nbsp;<a class='New_Button' href=javascript:setResults('fail','"+re.code+"')><font size=3px color=blue>跌</font></a>"  	
     		}else{
@@ -156,11 +155,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         });
     }
 
+    function joinDetailRise(e) {
+        var re = e.record;
+        if (re.riseNum==0) {
+        	return re.riseNum;
+        }else{
+        	return '<span class="link_2"><a  onclick="queryDetail(\''+re.code+'\')">'+re.riseNum+'</a></span>';
+        }
+    }
+    
+    function joinDetailFail(e) {
+        var re = e.record;
+        if (re.failNum==0) {
+        	return re.failNum;
+        }else{
+        	return '<span class="link_2"><a  onclick="queryDetail(\''+re.code+'\')">'+re.failNum+'</a></span>';
+        }
+    }
+    
+    function queryDetail(bidCode){
+    	window.location.href='<%=basePath%>/pages/guessDetail.jsp?bidCode='+bidCode;
+    }
+    
+    
+    
     function onBirthdayRenderer(e) {
         var value = e.value;
         if (value) return mini.formatDate(value, 'yyyy-MM-dd HH:mm:ss');
         return "";
     }
+    var myDate = new Date();
     var date = myDate.toLocaleDateString()+" 15:30:00"; 
     var dB = new Date(date.replace(/-/g, "/"));
     function add(){

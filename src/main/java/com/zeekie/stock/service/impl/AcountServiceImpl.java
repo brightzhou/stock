@@ -1,5 +1,6 @@
 package com.zeekie.stock.service.impl;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.zeekie.stock.entity.BindBankDO;
 import com.zeekie.stock.entity.CashDO;
 import com.zeekie.stock.entity.CurrentAccountDO;
 import com.zeekie.stock.entity.CurrentOperateUserDO;
+import com.zeekie.stock.entity.CustomerCareDO;
 import com.zeekie.stock.entity.DebtDO;
 import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.DownLineUserDO;
@@ -384,7 +386,7 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				map.put("finance", (StringUtils.isBlank(finance)) ? ""
 						: finance);
 				map.put("isStock", account.getIsStock());
-				map.put("hhb", account.getHhb()+"");
+				map.put("hhb", account.getHhb() + "");
 			} else {
 				map.put("balance", "0.00");
 				map.put("guaranteeCash", "0.00");
@@ -1072,6 +1074,32 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			log.error(e.getMessage(), e);
 		}
 		return downlineDO;
+	}
+
+	@Override
+	public JSONArray getCustomerCare() {
+		List<CustomerCareDO> cusotmer = new ArrayList<CustomerCareDO>();
+		try {
+			cusotmer = acounter.queryCustomerCare();
+			if (null != cusotmer) {
+				return JSONArray.fromObject(cusotmer);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return new JSONArray();
+	}
+
+	@Override
+	public String advise(String id, String username, String servicename,
+			String grade) {
+		try {
+			acounter.updateAdvise(id, username, servicename, grade);
+			return Constants.CODE_SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return Constants.CODE_FAILURE;
 	}
 
 }

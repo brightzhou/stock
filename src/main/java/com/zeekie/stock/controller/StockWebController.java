@@ -38,6 +38,7 @@ import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.FinanceProductDO;
 import com.zeekie.stock.entity.FinanceProductDetailDO;
 import com.zeekie.stock.entity.FlbDO;
+import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
@@ -62,6 +63,7 @@ import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.FinanceDetailPage;
 import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessDetailPage;
 import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
@@ -1069,6 +1071,24 @@ public class StockWebController {
 		} catch (ServiceInvokerException e) {
 			log.error("updateGuessResult error happened:", e.getMessage());
 			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("guessDetail/query")
+	public DefaultPage<GuessHistoryDO> queryGuessDetail(
+			@RequestParam(value = "pageIndex", required = false) String pageIndex,
+			@RequestParam(value = "pageSize", required = false) String pageSize,
+			@RequestParam(value = "sortField", required = false) String sortField,
+			@RequestParam(value = "sortOrder", required = false) String sortOrder,
+			@RequestParam(value = "bidCode", required = false) String bidCode) {
+		try {
+			GuessDetailPage product = new GuessDetailPage(Long.valueOf(pageIndex),
+					Long.valueOf(pageSize), sortField, sortOrder, bidCode);
+			return webService.queryGuessDetail(product);
+		} catch (ServiceInvokerException e) {
+			log.error("queryGuessDetail error happened:", e.getMessage());
+			return new DefaultPage<GuessHistoryDO>();
 		}
 	}
 }

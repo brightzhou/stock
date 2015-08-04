@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.sf.json.JsonConfig;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hczq.hz.intf.AmServices;
 import com.hundsun.t2sdk.interfaces.IClient;
 import com.tencent.xinge.XingeApp;
@@ -314,6 +315,8 @@ public class Constants {
 	 * 钱包余额不足以购买哈哈币
 	 */
 	public static final String CODE_GUESS_FUND_NOT_ENOUGH = "2";
+
+	public static final String code_hx_pwd = "123456";
 
 	/**
 	 * 非法类型

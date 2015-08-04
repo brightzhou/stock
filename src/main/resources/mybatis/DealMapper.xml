@@ -42,7 +42,7 @@
 		<result column="Stockincome" property="stockIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Guessincome" property="guessIncome" jdbcType="VARCHAR"/>
 		<result column="code" property="code"  jdbcType="VARCHAR"/>
-		<result column="ISSTOCK" property="flag"  jdbcType="VARCHAR"/>
+		<result column="OPEN_PRODUCT" property="flag"  jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.GuessProductDO" id="resultguess">
@@ -78,6 +78,17 @@
 		<result column="PURCHASE_TIME" property="purchaseTime" jdbcType="VARCHAR"/>
 		<result column="CORRECTNUM" property="correctNum" jdbcType="VARCHAR"/>
 		<result column="FAILNUM" property="failNum" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.GuessHistoryDO" id="resultGuessDetail">
+		<result column="BID_CODE" property="code" jdbcType="VARCHAR"/>
+		<result column="NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="GUESS_STATUS" property="guessStatus" jdbcType="VARCHAR"/>
+		<result column="ACTUAL_RESULT" property="actualStatus" jdbcType="VARCHAR"/>
+		<result column="PROFIT_NUM" property="profitNum" jdbcType="VARCHAR"/>
+		<result column="PURCHASE_NUM" property="purchaseNum" jdbcType="VARCHAR"/>
+		<result column="PURCHASE_TIME" property="purchaseTime" jdbcType="VARCHAR"/>
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
 	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
@@ -315,7 +326,7 @@
 	           And g.Actual_Result = g.Guess_Status
 	           And g.GUESS_STATUS = 'rise') Guessincome,
 	       (Select wmsys.wm_concat(product_code) From Stock_Product t Where t.status='Y') code,
-	       u.ISSTOCK 
+	       u.OPEN_PRODUCT
 	  From Stock_User u
 	 Where u.Nickname = #{nickname}
     </select>
@@ -542,5 +553,31 @@
     <select id="querySignFlag" resultType="string">
     	select 1 from STOCK_USER_SIGN s where to_char(s.SIGN_DATE,'yyyy-MM-dd')=to_char(sysdate,'yyyy-MM-dd')
     	and s.USER_ID = #{userId} and rownum = 1
+    </select>
+    
+    <select id="queryGuessDetailCount" parameterType="string" resultType="long">
+    	select count(1)
+    	from STOCK_GUESS_UP_DOWN u
+    	<where>
+    		u.bid_code = #{bidCode}
+    	</where>
+    </select>
+    
+    <select id="queryGuessDetail" parameterType="com.zeekie.stock.web.GuessDetailPage" resultMap="resultGuessDetail">
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
+    	SELECT U.BID_CODE,
+			   (SELECT G.NAME FROM STOCK_CRAZY_GUESS G WHERE G.BID_CODE = U.BID_CODE) NAME,
+			   U.GUESS_STATUS,
+			   U.ACTUAL_RESULT,
+			   U.PROFIT_NUM,
+			   U.PURCHASE_NUM,
+			   TO_CHAR(u.PURCHASE_TIME, 'yyyy-mm-dd HH24:mi:ss') PURCHASE_TIME,
+		       (select nickname from stock_user k where k.id = u.user_id) nickname
+		  FROM STOCK_GUESS_UP_DOWN U
+		  <where>
+		  	 u.bid_code = #{bidCode}
+		  </where>
+    	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
+    	
     </select>
 </mapper>

@@ -2,6 +2,8 @@ package com.zeekie.stock.entity;
 
 public class GuessHistoryDO {
 
+	private String nickname;
+
 	private String code;
 
 	private String name;
@@ -19,6 +21,21 @@ public class GuessHistoryDO {
 	private String correctNum;
 
 	private String failNum;
+
+	/**
+	 * @return the nickname
+	 */
+	public String getNickname() {
+		return nickname;
+	}
+
+	/**
+	 * @param nickname
+	 *            the nickname to set
+	 */
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 
 	/**
 	 * @return the correctNum

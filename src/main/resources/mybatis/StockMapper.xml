@@ -27,9 +27,9 @@
 
 	<!-- user register -->
 	<insert id="register" parameterType="com.zeekie.stock.entity.form.RegisterForm">
-		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
+<!-- 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
 			select SEQ_USER.Nextval from dual
-		</selectKey>
+		</selectKey> -->
 <!-- 		Insert Into stock_user
 		(Id,
 		nickname,
@@ -59,10 +59,14 @@
 		  UPDATE SET D.REGISTERDATE = T.REGISTERDATE
 		WHEN NOT MATCHED THEN
 		  INSERT
-		    (D.ID, D.NICKNAME, D.PASSWORD, D.REFEREE_ID, D.REGISTERDATE)
+		    (D.ID, D.NICKNAME, D.PASSWORD, D.REFEREE_ID, D.REGISTERDATE,D.OPEN_PRODUCT)
 		  VALUES
-		    (T.ID, T.NICKNAME, T.PASSWORD, T.REFEREE_ID, T.REGISTERDATE)
+		    (T.ID, T.NICKNAME, T.PASSWORD, T.REFEREE_ID, T.REGISTERDATE,'1;1;1;0')
 	</insert>
+
+	<select id="querySeq" parameterType="string" statementType="STATEMENT" resultType="long"> 
+		select ${seq} from dual
+	</select>
 
 	<!-- user login -->
 	<select id="login" resultMap="resultLogin" parameterType="String">

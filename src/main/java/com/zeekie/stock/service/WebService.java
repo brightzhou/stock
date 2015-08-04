@@ -14,6 +14,7 @@ import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.FinanceProductDO;
 import com.zeekie.stock.entity.FinanceProductDetailDO;
 import com.zeekie.stock.entity.FlbDO;
+import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperationInfoDO;
@@ -33,6 +34,7 @@ import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.FinanceDetailPage;
 import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessDetailPage;
 import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
@@ -493,10 +495,21 @@ public interface WebService {
 	 * 设置猜测结果
 	 * 
 	 * @param type
-	 * @param code 
+	 * @param code
 	 * @return
 	 * @throws ServiceInvokerException
 	 */
-	public String updateGuessResult(String type, String code) throws ServiceInvokerException;
+	public String updateGuessResult(String type, String code)
+			throws ServiceInvokerException;
+
+	/**
+	 * 猜大盘明细
+	 * 
+	 * @param bizCode
+	 * @return
+	 * @throws ServiceInvokerException
+	 */
+	public DefaultPage<GuessHistoryDO> queryGuessDetail(GuessDetailPage bizCode)
+			throws ServiceInvokerException;
 
 }

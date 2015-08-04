@@ -31,6 +31,7 @@ import com.zeekie.stock.entity.FinanceProductDO;
 import com.zeekie.stock.entity.FinanceProductDetailDO;
 import com.zeekie.stock.entity.FlbDO;
 import com.zeekie.stock.entity.FundAccountDO;
+import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.MovecashToRefereeDO;
 import com.zeekie.stock.entity.OperateAccountDO;
@@ -59,6 +60,7 @@ import com.zeekie.stock.web.DictionariesPage;
 import com.zeekie.stock.web.EveningUpPage;
 import com.zeekie.stock.web.FinanceDetailPage;
 import com.zeekie.stock.web.FinancePage;
+import com.zeekie.stock.web.GuessDetailPage;
 import com.zeekie.stock.web.GuessPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
@@ -1093,5 +1095,22 @@ public class WebServiceImpl implements WebService {
 			throw new ServiceInvokerException(e.getMessage());
 		}
 		return Constants.CODE_SUCCESS;
+	}
+
+	@Override
+	public DefaultPage<GuessHistoryDO> queryGuessDetail(GuessDetailPage bizCode)
+			throws ServiceInvokerException {
+		List<GuessHistoryDO> result = new ArrayList<GuessHistoryDO>();
+		long total = 0;
+		try {
+			total = dealMapper.queryGuessDetailCount(bizCode.getBidCode());
+			if (0 != total) {
+				result = dealMapper.queryGuessDetail(bizCode);
+			}
+			return new DefaultPage<GuessHistoryDO>(total, result);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceInvokerException(e);
+		}
 	}
 }
