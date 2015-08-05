@@ -584,15 +584,24 @@ public class StockWebController {
 
 	@ResponseBody
 	@RequestMapping("manager/openOrCloseApp")
-	public void openApp(@RequestParam("flag") String flag) {
-		webService.openOrCloseApp(flag);
-		Constants.HOMES_STATUS = flag;
+	public void openApp(@RequestParam("flag") String flag,@RequestParam("type") String type) {
+		if(StringUtils.equals("homes", type)){
+			webService.openOrCloseApp(flag);
+			Constants.HOMES_STATUS = flag;
+		}else{
+			Constants.GUESS_STATUS = flag;
+		}
+		
+		
 	}
 
 	@ResponseBody
 	@RequestMapping("manager/getAppStatus")
 	public String getAppStatus() {
-		return Constants.HOMES_STATUS;
+		JSONObject jo = new JSONObject();
+		jo.put("HOMES", Constants.HOMES_STATUS);
+		jo.put("GUESS", Constants.GUESS_STATUS);
+		return jo.toString();
 	}
 
 	/**
@@ -1083,8 +1092,9 @@ public class StockWebController {
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
 			@RequestParam(value = "bidCode", required = false) String bidCode) {
 		try {
-			GuessDetailPage product = new GuessDetailPage(Long.valueOf(pageIndex),
-					Long.valueOf(pageSize), sortField, sortOrder, bidCode);
+			GuessDetailPage product = new GuessDetailPage(
+					Long.valueOf(pageIndex), Long.valueOf(pageSize), sortField,
+					sortOrder, bidCode);
 			return webService.queryGuessDetail(product);
 		} catch (ServiceInvokerException e) {
 			log.error("queryGuessDetail error happened:", e.getMessage());

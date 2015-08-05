@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                        <input id="key" class="mini-textbox" emptyText="请输入昵称/姓名/手机" style="width:150px;" onenter="onKeyEnter"/>   
 	                        <a class="mini-button" onclick="search()">查询</a>&nbsp;&nbsp;
 	                        <a class="mini-button" onclick="sendMsg()">短信群发</a>&nbsp;&nbsp;
-	                        <a class="mini-button" onclick="sendNotice('all')">发消息通知</a>&nbsp;&nbsp;
+	                        <a class="mini-button" onclick="sendNotice('all','所有人')">系统通知</a>&nbsp;&nbsp;
 	                        <a class="mini-button" iconCls="icon-save" onclick="saveData()">保存</a>
 	                    </td>
 	                </tr>
@@ -37,9 +37,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</div>
         <div >
             <div id="datagrid1" class="mini-datagrid" style="width:1100px;height:400px;" allowResize="true"
-        			url="<%=basePath%>api/stock/web/getClientInfo" allowCellValid="true"  idField="id" multiSelect="false" allowCellEdit="true" allowCellSelect="true">
+        			url="api/stock/web/getClientInfo" allowCellValid="true"  idField="id" multiSelect="false" allowCellEdit="true" allowCellSelect="true">
                 <div property="columns">
-                    <div type="indexcolumn" headerAlign="center" width="5%">序号</div>
+                    <div field="userId" headerAlign="center" align="center">序号</div>
+                    
                     <div width="15%" field="nickname" headerAlign="center" align="center">
                         用户昵称
                     </div>
@@ -131,7 +132,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function operation(e){
       	var re = e.record;
     	return '<span class="link_2"><a  onclick="sendRedPacket(\''+re.nickname+'\',\''+re.phone+'\')">发红包</a></span>&nbsp;&nbsp;'+
-    	'<span class="link_2"><a  onclick="sendNotice(\''+re.nickname+'\')">发红包</a></span>&nbsp;&nbsp;';
+    	'<span class="link_2"><a  onclick="sendNotice(\''+re.userId+'\',\''+re.nickname+'\')">发系统公告</a></span>';
     }
     
     function sendRedPacket(nickname,phone){
@@ -160,16 +161,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
     }
     
-    function sendNotice(nickname){
-    	var url = "pages/sendNotice.jsp";
+    function sendNotice(userId,nickname){
+    	var url = "pages/sendNoticePage.jsp";
 		mini.open({
 			url : url,
-			title : "发红包",
+			title : "发送系统公告",
 			width : 500,
 			height : 350,
 			onload : function() {
 				var iframe = this.getIFrameEl();
-				var data = { text: nickname};
+				var data = { text: userId,name:nickname};
 				iframe.contentWindow.SetData(data); 
 			},
 			currentWindow:true,

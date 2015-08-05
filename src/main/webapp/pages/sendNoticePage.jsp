@@ -29,6 +29,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </td>
                     <td class="mini-content_32">
                     	<input id="user" name="user" class="mini-textbox" style="width: 60%;" value="" enabled="false" />
+                    	<input id="userId" name="userId" class="mini-hidden" style="width: 60%;" value="" type="hidden"/>
                     </td>
 				</tr>
 			    <tr>
@@ -37,7 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </td>
                     <td class="mini-content_32">
                  	  <textarea class="mini-textarea" name="message" emptyText="请输入短信内容，长度不超过80个字.内容为空将不发送短信" required id="message" maxLength="80" validateOnLeave="true" width="300px" height="100px"></textarea>
-                 	   <input id="key" class="mini-textbox" value="1" name="type" type="hidden"/>   
+                 	   <input id="type" class="mini-hidden" value="1" name="type" type="hidden"/>   
                     </td>
 				</tr>
 				<tr></tr>
@@ -93,7 +94,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     function SetData(data) {
        data = mini.clone(data);
-       mini.get("user").setValue(data.text);
+       mini.get("userId").setValue(data.text);
+       mini.get("user").setValue(data.name);
     }
     
 	function CloseWindow(action) {

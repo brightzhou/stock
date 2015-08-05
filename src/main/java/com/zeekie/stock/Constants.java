@@ -331,6 +331,8 @@ public class Constants {
 
 	public static List<String> user = new ArrayList<String>();
 
+	public static String GUESS_STATUS = "open";
+
 	public static IClient getClient() {
 		return client;
 	}

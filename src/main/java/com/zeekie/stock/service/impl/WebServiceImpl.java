@@ -662,17 +662,21 @@ public class WebServiceImpl implements WebService {
 		JSONObject jo = JSONObject.fromObject(data);
 		String message = jo.getString("message");
 		String type = jo.getString("type");
-		String nickname = jo.getString("user");
+		String userId = jo.getString("userId");
 		try {
 			if (StringUtils.isNotBlank(message)) {
-				
-				if(StringUtils.equals(Constants.CODE_SUCCESS, type)){
-					handler.handleJob(Constants.TYPE_JOB_SENDCHAT_NOTICE, message);
-					Map<String,String> map = new HashMap<String, String>();
-				}else{
-					handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE, message);
+				// 1:代表发送系统公告，0：代表发送短信
+				if (StringUtils.equals(Constants.CODE_SUCCESS, type)) {
+					Map<String, String> map = new HashMap<String, String>();
+					map.put("userId", userId);
+					map.put("message", message);
+					handler.handleOtherJob(Constants.TYPE_JOB_SENDCHAT_NOTICE,
+							map);
+				} else {
+					handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE,
+							message);
 				}
-				
+
 			}
 
 		} catch (Exception e) {

@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class UserInfoDO {
 
+	private String userId;
+
 	private String nickname;
 
 	private String phone;
@@ -17,13 +19,28 @@ public class UserInfoDO {
 	private String upLine;
 
 	private String version;
-	
-	private String status ;
-	
-	private String refereeId ;
-	
-	private Date registerDate ;
-    
+
+	private String status;
+
+	private String refereeId;
+
+	private Date registerDate;
+
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId
+	 *            the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -57,8 +74,7 @@ public class UserInfoDO {
 	}
 
 	private Integer id;
-	
-	
+
 	/**
 	 * @return the version
 	 */

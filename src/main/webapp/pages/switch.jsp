@@ -28,10 +28,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</tr>
         <tr >
 	        <td align="center" colspan="3">
-	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('open')">打开</a>
+	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('open','homes')">打开</a>
 	        </td>
 	        <td align="center" colspan="3">
-	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('close')">关闭</a>
+	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('close','homes')">关闭</a>
+	        </td>
+        </tr>
+        <br/>
+    	<tr>
+    		<td align="center" colspan="2">
+    			<div id="statusGuess"></div>
+    		</td>
+    	</tr>
+        <tr >
+	        <td align="center" colspan="3">
+	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('open','guess')">打开</a>
+	        </td>
+	        <td align="center" colspan="3">
+	        	<a class="mini-button" iconCls="icon-add" onclick="openOrCloseApp('close','guess')">关闭</a>
 	        </td>
         </tr>
     </table>    
@@ -42,14 +56,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         init();
         function init(){
         	$.ajax({
-                url: "<%=basePath%>api/stock/web/manager/getAppStatus",
+                url: "api/stock/web/manager/getAppStatus",
                 data: '',
                 cache: false,
                 success: function (text) {
-                	if(text=='open'){
+                	var data = mini.decode(text);
+                	if(data.HOMES=='open'){
 	                	$('#status').append('APP已经打开');
                 	}else{
                 		$('#status').append('APP已经关闭');
+                	}
+                	
+                	if(data.GUESS=='open'){
+	                	$('#statusGuess').append('卖出哈哈币已经打开');
+                	}else{
+                		$('#statusGuess').append('卖出哈哈币已经关闭');
                 	}
                 },
                 error: function (text) {
@@ -59,20 +80,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         }
         
         
-        function openOrCloseApp(param) {
+        function openOrCloseApp(param,type) {
             $.ajax({
-                url: "<%=basePath%>api/stock/web/manager/openOrCloseApp?flag="+param,
+                url: "api/stock/web/manager/openOrCloseApp?flag="+param+"&type="+type,
                 data: '',
                 cache: false,
                 success: function (text) {
-                	if(param=='open'){
-	                	mini.alert('打开成功');
-	                	$('#status').empty();
-	                	$('#status').append('APP已经打开');
+                	if('homes'==type){
+	                	if(param=='open'){
+		                	mini.alert('打开成功');
+		                	$('#status').empty();
+		                	$('#status').append('APP已经打开');
+	                	}else{
+	                		mini.alert('关闭成功');
+	                		$('#status').empty();
+	                		$('#status').append('APP已经关闭');
+	                	}
                 	}else{
-                		mini.alert('关闭成功');
-                		$('#status').empty();
-                		$('#status').append('APP已经关闭');
+                		if(param=='open'){
+		                	mini.alert('打开成功');
+		                	$('#statusGuess').empty();
+		                	$('#statusGuess').append('卖出哈哈币已经打开');
+	                	}else{
+	                		mini.alert('关闭成功');
+	                		$('#statusGuess').empty();
+	                		$('#statusGuess').append('卖出哈哈币已经关闭');
+	                	}
                 	}
                 },
                 error: function (text) {

@@ -260,6 +260,7 @@
 		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="ACTUAL_CASH" property="actualFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="referee" property="upLine" jdbcType="VARCHAR"/>
+		<result column="ID" property="userId" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.OtherFundFlowDO" id="resultFundFlowInfo">
@@ -1458,7 +1459,7 @@
 	
 	<select id="queryClientInfo" parameterType="string" resultMap="resultClientInfo">
 		<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />
-		SELECT NICKNAME,
+		SELECT NICKNAME,T.ID,
 		       TELEPHONE,
 		       (SELECT W.BALANCE
 		          FROM STOCK_USER_WALLET W
