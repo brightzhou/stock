@@ -331,13 +331,14 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
+			<ref bean="deductManageFeeTrigger" />
 			<!--  	<ref bean="deductManageFeeTrigger" />
 				<ref bean="caculateFundTrigger"/>
 				<ref bean="receiptJobTrigger"/> 
 				<ref bean="deductManageFeeCurrentTrigger"/>
 				 <ref bean="entrustTrigger"/>
-				-->
 				 <ref bean="financeTrigger"/>
+				-->
 			</list>
 		</property>
 	</bean>

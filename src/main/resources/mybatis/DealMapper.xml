@@ -590,4 +590,8 @@
 		   set g.status = 'P'
 		 WHERE g.id = (select max(id) from stock_crazy_guess k)
     </update>
+    
+    <select id="queryGuessStatus" resultType="string">
+    	select  status from stock_crazy_guess g WHERE g.id = (select max(id) from stock_crazy_guess k)
+    </select>
 </mapper>

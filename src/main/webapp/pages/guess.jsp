@@ -103,8 +103,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         var re = e.record;
         if (re.status=='Y') {
         	return '<span><font color=green>正在进行</font></span>';
-        }else{
+        }else if(re.status=='N'){
         	return '<span><font color=gray>已经结束</font></span>';
+        }else{
+        	return '<span><font color=gray>正在进行</font></span>';
         }
     }
 

@@ -320,6 +320,10 @@ public class StockEntrustController {
 			if (!StringUtils.equals("rise", type) && !StringUtils.equals("fail", type)) {
 				return Constants.CODE_GUESS_INVALID_TYPE;
 			}
+			if (!StringUtils.equals("Y", deal.queryGuessStatus())) {
+				return Constants.CODE_GUESS_NOT_INTIME;
+			}
+
 			return entrust.updateGuess(nickname, num, type, bidCode);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

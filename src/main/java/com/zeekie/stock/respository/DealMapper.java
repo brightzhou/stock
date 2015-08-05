@@ -37,8 +37,8 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public BaseEntrustDO queryEntrustInfo(@Param("nickname") String nickname,
-			@Param("entrustNo") String entrustNo) throws Exception;
+	public BaseEntrustDO queryEntrustInfo(@Param("nickname") String nickname, @Param("entrustNo") String entrustNo)
+			throws Exception;
 
 	/**
 	 * 账户资金查询 注释：目前查询数据库即可。没有再次调用接口
@@ -46,8 +46,7 @@ public interface DealMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public CombassetDO queryCombasset(@Param("nickname") String nickname)
-			throws Exception;
+	public CombassetDO queryCombasset(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 查询当日委托
@@ -55,8 +54,7 @@ public interface DealMapper {
 	 * @param nickname
 	 * @return CurrentEntrustDO
 	 */
-	public List<CurrentEntrustDO> queryEntrust(
-			@Param("nickname") String nickname) throws Exception;
+	public List<CurrentEntrustDO> queryEntrust(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 更新当前委托信息
@@ -75,10 +73,8 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CurrentEntrustDO> queryEntrustHistory(
-			@Param("nickname") String nickname,
-			@Param("startDate") String startDate,
-			@Param("endDate") String endDate) throws Exception;
+	public List<CurrentEntrustDO> queryEntrustHistory(@Param("nickname") String nickname,
+			@Param("startDate") String startDate, @Param("endDate") String endDate) throws Exception;
 
 	/**
 	 * 委托公共查询接口
@@ -87,8 +83,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CurrentEntrustDO> queryEntrustComm(CurrentEntrustDO entrustDO)
-			throws Exception;
+	public List<CurrentEntrustDO> queryEntrustComm(CurrentEntrustDO entrustDO) throws Exception;
 
 	/**
 	 * 通过组合ID查询交易信息
@@ -98,8 +93,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CurrentEntrustDO> queryTradeInfoByCombineId(
-			@Param("combineId") String combineId,
+	public List<CurrentEntrustDO> queryTradeInfoByCombineId(@Param("combineId") String combineId,
 			@Param("entrustTime") String entrustTime) throws Exception;
 
 	/**
@@ -109,8 +103,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public String queryStopFlag(@Param("nickname") String nickname)
-			throws Exception;
+	public String queryStopFlag(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取行数
@@ -118,8 +111,7 @@ public interface DealMapper {
 	 * @param stockCode
 	 * @return
 	 */
-	public long queryStockCodeNum(@Param("stockCode") String stockCode)
-			throws Exception;
+	public long queryStockCodeNum(@Param("stockCode") String stockCode) throws Exception;
 
 	/**
 	 * 获取列表
@@ -127,8 +119,7 @@ public interface DealMapper {
 	 * @param stockPage
 	 * @return
 	 */
-	public List<StockCodeDO> queryStockCode(StockCodePage stockPage)
-			throws Exception;
+	public List<StockCodeDO> queryStockCode(StockCodePage stockPage) throws Exception;
 
 	/**
 	 * 
@@ -142,8 +133,7 @@ public interface DealMapper {
 	 * @param string
 	 * @param string2
 	 */
-	public void updateProductStatus(@Param("code") String string,
-			@Param("status") String string2) throws Exception;
+	public void updateProductStatus(@Param("code") String string, @Param("status") String string2) throws Exception;
 
 	/**
 	 * 获取产品
@@ -151,8 +141,7 @@ public interface DealMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public ProductDO queryProduct(@Param("nickname") String nickname)
-			throws Exception;
+	public ProductDO queryProduct(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 更新哈哈币
@@ -162,8 +151,7 @@ public interface DealMapper {
 	 * @param num
 	 * @throws Exception
 	 */
-	public void updateHhb(@Param("nickname") String nickname,
-			@Param("num") String num) throws Exception;
+	public void updateHhb(@Param("nickname") String nickname, @Param("num") String num) throws Exception;
 
 	/**
 	 * 获取竞猜产品列表总数
@@ -172,8 +160,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public long queryGuessproductTotal(@Param("date") String date)
-			throws Exception;
+	public long queryGuessproductTotal(@Param("date") String date) throws Exception;
 
 	/**
 	 * 获取竞猜产品列表
@@ -182,8 +169,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<GuessProductDO> queryGuessproduct(GuessPage product)
-			throws Exception;
+	public List<GuessProductDO> queryGuessproduct(GuessPage product) throws Exception;
 
 	/**
 	 * 保存竞猜彩票
@@ -195,10 +181,8 @@ public interface DealMapper {
 	 * @param string
 	 * @param string2
 	 */
-	public void saveGuessProduct(@Param("code") String code,
-			@Param("name") String name,
-			@Param("purchaseNum") String purchaseNum,
-			@Param("pumpedPercent") String pumpedPercent) throws Exception;
+	public void saveGuessProduct(@Param("code") String code, @Param("name") String name,
+			@Param("purchaseNum") String purchaseNum, @Param("pumpedPercent") String pumpedPercent) throws Exception;
 
 	/**
 	 * 获取哈哈币的单价
@@ -215,8 +199,7 @@ public interface DealMapper {
 	 * @param type
 	 * @param bidCode
 	 */
-	public void updateGuess(@Param("nickname") String nickname,
-			@Param("num") String num, @Param("type") String type,
+	public void updateGuess(@Param("nickname") String nickname, @Param("num") String num, @Param("type") String type,
 			@Param("bidCode") String bidCode) throws Exception;
 
 	/**
@@ -225,11 +208,9 @@ public interface DealMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public CUrrentGuessProductDO queryCurrentGuessProduct(
-			@Param("nickname") String nickname);
+	public CUrrentGuessProductDO queryCurrentGuessProduct(@Param("nickname") String nickname);
 
-	public void updateGuessResult(@Param("type") String type,
-			@Param("code") String code) throws Exception;
+	public void updateGuessResult(@Param("type") String type, @Param("code") String code) throws Exception;
 
 	/**
 	 * 更新所有猜测结果
@@ -237,8 +218,7 @@ public interface DealMapper {
 	 * @param type
 	 * @param code
 	 */
-	public void updateGuessRecord(@Param("type") String type,
-			@Param("code") String code) throws Exception;
+	public void updateGuessRecord(@Param("type") String type, @Param("code") String code) throws Exception;
 
 	/**
 	 * 更新钱包哈哈币
@@ -257,8 +237,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public String queryHhb(@Param("nickname") String nickname,
-			@Param("num") String num) throws Exception;
+	public String queryHhb(@Param("nickname") String nickname, @Param("num") String num) throws Exception;
 
 	/**
 	 * 扣除哈哈币用于投注
@@ -266,8 +245,7 @@ public interface DealMapper {
 	 * @param nickname
 	 * @param num
 	 */
-	public void modifyhhb(@Param("nickname") String nickname,
-			@Param("num") String num) throws Exception;
+	public void modifyhhb(@Param("nickname") String nickname, @Param("num") String num) throws Exception;
 
 	/**
 	 * 卖出哈哈币，计算钱包余额
@@ -276,9 +254,8 @@ public interface DealMapper {
 	 * @param num
 	 * @param cash
 	 */
-	public void modifyhhbAndBalance(@Param("nickname") String nickname,
-			@Param("num") String num, @Param("cash") String cash)
-			throws Exception;
+	public void modifyhhbAndBalance(@Param("nickname") String nickname, @Param("num") String num,
+			@Param("cash") String cash) throws Exception;
 
 	/**
 	 * 获取历史押注
@@ -287,8 +264,7 @@ public interface DealMapper {
 	 * @param offset
 	 * @return
 	 */
-	public List<GuessHistoryDO> getHistoryGuess(@Param("userId") String userId,
-			@Param("offset") String offset);
+	public List<GuessHistoryDO> getHistoryGuess(@Param("userId") String userId, @Param("offset") String offset);
 
 	/**
 	 * 用户签到表
@@ -296,8 +272,7 @@ public interface DealMapper {
 	 * @param userId
 	 * @throws Exception
 	 */
-	public void updateSignTable(@Param("userId") String userId)
-			throws Exception;
+	public void updateSignTable(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 查询签到情况
@@ -306,8 +281,7 @@ public interface DealMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public String querySignFlag(@Param("userId") String userId)
-			throws Exception;
+	public String querySignFlag(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 签到获取哈哈币
@@ -316,9 +290,7 @@ public interface DealMapper {
 	 */
 	public void updateHhbbyId(@Param("userId") String userId) throws Exception;
 
-	public long queryGuessDetailCount(@Param("bidCode") String bidCode)
-			throws Exception;
-
+	public long queryGuessDetailCount(@Param("bidCode") String bidCode) throws Exception;
 
 	public List<GuessHistoryDO> queryGuessDetail(GuessDetailPage bizCode);
 
@@ -326,5 +298,12 @@ public interface DealMapper {
 	 * 交易日设置状体为
 	 */
 	public void updateGuessStatus();
+
+	/**
+	 * 获取状体
+	 * 
+	 * @return
+	 */
+	public String queryGuessStatus();
 
 }

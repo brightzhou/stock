@@ -39,7 +39,7 @@ public class DeductManageFeeTimer {
 
 	@Autowired
 	private BatchMapper batchMapper;
-	
+
 	@Autowired
 	private DealMapper deal;
 
@@ -61,16 +61,18 @@ public class DeductManageFeeTimer {
 
 	public void deductFee() throws RuntimeException {
 		try {
-			String rightNow = DateUtil.dateToStr(new Date(),
-					DateUtil.FORMAT_YYYY_MM_DD);
+			String rightNow = DateUtil.dateToStr(new Date(), DateUtil.FORMAT_YYYY_MM_DD);
 
 			if (StringUtils.isBlank(trade.selectFeeDay(rightNow))) {
 				if (log.isDebugEnabled()) {
 					log.debug("今天[" + rightNow + "]未设置收取服务费");
 				}
 				return;
-			}else{
-				//开盘日禁止猜大盘,设置为不可买
+			} else {
+				// 开盘日禁止猜大盘,设置为不可买
+				if (log.isDebugEnabled()) {
+					log.debug("开始更新猜大盘状态");
+				}
 				deal.updateGuessStatus();
 			}
 			// 1、更新当前所有操盘用户管理费（相当于计算管理费）
@@ -81,15 +83,13 @@ public class DeductManageFeeTimer {
 			deductAllFee(result);
 
 			// 5、计算所有客户钱包是否充足,不充足需要发短信提醒
-			List<InsufficientBalanceRemindDO> li = acount
-					.queryUserBalanceIsNotEnough();
+			List<InsufficientBalanceRemindDO> li = acount.queryUserBalanceIsNotEnough();
 
 			if (null != li && !li.isEmpty()) {
 				// 短信提醒，充值
 				for (int i = 0; i < li.size(); i++) {
 					InsufficientBalanceRemindDO remindDO = li.get(i);
-					sendRechargeNotice(remindDO.getTelephone(),
-							remindDO.getNickname());
+					sendRechargeNotice(remindDO.getTelephone(), remindDO.getNickname());
 				}
 			}
 		} catch (Exception e) {
@@ -123,8 +123,7 @@ public class DeductManageFeeTimer {
 			return;
 		}
 		// 3、从用户账户中批量扣除管理费
-		batchMapper.batchInsert(TradeMapper.class, "deductManageFeeBatch",
-				result);
+		batchMapper.batchInsert(TradeMapper.class, "deductManageFeeBatch", result);
 
 		List<FundFlowDO> fee = new ArrayList<FundFlowDO>();
 		List<FundFlowDO> drawFeeJh = new ArrayList<FundFlowDO>();
@@ -132,16 +131,16 @@ public class DeductManageFeeTimer {
 		// 4、记录流水
 		for (DeductDO each : result) {
 
-			FundFlowDO flowDO = new FundFlowDO(each.getNickname(),
-					Constants.MANAGEMENT_FEE, "-" + each.getFee(), "技术服务费");
+			FundFlowDO flowDO = new FundFlowDO(each.getNickname(), Constants.MANAGEMENT_FEE, "-" + each.getFee(),
+					"技术服务费");
 			fee.add(flowDO);
 			String nickname = each.getNickname();
 			String referee = acount.queryRefereeNickname(nickname);
 			if (StringUtils.isNotBlank(referee)) {
 				// 2015.2.12 23:09 记录推广人服务费提成
 				String type = Fund.AMORTIZATION.getType();
-				FundFlowDO drawFeeDO = new FundFlowDO(referee, type, "+"
-						+ each.getDrawFee(), Fund.getDesc(nickname, type));
+				FundFlowDO drawFeeDO = new FundFlowDO(referee, type, "+" + each.getDrawFee(),
+						Fund.getDesc(nickname, type));
 				drawFeeJh.add(drawFeeDO);
 			}
 		}
@@ -150,20 +149,17 @@ public class DeductManageFeeTimer {
 
 		// 4、2记录流水
 		batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", fee);
-		batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch",drawFeeJh);
+		batchMapper.batchInsert(TradeMapper.class, "addFlowFundBatch", drawFeeJh);
 
 	}
 
 	private void sendRechargeNotice(String phone, String nickname) {
 		if (StringUtils.isNotBlank(phone)) {
-			if (!ApiUtils.send(Constants.MODEL_NOTICE_RECHARGE_FN, phone,
-					nickname)) {
-				log.error("send recharge notice failure,nickname:" + nickname
-						+ ",reason call api is wrong");
+			if (!ApiUtils.send(Constants.MODEL_NOTICE_RECHARGE_FN, phone, nickname)) {
+				log.error("send recharge notice failure,nickname:" + nickname + ",reason call api is wrong");
 			}
 		} else {
-			log.error("send recharge notice failure,nickname:" + nickname
-					+ ",reason telephone is null");
+			log.error("send recharge notice failure,nickname:" + nickname + ",reason telephone is null");
 		}
 	}
 
