@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import sitong.thinker.common.exception.ServiceInvokerException;
-import sitong.thinker.common.page.DefaultPage;
-import sitong.thinker.common.page.PageQuery;
-import sitong.thinker.common.util.mybatis.BatchMapper;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AddCashErrorDO;
@@ -70,6 +62,13 @@ import com.zeekie.stock.web.StatisticsPage;
 import com.zeekie.stock.web.StockCodePage;
 import com.zeekie.stock.web.TotalFundPage;
 import com.zeekie.stock.web.WithdrawlPage;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import sitong.thinker.common.exception.ServiceInvokerException;
+import sitong.thinker.common.page.DefaultPage;
+import sitong.thinker.common.page.PageQuery;
+import sitong.thinker.common.util.mybatis.BatchMapper;
 
 @Service
 @Transactional
@@ -662,9 +661,18 @@ public class WebServiceImpl implements WebService {
 	public String sendMsgToAll(String data) throws ServiceInvokerException {
 		JSONObject jo = JSONObject.fromObject(data);
 		String message = jo.getString("message");
+		String type = jo.getString("type");
+		String nickname = jo.getString("user");
 		try {
 			if (StringUtils.isNotBlank(message)) {
-				handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE, message);
+				
+				if(StringUtils.equals(Constants.CODE_SUCCESS, type)){
+					handler.handleJob(Constants.TYPE_JOB_SENDCHAT_NOTICE, message);
+					Map<String,String> map = new HashMap<String, String>();
+				}else{
+					handler.handleJob(Constants.TYPE_JOB_SENDMSG_NOTICE, message);
+				}
+				
 			}
 
 		} catch (Exception e) {

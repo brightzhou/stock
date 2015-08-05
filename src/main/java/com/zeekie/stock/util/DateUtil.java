@@ -203,5 +203,35 @@ public class DateUtil {
 			throw new ParseException(e.getMessage(), 0);
 		}
 	}
+	
+	public static boolean compareDate(String start, String end,String nowdate)
+			throws ParseException {
+
+		Date date = new Date(nowdate);
+		int pos = end.indexOf("+");
+		Date endDate = date;
+		if (pos != -1) {
+			Calendar cal = Calendar.getInstance();
+			String time = end.substring(0, pos).trim();
+			int days = Integer.valueOf(end.substring(pos + 1).trim());
+			cal.setTime(date);
+			cal.add(Calendar.DATE, days);
+			end = time;
+			endDate = cal.getTime();
+		}
+
+		String now = formatDate(date, DATE_FORMATS[0]);
+		String beginTime = formatDate(date, DATE_FORMATS[1]) + " " + start;
+		String endTime = formatDate(endDate, DATE_FORMATS[1]) + " " + end;
+		try {
+			Date d1 = df.parse(now);
+			Date d2 = df.parse(endTime);
+			Date d3 = df.parse(beginTime);
+			return ((d2.getTime() - d1.getTime()) > 0l)
+					&& ((d1.getTime() - d3.getTime()) > 0l);
+		} catch (ParseException e) {
+			throw new ParseException(e.getMessage(), 0);
+		}
+	}
 
 }

@@ -69,12 +69,9 @@ public class StockEntrustController {
 
 	@ResponseBody
 	@RequestMapping("common/entrust")
-	public String entrust(@RequestParam("nickname") String nickname,
-			@RequestParam("stockCode") String stockCode,
-			@RequestParam("entrustAmount") String entrustAmount,
-			@RequestParam("entrustPrice") String entrustPrice,
-			@RequestParam("entrustDirection") String entrustDirection)
-			throws Exception {
+	public String entrust(@RequestParam("nickname") String nickname, @RequestParam("stockCode") String stockCode,
+			@RequestParam("entrustAmount") String entrustAmount, @RequestParam("entrustPrice") String entrustPrice,
+			@RequestParam("entrustDirection") String entrustDirection) throws Exception {
 
 		if (!DateUtil.compareDate(startTime, endTime)) {
 			return "不在交易时间内";
@@ -98,8 +95,7 @@ public class StockEntrustController {
 		List<String> code = deal.queryAllStockCode();
 
 		for (String item : code) {
-			if (StringUtils.startsWith(stockCode, item)
-					|| StringUtils.equals(stockCode, item)) {
+			if (StringUtils.startsWith(stockCode, item) || StringUtils.equals(stockCode, item)) {
 				if (log.isDebugEnabled()) {
 					log.debug("不能买入" + stockCode + "的股票");
 				}
@@ -107,8 +103,7 @@ public class StockEntrustController {
 				// return Constants.CODE_STOCK_lIMIT;
 			}
 		}
-		return entrust.entrust(nickname, stockCode, entrustAmount,
-				entrustPrice, entrustDirection);
+		return entrust.entrust(nickname, stockCode, entrustAmount, entrustPrice, entrustDirection);
 	}
 
 	@ResponseBody
@@ -120,8 +115,7 @@ public class StockEntrustController {
 
 	@ResponseBody
 	@RequestMapping("combasset/query")
-	public ApiResponse<?> queryCombasset(
-			@RequestParam("nickname") String nickname) {
+	public ApiResponse<?> queryCombasset(@RequestParam("nickname") String nickname) {
 		JSONObject jo = entrust.queryCombasset(nickname);
 		return (null != jo) ? ApiUtils.good(jo) : ApiUtils.good();
 	}
@@ -156,19 +150,15 @@ public class StockEntrustController {
 	 */
 	@ResponseBody
 	@RequestMapping("history/query")
-	public ApiResponse<?> queryhistory(
-			@RequestParam("nickname") String nickname,
-			@RequestParam("startDate") String startDate,
-			@RequestParam("endDate") String endDate) {
+	public ApiResponse<?> queryhistory(@RequestParam("nickname") String nickname,
+			@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
 		try {
 			CurrentEntrustDO entrustDO = new CurrentEntrustDO();
 			entrustDO.setNickName(nickname);
-			entrustDO.setStartDate(StringUtil.isNotBlank(startDate) ? startDate
-					+ " 00:00:00" : null);
-			entrustDO.setEndDate(StringUtil.isNotBlank(endDate) ? endDate
-					+ " 23:59:29" : null);
-			entrustDO.setStatusArray(new String[] { "1", "4", "5", "6", "7",
-					"8", "9", "a", "A", "B", "C", "D", "E", "F" });
+			entrustDO.setStartDate(StringUtil.isNotBlank(startDate) ? startDate + " 00:00:00" : null);
+			entrustDO.setEndDate(StringUtil.isNotBlank(endDate) ? endDate + " 23:59:29" : null);
+			entrustDO.setStatusArray(
+					new String[] { "1", "4", "5", "6", "7", "8", "9", "a", "A", "B", "C", "D", "E", "F" });
 			JSONArray ja = entrust.queryEntrustComm(entrustDO);
 			if (null != ja) {
 				return ApiUtils.good(ja);
@@ -209,19 +199,13 @@ public class StockEntrustController {
 	 */
 	@ResponseBody
 	@RequestMapping("history/traded/query")
-	public ApiResponse<?> queryHistoryTraded(
-			@RequestParam("nickname") String nickname,
-			@RequestParam("startDate") String startDate,
-			@RequestParam("endDate") String endDate) {
+	public ApiResponse<?> queryHistoryTraded(@RequestParam("nickname") String nickname,
+			@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
 		try {
 			CurrentEntrustDO entrustDO = new CurrentEntrustDO();
 			entrustDO.setNickName(nickname);
-			entrustDO
-					.setStartDate(StringUtil.isNotBlank(startDate) ? (startDate + " 00:00:00")
-							: null);
-			entrustDO
-					.setEndDate(StringUtil.isNotBlank(endDate) ? (endDate + " 23:59:29")
-							: null);
+			entrustDO.setStartDate(StringUtil.isNotBlank(startDate) ? (startDate + " 00:00:00") : null);
+			entrustDO.setEndDate(StringUtil.isNotBlank(endDate) ? (endDate + " 23:59:29") : null);
 			entrustDO.setAmentrustStatus("7");
 			JSONArray ja = entrust.queryEntrustComm(entrustDO);
 			if (null != ja) {
@@ -241,8 +225,7 @@ public class StockEntrustController {
 	 */
 	@ResponseBody
 	@RequestMapping("combostock/query")
-	public ApiResponse<?> queryCombostock(
-			@RequestParam("nickname") String nickname) {
+	public ApiResponse<?> queryCombostock(@RequestParam("nickname") String nickname) {
 		try {
 			JSONArray jo = entrust.queryCombostock(nickname);
 			if (null != jo) {
@@ -313,8 +296,8 @@ public class StockEntrustController {
 	 */
 	@ResponseBody
 	@RequestMapping("hhb/purchase")
-	public String purchaseHhb(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+	public String purchaseHhb(@RequestParam("nickname") String nickname, @RequestParam("num") String num,
+			@RequestParam("cash") String cash) {
 		try {
 			return entrust.purchaseHhb(nickname, num, cash);
 		} catch (Exception e) {
@@ -331,29 +314,12 @@ public class StockEntrustController {
 	 */
 	@ResponseBody
 	@RequestMapping("guess")
-	public String guess(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("type") String type,
-			@RequestParam("bidCode") String bidCode) {
+	public String guess(@RequestParam("nickname") String nickname, @RequestParam("num") String num,
+			@RequestParam("type") String type, @RequestParam("bidCode") String bidCode) {
 		try {
-			if (!StringUtils.equals("rise", type)
-					&& !StringUtils.equals("fail", type)) {
+			if (!StringUtils.equals("rise", type) && !StringUtils.equals("fail", type)) {
 				return Constants.CODE_GUESS_INVALID_TYPE;
 			}
-
-			String rightNow = DateUtil.dateToStr(new Date(),
-					DateUtil.FORMAT_YYYY_MM_DD);
-
-			if (StringUtils.isNotBlank(trade.selectFeeDay(rightNow))) {
-				// 判断是否在购买时间范围内 15:30到第二天早上9:00
-				if (!DateUtil.compareDate(guessStartTime, guessEndTime)) {
-					return Constants.CODE_GUESS_NOT_INTIME;
-				}
-			} else {
-				if (log.isDebugEnabled()) {
-					log.debug("今天[" + rightNow + "]是非交易日，不用设置时间门槛");
-				}
-			}
-
 			return entrust.updateGuess(nickname, num, type, bidCode);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -369,8 +335,8 @@ public class StockEntrustController {
 	 */
 	@ResponseBody
 	@RequestMapping("hhb/sell")
-	public String guess(@RequestParam("nickname") String nickname,
-			@RequestParam("num") String num, @RequestParam("cash") String cash) {
+	public String sell(@RequestParam("nickname") String nickname, @RequestParam("num") String num,
+			@RequestParam("cash") String cash) {
 		try {
 			return entrust.sell(nickname, num, cash);
 		} catch (Exception e) {
@@ -385,13 +351,10 @@ public class StockEntrustController {
 		HomsEntity400 entity400 = new HomsEntity400(stockCode, exchangeType);
 		CallhomesService service = new CallhomesService(entity400);
 		if (service.call400Fun()) {
-			Homes400Resp resp = (Homes400Resp) service
-					.getResponse(Constants.FN400);
+			Homes400Resp resp = (Homes400Resp) service.getResponse(Constants.FN400);
 			Float closePrice = resp.getClosePrice();
-			Float endPrice = StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat((closePrice * 1.1) + ""));
-			Float startPrice = StringUtil.keepTwoDecimalFloat(Float
-					.parseFloat((closePrice * 0.9) + ""));
+			Float endPrice = StringUtil.keepTwoDecimalFloat(Float.parseFloat((closePrice * 1.1) + ""));
+			Float startPrice = StringUtil.keepTwoDecimalFloat(Float.parseFloat((closePrice * 0.9) + ""));
 			return (startPrice <= value && value <= endPrice);
 		}
 		return false;
@@ -399,8 +362,7 @@ public class StockEntrustController {
 
 	@ResponseBody
 	@RequestMapping("guess/history/query")
-	public ApiResponse getHistoryGuess(@RequestParam("userId") String userId,
-			@RequestParam("offset") String offset) {
+	public ApiResponse getHistoryGuess(@RequestParam("userId") String userId, @RequestParam("offset") String offset) {
 		return ApiUtils.good(entrust.getHistoryGuess(userId, offset));
 	}
 

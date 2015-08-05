@@ -20,6 +20,7 @@ import com.zeekie.stock.entity.FundFlowDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.respository.AcountMapper;
+import com.zeekie.stock.respository.DealMapper;
 import com.zeekie.stock.respository.TradeMapper;
 import com.zeekie.stock.util.ApiUtils;
 import com.zeekie.stock.util.DateUtil;
@@ -38,6 +39,9 @@ public class DeductManageFeeTimer {
 
 	@Autowired
 	private BatchMapper batchMapper;
+	
+	@Autowired
+	private DealMapper deal;
 
 	@Autowired
 	@Value("${stock.deduct.management.fee.radio}")
@@ -65,6 +69,9 @@ public class DeductManageFeeTimer {
 					log.debug("今天[" + rightNow + "]未设置收取服务费");
 				}
 				return;
+			}else{
+				//开盘日禁止猜大盘,设置为不可买
+				deal.updateGuessStatus();
 			}
 			// 1、更新当前所有操盘用户管理费（相当于计算管理费）
 			trade.updateManageFeeBatch("");

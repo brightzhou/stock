@@ -124,13 +124,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	
     	if(re.status!='N'){
     		//提前不可设置
-    		var curr = new Date();
-    		if(Date.parse(begin) < curr && curr< Date.parse(end)){
-    			return  "<a class='New_Button' href=javascript:setResults('rise','"+re.code+"')><font size=3px color=blue>涨</font></a>"
-                + "&nbsp;&nbsp;&nbsp;&nbsp;<a class='New_Button' href=javascript:setResults('fail','"+re.code+"')><font size=3px color=blue>跌</font></a>"  	
+   			return  "<a class='New_Button' href=javascript:setResults('rise','"+re.code+"')><font size=3px color=blue>涨</font></a>"
+               + "&nbsp;&nbsp;&nbsp;&nbsp;<a class='New_Button' href=javascript:setResults('fail','"+re.code+"')><font size=3px color=blue>跌</font></a>"  	
+/*     		var curr = new Date();
+    		if(Date.parse(begin) < curr  && curr< Date.parse(end) ){
     		}else{
     			return  '未到公布结果时间';  		
-    		}
+    		} */
     	}else{
     		return '<span><font size=4px color=red>'+re.guessResult+'</font></span>';
     	}

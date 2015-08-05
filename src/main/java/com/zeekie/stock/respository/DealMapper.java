@@ -321,4 +321,10 @@ public interface DealMapper {
 
 
 	public List<GuessHistoryDO> queryGuessDetail(GuessDetailPage bizCode);
+
+	/**
+	 * 交易日设置状体为
+	 */
+	public void updateGuessStatus();
+
 }

@@ -36,27 +36,28 @@ public class EasemobMessages {
 	private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
 			Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
 
-//	public static String sendMsg(String content, List<UserBean> users) {
-//		String from = "system";
-//		String targetTypeus = "users";
-//		ObjectNode ext = factory.objectNode();
-//		ArrayNode targetusers = factory.arrayNode();
-//		try {
-//			for (int i = 0; i < users.size(); i++) {
-//				targetusers.add(users.get(i).getUserid());
-//				if (i % 30 == 0) {
-//					Thread.sleep(1000);
-//				}
-//			}
-//		} catch (Exception e) {
-//		}
-//		ObjectNode txtmsg = factory.objectNode();
-//		txtmsg.put("msg", content);
-//		txtmsg.put("type", "txt");
-//		ext.put("time", System.currentTimeMillis() + "");
-//		ObjectNode sendTxtMessageusernode = sendMessages(targetTypeus, targetusers, txtmsg, from, ext);
-//		return sendTxtMessageusernode.toString();
-//	}
+	public static String sendMsg(String content, List<String> users) {
+		String from = "system";
+		String targetTypeus = "users";
+		ObjectNode ext = factory.objectNode();
+		ArrayNode targetusers = factory.arrayNode();
+		try {
+			for (int i = 0; i < users.size(); i++) {
+				targetusers.add(users.get(i));
+				if (i % 30 == 0) {
+					Thread.sleep(1000);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		ObjectNode txtmsg = factory.objectNode();
+		txtmsg.put("msg", content);
+		txtmsg.put("type", "txt");
+		ext.put("time", System.currentTimeMillis() + "");
+		ObjectNode sendTxtMessageusernode = sendMessages(targetTypeus, targetusers, txtmsg, from, ext);
+		return sendTxtMessageusernode.toString();
+	}
 
 	public static String sendCMDMsg(String name, String id) {
 		String from = "systemCMD";

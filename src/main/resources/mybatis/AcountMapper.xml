@@ -359,6 +359,7 @@
  
  	<resultMap type="com.zeekie.stock.entity.DownLineUserDO" id="resultDownUser">
 		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="ID" property="userId" jdbcType="VARCHAR"/>
 		<result column="TRADE_FUND" property="tradeFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="TOTAL_FINANCE_LIMIT" property="totalFinanceFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap> 
@@ -1697,7 +1698,7 @@
    </select>
    
    <select id="getDownUser" parameterType="string" resultMap="resultDownUser">
-		SELECT S.NICKNAME,
+		SELECT S.NICKNAME,S.ID,
 		       (SELECT TRADE_FUND
 		          FROM STOCK_USER_OPERATE_MAININFO M
 		         WHERE M.NICKNAME = S.NICKNAME
@@ -1727,12 +1728,16 @@
    </select>
    
    <select id="queryCustomerCare" resultMap="resultCustomerCare">
-   		select id ,username,isonline from STOCK_CUSTOMER_CARE
+   		select id ,username,isonline from STOCK_CUSTOMER_CARE where isonline='1'
    </select>
    
    <insert id="updateAdvise" parameterType="string">
    		insert into STOCK_CUSTOMER_CARE_Evaluation values(#{username},#{id},#{servicename},#{grade})
    </insert>
+   
+   <select id="queryAllUserId" resultType="string">
+   		select id from stock_user
+   </select>
 	
 </mapper>
 

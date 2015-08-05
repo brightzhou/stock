@@ -750,4 +750,11 @@ public interface AcountMapper {
 			@Param("servicename") String servicename,
 			@Param("grade") String grade) throws Exception;
 
+	/**
+	 * 查询所有的用户id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> queryAllUserId()throws Exception;
+
 }

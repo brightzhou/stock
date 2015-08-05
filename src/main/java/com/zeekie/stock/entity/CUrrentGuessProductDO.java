@@ -3,6 +3,11 @@ package com.zeekie.stock.entity;
 public class CUrrentGuessProductDO {
 
 	/**
+	 * 确定是否在时间范围内
+	 */
+	private String isInTime = "N";
+
+	/**
 	 * 产品代码
 	 */
 	private String bidCode;
@@ -41,6 +46,27 @@ public class CUrrentGuessProductDO {
 	 * 竞猜结果
 	 */
 	private String guessResult;
+
+	/**
+	 * 发布时间
+	 */
+	private String publishTime;
+
+	public String getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(String publishTime) {
+		this.publishTime = publishTime;
+	}
+
+	public String getIsInTime() {
+		return isInTime;
+	}
+
+	public void setIsInTime(String isInTime) {
+		this.isInTime = isInTime;
+	}
 
 	/**
 	 * @return the bidCode

@@ -213,6 +213,8 @@ public class Constants {
 	public static String TYPE_JOB_REDPACKET_NOTICE = "redpacketNotice";
 
 	public static String TYPE_JOB_SENDMSG_NOTICE = "sendMessageToAll";
+	
+	public static String TYPE_JOB_SENDCHAT_NOTICE = "sendCHATToAll";
 
 	public static Map<String, String> MSG_MODEL = null;
 

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.zeekie.stock.Constants;
-import com.zeekie.stock.chat.HxRegister;
+import com.zeekie.stock.chat.Hxhelper;
 import com.zeekie.stock.entity.LoginDO;
 import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.form.RegisterForm;
@@ -95,7 +95,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 			Constants.user.add(nickname);
 			
 			//注册到环信
-			HxRegister.registhx(String.valueOf(id));
+			Hxhelper.registhx(String.valueOf(id));
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

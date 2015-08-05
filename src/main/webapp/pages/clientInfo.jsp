@@ -28,6 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                        <input id="key" class="mini-textbox" emptyText="请输入昵称/姓名/手机" style="width:150px;" onenter="onKeyEnter"/>   
 	                        <a class="mini-button" onclick="search()">查询</a>&nbsp;&nbsp;
 	                        <a class="mini-button" onclick="sendMsg()">短信群发</a>&nbsp;&nbsp;
+	                        <a class="mini-button" onclick="sendNotice('all')">发消息通知</a>&nbsp;&nbsp;
 	                        <a class="mini-button" iconCls="icon-save" onclick="saveData()">保存</a>
 	                    </td>
 	                </tr>
@@ -129,7 +130,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     function operation(e){
       	var re = e.record;
-    	return '<span class="link_2"><a  onclick="sendRedPacket(\''+re.nickname+'\',\''+re.phone+'\')">发红包</a></span>&nbsp;&nbsp;';
+    	return '<span class="link_2"><a  onclick="sendRedPacket(\''+re.nickname+'\',\''+re.phone+'\')">发红包</a></span>&nbsp;&nbsp;'+
+    	'<span class="link_2"><a  onclick="sendNotice(\''+re.nickname+'\')">发红包</a></span>&nbsp;&nbsp;';
     }
     
     function sendRedPacket(nickname,phone){
@@ -158,8 +160,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
     }
     
+    function sendNotice(nickname){
+    	var url = "pages/sendNotice.jsp";
+		mini.open({
+			url : url,
+			title : "发红包",
+			width : 500,
+			height : 350,
+			onload : function() {
+				var iframe = this.getIFrameEl();
+				var data = { text: nickname};
+				iframe.contentWindow.SetData(data); 
+			},
+			currentWindow:true,
+			ondestroy : function(action) {
+				/* if('cancel'!=action){
+					grid.load();
+				} */
+			}
+		});
+    }
+    
     function sendMsg(){
-    	var url = "<%=basePath%>pages/sendMsgPage.jsp";
+    	var url = "pages/sendMsgPage.jsp";
 		mini.open({
 			url : url,
 			title : "发红包",

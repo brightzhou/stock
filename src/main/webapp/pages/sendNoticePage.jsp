@@ -6,7 +6,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>群发短信</title>
+<title>群发通知</title>
 	<base href="<%=basePath%>"/>
 	<script src="scripts/base/jquery-1.8.3.min.js" type="text/javascript"></script>
 	<script src="scripts/sui/mini-all-min.js" type="text/javascript"></script>
@@ -23,13 +23,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="mini-fit" id="datagrid">
 		<div align="center" style="padding-top: 30px">
 			<table style="width:80%;">
-			    <tr>
+				<tr>
                     <td class="mini-item_18">
-                                              短信内容：
+                                              用户：
                     </td>
                     <td class="mini-content_32">
-                      <input id="key" class="mini-textbox" value="0" name="type" type="hidden"/>  
+                    	<input id="user" name="user" class="mini-textbox" style="width: 60%;" value="" enabled="false" />
+                    </td>
+				</tr>
+			    <tr>
+                    <td class="mini-item_18">
+                                             通知内容：
+                    </td>
+                    <td class="mini-content_32">
                  	  <textarea class="mini-textarea" name="message" emptyText="请输入短信内容，长度不超过80个字.内容为空将不发送短信" required id="message" maxLength="80" validateOnLeave="true" width="300px" height="100px"></textarea>
+                 	   <input id="key" class="mini-textbox" value="1" name="type" type="hidden"/>   
                     </td>
 				</tr>
 				<tr></tr>
@@ -52,7 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 </form>
 <script type="text/javascript">
     mini.parse();
-    var gridUrl = "<%=basePath%>/api/stock/web/manager/sendMsgToAll";
+    var gridUrl = "api/stock/web/manager/sendMsgToAll";
     function handle(type) {
 		if (type == 'sure') {
 			var form = new mini.Form("form1");
@@ -85,8 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     function SetData(data) {
        data = mini.clone(data);
-       mini.get("nickname").setValue(data.text);
-       mini.get("telephone").setValue(data.telephone); 
+       mini.get("user").setValue(data.text);
     }
     
 	function CloseWindow(action) {

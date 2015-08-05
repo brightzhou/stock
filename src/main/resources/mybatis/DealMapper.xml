@@ -66,6 +66,7 @@
 		<result column="Purchase_Num" property="perNum" jdbcType="VARCHAR"/>
 		<result column="Guess_Status" property="isGuessed" jdbcType="VARCHAR"/>
 		<result column="Guess_Result" property="guessResult" jdbcType="VARCHAR"/>
+		<result column="Publish_Time" property="publishTime" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.GuessHistoryDO" id="resultHistoryGuess">
@@ -74,7 +75,7 @@
 		<result column="GUESS_STATUS" property="guessStatus" jdbcType="VARCHAR"/>
 		<result column="ACTUAL_RESULT" property="actualStatus" jdbcType="VARCHAR"/>
 		<result column="PROFIT_NUM" property="profitNum" jdbcType="VARCHAR"/>
-		<!-- <result column="PURCHASE_NUM" property="purchaseNum" jdbcType="VARCHAR"/> -->
+		<result column="PURCHASE_NUM" property="purchaseNum" jdbcType="VARCHAR"/>
 		<result column="PURCHASE_TIME" property="purchaseTime" jdbcType="VARCHAR"/>
 		<result column="CORRECTNUM" property="correctNum" jdbcType="VARCHAR"/>
 		<result column="FAILNUM" property="failNum" jdbcType="VARCHAR"/>
@@ -404,45 +405,49 @@
     </select>
     
     <select id="queryCurrentGuessProduct" parameterType="string" resultMap="resultCurrentGuessProduct">
-	    Select g.Bid_Code,
-		       Name,
-		       Purchase_Num,
-		       Status,
-		       Guess_Result,
-		       round(((Select Count(1)
-		           From Stock_Guess_Up_Down s
-		          Where s.Bid_Code = g.Bid_Code
-		            And s.Guess_Status = 'rise') /
-		       (Select (CASE
-		                  WHEN COUNT(1) = 0 THEN
-		                   1
-		                  ELSE
-		                   COUNT(1)
-		                END)
-		           From Stock_Guess_Up_Down s
-		          Where s.Bid_Code = g.Bid_Code)),2) Risepercent,
-		       round(((Select Count(1)
-		           From Stock_Guess_Up_Down s
-		          Where s.Bid_Code = g.Bid_Code
-		            And s.Guess_Status = 'fail') /
-		       (Select (CASE
-		                  WHEN COUNT(1) = 0 THEN
-		                   1
-		                  ELSE
-		                   COUNT(1)
-		                END)
-		           From Stock_Guess_Up_Down s
-		          Where s.Bid_Code = g.Bid_Code)),2)Failpercent,
-		       (Select u.Guess_Status
-		          From Stock_Guess_Up_Down u
-		         Where u.Bid_Code = g.Bid_Code
-		           And Exists (Select 1
-		                  From Stock_User k
-		                 Where k.Id = u.User_Id
-		                   And k.Nickname = #{nickname})) Guess_Status
-		  From Stock_Crazy_Guess g
-		 Where status = 'Y'
-		 Order By g.Publish_Time Desc
+		select *
+		  from (Select g.Bid_Code,
+		               Name,
+		               Purchase_Num,
+		               Status,
+		               Guess_Result,
+		               round(((Select Count(1)
+		                         From Stock_Guess_Up_Down s
+		                        Where s.Bid_Code = g.Bid_Code
+		                          And s.Guess_Status = 'rise') /
+		                     (Select (CASE
+		                                WHEN COUNT(1) = 0 THEN
+		                                 1
+		                                ELSE
+		                                 COUNT(1)
+		                              END)
+		                         From Stock_Guess_Up_Down s
+		                        Where s.Bid_Code = g.Bid_Code)),
+		                     2) Risepercent,
+		               round(((Select Count(1)
+		                         From Stock_Guess_Up_Down s
+		                        Where s.Bid_Code = g.Bid_Code
+		                          And s.Guess_Status = 'fail') /
+		                     (Select (CASE
+		                                WHEN COUNT(1) = 0 THEN
+		                                 1
+		                                ELSE
+		                                 COUNT(1)
+		                              END)
+		                         From Stock_Guess_Up_Down s
+		                        Where s.Bid_Code = g.Bid_Code)),
+		                     2) Failpercent,
+		               (Select u.Guess_Status
+		                  From Stock_Guess_Up_Down u
+		                 Where u.Bid_Code = g.Bid_Code
+		                   And Exists (Select 1
+		                          From Stock_User k
+		                         Where k.Id = u.User_Id
+		                           And k.Nickname = #{nickname})) Guess_Status,
+		                 TO_CHAR(g.Publish_Time, 'yyyy-mm-dd') Publish_Time        
+		          From Stock_Crazy_Guess g
+		         Order By g.Publish_Time Desc) u
+		 where rownum = 1
     </select>
     
     <insert id="updateGuess" parameterType="string">
@@ -578,6 +583,11 @@
 		  	 u.bid_code = #{bidCode}
 		  </where>
     	<include refid="com.zeekie.stock.service.PageMappper.PagePostfix" />
-    	
     </select>
+    
+    <update id="updateGuessStatus">
+    	update stock_crazy_guess g
+		   set g.status = 'P'
+		 WHERE g.id = (select max(id) from stock_crazy_guess k)
+    </update>
 </mapper>

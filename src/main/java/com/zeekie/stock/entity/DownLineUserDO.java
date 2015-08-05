@@ -2,9 +2,19 @@ package com.zeekie.stock.entity;
 
 public class DownLineUserDO {
 
+	private String userId;
+
 	private String nickname;
 
 	private Float tradeFund;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	/**
 	 * 总的理财金额

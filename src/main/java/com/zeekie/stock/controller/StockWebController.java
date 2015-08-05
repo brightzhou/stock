@@ -555,7 +555,7 @@ public class StockWebController {
 			return webService.sendMsgToAll(data);
 		} catch (ServiceInvokerException e) {
 			log.error("sendRedPacket error happened:", e.getMessage());
-			return "0";
+			return Constants.CODE_FAILURE;
 		}
 	}
 
