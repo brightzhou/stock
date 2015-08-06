@@ -307,6 +307,7 @@
 		<result column="Hasoperation" property="hasOperation" jdbcType="VARCHAR"/>
 		<result column="PROGRESSBAR" property="progressbar" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="fee" property="fee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
 	
@@ -1574,7 +1575,12 @@
 		              (Select w.Debt
 		                 From Stock_User_Wallet w
 		                Where w.Nickname = u.Nickname)) Hasdebt,
-		        (select w.balance from stock_user_wallet w where w.Nickname = u.Nickname) balance        
+		        (select w.balance from stock_user_wallet w where w.Nickname = u.Nickname) balance,
+		   (SELECT T.TRADE_FUND * R.FEE_RADIO
+	          FROM STOCK_USER_OPERATE_MAININFO T, STOCK_FUND_ASSIGN_RADIO R
+	         WHERE T.IS_CURRENT = '1'
+	           AND T.NICKNAME = R.NICKNAME
+	           AND T.NICKNAME = u.NICKNAME) fee
 		  From Stock_User u
 		  where u.id = #{userId}
 	</select>

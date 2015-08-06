@@ -1120,6 +1120,7 @@ public class StockServiceImpl implements TradeService {
 						andDebtDO.getDebt() == null ? "" : andDebtDO.getDebt());
 				map.put("balance", andDebtDO.getBalance() + "");
 				map.put("desc", "20:00到次日8：30交易系统清算中");
+				map.put("fee", andDebtDO.getFee()+"");
 
 				/** start 放入杠杆倍数 update 20150616 */
 				if ("1".equals(andDebtDO.getOperation())) {
@@ -1140,6 +1141,7 @@ public class StockServiceImpl implements TradeService {
 				map.put("debt", "");
 				map.put("balance", "");
 				map.put("desc", "20:00到次日8：30交易系统清算中");
+				map.put("fee", "0");
 				/** start 放入杠杆倍数 */
 				DictionariesDO dictionariesDO = trade
 						.getDictionariesByDicWord("assignRadio");

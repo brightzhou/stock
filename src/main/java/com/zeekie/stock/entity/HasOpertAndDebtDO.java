@@ -8,6 +8,16 @@ public class HasOpertAndDebtDO {
 
 	private Float balance;
 
+	private Float fee;
+
+	public Float getFee() {
+		return fee;
+	}
+
+	public void setFee(Float fee) {
+		this.fee = fee;
+	}
+
 	/**
 	 * @return the balance
 	 */

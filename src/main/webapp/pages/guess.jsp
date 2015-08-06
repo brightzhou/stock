@@ -196,10 +196,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		return;
     	}
     	
-    	if(new Date()<Date.parse(dB)){
+/*     	if(new Date()<Date.parse(dB)){
     		mini.alert('15:30以后方可设置');
     		return;
-    	}
+    	} */
     	
     	var url = "pages/guess_sub.jsp";
 		mini.open({

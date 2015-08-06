@@ -81,6 +81,7 @@
 	<resultMap type="com.zeekie.stock.entity.HasOpertAndDebtDO" id="resultHasSth">
 		<result column="Debt" property="debt" jdbcType="VARCHAR"/>
 		<result column="operation" property="operation" jdbcType="VARCHAR"/>
+		<result column="fee" property="fee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
@@ -590,7 +591,12 @@
 		          From Stock_User_Operate_Maininfo m
 		         Where m.Is_Current = '1'
 		           And m.Nickname = w.Nickname) operation,
-		       w.balance
+		       w.balance,
+		(SELECT T.TRADE_FUND * R.FEE_RADIO
+          FROM STOCK_USER_OPERATE_MAININFO T, STOCK_FUND_ASSIGN_RADIO R
+         WHERE T.IS_CURRENT = '1'
+           AND T.NICKNAME = R.NICKNAME
+           AND T.NICKNAME = W.NICKNAME) fee
 		  From Stock_User_Wallet w
 		 Where w.Nickname = #{nickname}
 	</select>

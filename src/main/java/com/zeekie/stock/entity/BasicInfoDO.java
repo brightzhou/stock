@@ -10,11 +10,19 @@ public class BasicInfoDO {
 
 	private Float balance;
 
-	private Float progressbar;
-	/**当前炒盘倍数  add 20150610  */
-	private  Float assignRadio;
+	private Float fee;
 
- 
+	private Float progressbar;
+	/** 当前炒盘倍数 add 20150610 */
+	private Float assignRadio;
+
+	public Float getFee() {
+		return fee;
+	}
+
+	public void setFee(Float fee) {
+		this.fee = fee;
+	}
 
 	public Float getAssignRadio() {
 		return assignRadio;
