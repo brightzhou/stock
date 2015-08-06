@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                               短信内容：
                     </td>
                     <td class="mini-content_32">
-                      <input id="key" class="mini-textbox" value="0" name="type" type="hidden"/>  
+                      <input id="type" class="mini-hidden" value="0" name="type" type="hidden"/>   
                  	  <textarea class="mini-textarea" name="message" emptyText="请输入短信内容，长度不超过80个字.内容为空将不发送短信" required id="message" maxLength="80" validateOnLeave="true" width="300px" height="100px"></textarea>
                     </td>
 				</tr>
@@ -52,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 </form>
 <script type="text/javascript">
     mini.parse();
-    var gridUrl = "<%=basePath%>/api/stock/web/manager/sendMsgToAll";
+    var gridUrl = "api/stock/web/manager/sendMsgToAll";
     function handle(type) {
 		if (type == 'sure') {
 			var form = new mini.Form("form1");
@@ -85,8 +85,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     function SetData(data) {
        data = mini.clone(data);
-       mini.get("nickname").setValue(data.text);
-       mini.get("telephone").setValue(data.telephone); 
+       //mini.get("nickname").setValue(data.text);
+       //mini.get("telephone").setValue(data.telephone); 
     }
     
 	function CloseWindow(action) {

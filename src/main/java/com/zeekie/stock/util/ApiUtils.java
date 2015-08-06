@@ -165,7 +165,7 @@ public class ApiUtils {
 				: MessageFormat.format(template, args);
 
 		if (log.isDebugEnabled()) {
-			log.debug("推送的消息是：" + content);
+			log.debug("给手机"+phone+"推送消息推送的消息是：" + content);
 		}
 
 		Map<String, String> datas = new HashMap<String, String>();

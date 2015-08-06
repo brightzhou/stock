@@ -190,10 +190,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			width : 500,
 			height : 350,
 			onload : function() {
-				var iframe = this.getIFrameEl();
+				/* var iframe = this.getIFrameEl();
 				var data = { telephone: phone,
 						      text: nickname};
-				iframe.contentWindow.SetData(data); 
+				iframe.contentWindow.SetData(data);  */
 			},
 			currentWindow:true,
 			ondestroy : function(action) {

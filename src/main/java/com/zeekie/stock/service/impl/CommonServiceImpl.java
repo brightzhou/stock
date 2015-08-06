@@ -80,7 +80,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 						Constants.CODE_ERROR_NICKNAME_MSG);
 			}
 			
-			long id = trade.querySeq("SEQ_USER.Nextval");
+			final long id = trade.querySeq("SEQ_USER.Nextval");
 			register.setId(id);
 			trade.register(register);
 
@@ -94,8 +94,13 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 			// 将新注册的用户加入到内存中
 			Constants.user.add(nickname);
 			
-			//注册到环信
-			Hxhelper.registhx(String.valueOf(id));
+			
+		   new Thread() {
+	            public void run() {
+	            	//注册到环信
+	            	Hxhelper.registhx(String.valueOf(id));
+	            }
+	        }.start();
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -103,6 +108,7 @@ public class CommonServiceImpl extends BaseImpl implements CommonService {
 		}
 		return new ReturnMsg(Constants.CODE_SUCCESS, "");
 	}
+	
 
 	@Override
 	public String genVerifyCode(String telephone, String source) {
