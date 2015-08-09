@@ -752,9 +752,39 @@ public interface AcountMapper {
 
 	/**
 	 * 查询所有的用户id
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> queryAllUserId()throws Exception;
+	public List<String> queryAllUserId() throws Exception;
+
+	/**
+	 * 记录哈哈币流水
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param cash
+	 */
+	public void insertHhbFlow(@Param("nickname") String nickname,
+			@Param("num") String num, @Param("cash") String cash,
+			@Param("type") String type);
+
+	/**
+	 * 记录哈哈币流水
+	 * 
+	 * @param nickname
+	 * @param num
+	 * @param type
+	 */
+	public void insertHhbFlowForGuess(@Param("nickname") String nickname,
+			@Param("num") String num, @Param("type") String type);
+
+	/**
+	 * 记录哈哈币流水
+	 * 
+	 * @param userId
+	 */
+	public void insertHhbFlowByUserid(@Param("userId") String userId,
+			@Param("type") String type);
 
 }

@@ -1745,6 +1745,33 @@
    <select id="queryAllUserId" resultType="string">
    		select id from stock_user
    </select>
+   
+   <insert id="insertHhbFlow" parameterType="string">
+   	<selectKey resultType="long" order="BEFORE" keyProperty="id">
+   		select  SEQ_STOCK_FLOW_HHB.nextval  from dual 
+   	</selectKey>
+   		insert into STOCK_FLOW_HHB(id,USER_ID,NICKNAME,HHB,CASH,TYPE)
+   		values(#{id},(select id from stock_user u where u.nickname=#{nickname}),#{nickname},#{num},#{cash},#{type})
+   </insert>
+   
+   <insert id="insertHhbFlowForGuess" parameterType="string">
+   	<selectKey resultType="long" order="BEFORE" keyProperty="id">
+   		select  SEQ_STOCK_FLOW_HHB.nextval  from dual 
+   	</selectKey>
+   		insert into STOCK_FLOW_HHB(id,USER_ID,NICKNAME,HHB,CASH,TYPE)
+   		values(#{id},(select id from stock_user u where u.nickname=#{nickname}),#{nickname},#{num},
+   		(SELECT TO_NUMBER(#{num}) * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P),#{type})
+   </insert>
+   
+    <insert id="insertHhbFlowByUserid" parameterType="string">
+	   	<selectKey resultType="long" order="BEFORE" keyProperty="id">
+	   		select  SEQ_STOCK_FLOW_HHB.nextval  from dual 
+	   	</selectKey>
+	   		insert into STOCK_FLOW_HHB(id,USER_ID,NICKNAME,HHB,CASH,TYPE)
+	   		values(#{id},#{userId},(select nickname from stock_user u where u.id=#{userId}),
+			(select SIGN_FOR_HHB from STOCK_GUESS_PERCENT ),
+	   		(SELECT SIGN_FOR_HHB * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P),#{type})
+   </insert>
 	
 </mapper>
 
