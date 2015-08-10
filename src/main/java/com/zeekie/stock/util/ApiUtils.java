@@ -57,8 +57,9 @@ public class ApiUtils {
 	}
 
 	public static <T> ApiResponse good(T model) {
-		return new ApiResponse()
-				.head(new Head(StockResultMessage.SUCCESS.getCode(), StockResultMessage.SUCCESS.getText())).body(model);
+		return new ApiResponse().head(
+				new Head(StockResultMessage.SUCCESS.getCode(),
+						StockResultMessage.SUCCESS.getText())).body(model);
 	}
 
 	/**
@@ -73,7 +74,9 @@ public class ApiUtils {
 	}
 
 	public static ApiResponse bad(Message message) {
-		return new ApiResponse().head(new Head(message.getCode(), message.getText())).body(Collections.emptyMap());
+		return new ApiResponse().head(
+				new Head(message.getCode(), message.getText())).body(
+				Collections.emptyMap());
 	}
 
 	/**
@@ -83,13 +86,14 @@ public class ApiUtils {
 	 * @param t
 	 * @return
 	 */
-	public static Map convertBean(Object bean)
-			throws IntrospectionException, IllegalAccessException, InvocationTargetException {
+	public static Map convertBean(Object bean) throws IntrospectionException,
+			IllegalAccessException, InvocationTargetException {
 		Class type = bean.getClass();
 		Map returnMap = new HashMap();
 		BeanInfo beanInfo = Introspector.getBeanInfo(type);
 
-		PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+		PropertyDescriptor[] propertyDescriptors = beanInfo
+				.getPropertyDescriptors();
 		for (int i = 0; i < propertyDescriptors.length; i++) {
 			PropertyDescriptor descriptor = propertyDescriptors[i];
 			String propertyName = descriptor.getName();
@@ -113,11 +117,13 @@ public class ApiUtils {
 	 * @return
 	 */
 	public static String delHTMLTag(String htmlStr) {
-		Pattern p_script = Pattern.compile(regEx_script, Pattern.CASE_INSENSITIVE);
+		Pattern p_script = Pattern.compile(regEx_script,
+				Pattern.CASE_INSENSITIVE);
 		Matcher m_script = p_script.matcher(htmlStr);
 		htmlStr = m_script.replaceAll(""); // filter script tag
 
-		Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
+		Pattern p_style = Pattern
+				.compile(regEx_style, Pattern.CASE_INSENSITIVE);
 		Matcher m_style = p_style.matcher(htmlStr);
 		htmlStr = m_style.replaceAll(""); // filter style tag
 
@@ -144,7 +150,7 @@ public class ApiUtils {
 		return json.toString();
 	}
 
-	public static boolean send(String fn, String userid, String phone, String... args) {
+	public static boolean send(String fn, String phone, String... args) {
 		String template = Constants.MSG_MODEL.get(fn);
 		if (StringUtils.isBlank(template)) {
 			log.error("查询数据库发现功能号：" + fn + "所对应的模板并不存在，请检查");
@@ -156,7 +162,8 @@ public class ApiUtils {
 			return false;
 		}
 
-		String content = StringUtils.equals(Constants.MODEL_CONTENT, template) ? Constants.MODEL_CONTENT + args[0]
+		String content = StringUtils.equals(Constants.MODEL_CONTENT, template) ? Constants.MODEL_CONTENT
+				+ args[0]
 				: MessageFormat.format(template, args);
 
 		if (log.isDebugEnabled()) {
@@ -172,22 +179,45 @@ public class ApiUtils {
 		HandleHttpRequest request = new HandleHttpRequest();
 		try {
 			String result = request.post(Constants.MSG_URL, datas);
+			
+			if(log.isDebugEnabled()){
+				log.debug("发送短信：发货结果"+result);
+			}
+			
 			if (StringUtils.startsWith(result, "0")) {
 				if (log.isDebugEnabled()) {
 					log.debug("send msg to [" + phone + "] success");
 				}
+				
+				if (StringUtils
+						.equals(Constants.MODEL_REACH_WARNLINE_REMIND_FN, fn)) {
+					List<String> userIds = new ArrayList<String>();
+					userIds.add(args[5]);
+					String res = EasemobMessages.sendMsg(content, userIds);
+					if (log.isDebugEnabled()) {
+						log.debug("发送系统通知给所有人：" + res);
+					}
+				}
 				return true;
 			}
 
-			List<String> userIds = new ArrayList<String>();
-			userIds.add(userid);
-			String res = EasemobMessages.sendMsg(content, userIds);
-			if(log.isDebugEnabled()){
-				log.debug("发送系统通知给所有人："+res);
-			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return false;
+	}
+	
+	public static void main(String[] args) {
+		
+//		String arg[] = {"辅导费","非官方个","个非官方"};
+		
+		dfdf("辅导费","非官方个","个非官方");
+		
+	}
+	
+	private static void dfdf(String ...args){
+		
+		String d =MessageFormat.format("dfdfs{0}fdfgfg{1}", args);
+		System.out.println(d);
 	}
 }
