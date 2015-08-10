@@ -12,6 +12,16 @@ public class ProductDO {
 
 	private String flag;
 
+	private String hasOperation;
+
+	public String getHasOperation() {
+		return hasOperation;
+	}
+
+	public void setHasOperation(String hasOperation) {
+		this.hasOperation = hasOperation;
+	}
+
 	/**
 	 * @return the flag
 	 */

@@ -597,6 +597,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 				JSONObject jo = new JSONObject();
 				jo.put("flag", product.getFlag());
+				jo.put("hasOperation", product.getHasOperation());
 				ja.add(jo);
 				return ja;
 			}

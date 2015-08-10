@@ -42,6 +42,7 @@
 		<result column="Stockincome" property="stockIncome" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="Guessincome" property="guessIncome" jdbcType="VARCHAR"/>
 		<result column="code" property="code"  jdbcType="VARCHAR"/>
+		<result column="hasOperation" property="hasOperation"  jdbcType="VARCHAR"/>
 		<result column="OPEN_PRODUCT" property="flag"  jdbcType="VARCHAR"/>
 	</resultMap>
 	
@@ -327,7 +328,16 @@
 	           And g.Actual_Result = g.Guess_Status
 	           And g.GUESS_STATUS = 'rise') Guessincome,
 	       (Select wmsys.wm_concat(product_code) From Stock_Product t Where t.status='Y') code,
-	       u.OPEN_PRODUCT
+	       u.OPEN_PRODUCT,
+		     (case
+	         when (select 1
+	                 from stock_user_operate_maininfo m
+	                where m.nickname = u.nickname
+	                  and m.is_current = '1') is null then
+	          '0'
+	         else
+	          '1'
+	       end) hasOperation
 	  From Stock_User u
 	 Where u.Nickname = #{nickname}
     </select>

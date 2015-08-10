@@ -71,7 +71,7 @@ public class CaculateFundTimer {
 			String tradeAccouunt = trade.getOperatorNo();
 			if (StringUtils.startsWith(tradeAccouunt, "6")) {
 				cal1(trade);
-			} else if (StringUtils.equals("open", changeIsOpen)) {
+			} else if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(tradeAccouunt, "6")) {
 				cal2(trade);
 			} else {
 				log.warn("没有任何通道可以处理");
@@ -104,7 +104,8 @@ public class CaculateFundTimer {
 
 		if (StringUtils.isBlank(currentCash)) {
 			if (log.isDebugEnabled()) {
-				log.debug("visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
+				log.debug(
+						"visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
 			}
 			return;
 		}
