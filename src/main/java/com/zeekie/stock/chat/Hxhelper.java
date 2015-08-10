@@ -30,6 +30,9 @@ public class Hxhelper {
 	}
 
 	public static void main(String[] args) {
-		EasemobChatGroups.join("4341");
+
+		for (int i = 345; i < 4818; i++) {
+			registhx(i + "");
+		}
 	}
 }
