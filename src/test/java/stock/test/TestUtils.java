@@ -238,9 +238,9 @@ public class TestUtils {
 		String phone = "15867198578";
 		ApiUtils.send("1307", phone, "2356");
 		ApiUtils.send("1308", phone, "张三");
-		ApiUtils.send("1309", phone);
+//		ApiUtils.send("1309", phone);
 		ApiUtils.send("1310", phone, "2669854699");
-		ApiUtils.send("1311", phone);
+//		ApiUtils.send("1311", phone);
 		ApiUtils.send("1312", phone, "张三", "63389001", "95");
 		ApiUtils.send("1314", phone, "63389001");
 		ApiUtils.send("1315", phone, "张三", "HB000565");

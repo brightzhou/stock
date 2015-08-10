@@ -8,26 +8,28 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zeekie.stock.Constants;
+import com.zeekie.stock.StockResultMessage;
+import com.zeekie.stock.chat.jersey.apidemo.EasemobMessages;
+import com.zeekie.stock.util.http.HandleHttpRequest;
+
+import net.sf.json.JSONObject;
 import sitong.thinker.common.api.ApiResponse;
 import sitong.thinker.common.api.Head;
 import sitong.thinker.common.error.Message;
-
-import com.zeekie.stock.Constants;
-import com.zeekie.stock.StockResultMessage;
-import com.zeekie.stock.util.http.HandleHttpRequest;
 
 /**
  * 
@@ -55,9 +57,8 @@ public class ApiUtils {
 	}
 
 	public static <T> ApiResponse good(T model) {
-		return new ApiResponse().head(
-				new Head(StockResultMessage.SUCCESS.getCode(),
-						StockResultMessage.SUCCESS.getText())).body(model);
+		return new ApiResponse()
+				.head(new Head(StockResultMessage.SUCCESS.getCode(), StockResultMessage.SUCCESS.getText())).body(model);
 	}
 
 	/**
@@ -72,9 +73,7 @@ public class ApiUtils {
 	}
 
 	public static ApiResponse bad(Message message) {
-		return new ApiResponse().head(
-				new Head(message.getCode(), message.getText())).body(
-				Collections.emptyMap());
+		return new ApiResponse().head(new Head(message.getCode(), message.getText())).body(Collections.emptyMap());
 	}
 
 	/**
@@ -84,14 +83,13 @@ public class ApiUtils {
 	 * @param t
 	 * @return
 	 */
-	public static Map convertBean(Object bean) throws IntrospectionException,
-			IllegalAccessException, InvocationTargetException {
+	public static Map convertBean(Object bean)
+			throws IntrospectionException, IllegalAccessException, InvocationTargetException {
 		Class type = bean.getClass();
 		Map returnMap = new HashMap();
 		BeanInfo beanInfo = Introspector.getBeanInfo(type);
 
-		PropertyDescriptor[] propertyDescriptors = beanInfo
-				.getPropertyDescriptors();
+		PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 		for (int i = 0; i < propertyDescriptors.length; i++) {
 			PropertyDescriptor descriptor = propertyDescriptors[i];
 			String propertyName = descriptor.getName();
@@ -115,13 +113,11 @@ public class ApiUtils {
 	 * @return
 	 */
 	public static String delHTMLTag(String htmlStr) {
-		Pattern p_script = Pattern.compile(regEx_script,
-				Pattern.CASE_INSENSITIVE);
+		Pattern p_script = Pattern.compile(regEx_script, Pattern.CASE_INSENSITIVE);
 		Matcher m_script = p_script.matcher(htmlStr);
 		htmlStr = m_script.replaceAll(""); // filter script tag
 
-		Pattern p_style = Pattern
-				.compile(regEx_style, Pattern.CASE_INSENSITIVE);
+		Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
 		Matcher m_style = p_style.matcher(htmlStr);
 		htmlStr = m_style.replaceAll(""); // filter style tag
 
@@ -148,7 +144,7 @@ public class ApiUtils {
 		return json.toString();
 	}
 
-	public static boolean send(String fn, String phone, String... args) {
+	public static boolean send(String fn, String userid, String phone, String... args) {
 		String template = Constants.MSG_MODEL.get(fn);
 		if (StringUtils.isBlank(template)) {
 			log.error("查询数据库发现功能号：" + fn + "所对应的模板并不存在，请检查");
@@ -160,12 +156,11 @@ public class ApiUtils {
 			return false;
 		}
 
-		String content = StringUtils.equals(Constants.MODEL_CONTENT, template) ? Constants.MODEL_CONTENT
-				+ args[0]
+		String content = StringUtils.equals(Constants.MODEL_CONTENT, template) ? Constants.MODEL_CONTENT + args[0]
 				: MessageFormat.format(template, args);
 
 		if (log.isDebugEnabled()) {
-			log.debug("给手机"+phone+"推送消息推送的消息是：" + content);
+			log.debug("给手机" + phone + "推送的消息是：" + content);
 		}
 
 		Map<String, String> datas = new HashMap<String, String>();
@@ -183,7 +178,14 @@ public class ApiUtils {
 				}
 				return true;
 			}
-		} catch (IOException e) {
+
+			List<String> userIds = new ArrayList<String>();
+			userIds.add(userid);
+			String res = EasemobMessages.sendMsg(content, userIds);
+			if(log.isDebugEnabled()){
+				log.debug("发送系统通知给所有人："+res);
+			}
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return false;

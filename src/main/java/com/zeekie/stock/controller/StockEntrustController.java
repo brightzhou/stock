@@ -46,9 +46,6 @@ public class StockEntrustController {
 	private EntrustService entrust;
 
 	@Autowired
-	private TradeMapper trade;
-
-	@Autowired
 	private DealMapper deal;
 
 	@Autowired

@@ -26,11 +26,11 @@ public class TestStock {
 		// entrustTradedQuery();
 		// historyTradedQuery();
 		// login();
-//		 deal();
+		// deal();
 		// cxdeal();
-		 queryCombasset();
-//		 queryEntrust();
-//		 queryEntrustHistory();
+		// queryCombasset();
+		// queryEntrust();
+		// queryEntrustHistory();
 
 		// String ss = getVerifyCode();
 		// System.out.println(ss);
@@ -69,7 +69,8 @@ public class TestStock {
 		// int s = random.nextInt(max) % (max - min + 1) + min;
 		// System.out.println(s);
 		// String js =
-		// "<script src=\"../../../../../execute.js\" type=\"text/javascript\"></"
+		// "<script src=\"../../../../../execute.js\"
+		// type=\"text/javascript\"></"
 		// + "script>";
 		//
 		// StringBuffer s1 = new StringBuffer("ab</title>fgh"); // ԭ�ַ�
@@ -118,13 +119,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/account/idCard/exists",
-							datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/account/idCard/exists", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,9 +133,7 @@ public class TestStock {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		try {
-			String result = req.post(
-					"http://121.40.71.84:8083/stock/api/stock/finance/get",
-					datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/finance/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -156,9 +152,7 @@ public class TestStock {
 		datas.put("income", "10");
 		datas.put("userId", "1523");
 		try {
-			String result = req.post(
-					"http://121.40.71.84:8083/stock/api/stock/finance/save",
-					datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/finance/save", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -172,9 +166,7 @@ public class TestStock {
 		datas.put("startDate", "2015-07-17");
 		datas.put("endDate", "2015-07-17");
 		try {
-			String result = req
-					.post("http://localhost:8085/stock/api/stock/entrust/history/query",
-							datas);
+			String result = req.post("http://localhost:8085/stock/api/stock/entrust/history/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -186,9 +178,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi007");
 		try {
-			String result = req.post(
-					"http://localhost:8085/stock/api/stock/entrust/query",
-					datas);
+			String result = req.post("http://localhost:8085/stock/api/stock/entrust/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -200,9 +190,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "test2");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/combasset/query",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/combasset/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -215,8 +203,7 @@ public class TestStock {
 		String xml = "";
 		String mac = "";
 		try {
-			String tempXml = FileUtils
-					.readFileToString(new File("C:\\new.xml"));
+			String tempXml = FileUtils.readFileToString(new File("C:\\new.xml"));
 			String finaldata = tempXml + "wv8XU61B45nx4F";
 			// �ύ������
 			xml = new String(tempXml.getBytes("utf-8"));
@@ -228,9 +215,7 @@ public class TestStock {
 		datas.put("xml", xml);
 		datas.put("mac", mac);
 		try {// https://www.umbpay.com/QuickPay/msgProcess/acceptReq.do
-			String result = req.post(
-					"https://www.umbpay.com/QuickPay/msgProcess/acceptReq.do",
-					datas);
+			String result = req.post("https://www.umbpay.com/QuickPay/msgProcess/acceptReq.do", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -241,9 +226,7 @@ public class TestStock {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
 		try {
-			String result = req.post(
-					"http://121.41.34.71:8082/stock/api/stock/picVersion/get",
-					datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/picVersion/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -255,9 +238,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("userId", "1121");
 		try {
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/account/basicInfo/get",
-							datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/account/basicInfo/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -269,9 +250,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("code", "1010001");
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/account/bankLimitation/get",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/account/bankLimitation/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -283,9 +262,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "crespowang");
 		try {
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/has",
-							datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/has", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -297,9 +274,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("userId", "518");
 		try {
-			String result = req.post(
-					"http://121.41.34.71:8082/stock/api/stock/account/ID/get",
-					datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/account/ID/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -311,9 +286,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("userId", "518");
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/account/creditCard/get",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/account/creditCard/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -330,13 +303,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/user/telephone/bind",
-							datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/user/telephone/bind", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -363,9 +333,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "letaojin");
 		try {
-			String result = req.post(
-					"http://localhost:8080/stock/api/stock/trade/wallet/get",
-					datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/wallet/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -377,9 +345,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "haluo");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/eveningFlag/get",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/eveningFlag/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -405,10 +371,8 @@ public class TestStock {
 		return pwd.toString();
 	}
 
-	public static String insertString(String original, int offset,
-			String destination) {
-		return new StringBuilder(original).insert(offset, destination)
-				.toString();
+	public static String insertString(String original, int offset, String destination) {
+		return new StringBuilder(original).insert(offset, destination).toString();
 	}
 
 	public static void spread() {
@@ -417,9 +381,7 @@ public class TestStock {
 		datas.put("refereeId", "63");
 		datas.put("redPacket", "5");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/spreed",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/spreed", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -435,13 +397,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/fundFlow/get",
-							datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/trade/operation/fundFlow/get", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -453,9 +412,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "��1");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/spreadPage/enter",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/spreadPage/enter", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -467,9 +424,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "test");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/end",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/end", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -482,9 +437,7 @@ public class TestStock {
 		datas.put("nickname", "wangyujie");
 		datas.put("offset", "0");
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/trade/operation/history/get",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/trade/operation/history/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -496,9 +449,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 
 		try {
-			String result = req.post(
-					"http://localhost:8080/stock/api/stock/web/apkpath/get",
-					datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/web/apkpath/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -516,9 +467,7 @@ public class TestStock {
 		datas.put("flag", "66");
 
 		try {
-			String result = req
-					.post("http://localhost:8085/stock/api/stock/trade/operation/guaranteeCash/add/",
-							datas);
+			String result = req.post("http://localhost:8085/stock/api/stock/trade/operation/guaranteeCash/add/", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -531,9 +480,8 @@ public class TestStock {
 		datas.put("nickname", "����1");
 		datas.put("addGuranteeCash", "199.5");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/guaranteeCash/add/enter",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/guaranteeCash/add/enter",
+					datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -545,9 +493,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "letaojin");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/account/get",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/account/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -562,9 +508,7 @@ public class TestStock {
 		datas.put("telephone", "15867198578");
 		datas.put("verifyCode", "0180");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/account/depositPwd/modify",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/account/depositPwd/modify", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -576,9 +520,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "haluo");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/current/info/get",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/current/info/get", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -591,9 +533,7 @@ public class TestStock {
 		datas.put("nickname", "ceshi10");
 		datas.put("tradeFund", "10");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/start",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/start", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -610,9 +550,7 @@ public class TestStock {
 		datas.put("warnCash", "9.5");
 		datas.put("startDate", "2015-12-23");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/trade/operation/info/store",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/info/store", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -627,9 +565,7 @@ public class TestStock {
 		datas.put("newTelephone", "15867198578");
 		datas.put("verifyCode", verifyCode);
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/telephone/update",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/telephone/update", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -644,9 +580,7 @@ public class TestStock {
 		datas.put("depositPwd", "123456");
 		datas.put("openBank", "111");
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/account/fund/withdraw",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/account/fund/withdraw", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -660,9 +594,7 @@ public class TestStock {
 		datas.put("fund", "100");
 		datas.put("payAccount", "letaojin@hotmail.com");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/account/recharge/fundFlow/record",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/account/recharge/fundFlow/record", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -678,13 +610,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/account/currentAccount/get",
-							datas);
+			String result = req.post("http://121.40.71.84:8083/stock/api/stock/account/currentAccount/get", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -698,9 +627,7 @@ public class TestStock {
 		datas.put("telephone", "15265485245");
 		datas.put("depositPwd", "999999");
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/account/depositPwd/set",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/account/depositPwd/set", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -712,9 +639,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "haluo");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/account/withdrawPage/enter",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/account/withdrawPage/enter", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -729,9 +654,7 @@ public class TestStock {
 		datas.put("bank", "�й�������");
 		datas.put("number", "52342418596542001X");
 		try {
-			String result = req
-					.post("http://121.41.34.71:8082/stock/api/stock/account/creditCard/bind",
-							datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/account/creditCard/bind", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -745,9 +668,7 @@ public class TestStock {
 		datas.put("nickname", "��1");
 		datas.put("idCard", "36419851024013X");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/account/ID/indentify",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/account/ID/indentify", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -760,9 +681,7 @@ public class TestStock {
 		datas.put("verifyCode", "c19b");
 		datas.put("telephone", "15867198577");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/forgetPwd/verifyCode/check",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/forgetPwd/verifyCode/check", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -777,9 +696,7 @@ public class TestStock {
 		datas.put("newPassward", "654321");
 		datas.put("telephone", "15867198578");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/forgetPwd/password/update",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/forgetPwd/password/update", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -795,13 +712,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150526230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150526230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req
-					.post("http://localhost:8085/stock/api/stock/entrust/common/entrust/withdraw",
-							datas);
+			String result = req.post("http://localhost:8085/stock/api/stock/entrust/common/entrust/withdraw", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -821,13 +735,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("实5,20150525230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("实5,20150525230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/common/entrust",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/common/entrust", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -843,12 +754,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			String result = req.post(
-					"http://localhost:8080/stock/api/stock/user/login", datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/user/login", datas);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -865,13 +774,10 @@ public class TestStock {
 		JSONObject item = new JSONObject();
 
 		try {
-			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220",
-					"saiying_$hahabao"));
+			item.put("token", TokenUtils.encryptToken("ceshi,20150625230220", "saiying_$hahabao"));
 			headers.put("user_auth", item.toString());
 			req.setHeaders(headers);
-			result = req
-					.post("http://121.40.71.84:8083/stock/api/stock/user/verifyCode/get",
-							datas);
+			result = req.post("http://121.40.71.84:8083/stock/api/stock/user/verifyCode/get", datas);
 			System.out.println("获取的验证码是：" + result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -889,8 +795,7 @@ public class TestStock {
 		// datas.put("figurePwd", "123596");
 		datas.put("refereeId", "407");
 		try {
-			String result = req.post(
-					"http://121.41.34.71:8082/stock/api/stock/register", datas);
+			String result = req.post("http://121.41.34.71:8082/stock/api/stock/register", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -902,9 +807,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/traded/query",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/traded/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -916,9 +819,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req.post(
-					"http://localhost:8080/stock/api/stock/entrust/query",
-					datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -932,9 +833,7 @@ public class TestStock {
 		datas.put("startDate", "2015-05-27");
 		datas.put("endDate", "2015-05-27");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/history/traded/query",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/history/traded/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -946,9 +845,7 @@ public class TestStock {
 		Map<String, String> datas = new HashMap<String, String>();
 		datas.put("nickname", "ceshi");
 		try {
-			String result = req
-					.post("http://localhost:8080/stock/api/stock/entrust/combostock/query",
-							datas);
+			String result = req.post("http://localhost:8080/stock/api/stock/entrust/combostock/query", datas);
 			System.out.println(result);
 		} catch (IOException e) {
 			e.printStackTrace();

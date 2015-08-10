@@ -16,6 +16,16 @@ public class WarnLineDO {
 
 	private String ticket;
 
+	private String userId;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	/**
 	 * @return the stopFund
 	 */

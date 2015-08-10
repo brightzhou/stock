@@ -61,6 +61,7 @@
 	
 	<resultMap type="com.zeekie.stock.entity.WarnLineDO" id="resultWarnLineUser">
 		<result column="ID" property="operateId" jdbcType="VARCHAR"/>
+		<result column="userId" property="userId" jdbcType="VARCHAR"/>
 		<result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
 		<result column="ACTUAL_CASH" property="actualAsset" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="STOP_CASH" property="stopFund" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
@@ -529,6 +530,7 @@
 		       M.WARN_CASH,
 		       M.TICKET,
 		       M.STOP_CASH,
+		       (SELECT u.id FROM STOCK_USER U WHERE U.NICKNAME = M.NICKNAME) userId,
 		       (SELECT U.TELEPHONE FROM STOCK_USER U WHERE U.NICKNAME = M.NICKNAME) PHONE
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'

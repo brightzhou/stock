@@ -82,8 +82,7 @@ public class SyncHandler {
 		}.start();
 	}
 
-	public void handleOtherJob(final String type,
-			final Map<String, String> param) {
+	public void handleOtherJob(final String type, final Map<String, String> param) {
 		new Thread() {
 			@Override
 			public void run() {
@@ -96,8 +95,7 @@ public class SyncHandler {
 		}.start();
 	}
 
-	public void handleJobOfList(final String type,
-			final List<Map<String, String>> list) {
+	public void handleJobOfList(final String type, final List<Map<String, String>> list) {
 		new Thread() {
 			@Override
 			public void run() {
@@ -111,8 +109,7 @@ public class SyncHandler {
 
 	}
 
-	private void handle(String type, List<Map<String, String>> list)
-			throws Exception {
+	private void handle(String type, List<Map<String, String>> list) throws Exception {
 		if (StringUtils.equals(Constants.TYPE_JOB_RECEIPT, type)) {
 			int index = 0;
 			for (; index < list.size(); index++) {
@@ -121,21 +118,17 @@ public class SyncHandler {
 				String amount = param.get("amount");
 				if (webService.payToUs("", nickname, amount)) {
 					if (log.isDebugEnabled()) {
-						log.debug("【9002】后台为用户:[" + nickname + "]充值成功,充值金额："
-								+ amount);
+						log.debug("【9002】后台为用户:[" + nickname + "]充值成功,充值金额：" + amount);
 					}
-					trade.setPayInfoByJob(param.get("userId"), nickname,
-							param.get("merchantId"), amount,
-							Constants.CODE_SUCCESS,
-							"【JOB】:" + param.get("respMsg"),
-							param.get("bankName"), param.get("refNo"));
+					trade.setPayInfoByJob(param.get("userId"), nickname, param.get("merchantId"), amount,
+							Constants.CODE_SUCCESS, "【JOB】:" + param.get("respMsg"), param.get("bankName"),
+							param.get("refNo"));
 				}
 			}
 		}
 	}
 
-	private void handle(String type, Map<String, String> param)
-			throws Exception {
+	private void handle(String type, Map<String, String> param) throws Exception {
 
 		if (StringUtils.equals(Constants.TYPE_JOB_EVENING_UP_REMIND, type)) {
 			eveningUpRemind(param);
@@ -162,10 +155,8 @@ public class SyncHandler {
 			}
 			pushPayResult(userId, nickname, rechargeResult, respResult);
 
-		} else if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE,
-				type)) {
-			deductFeeWhenAddGuarantee(param.get("nickname"),
-					param.get("needDeductFee"));
+		} else if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT_ADDGURANTEE, type)) {
+			deductFeeWhenAddGuarantee(param.get("nickname"), param.get("needDeductFee"));
 		} else if (StringUtils.equals(Constants.TYPE_JOB_TO_REFEREE, type)) {
 			String flag = param.get("flag");
 			String referee = param.get("referee");
@@ -173,20 +164,15 @@ public class SyncHandler {
 			String nickname = param.get("nickname");
 			String telephone = account.getPhone(referee);
 			if (StringUtils.equals("insufficient", flag)) {
-				ApiUtils.send(Constants.MODEL_NOT_TO_BE_REFEREE_FN, telephone,
-						referee, nickname, packet);
+				ApiUtils.send(Constants.MODEL_NOT_TO_BE_REFEREE_FN, telephone, referee, nickname, packet);
 			} else {
-				ApiUtils.send(Constants.MODEL_TO_BE_REFEREE_FN, telephone,
-						referee, nickname, nickname, packet);
+				ApiUtils.send(Constants.MODEL_TO_BE_REFEREE_FN, telephone, referee, nickname, nickname, packet);
 			}
-		} else if (StringUtils
-				.equals(Constants.TYPE_JOB_REDPACKET_NOTICE, type)) {
-			ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN,
-					param.get("telephone"), param.get("message"));
+		} else if (StringUtils.equals(Constants.TYPE_JOB_REDPACKET_NOTICE, type)) {
+			ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN, param.get("telephone"), param.get("message"));
 
 		} else if (StringUtils.equals(Constants.TYPE_JOB_RECORD_ERROR, type)) {
-			trade.insertError(param.get("nickname"),
-					param.get("addedAssginCapital"), param.get("message"));
+			trade.insertError(param.get("nickname"), param.get("addedAssginCapital"), param.get("message"));
 		} else if (StringUtils.equals(Constants.TYPE_JOB_SENDCHAT_NOTICE, type)) {
 			try {
 				List<String> userIds = new ArrayList<String>();
@@ -196,8 +182,7 @@ public class SyncHandler {
 				} else {
 					userIds.add(userId);
 				}
-				String result = EasemobMessages.sendMsg(param.get("message"),
-						userIds);
+				String result = EasemobMessages.sendMsg(param.get("message"), userIds);
 				if (log.isDebugEnabled()) {
 					log.debug("通知发送情况：" + result);
 				}
@@ -207,8 +192,7 @@ public class SyncHandler {
 		}
 	}
 
-	private void pushPayResult(String userId, String nickname,
-			String rechargeResult, String responseResult) {
+	private void pushPayResult(String userId, String nickname, String rechargeResult, String responseResult) {
 		StockMsg msg = new StockMsg();
 		String content = "";
 		if (StringUtils.equals(Constants.CODE_SUCCESS, rechargeResult)) {
@@ -240,8 +224,7 @@ public class SyncHandler {
 		if (StringUtils.equals(Constants.TYPE_JOB_DEDUCT, type)) {
 			deductFeeWhenOperation(param);
 			// 到达警戒线需要短信提醒
-		} else if (StringUtils.equals(Constants.TYPE_JOB_NOTICE_REACH_WARNLINE,
-				type)) {
+		} else if (StringUtils.equals(Constants.TYPE_JOB_NOTICE_REACH_WARNLINE, type)) {
 			try {
 				sendWarnLineMsg();
 
@@ -279,8 +262,7 @@ public class SyncHandler {
 		} else if (StringUtils.equals(Constants.TYPE_JOB_SENDMSG_NOTICE, type)) {
 			List<String> phones = account.queryAllUserPhone();
 			for (String phone : phones) {
-				ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN, phone,
-						param);
+				ApiUtils.send(Constants.MODEL_REDPACKET_TO_USER_FN, phone, param);
 			}
 		}
 	}
@@ -296,8 +278,7 @@ public class SyncHandler {
 				if (StringUtils.equals(Constants.CODE_FAILURE, flag)) {
 					// 未限制买入，且实际资产小于警戒金额，控制買入
 					if (warnFund > assetFund) {
-						if (StringUtils.equals("open", changeIsOpen)
-								&& !StringUtils.startsWith(tradeAccount, "6")) {
+						if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(tradeAccount, "6")) {
 							trade.updateStopBuyFlag(item.getOperateId(), "1");
 						} else {
 							visitHomes(item, Constants.OPERATE_RIGHT_ONE, "1");
@@ -305,8 +286,7 @@ public class SyncHandler {
 					}
 				} else {
 					// 如果已經限制買入，那麼當实际资产大于警戒金额的时候，需要修改标志，并允许他买入
-					if (StringUtils.equals("open", changeIsOpen)
-							&& !StringUtils.startsWith(tradeAccount, "6")) {
+					if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(tradeAccount, "6")) {
 						trade.updateStopBuyFlag(item.getOperateId(), "0");
 					} else {
 						if (warnFund < assetFund) {
@@ -318,10 +298,9 @@ public class SyncHandler {
 		}
 	}
 
-	private void visitHomes(StopDealStockDO item, String operateRight,
-			String flag) throws Exception {
-		StockRestrictBuyStock restrictBuyStock = new StockRestrictBuyStock(
-				item.getOperateNO(), operateRight, Constants.OPERATE_TYPE);
+	private void visitHomes(StopDealStockDO item, String operateRight, String flag) throws Exception {
+		StockRestrictBuyStock restrictBuyStock = new StockRestrictBuyStock(item.getOperateNO(), operateRight,
+				Constants.OPERATE_TYPE);
 		restrictBuyStock.callHomes(changeInfoNo);
 		if (restrictBuyStock.visitSuccess(changeInfoNo)) {
 			trade.updateStopBuyFlag(item.getOperateId(), flag);
@@ -341,17 +320,15 @@ public class SyncHandler {
 		List<WarnLineDO> result = trade.queryNeedNoticeUser();
 		if (null != result && !result.isEmpty()) {
 			if (log.isDebugEnabled()) {
-				log.debug("Start send warnLine msg,send users total:"
-						+ result.size());
+				log.debug("Start send warnLine msg,send users total:" + result.size());
 			}
 			for (WarnLineDO warnLine : result) {
-				ApiUtils.send(Constants.MODEL_REACH_WARNLINE_REMIND_FN,
-						warnLine.getPhone(), warnLine.getNickname(),
-						warnLine.getTicket(), warnLine.getActualAsset(),
-						warnLine.getWarnFund(), warnLine.getStopFund());
+				ApiUtils.send(Constants.MODEL_REACH_WARNLINE_REMIND_FN, warnLine.getUserId(), warnLine.getPhone(),
+						warnLine.getNickname(), warnLine.getTicket(), warnLine.getActualAsset(), warnLine.getWarnFund(),
+						warnLine.getStopFund());
 			}
-			batchMapper.batchInsert(TradeMapper.class, "updateWarnFlagToOne",
-					result);
+			batchMapper.batchInsert(TradeMapper.class, "updateWarnFlagToOne", result);
+
 		}
 	}
 
@@ -367,19 +344,16 @@ public class SyncHandler {
 				log.debug("操盘ID为[" + operationId + "]平倉，发短信提醒用户");
 			}
 			// PhoneAndTIcketDO ticket = account.getUserPhone(nickname);
-			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN,
-					param.get("phone"), param.get("nickname"),
+			ApiUtils.send(Constants.MODEL_EVENING_UP_REMIND_FN, param.get("phone"), param.get("nickname"),
 					param.get("ticket"));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 
-	private void deductFeeWhenAddGuarantee(String nickname,
-			String needCaculateMoney) {
+	private void deductFeeWhenAddGuarantee(String nickname, String needCaculateMoney) {
 		try {
-			String rightNow = DateUtil.dateToStr(new Date(),
-					DateUtil.FORMAT_YYYY_MM_DD);
+			String rightNow = DateUtil.dateToStr(new Date(), DateUtil.FORMAT_YYYY_MM_DD);
 
 			if (StringUtils.isBlank(trade.selectFeeDay(rightNow))) {
 				if (log.isDebugEnabled()) {
@@ -388,30 +362,24 @@ public class SyncHandler {
 				return;
 			}
 			if (DateUtil.compareDate("08:45:00", "14:59:00")) {
-				StockRadioDO radioDO = account
-						.getAssignRadioForCurrUser(nickname);
-				Float deductFee = (Float.parseFloat(needCaculateMoney)
-						* radioDO.getAssignRadio() * radioDO
-						.getManageFeeRadio());
+				StockRadioDO radioDO = account.getAssignRadioForCurrUser(nickname);
+				Float deductFee = (Float.parseFloat(needCaculateMoney) * radioDO.getAssignRadio()
+						* radioDO.getManageFeeRadio());
 				trade.recharge(nickname, "-" + deductFee);
-				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, "-"
-						+ deductFee + "", "技术服务费");
+				trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, "-" + deductFee + "", "技术服务费");
 				if (log.isDebugEnabled()) {
 					log.debug("用户增加保证金，收取服务费：" + deductFee);
 				}
 
 				String referee = account.queryRefereeNickname(nickname);
 				if (StringUtils.isNotBlank(referee)) {
-					String refereeDrawFee = "" + radioDO.getUpLinePercent()
-							* deductFee;
+					String refereeDrawFee = "" + radioDO.getUpLinePercent() * deductFee;
 					String type = Fund.AMORTIZATION.getType();
 					trade.recharge(referee, refereeDrawFee);
-					trade.recordFundflow(referee, type, refereeDrawFee + "",
-							Fund.getDesc(nickname, type));
+					trade.recordFundflow(referee, type, refereeDrawFee + "", Fund.getDesc(nickname, type));
 
 					if (log.isDebugEnabled()) {
-						log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成："
-								+ refereeDrawFee);
+						log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成：" + refereeDrawFee);
 					}
 				}
 			}
@@ -423,8 +391,7 @@ public class SyncHandler {
 	private void deductFeeWhenOperation(String nickname) {
 		try {
 
-			String rightNow = DateUtil.dateToStr(new Date(),
-					DateUtil.FORMAT_YYYY_MM_DD);
+			String rightNow = DateUtil.dateToStr(new Date(), DateUtil.FORMAT_YYYY_MM_DD);
 
 			if (StringUtils.isBlank(trade.selectFeeDay(rightNow))) {
 				if (log.isDebugEnabled()) {
@@ -435,8 +402,7 @@ public class SyncHandler {
 					trade.updateManageFeeByUser(nickname);
 					DeductDO fee = trade.queryNewStocker(nickname);
 					trade.deductManageFee(fee);
-					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE,
-							"-" + fee.getFee(), "技术服务费");
+					trade.recordFundflow(nickname, Constants.MANAGEMENT_FEE, "-" + fee.getFee(), "技术服务费");
 
 					String referee = account.queryRefereeNickname(nickname);
 					if (StringUtils.isNotBlank(referee)) {
@@ -444,11 +410,9 @@ public class SyncHandler {
 						String refereeDrawFee = fee.getDrawFee() + "";
 
 						trade.recharge(referee, refereeDrawFee);
-						trade.recordFundflow(referee, type, refereeDrawFee,
-								Fund.getDesc(nickname, type));
+						trade.recordFundflow(referee, type, refereeDrawFee, Fund.getDesc(nickname, type));
 						if (log.isDebugEnabled()) {
-							log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成："
-									+ refereeDrawFee);
+							log.debug("用户增加保证金，收取服务费之后给推荐人" + referee + "用户提成：" + refereeDrawFee);
 						}
 					}
 				}
