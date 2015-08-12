@@ -571,6 +571,7 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 			account.insertHhbFlow(nickname, num, cash, "1");
 
+			trade.recordFundflow(nickname, "150", "-" + cash, "购买哈哈币");
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -633,6 +634,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 			deal.modifyhhbAndBalance(nickname, num, cash);
 
 			account.insertHhbFlow(nickname, num, cash, "2");
+
+			trade.recordFundflow(nickname, "160", cash, "赎回哈哈币");
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

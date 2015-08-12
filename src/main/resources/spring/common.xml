@@ -95,7 +95,6 @@
         <property name="maxPoolPreparedStatementPerConnectionSize"  
             value="20" />  
     </bean>  -->
-
 	<!-- MyBatis配置 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />

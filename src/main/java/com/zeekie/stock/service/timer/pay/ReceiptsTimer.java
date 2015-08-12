@@ -82,7 +82,7 @@ public class ReceiptsTimer {
 		List<PayInfoDO> result = acount.queryPayInfo();
 
 		if (log.isDebugEnabled()) {
-			log.debug("查询到的数据条数：" + result.size());
+			log.debug("获取支付信息，查询到的数据条数：" + result.size());
 		}
 
 		for (PayInfoDO infoDO : result) {
