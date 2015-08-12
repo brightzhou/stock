@@ -2,6 +2,8 @@ package com.zeekie.stock.entity;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CurrentEntrustDO extends BaseEntrustDO {
 
 	/**
@@ -51,29 +53,60 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	/**
 	 * 委托日期
 	 */
-	private String entrustDate;
+	private String entrustDate = "20100101";
 
 	/**
 	 * 委托时间
 	 */
-	private String entrustTime;
+	private String entrustTime = "130101";
+
+	/**
+	 * 委托日期
+	 */
+	private String entrusteDate = "20100101";
+
+	/**
+	 * 委托时间
+	 */
+	private String entrusteTime = "130101";
 
 	/**
 	 * 废单原因
 	 */
 	private String cancelInfo;
-    
+
 	/**
 	 * 开始时间
 	 */
 	private String startDate;
-	
-	
+
 	/**
 	 * 结束时间
 	 */
 	private String endDate;
-	
+
+	public String getEntrusteDate() {
+		return entrusteDate;
+	}
+
+	public void setEntrusteDate(String entrusteDate) {
+		this.entrusteDate = entrusteDate;
+	}
+
+	public String getEntrusteTime() {
+		return entrusteTime;
+	}
+
+	public void setEntrusteTime(String entrusteTime) {
+		if (StringUtils.isNotBlank(entrusteTime)) {
+			if (entrusteTime.trim().length() < 6) {
+				this.entrusteTime = "0" + entrusteTime;
+			}
+		}else{
+			this.entrusteTime = entrusteTime.trim();
+		}
+	}
+
 	public String getStartDate() {
 		return startDate;
 	}
@@ -93,16 +126,15 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	/**
 	 * 状态集合
 	 */
-    private String[]   statusArray;
-    
-    public String[] getStatusArray() {
+	private String[] statusArray;
+
+	public String[] getStatusArray() {
 		return statusArray;
 	}
 
 	public void setStatusArray(String[] statusArray) {
 		this.statusArray = statusArray;
 	}
-
 
 	/**
 	 * @return the exchangeType
@@ -112,7 +144,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param exchangeType the exchangeType to set
+	 * @param exchangeType
+	 *            the exchangeType to set
 	 */
 	public void setExchangeType(String exchangeType) {
 		this.exchangeType = exchangeType;
@@ -126,7 +159,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param entrustDirection the entrustDirection to set
+	 * @param entrustDirection
+	 *            the entrustDirection to set
 	 */
 	public void setEntrustDirection(String entrustDirection) {
 		this.entrustDirection = entrustDirection;
@@ -140,7 +174,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param stockCode the stockCode to set
+	 * @param stockCode
+	 *            the stockCode to set
 	 */
 	public void setStockCode(String stockCode) {
 		this.stockCode = stockCode;
@@ -154,7 +189,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param amentrustStatus the amentrustStatus to set
+	 * @param amentrustStatus
+	 *            the amentrustStatus to set
 	 */
 	public void setAmentrustStatus(String amentrustStatus) {
 		this.amentrustStatus = amentrustStatus;
@@ -168,7 +204,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param entrustPrice the entrustPrice to set
+	 * @param entrustPrice
+	 *            the entrustPrice to set
 	 */
 	public void setEntrustPrice(Float entrustPrice) {
 		this.entrustPrice = entrustPrice;
@@ -182,7 +219,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param entrustAmount the entrustAmount to set
+	 * @param entrustAmount
+	 *            the entrustAmount to set
 	 */
 	public void setEntrustAmount(String entrustAmount) {
 		this.entrustAmount = entrustAmount;
@@ -196,7 +234,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param entrustNo the entrustNo to set
+	 * @param entrustNo
+	 *            the entrustNo to set
 	 */
 	public void setEntrustNo(String entrustNo) {
 		this.entrustNo = entrustNo;
@@ -210,7 +249,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param businessBalance the businessBalance to set
+	 * @param businessBalance
+	 *            the businessBalance to set
 	 */
 	public void setBusinessBalance(Float businessBalance) {
 		this.businessBalance = businessBalance;
@@ -224,7 +264,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param businessAmount the businessAmount to set
+	 * @param businessAmount
+	 *            the businessAmount to set
 	 */
 	public void setBusinessAmount(String businessAmount) {
 		this.businessAmount = businessAmount;
@@ -238,7 +279,8 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param entrustDate the entrustDate to set
+	 * @param entrustDate
+	 *            the entrustDate to set
 	 */
 	public void setEntrustDate(String entrustDate) {
 		this.entrustDate = entrustDate;
@@ -252,10 +294,18 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param entrustTime the entrustTime to set
+	 * @param entrustTime
+	 *            the entrustTime to set
 	 */
 	public void setEntrustTime(String entrustTime) {
-		this.entrustTime = entrustTime;
+		if (StringUtils.isNotBlank(entrustTime)) {
+			entrustTime = entrustTime.trim();
+			if (entrustTime.length() < 6) {
+				this.entrusteTime = "0" + entrustTime;
+			}
+		}else{
+			this.entrustTime = entrustTime.trim();
+		}
 	}
 
 	/**
@@ -266,12 +316,13 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	}
 
 	/**
-	 * @param cancelInfo the cancelInfo to set
+	 * @param cancelInfo
+	 *            the cancelInfo to set
 	 */
 	public void setCancelInfo(String cancelInfo) {
 		this.cancelInfo = cancelInfo;
 	}
-	
+
 	public CurrentEntrustDO() {
 		// TODO Auto-generated constructor stub
 	}
