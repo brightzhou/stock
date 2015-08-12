@@ -71,10 +71,13 @@ public interface EntrustService {
 	/**
 	 * 委托查询公交服务接口
 	 * 
+	 * @param flag
+	 *            区别是历史委托还是历史成绩查询
+	 * 
 	 * @param nickname
 	 * @return
 	 */
-	JSONArray queryEntrustComm(CurrentEntrustDO entrustDO);
+	JSONArray queryEntrustComm(CurrentEntrustDO entrustDO, String flag);
 
 	/**
 	 * 返回产品

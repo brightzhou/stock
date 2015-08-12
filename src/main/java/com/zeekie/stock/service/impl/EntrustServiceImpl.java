@@ -115,8 +115,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	private String changeIsOpen;
 
 	@Override
-	public String entrust(String nickname, String stockCode, String entrustAmount, String entrustPrice,
-			String entrustDirection) {
+	public String entrust(String nickname, String stockCode,
+			String entrustAmount, String entrustPrice, String entrustDirection) {
 		try {
 			AccountDO accountDO = account.getAccount(nickname);
 			String combineId = accountDO.getCombineId();
@@ -126,37 +126,44 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					: Constants.HOMES_EXCHANGE_TYPE_S;
 			List<EntrustEntity> entities = new ArrayList<EntrustEntity>();
 
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(operateNo, "6")) {
-				HomesEntrust entrust = new HomesEntrust(operateNo, fundAccount, exchangeType, stockCode,
-						entrustDirection, entrustAmount, entrustPrice);
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(operateNo, "6")) {
+				HomesEntrust entrust = new HomesEntrust(operateNo, fundAccount,
+						exchangeType, stockCode, entrustDirection,
+						entrustAmount, entrustPrice);
 				CallhomesService service = new CallhomesService(entrust);
 				if (service.call201Fun()) {
 					HomesResponse resp = service.getResponse(Constants.FN201);
 					EntrustEntity entity = new EntrustEntity();
-					setParams(nickname, stockCode, entrustAmount, entrustPrice, combineId, operateNo, fundAccount,
-							exchangeType, entities, entity);
+					setParams(nickname, stockCode, entrustAmount, entrustPrice,
+							combineId, operateNo, fundAccount, exchangeType,
+							entities, entity);
 					entity.setEntrust_no(resp.getEntrustNo() + "");
 					entity.setBatch_no(resp.getBatchNo() + "");
 				}
 			} else {
-				StockEntrust entrust = new StockEntrust(fundAccount, combineId, operateNo, stockCode, entrustAmount,
-						entrustPrice, exchangeType, entrustDirection, "");
+				StockEntrust entrust = new StockEntrust(fundAccount, combineId,
+						operateNo, stockCode, entrustAmount, entrustPrice,
+						exchangeType, entrustDirection, "");
 				entrust.callHomes(fn_entrust);
 
 				if (!entrust.visitSuccess(fn_entrust)) {
 					return entrust.getError();
 				}
-				List<?> obj = returnObj(entrust.getDataSet(), EntrustEntity.class);
+				List<?> obj = returnObj(entrust.getDataSet(),
+						EntrustEntity.class);
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						EntrustEntity entity = (EntrustEntity) each;
-						setParams(nickname, stockCode, entrustAmount, entrustPrice, combineId, operateNo, fundAccount,
-								exchangeType, entities, entity);
+						setParams(nickname, stockCode, entrustAmount,
+								entrustPrice, combineId, operateNo,
+								fundAccount, exchangeType, entities, entity);
 					}
 				}
 			}
 			if (!entities.isEmpty()) {
-				batchMapper.batchInsert(DealMapper.class, "insertEntrust", entities);
+				batchMapper.batchInsert(DealMapper.class, "insertEntrust",
+						entities);
 			}
 			return Constants.CODE_SUCCESS;
 		} catch (Exception e) {
@@ -165,9 +172,10 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 		}
 	}
 
-	private void setParams(String nickname, String stockCode, String entrustAmount, String entrustPrice,
-			String combineId, String operateNo, String fundAccount, String exchangeType, List<EntrustEntity> entities,
-			EntrustEntity entity) {
+	private void setParams(String nickname, String stockCode,
+			String entrustAmount, String entrustPrice, String combineId,
+			String operateNo, String fundAccount, String exchangeType,
+			List<EntrustEntity> entities, EntrustEntity entity) {
 		entity.setBaseParam(fundAccount, combineId, operateNo, nickname);
 		entity.setEntrust_direction(Constants.HOMES_ENTRUST_DIRECTION_BUY);
 		entity.setEntrust_amount(entrustAmount);
@@ -180,31 +188,37 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public String entrustWithdraw(String nickname, String entrustNo) {
 		try {
-			BaseEntrustDO entrustDO = deal.queryEntrustInfo(nickname, entrustNo);
+			BaseEntrustDO entrustDO = deal
+					.queryEntrustInfo(nickname, entrustNo);
 			if (null == entrustDO) {
 				return Constants.CODE_FAILURE;
 			}
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(entrustDO.getOperatorNo(), "6")) {
-				HomesEntrustWithdraw req = new HomesEntrustWithdraw(entrustDO.getFundAccount(),
-						entrustDO.getOperatorNo(), entrustNo);
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(entrustDO.getOperatorNo(), "6")) {
+				HomesEntrustWithdraw req = new HomesEntrustWithdraw(
+						entrustDO.getFundAccount(), entrustDO.getOperatorNo(),
+						entrustNo);
 				CallhomesService service = new CallhomesService(req);
 				if (service.call202Fun()) {
 					if (log.isDebugEnabled()) {
-						log.debug("用户【" + nickname + "】委托撤销成功，委托编号：" + entrustNo);
+						log.debug("用户【" + nickname + "】委托撤销成功，委托编号："
+								+ entrustNo);
 					}
 					return Constants.CODE_SUCCESS;
 				}
 			} else {
 
-				StockEntrustWithdraw entrustWithdraw = new StockEntrustWithdraw(entrustDO.getOperatorNo(),
-						entrustDO.getEntrustNo());
+				StockEntrustWithdraw entrustWithdraw = new StockEntrustWithdraw(
+						entrustDO.getOperatorNo(), entrustDO.getEntrustNo());
 				entrustWithdraw.callHomes(fn_entrust_withdraw);
 
 				if (!entrustWithdraw.visitSuccess(fn_entrust_withdraw)) {
-					log.error("用户【" + nickname + "】委托撤销失败，委托编号：" + entrustDO.getEntrustNo());
+					log.error("用户【" + nickname + "】委托撤销失败，委托编号："
+							+ entrustDO.getEntrustNo());
 				} else {
 					if (log.isDebugEnabled()) {
-						log.debug("用户【" + nickname + "】委托撤销成功，委托编号：" + entrustNo);
+						log.debug("用户【" + nickname + "】委托撤销成功，委托编号："
+								+ entrustNo);
 					}
 					return Constants.CODE_SUCCESS;
 				}
@@ -220,18 +234,21 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public JSONObject queryCombasset(String nickname) {
 		try {
 			CombassetDO combassetDO = new CombassetDO();
-			CurrentOperateUserDO userDO = account.getCurrentOperateUser(nickname);
+			CurrentOperateUserDO userDO = account
+					.getCurrentOperateUser(nickname);
 			if (userDO == null) {
 				return JSONObject.fromObject(combassetDO, Constants.jsonConfig);
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				AHomesEntity param = new AHomesEntity(fundAccount, combineId);
 				CallhomesService service = new CallhomesService(param);
 				if (service.call210FunResp()) {
-					HomesCapital resp = (HomesCapital) service.getResponse(Constants.FN210);
+					HomesCapital resp = (HomesCapital) service
+							.getResponse(Constants.FN210);
 					Float fetFund = resp.getFetfund();
 					Float userFund = resp.getUserfund();
 					// Float userMarket = resp.getUsermarket();
@@ -241,15 +258,20 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 				}
 			} else {
 
-				StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount, combineId);
+				StockEntrustQuery entrustQuery = new StockEntrustQuery(
+						fundAccount, combineId);
 				entrustQuery.callHomes(func_am_combasset_qry);
-				List<?> obj = returnObj(entrustQuery.getDataSet(), EntrustAssetEntity.class);
+				List<?> obj = returnObj(entrustQuery.getDataSet(),
+						EntrustAssetEntity.class);
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						EntrustAssetEntity entity = (EntrustAssetEntity) each;
-						if (entity != null && entity.getAsset_total_value() != null)
-							combassetDO.setAssetTotalValue(Float.valueOf(entity.getAsset_total_value()));
-						combassetDO.setCurrentCash(Float.valueOf(entity.getCurrent_cash()));
+						if (entity != null
+								&& entity.getAsset_total_value() != null)
+							combassetDO.setAssetTotalValue(Float.valueOf(entity
+									.getAsset_total_value()));
+						combassetDO.setCurrentCash(Float.valueOf(entity
+								.getCurrent_cash()));
 						break;
 					}
 				} else {
@@ -261,13 +283,15 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 				entrustQuery = new StockEntrustQuery(fundAccount, combineId);
 				entrustQuery.callHomes(func_am_combofund_qry);
-				obj = returnObj(entrustQuery.getDataSet(), EntrustQueryEntity.class);
+				obj = returnObj(entrustQuery.getDataSet(),
+						EntrustQueryEntity.class);
 				EntrustQueryEntity entity = null;
 
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						entity = (EntrustQueryEntity) each;
-						combassetDO.setAssetValue(Float.valueOf(entity.getEnable_balance_t1()));
+						combassetDO.setAssetValue(Float.valueOf(entity
+								.getEnable_balance_t1()));
 						break;
 					}
 				} else {
@@ -290,35 +314,43 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public JSONArray queryEntrust(String nickname) {
 		JSONArray ja = new JSONArray();
 		try {
-			CurrentOperateUserDO userDO = account.getCurrentOperateUser(nickname);
+			CurrentOperateUserDO userDO = account
+					.getCurrentOperateUser(nickname);
 			if (userDO == null) {
 				return ja;
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
-				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(fundAccount, combineId);
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
+				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(
+						fundAccount, combineId);
 				CallhomesService service = new CallhomesService(queryEntrust);
 				if (service.call104Fun()) {
-					Homes104Resp list = (Homes104Resp) service.getResponse(Constants.FN104);
+					Homes104Resp list = (Homes104Resp) service
+							.getResponse(Constants.FN104);
 					List<EntrustQueryEntity> entities = list.getList();
 					for (EntrustQueryEntity entity : entities) {
-						entity.setBaseParam(fundAccount, combineId, userDO.getTradeAcount(), nickname);
+						entity.setBaseParam(fundAccount, combineId,
+								userDO.getTradeAcount(), nickname);
 						assembleResult(entity, ja);
 					}
 
 				}
 			} else {
-				StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount, combineId);
+				StockEntrustQuery entrustQuery = new StockEntrustQuery(
+						fundAccount, combineId);
 				entrustQuery.callHomes(func_am_entrust_qry);
-				List<?> obj = returnObj(entrustQuery.getDataSet(), EntrustQueryEntity.class);
+				List<?> obj = returnObj(entrustQuery.getDataSet(),
+						EntrustQueryEntity.class);
 				List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 				EntrustQueryEntity entity = null;
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						entity = (EntrustQueryEntity) each;
-						entity.setBaseParam(fundAccount, combineId, userDO.getTradeAcount(), nickname);
+						entity.setBaseParam(fundAccount, combineId,
+								userDO.getTradeAcount(), nickname);
 						entities.add(entity);
 						assembleResult(entity, ja);
 					}
@@ -339,30 +371,38 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public JSONArray tradedQuery(String nickname) {
 		JSONArray ja = new JSONArray();
 		try {
-			CurrentOperateUserDO userDO = account.getCurrentOperateUser(nickname);
+			CurrentOperateUserDO userDO = account
+					.getCurrentOperateUser(nickname);
 			if (userDO == null) {
 				return ja;
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
-				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(fundAccount, combineId);
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
+				HomesQueryEntrust queryEntrust = new HomesQueryEntrust(
+						fundAccount, combineId);
 				CallhomesService service = new CallhomesService(queryEntrust);
 				if (service.call105Fun()) {
-					Homes104Resp list = (Homes104Resp) service.getResponse(Constants.FN105);
+					Homes104Resp list = (Homes104Resp) service
+							.getResponse(Constants.FN105);
 					List<EntrustQueryEntity> entities = list.getList();
 					for (EntrustQueryEntity entity : entities) {
-						entity.setBaseParam(fundAccount, combineId, userDO.getTradeAcount(), nickname);
+						entity.setBaseParam(fundAccount, combineId,
+								userDO.getTradeAcount(), nickname);
 						JSONObject jo = new JSONObject();
 						jo.put("stockCode", entity.getStock_code());
 						jo.put("amentrustStatus", entity.getAmentrust_status());
 						jo.put("entrustNo", entity.getEntrust_no());
 						jo.put("exchangeType", entity.getExchange_type());
-						jo.put("entrustDirection", entity.getEntrust_direction());
+						jo.put("entrustDirection",
+								entity.getEntrust_direction());
 						jo.put("businessBalance", entity.getBusiness_balance());
 						jo.put("businessAmount", entity.getBusiness_amount());
 						jo.put("businessTime", entity.getBusiness_time());
-						jo.put("entrustTime", StringUtils.defaultIfBlank(entity.getBusiness_time(), "130101"));
+						jo.put("entrustTime",
+								StringUtils.defaultIfBlank(
+										entity.getBusiness_time(), "130101"));
 						jo.put("cancelInfo", entity.getCancel_info());
 						jo.put("entrustDate", entity.getEntrust_day());
 						ja.add(jo);
@@ -370,27 +410,33 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 
 				}
 			} else {
-				StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount, combineId);
+				StockEntrustQuery entrustQuery = new StockEntrustQuery(
+						fundAccount, combineId);
 				entrustQuery.callHomes(func_am_realdeal_qry);
-				List<?> obj = returnObj(entrustQuery.getDataSet(), EntrustQueryEntity.class);
+				List<?> obj = returnObj(entrustQuery.getDataSet(),
+						EntrustQueryEntity.class);
 				List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 				EntrustQueryEntity entityObj = null;
 
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						entityObj = (EntrustQueryEntity) each;
-						entityObj.setBaseParam(fundAccount, combineId, userDO.getTradeAcount(), nickname);
+						entityObj.setBaseParam(fundAccount, combineId,
+								userDO.getTradeAcount(), nickname);
 						entities.add(entityObj);
 					}
 					for (EntrustQueryEntity entity : entities) {
 						JSONObject jo = new JSONObject();
 						jo.put("stockCode", entity.getStock_code());
-						jo.put("amentrustStatus", AmentrustStatusEnum.getDesc(entity.getAmentrust_status()));
+						jo.put("amentrustStatus", AmentrustStatusEnum
+								.getDesc(entity.getAmentrust_status()));
 						jo.put("entrustPrice", entity.getEntrust_price());
 						jo.put("entrustAmount", entity.getEntrust_amount());
 						jo.put("entrustNo", entity.getEntrust_no());
-						jo.put("exchangeType", ExchangeTypeEnum.getDesc(entity.getExchange_type()));
-						jo.put("entrustDirection", entity.getEntrust_direction());
+						jo.put("exchangeType", ExchangeTypeEnum.getDesc(entity
+								.getExchange_type()));
+						jo.put("entrustDirection",
+								entity.getEntrust_direction());
 						jo.put("businessBalance", entity.getBusiness_balance());
 						jo.put("businessAmount", entity.getBusiness_amount());
 						jo.put("entrustTime", entity.getEntrust_time());
@@ -410,18 +456,21 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public JSONArray queryCombostock(String nickname) {
 		JSONArray ja = new JSONArray();
 		try {
-			CurrentOperateUserDO userDO = account.getCurrentOperateUser(nickname);
+			CurrentOperateUserDO userDO = account
+					.getCurrentOperateUser(nickname);
 			if (userDO == null) {
 				return null;
 			}
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
 
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				AHomesEntity aentity = new AHomesEntity(fundAccount, combineId);
 				CallhomesService service = new CallhomesService(aentity);
 				if (service.call103Fun()) {
-					Homes103Resp resp = (Homes103Resp) service.getResponse(Constants.FN103);
+					Homes103Resp resp = (Homes103Resp) service
+							.getResponse(Constants.FN103);
 					if (resp != null) {
 						return JSONArray.fromObject(resp.getList());
 					} else {
@@ -429,22 +478,26 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					}
 				}
 			} else {
-				StockCombostockQuery combostockQuery = new StockCombostockQuery(fundAccount, combineId);
+				StockCombostockQuery combostockQuery = new StockCombostockQuery(
+						fundAccount, combineId);
 				combostockQuery.callHomes(func_am_combostock_qry);
-				List<?> obj = returnObj(combostockQuery.getDataSet(), EntrustQueryEntity.class);
+				List<?> obj = returnObj(combostockQuery.getDataSet(),
+						EntrustQueryEntity.class);
 				List<EntrustQueryEntity> entities = new ArrayList<EntrustQueryEntity>();
 				EntrustQueryEntity entity = null;
 
 				if (!obj.isEmpty()) {
 					for (Object each : obj) {
 						entity = (EntrustQueryEntity) each;
-						entity.setBaseParam(fundAccount, combineId, userDO.getTradeAcount(), nickname);
+						entity.setBaseParam(fundAccount, combineId,
+								userDO.getTradeAcount(), nickname);
 						entities.add(entity);
 					}
 					for (EntrustQueryEntity entrustEntity : entities) {
 						JSONObject jo = new JSONObject();
 						jo.put("stockCode", entrustEntity.getStock_code());
-						jo.put("currentAmount", entrustEntity.getCurrent_amount());
+						jo.put("currentAmount",
+								entrustEntity.getCurrent_amount());
 						jo.put("enableAmount", entrustEntity.getEnable_amount());
 						jo.put("costBalance", entrustEntity.getCost_balance());
 						jo.put("marketValue", entrustEntity.getMarket_value());
@@ -469,48 +522,63 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 		jo.put("entrustDirection", entity.getEntrust_direction());
 		jo.put("businessBalance", entity.getBusiness_balance());
 		jo.put("businessAmount", entity.getBusiness_amount());
-		String bussi = StringUtils.defaultIfBlank(entity.getBusiness_time(), "130201");
+		String bussi = StringUtils.defaultIfBlank(entity.getBusiness_time(),
+				"130201");
 		if (bussi.length() < 6) {
 			bussi = "0" + bussi;
 		}
 		jo.put("businessTime", bussi);
-		String time = StringUtils.defaultIfBlank(entity.getEntrust_time(), "130101");
+		String time = StringUtils.defaultIfBlank(entity.getEntrust_time(),
+				"130101");
 		if (time.length() < 6) {
 			time = "0" + time;
 		}
 		jo.put("entrustTime", time);
 		jo.put("cancelInfo", entity.getCancel_info());
-		jo.put("entrustDate", StringUtils.defaultIfBlank(entity.getEntrust_day(), "2010-01-01 00:00:00"));
-		jo.put("entrusteDate", StringUtils.defaultIfBlank(entity.getEntrust_day(), "2010-01-01 00:00:00"));
+		jo.put("entrustDate", StringUtils.defaultIfBlank(
+				entity.getEntrust_day(), "2010-01-01 00:00:00"));
+		jo.put("entrusteDate", StringUtils.defaultIfBlank(
+				entity.getEntrust_day(), "2010-01-01 00:00:00"));
 		jo.put("reportTime", entity.getReport_time());
 		ja.add(jo);
 	}
 
 	@Override
-	public JSONArray queryEntrustComm(CurrentEntrustDO entrustDO) {
+	public JSONArray queryEntrustComm(CurrentEntrustDO entrustDO, String flag) {
 		JSONArray ja = new JSONArray();
 		try {
 			String nickname = entrustDO.getNickName();
-			CurrentOperateUserDO userDO = account.getCurrentOperateUser(nickname);
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
+			CurrentOperateUserDO userDO = account
+					.getCurrentOperateUser(nickname);
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				String investNO = userDO.getFundAccount();
 				String clientNo = userDO.getTradeAcount();
-				HomesQueryEntrust entrust = new HomesQueryEntrust(investNO, clientNo);
+				HomesQueryEntrust entrust = new HomesQueryEntrust(investNO,
+						clientNo);
 				entrust.setStartDate(entrustDO.getStartDate());
 				entrust.setEndDate(entrustDO.getEndDate());
 				entrust.setCxRowcount(50);
 				CallhomesService service = new CallhomesService(entrust);
-				if (service.call105Fun()) {
-					HomesResponse response = service.getResponse(Constants.FN105);
-					if (null != response) {
-						Homes104Resp resp = (Homes104Resp) response;
-						List<EntrustQueryEntity> result = resp.getList();
-						for (EntrustQueryEntity item : result) {
-							item.setBaseParam(investNO, clientNo, clientNo, nickname);
-							assembleResult(item, ja);
-						}
-						return ja;
+				HomesResponse response = null;
+				if (StringUtils.equals("entrust", flag)) {
+					if (service.call104Fun()) {
+						response = service.getResponse(Constants.FN104);
 					}
+				} else {
+					if (service.call105Fun()) {
+						response = service.getResponse(Constants.FN105);
+					}
+				}
+				if (null != response) {
+					Homes104Resp resp = (Homes104Resp) response;
+					List<EntrustQueryEntity> result = resp.getList();
+					for (EntrustQueryEntity item : result) {
+						item.setBaseParam(investNO, clientNo, clientNo,
+								nickname);
+						assembleResult(item, ja);
+					}
+					return ja;
 				}
 			} else {
 				return JSONArray.fromObject(deal.queryEntrustComm(entrustDO));
@@ -533,7 +601,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 					for (String item : codes) {
 						JSONObject jo = new JSONObject();
 						if (item.equals("10")) {
-							jo.put("financeIncome", product.getFinanceIncome() + "");
+							jo.put("financeIncome", product.getFinanceIncome()
+									+ "");
 							jo.put("code", "10");
 						} else if (item.equals("11")) {
 							jo.put("stockIncome", product.getStockIncome() + "");
@@ -564,7 +633,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public String purchaseHhb(String nickname, String num, String cash) {
 		try {
-			if (!StringUtils.equals(Constants.CODE_SUCCESS, account.queryCash(nickname, num))) {
+			if (!StringUtils.equals(Constants.CODE_SUCCESS,
+					account.queryCash(nickname, num))) {
 				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
 			}
 			deal.updateHhb(nickname, num);
@@ -580,10 +650,12 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	}
 
 	@Override
-	public String updateGuess(String nickname, String num, String type, String bidCode) throws RuntimeException {
+	public String updateGuess(String nickname, String num, String type,
+			String bidCode) throws RuntimeException {
 		try {
 			// 判断哈哈币是否充足
-			if (!StringUtils.equals(Constants.CODE_SUCCESS, deal.queryHhb(nickname, num))) {
+			if (!StringUtils.equals(Constants.CODE_SUCCESS,
+					deal.queryHhb(nickname, num))) {
 				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
 			}
 			// 扣除哈哈币
@@ -601,7 +673,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public JSONObject getGuessProduct(String nickname) {
 		try {
-			CUrrentGuessProductDO productDO = deal.queryCurrentGuessProduct(nickname);
+			CUrrentGuessProductDO productDO = deal
+					.queryCurrentGuessProduct(nickname);
 			if (null != productDO) {
 				// String rightNow = DateUtil.dateToStr(new Date(),
 				// DateUtil.FORMAT_YYYY_MM_DD);
@@ -628,7 +701,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public String sell(String nickname, String num, String cash) {
 		// 判断哈哈币是否充足
 		try {
-			if (!StringUtils.equals(Constants.CODE_SUCCESS, deal.queryHhb(nickname, num))) {
+			if (!StringUtils.equals(Constants.CODE_SUCCESS,
+					deal.queryHhb(nickname, num))) {
 				return Constants.CODE_GUESS_FUND_NOT_ENOUGH;
 			}
 			deal.modifyhhbAndBalance(nickname, num, cash);
@@ -676,7 +750,8 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	public String querySignFlag(String userId) {
 
 		try {
-			if (StringUtils.equals(Constants.CODE_SUCCESS, deal.querySignFlag(userId))) {
+			if (StringUtils.equals(Constants.CODE_SUCCESS,
+					deal.querySignFlag(userId))) {
 				return Constants.CODE_SUCCESS;
 			}
 		} catch (Exception e) {

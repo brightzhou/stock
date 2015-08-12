@@ -50,6 +50,12 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	 * 成交数量
 	 */
 	private String businessAmount;
+	
+	/**
+	 * 默认成交时间
+	 */
+	private String businessTime="130101";
+	
 	/**
 	 * 委托日期
 	 */
@@ -84,6 +90,22 @@ public class CurrentEntrustDO extends BaseEntrustDO {
 	 * 结束时间
 	 */
 	private String endDate;
+	
+	
+
+	/**
+	 * @return the businessTime
+	 */
+	public String getBusinessTime() {
+		return businessTime;
+	}
+
+	/**
+	 * @param businessTime the businessTime to set
+	 */
+	public void setBusinessTime(String businessTime) {
+		this.businessTime = businessTime;
+	}
 
 	public String getEntrusteDate() {
 		return entrusteDate;
