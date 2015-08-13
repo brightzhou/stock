@@ -28,16 +28,20 @@
 	margin: 0px auto;
 	width: 1080px;
 	height: 810px;
-	background-image: url("images/registerSuccess.png");
+	background-image: url("<%=basePath%>images/registerSuccess.png");
 	padding-top: 1110px;
+	background-color: #e4f2f5;
+	
 }
 
 .info .desc {
-	width: 981px;
+	width: 605px;
 	height: 74px;
-	background-image: url("images/registerSuccess_05.png");
 	background-repeat: no-repeat;
 	margin-left: 265px;
+	font-size: 50px;
+	line-height: 74px;
+	font-weight: bold;
 }
 
 .info .button {
@@ -47,47 +51,74 @@
 .info .button  .left {
 	width: 485px;
 	height: 131px;
-	background-image: url("images/registerSuccess_01.png");
+	background-image: url("<%=basePath%>images/registerSuccess_01.png");
 	background-repeat: no-repeat;
 	margin-left: 41px;
 	float: left;
 	display: block;
 }
 
-.info .button  .left:hover {
-	background-image: url("images/registerSuccess_02.png");
-}
+
 
 .info .button  .right {
-	width: 523px;
-	height: 131px;
-	background-image: url("images/registerSuccess_03.png");
-	background-repeat: no-repeat;
-	float: right;
-	display: block;
+	width: 482px;
+height: 131px;
+background-image: url("<%=basePath%>images/registerSuccess_03.png");
+background-repeat: no-repeat;
+float: right;
+display: block;
+margin-right: 36px;
 }
 
-.info .button  .right:hover {
-	background-image: url("images/registerSuccess_04.png");
+#mcover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    z-index: 20000;
 }
+#mcover img {
+    position: fixed;
+    right: 18px;
+    top: 5px;
+    z-index: 20001;
+}
+
+
 </style>
 </head>
 
 <body>
 	<div class="info">
-		<div class="desc"></div>
+		<div class="desc">点击安装哈哈宝应用软件</div>
 		<div class="button">
-			<a href="javascript:void();" onclick="downLoadAndroid()" class="left" target="_blank"></a> 
-			<a href="javascript:void();" class="right" target="_blank" onclick=""></a>
+			<a href="http://121.41.34.71:8082/stock/api/stock/file/download?flag=HaHaBao.apk"   class="left" target="_blank"></a> 
+			<a href="https://itunes.apple.com/cn/app/ha-ha-bao/id981024638?mt=8" class="right" target="_blank" ></a>
 		</div>
 
 	</div>
+	<div id="mcover"  style="display: none;">
+		<img src="<%=basePath%>images/openTwo.png">
+  </div>
 	<script type="text/javascript">
 		mini.parse();
 		
 		function downLoadAndroid(){
 			window.location.href = '<%=apkPath%>';
 		}
+		
+				function isWeiXin(){ 
+    var ua = window.navigator.userAgent.toLowerCase(); 
+	if(ua.match(/MicroMessenger/i) == 'micromessenger'){ 
+		document.getElementById('mcover').style.display='block'
+	}else{ 
+	   
+	} 
+} 
+ isWeiXin();
 	</script>
 </body>
 </html>
