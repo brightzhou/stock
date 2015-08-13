@@ -131,12 +131,12 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			acounter.insertIdentify(nickname, truename, StringUtils.upperCase(idCard));
 
 			// 2、身份认证,平台给注册的人的钱
-			String plat_money = acounter.getPlatRedPacketToRegister(nickname);
-			acounter.moveRedPacketToReferee(nickname, plat_money);
+//			String plat_money = acounter.getPlatRedPacketToRegister(nickname);
+//			acounter.moveRedPacketToReferee(nickname, plat_money);
 
 			// 2、1记录流水 平台红包
-			trade.recordFundflow(nickname, Fund.PLAT_RED_PACKET.getType(), plat_money,
-					Fund.getDesc(nickname, Fund.PLAT_RED_PACKET.getType()));
+//			trade.recordFundflow(nickname, Fund.PLAT_RED_PACKET.getType(), plat_money,
+//					Fund.getDesc(nickname, Fund.PLAT_RED_PACKET.getType()));
 
 			// 3、如果有推荐人，给推荐人红包
 			String referee = acounter.queryReferee(nickname);

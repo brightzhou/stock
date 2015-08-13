@@ -325,6 +325,22 @@
 		<!-- 每天23:30运行一次 -->
 		<property name="cronExpression" value="0 56 17 * * ?" />
 	</bean>
+	
+	<!-- 定时任务F= 将30天以上的用户踢出群--> 
+   <bean id="moveFromGroup"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.MoveFromGroupTimer" />
+		</property>
+		<property name="targetMethod" value="moveFromgroup" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+
+	<bean id="financeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="moveFromGroup" />
+		<!-- 每天23:30运行一次 -->
+		<property name="cronExpression" value="0 0 2 * * ?" />
+	</bean>
 
 	  <!--开始调度 -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

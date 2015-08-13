@@ -372,6 +372,10 @@
 		<result column="isonline" property="isOnline" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.UserInfoDO" id="resultOnlineIn30DaysUser">
+		<result column="id" property="userId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1772,6 +1776,17 @@
 			(select SIGN_FOR_HHB from STOCK_GUESS_PERCENT ),
 	   		(SELECT SIGN_FOR_HHB * P.UNIT_PRICE FROM STOCK_GUESS_PERCENT P),#{type})
    </insert>
+   
+   <select id="getOnlineIn30DaysUser" resultMap="resultOnlineIn30DaysUser">
+   		SELECT ID
+		    FROM STOCK_USER
+		   WHERE ROUND(TO_NUMBER(SYSDATE - LOGIN_TIME)) > 30
+   		   and IN_GROUP = '1' 
+   </select>
+   
+   <update id="updateInGroupStatus" parameterType="com.zeekie.stock.entity.UserInfoDO">
+   		update STOCK_USER set IN_GROUP ='0' where id = #{userId}
+   </update>
 	
 </mapper>
 

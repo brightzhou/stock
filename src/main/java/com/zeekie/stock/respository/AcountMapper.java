@@ -787,4 +787,11 @@ public interface AcountMapper {
 	public void insertHhbFlowByUserid(@Param("userId") String userId,
 			@Param("type") String type);
 
+	/**
+	 * 移除用户在30天以上的
+	 * 
+	 * @return
+	 */
+	public List<UserInfoDO> getOnlineIn30DaysUser();
+
 }
