@@ -60,165 +60,130 @@ import com.zeekie.stock.web.WithdrawlPage;
 @MyBatisRepository
 public interface AcountMapper {
 
-	public void insertIdentify(@Param("nickname") String nickname,
-			@Param("truename") String truename, @Param("idCard") String idCard)
-			throws Exception;
+	public void insertIdentify(@Param("nickname") String nickname, @Param("truename") String truename,
+			@Param("idCard") String idCard) throws Exception;
 
-	public void bindCreditCard(@Param("userId") String userId,
-			@Param("phone") String phone, @Param("bank") String bank,
-			@Param("number") String number, @Param("bankCode") String bankCode,
-			@Param("code") String code) throws Exception;
+	public void bindCreditCard(@Param("userId") String userId, @Param("phone") String phone, @Param("bank") String bank,
+			@Param("number") String number, @Param("bankCode") String bankCode, @Param("code") String code)
+					throws Exception;
 
-	public void setDepositPwd(@Param("nickname") String nickname,
-			@Param("telephone") String telephone,
+	public void setDepositPwd(@Param("nickname") String nickname, @Param("telephone") String telephone,
 			@Param("depositPwd") String depositPwd) throws Exception;
 
 	public TradeDO getInitUserInfo();
 
-	public String cashIsEnough(@Param("tradeFund") String tradeFund,
-			@Param("fundAccount") String fundAccount) throws Exception;
+	public String cashIsEnough(@Param("tradeFund") String tradeFund, @Param("fundAccount") String fundAccount)
+			throws Exception;
 
-	public StockRadioDO getAssignRadioForCurrUser(
-			@Param("nickname") String nickname) throws Exception;
+	public StockRadioDO getAssignRadioForCurrUser(@Param("nickname") String nickname) throws Exception;
 
 	public void storeOperatorCash(TradeForm tradeForm) throws Exception;
 
-	public TradeDO getOperateAcount(@Param("nickname") String nickname)
-			throws Exception;
+	public TradeDO getOperateAcount(@Param("nickname") String nickname) throws Exception;
 
 	public ManagerDO getStockManager() throws Exception;
 
 	public List<TradeDO> getSonAccountInfo() throws Exception;
 
-	public String queryClientCombineId(@Param("nickname") String nickname)
+	public String queryClientCombineId(@Param("nickname") String nickname) throws Exception;
+
+	public List<InsufficientBalanceRemindDO> queryUserBalanceIsNotEnough() throws Exception;
+
+	public List<FundFlowDO> getFundFlow(@Param("nickname") String nickname, @Param("offset") String offset)
 			throws Exception;
 
-	public List<InsufficientBalanceRemindDO> queryUserBalanceIsNotEnough()
+	public void updateFigurePwd(@Param("nickname") String nickname, @Param("figurePwd") String figurePwd)
 			throws Exception;
 
-	public List<FundFlowDO> getFundFlow(@Param("nickname") String nickname,
-			@Param("offset") String offset) throws Exception;
-
-	public void updateFigurePwd(@Param("nickname") String nickname,
-			@Param("figurePwd") String figurePwd) throws Exception;
-
-	public void updateTelephone(@Param("nickname") String nickname,
-			@Param("telephone") String telephone) throws Exception;
-
-	public CurrentAccountDO getCurrentAccount(@Param("nickname") String nickname)
+	public void updateTelephone(@Param("nickname") String nickname, @Param("telephone") String telephone)
 			throws Exception;
 
-	void withdraw(@Param("nickname") String nickname, @Param("fund") String fund)
-			throws Exception;
+	public CurrentAccountDO getCurrentAccount(@Param("nickname") String nickname) throws Exception;
 
-	public String isIdentify(@Param("nickname") String nickname)
-			throws Exception;
+	void withdraw(@Param("nickname") String nickname, @Param("fund") String fund) throws Exception;
 
-	public List<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage)
-			throws Exception;
+	public String isIdentify(@Param("nickname") String nickname) throws Exception;
+
+	public List<WithdrawlDO> getDepositList(WithdrawlPage withdrawlPage) throws Exception;
 
 	public Long queryDepositCount(WithdrawlPage withdrawlPage) throws Exception;
 
 	public void updateDepositStatus(@Param("id") String id) throws Exception;
 
-	public long queryTotalFundCount(@Param("fundAccount") String fundAccount)
+	public long queryTotalFundCount(@Param("fundAccount") String fundAccount) throws Exception;
+
+	public List<TotalFundDO> getTotalFundList(TotalFundPage totalFundPage) throws Exception;
+
+	public String operationIsEnded(@Param("nickname") String nickname) throws Exception;
+
+	public EndStockCashDO queryUserLastCash(@Param("nickname") String nickname) throws Exception;
+
+	public void moveProfitToUserWallet(@Param("nickname") String nickname, @Param("userCash") String userCash)
 			throws Exception;
 
-	public List<TotalFundDO> getTotalFundList(TotalFundPage totalFundPage)
-			throws Exception;
-
-	public String operationIsEnded(@Param("nickname") String nickname)
-			throws Exception;
-
-	public EndStockCashDO queryUserLastCash(@Param("nickname") String nickname)
-			throws Exception;
-
-	public void moveProfitToUserWallet(@Param("nickname") String nickname,
-			@Param("userCash") String userCash) throws Exception;
-
-	public void moveAssignCashToTotalFund(
-			@Param("fundAccount") String fundAccount,
+	public void moveAssignCashToTotalFund(@Param("fundAccount") String fundAccount,
 			@Param("assginCash") String assginCash) throws Exception;
 
-	public void recordIntegral(@Param("nickname") String nickname)
+	public void recordIntegral(@Param("nickname") String nickname) throws Exception;
+
+	public void moveRedPacketToReferee(@Param("nickname") String nickname, @Param("redPacket") String redPacket)
 			throws Exception;
 
-	public void moveRedPacketToReferee(@Param("nickname") String nickname,
-			@Param("redPacket") String redPacket) throws Exception;
-
-	public void moveRedPacketToRegister(@Param("nickname") String nickname,
-			@Param("redPacket") String redPacket) throws Exception;
-
-	public void movePlatformRedPacketToRegister(
-			@Param("nickname") String nickname,
-			@Param("redPacket") long redPacket) throws Exception;
-
-	public RedPacketDO getRedPacket(@Param("nickname") String nickname)
+	public void moveRedPacketToRegister(@Param("nickname") String nickname, @Param("redPacket") String redPacket)
 			throws Exception;
 
-	public void insertRefereeRedPacket(@Param("id") Long id,
-			@Param("refereeId") String refereeId,
+	public void movePlatformRedPacketToRegister(@Param("nickname") String nickname, @Param("redPacket") long redPacket)
+			throws Exception;
+
+	public RedPacketDO getRedPacket(@Param("nickname") String nickname) throws Exception;
+
+	public void insertRefereeRedPacket(@Param("id") Long id, @Param("refereeId") String refereeId,
 			@Param("redPacket") String redPacket) throws Exception;
 
 	public long queryMoveCashToRefereeCount() throws Exception;
 
-	public List<MovecashToRefereeDO> queryMoveCashToReferee(
-			MoveToRefereePage moveToRefereePage) throws Exception;
+	public List<MovecashToRefereeDO> queryMoveCashToReferee(MoveToRefereePage moveToRefereePage) throws Exception;
 
-	public void addTotalFund(@Param("type") String type,
-			@Param("fund") String fund,
-			@Param("fundAccount") String fundAccount,
-			@Param("desc") String desc, @Param("storeType") String storeType)
+	public void addTotalFund(@Param("type") String type, @Param("fund") String fund,
+			@Param("fundAccount") String fundAccount, @Param("desc") String desc, @Param("storeType") String storeType)
+					throws Exception;
+
+	public void bindPercent(@Param("nickname") String nickname) throws Exception;
+
+	public String queryReferee(@Param("nickname") String nickname) throws Exception;
+
+	public String getPlatRedPacketToReferee(@Param("referee") String referee) throws Exception;
+
+	public RedpacketAndBalanceDO getRefereeRedPacket(@Param("referee") String referee) throws Exception;
+
+	public String getPlatRedPacketToRegister(@Param("nickname") String nickname) throws Exception;
+
+	public String existWallet(@Param("nickname") String referee) throws Exception;
+
+	public void insertMoneyToWallet(@Param("nickname") String referee, @Param("redPacket") long redPacket)
 			throws Exception;
 
-	public void bindPercent(@Param("nickname") String nickname)
+	public String checkDepositPwd(@Param("nickname") String nickname, @Param("depositPwd") String depositPwd)
 			throws Exception;
 
-	public String queryReferee(@Param("nickname") String nickname)
-			throws Exception;
+	public WithdrawPageDO withdrawPageEnter(@Param("nickname") String nickname) throws Exception;
 
-	public String getPlatRedPacketToReferee(@Param("referee") String referee)
-			throws Exception;
+	public String checkBalance(@Param("nickname") String nickname, @Param("fund") String fund) throws Exception;
 
-	public RedpacketAndBalanceDO getRefereeRedPacket(
-			@Param("referee") String referee) throws Exception;
+	public void updateStatusToN(@Param("fundAccount") String fundAccount) throws Exception;
 
-	public String getPlatRedPacketToRegister(@Param("nickname") String nickname)
-			throws Exception;
+	public void updateStatusToY(@Param("fundAccount") String fundAccount) throws Exception;
 
-	public String existWallet(@Param("nickname") String referee)
-			throws Exception;
-
-	public void insertMoneyToWallet(@Param("nickname") String referee,
-			@Param("redPacket") long redPacket) throws Exception;
-
-	public String checkDepositPwd(@Param("nickname") String nickname,
-			@Param("depositPwd") String depositPwd) throws Exception;
-
-	public WithdrawPageDO withdrawPageEnter(@Param("nickname") String nickname)
-			throws Exception;
-
-	public String checkBalance(@Param("nickname") String nickname,
-			@Param("fund") String fund) throws Exception;
-
-	public void updateStatusToN(@Param("fundAccount") String fundAccount)
-			throws Exception;
-
-	public void updateStatusToY(@Param("fundAccount") String fundAccount)
-			throws Exception;
-
-	public void updateAccountStatus(
-			@Param("operatorAcount") String operatorAcount,
+	public void updateAccountStatus(@Param("operatorAcount") String operatorAcount,
 			@Param("newOperatePwd") String newOperatePwd) throws Exception;
 
-	public String checkOldTelephone(@Param("nickname") String nickname,
-			@Param("telephone") String telephone) throws Exception;
+	public String checkOldTelephone(@Param("nickname") String nickname, @Param("telephone") String telephone)
+			throws Exception;
 
-	public String userWalletIsFull(@Param("nickname") String nickname,
-			@Param("guaranteeCash") String guaranteeCash) throws Exception;
+	public String userWalletIsFull(@Param("nickname") String nickname, @Param("guaranteeCash") String guaranteeCash)
+			throws Exception;
 
-	public String checkDepoist(@Param("userId") String userId,
-			@Param("depositPwd") String depositPwd) throws Exception;
+	public String checkDepoist(@Param("userId") String userId, @Param("depositPwd") String depositPwd) throws Exception;
 
 	public long getPayListCount() throws Exception;
 
@@ -226,77 +191,57 @@ public interface AcountMapper {
 
 	public void updatePayStatus(@Param("id") String id) throws Exception;
 
-	public void saveFreezeCash(@Param("nickname") String nickname,
-			@Param("fund") String fund) throws Exception;
+	public void saveFreezeCash(@Param("nickname") String nickname, @Param("fund") String fund) throws Exception;
 
-	public void deductWithdrawCahs(@Param("nickname") String nickname,
-			@Param("cash") String cash) throws Exception;
+	public void deductWithdrawCahs(@Param("nickname") String nickname, @Param("cash") String cash) throws Exception;
 
 	public String getOperateAccount() throws Exception;
 
-	public void updateDebt(@Param("debt") String debt,
-			@Param("nickname") String nickname) throws Exception;
+	public void updateDebt(@Param("debt") String debt, @Param("nickname") String nickname) throws Exception;
 
-	public void deductDebt(@Param("cash") Float cash,
-			@Param("nickname") String nickname) throws Exception;
+	public void deductDebt(@Param("cash") Float cash, @Param("nickname") String nickname) throws Exception;
 
-	public CashDO selectCash(@Param("nickname") String nickname)
-			throws Exception;
+	public CashDO selectCash(@Param("nickname") String nickname) throws Exception;
 
-	public DebtDO getWallet(@Param("nickname") String nickname)
-			throws Exception;
+	public DebtDO getWallet(@Param("nickname") String nickname) throws Exception;
 
-	public long queryCurrentOperationCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryCurrentOperationCount(@Param("nickname") String nickname) throws Exception;
 
-	public List<CurrentOperationWebDO> queryCurrentOperation(
-			EveningUpPage eveningUpPage) throws Exception;
+	public List<CurrentOperationWebDO> queryCurrentOperation(EveningUpPage eveningUpPage) throws Exception;
 
 	public void update(@Param("id") String id) throws Exception;
 
-	public AccountDO getAccount(@Param("nickname") String nickname)
-			throws Exception;
+	public AccountDO getAccount(@Param("nickname") String nickname) throws Exception;
 
 	public List<TradeDO> getAllUserInfo() throws Exception;
 
 	public List<String> querySensitiveWords() throws Exception;
 
-	public String queryRefereeNickname(@Param("nickname") String nickname)
-			throws Exception;
+	public String queryRefereeNickname(@Param("nickname") String nickname) throws Exception;
 
-	public long queryClientCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryClientCount(@Param("nickname") String nickname) throws Exception;
 
-	public List<ClientPercentDO> queryClient(ClientPage clientPage)
-			throws Exception;
+	public List<ClientPercentDO> queryClient(ClientPage clientPage) throws Exception;
 
-	public ClientPercentDO getClientById(@Param("id") String id)
-			throws Exception;
+	public ClientPercentDO getClientById(@Param("id") String id) throws Exception;
 
-	public void saveClientInfo(ClientPercentDO clientPercentDO)
-			throws Exception;
+	public void saveClientInfo(ClientPercentDO clientPercentDO) throws Exception;
 
-	public List<FundAccountDO> getFundAccount(@Param("status") String status)
-			throws Exception;
+	public List<FundAccountDO> getFundAccount(@Param("status") String status) throws Exception;
 
 	public void updateAllStatusToOne() throws Exception;
 
-	public void updateStatusToZero(@Param("account") String account)
-			throws Exception;
+	public void updateStatusToZero(@Param("account") String account) throws Exception;
 
-	public void updateStatusToOne(@Param("account") String account)
-			throws Exception;
+	public void updateStatusToOne(@Param("account") String account) throws Exception;
 
 	public void loginOff(@Param("nickname") String nickname) throws Exception;
 
-	public PhoneAndTIcketDO getUserPhone(@Param("nickname") String nickname)
-			throws Exception;
+	public PhoneAndTIcketDO getUserPhone(@Param("nickname") String nickname) throws Exception;
 
-	public long queryOwingFeeCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryOwingFeeCount(@Param("nickname") String nickname) throws Exception;
 
-	public List<OwingFeeDO> queryOwingFee(ClientPage clientPage)
-			throws Exception;
+	public List<OwingFeeDO> queryOwingFee(ClientPage clientPage) throws Exception;
 
 	/**
 	 * 获取用户真实姓名
@@ -305,8 +250,7 @@ public interface AcountMapper {
 	 * @return truename
 	 * @throws Exception
 	 */
-	public String queryTrueName(@Param("nickname") String nickname)
-			throws Exception;
+	public String queryTrueName(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取总共有多少个资金账号
@@ -323,8 +267,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public long queryTotal(@Param("assetName") String assetName)
-			throws Exception;
+	public long queryTotal(@Param("assetName") String assetName) throws Exception;
 
 	/**
 	 * 获取剩余资产占有比例
@@ -341,11 +284,9 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public String queryFundAccount(@Param("nickname") String nickname)
-			throws Exception;
+	public String queryFundAccount(@Param("nickname") String nickname) throws Exception;
 
-	public void updateFundAccountStatus(@Param("type") String type,
-			@Param("managerAccountId") String managerAccountId)
+	public void updateFundAccountStatus(@Param("type") String type, @Param("managerAccountId") String managerAccountId)
 			throws Exception;
 
 	/**
@@ -364,8 +305,7 @@ public interface AcountMapper {
 	 * @return BankInfoDO
 	 * @throws Exception
 	 */
-	public BankInfoDO getBankInfo(@Param("userId") String userId)
-			throws Exception;
+	public BankInfoDO getBankInfo(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 根据用户id获取用户名
@@ -373,8 +313,7 @@ public interface AcountMapper {
 	 * @param string
 	 * @return
 	 */
-	public String queryNickname(@Param("userId") String userId)
-			throws Exception;
+	public String queryNickname(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 设置推荐人为空
@@ -382,8 +321,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @throws Exception
 	 */
-	public void updateRefereeIsNull(@Param("nickname") String nickname)
-			throws Exception;
+	public void updateRefereeIsNull(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 修改提现密码
@@ -392,8 +330,8 @@ public interface AcountMapper {
 	 * @param depositPwd
 	 * @throws Exception
 	 */
-	public void updateDepositePwd(@Param("userId") String userId,
-			@Param("depositPwd") String depositPwd) throws Exception;
+	public void updateDepositePwd(@Param("userId") String userId, @Param("depositPwd") String depositPwd)
+			throws Exception;
 
 	/**
 	 * 更新上线比例为空
@@ -401,8 +339,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @throws Exception
 	 */
-	public void updateRefereeRadioIsNull(@Param("nickname") String nickname)
-			throws Exception;
+	public void updateRefereeRadioIsNull(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 验证该用户是否已经认证过了
@@ -411,11 +348,9 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public String queryIdentifyFlag(@Param("nickname") String nickname)
-			throws Exception;
+	public String queryIdentifyFlag(@Param("nickname") String nickname) throws Exception;
 
-	public void updateOpenBank(@Param("nickname") String nickname,
-			@Param("openBank") String openBank) throws Exception;
+	public void updateOpenBank(@Param("nickname") String nickname, @Param("openBank") String openBank) throws Exception;
 
 	/**
 	 * 判断是否设置提现密码
@@ -423,8 +358,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public String queryDepositPwd(@Param("nickname") String nickname)
-			throws Exception;
+	public String queryDepositPwd(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取身份认证信息
@@ -433,8 +367,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public IdentifyDO queryIdentifyInfo(@Param("userId") String userId)
-			throws Exception;
+	public IdentifyDO queryIdentifyInfo(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 获取绑定的银行卡信息
@@ -443,8 +376,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public BindBankDO getBindCreditCard(@Param("userId") String userId)
-			throws Exception;
+	public BindBankDO getBindCreditCard(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 获取基本信息记录数据
@@ -452,8 +384,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public long queryClientInfoCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryClientInfoCount(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取基础信息列表
@@ -461,8 +392,7 @@ public interface AcountMapper {
 	 * @param clientPage
 	 * @return List<UserInfoDO>
 	 */
-	public List<UserInfoDO> queryClientInfo(ClientPage clientPage)
-			throws Exception;
+	public List<UserInfoDO> queryClientInfo(ClientPage clientPage) throws Exception;
 
 	/**
 	 * 获取其他流水数目
@@ -470,8 +400,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return
 	 */
-	public long queryFundFlowInfoCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryFundFlowInfoCount(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取其他流水列表
@@ -479,8 +408,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @return List<OtherFundFlowDO>
 	 */
-	public List<OtherFundFlowDO> queryFundFlowInfo(ClientPage clientPage)
-			throws Exception;
+	public List<OtherFundFlowDO> queryFundFlowInfo(ClientPage clientPage) throws Exception;
 
 	/**
 	 * 查询操盘总数
@@ -489,8 +417,8 @@ public interface AcountMapper {
 	 * @param range
 	 * @return
 	 */
-	public long queryOperationInfoCount(@Param("nickname") String nickname,
-			@Param("range") String range) throws Exception;
+	public long queryOperationInfoCount(@Param("nickname") String nickname, @Param("range") String range)
+			throws Exception;
 
 	/**
 	 * 查询操盘列表
@@ -498,8 +426,7 @@ public interface AcountMapper {
 	 * @param infoPage
 	 * @return
 	 */
-	public List<OperationInfoDO> queryOperationInfo(OperationInfoPage infoPage)
-			throws Exception;
+	public List<OperationInfoDO> queryOperationInfo(OperationInfoPage infoPage) throws Exception;
 
 	/**
 	 * 根据code获取银行限额
@@ -534,8 +461,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @param cash
 	 */
-	public void updateWithdrawCash(@Param("nickname") String nickname,
-			@Param("cash") String cash) throws Exception;
+	public void updateWithdrawCash(@Param("nickname") String nickname, @Param("cash") String cash) throws Exception;
 
 	/**
 	 * 获取用户基础信息{是否有欠款、是否有操盘、app状态是否正常}
@@ -544,8 +470,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public BasicInfoDO getBasicInfo(@Param("userId") String userId)
-			throws Exception;
+	public BasicInfoDO getBasicInfo(@Param("userId") String userId) throws Exception;
 
 	/*
 	 * 查询获取回执失败的交易信息
@@ -564,8 +489,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public long queryTransactionInfoCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryTransactionInfoCount(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取列表
@@ -573,8 +497,7 @@ public interface AcountMapper {
 	 * @param clientPage
 	 * @return
 	 */
-	public List<TransactionDO> queryTransactionInfo(ClientPage clientPage)
-			throws Exception;
+	public List<TransactionDO> queryTransactionInfo(ClientPage clientPage) throws Exception;
 
 	/**
 	 * 更新版本
@@ -583,8 +506,8 @@ public interface AcountMapper {
 	 * @param version
 	 * @throws Exception
 	 */
-	public void updateUserAppVersion(@Param("nickname") String nickname,
-			@Param("version") String version) throws Exception;
+	public void updateUserAppVersion(@Param("nickname") String nickname, @Param("version") String version)
+			throws Exception;
 
 	/**
 	 * 获取银行信息记录数
@@ -593,8 +516,7 @@ public interface AcountMapper {
 	 * @return long
 	 * @throws Exception
 	 */
-	public long queryUserbankCount(@Param("nickname") String nickname)
-			throws Exception;
+	public long queryUserbankCount(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 获取记录数
@@ -603,8 +525,7 @@ public interface AcountMapper {
 	 * @return List<UserBankDO>
 	 * @throws Exception
 	 */
-	public List<UserBankDO> queryUserbankInfo(ClientPage clientPage)
-			throws Exception;
+	public List<UserBankDO> queryUserbankInfo(ClientPage clientPage) throws Exception;
 
 	/**
 	 * 保存银行卡信息
@@ -613,8 +534,7 @@ public interface AcountMapper {
 	 * @param cardNumber
 	 * @throws Exception
 	 */
-	public void updateUserbank(@Param("id") String id,
-			@Param("cardNumber") String cardNumber) throws Exception;
+	public void updateUserbank(@Param("id") String id, @Param("cardNumber") String cardNumber) throws Exception;
 
 	/**
 	 * 删除银行卡
@@ -646,8 +566,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public CurrentOperateUserDO getCurrentOperateUser(
-			@Param("nickname") String nickname) throws Exception;
+	public CurrentOperateUserDO getCurrentOperateUser(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 通过昵称获取用户信息
@@ -656,8 +575,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<UserInfoDO> getUserInfoByNickname(
-			@Param("nickname") String nickname) throws Exception;
+	public List<UserInfoDO> getUserInfoByNickname(@Param("nickname") String nickname) throws Exception;
 
 	/**
 	 * 修改用户配置比例参数
@@ -669,10 +587,8 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long updateAssignRadio(@Param("nickname") String nickname,
-			@Param("stopRadio") float stopRadio,
-			@Param("warnRadio") float warnRadio,
-			@Param("assignRadio") float assignRadio) throws Exception;
+	public Long updateAssignRadio(@Param("nickname") String nickname, @Param("stopRadio") float stopRadio,
+			@Param("warnRadio") float warnRadio, @Param("assignRadio") float assignRadio) throws Exception;
 
 	/**
 	 * 通过用户ID 查询用户配置比例
@@ -681,8 +597,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public StockRadioDO getAssignRadioForCurrUserId(
-			@Param("userId") String userId) throws Exception;
+	public StockRadioDO getAssignRadioForCurrUserId(@Param("userId") String userId) throws Exception;
 
 	/**
 	 * 通过主单元号查询用户剩余资产
@@ -691,8 +606,7 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public String getSurplusAssetsByfundAcound(
-			@Param("fundAcound") String fundAcound) throws Exception;
+	public String getSurplusAssetsByfundAcound(@Param("fundAcound") String fundAcound) throws Exception;
 
 	/**
 	 * 判断是否存在手机号同一个用户
@@ -700,8 +614,7 @@ public interface AcountMapper {
 	 * @param nickname
 	 * @param telephone
 	 */
-	public String queryDupTelephone(@Param("telephone") String telephone)
-			throws Exception;
+	public String queryDupTelephone(@Param("telephone") String telephone) throws Exception;
 
 	/**
 	 * 判断是否存在相同的身份证号
@@ -719,8 +632,8 @@ public interface AcountMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DownLineUserDO> getDownUser(@Param("userId") String userId,
-			@Param("offset") String offset) throws Exception;
+	public List<DownLineUserDO> getDownUser(@Param("userId") String userId, @Param("offset") String offset)
+			throws Exception;
 
 	/**
 	 * 更新用户手机号
@@ -729,8 +642,7 @@ public interface AcountMapper {
 	 * @param phone
 	 * @throws Exception
 	 */
-	public void updateUserphone(@Param("nickname") String nickname,
-			@Param("phone") String phone) throws Exception;
+	public void updateUserphone(@Param("nickname") String nickname, @Param("phone") String phone) throws Exception;
 
 	/**
 	 * 查询钱包金额是否充足
@@ -740,15 +652,12 @@ public interface AcountMapper {
 	 *            哈哈币个数
 	 * @throws Exception
 	 */
-	public String queryCash(@Param("nickname") String nickname,
-			@Param("num") String num) throws Exception;
+	public String queryCash(@Param("nickname") String nickname, @Param("num") String num) throws Exception;
 
 	public List<CustomerCareDO> queryCustomerCare() throws Exception;
 
-	public void updateAdvise(@Param("id") String id,
-			@Param("username") String username,
-			@Param("servicename") String servicename,
-			@Param("grade") String grade) throws Exception;
+	public void updateAdvise(@Param("id") String id, @Param("username") String username,
+			@Param("servicename") String servicename, @Param("grade") String grade) throws Exception;
 
 	/**
 	 * 查询所有的用户id
@@ -765,8 +674,7 @@ public interface AcountMapper {
 	 * @param num
 	 * @param cash
 	 */
-	public void insertHhbFlow(@Param("nickname") String nickname,
-			@Param("num") String num, @Param("cash") String cash,
+	public void insertHhbFlow(@Param("nickname") String nickname, @Param("num") String num, @Param("cash") String cash,
 			@Param("type") String type);
 
 	/**
@@ -776,16 +684,15 @@ public interface AcountMapper {
 	 * @param num
 	 * @param type
 	 */
-	public void insertHhbFlowForGuess(@Param("nickname") String nickname,
-			@Param("num") String num, @Param("type") String type);
+	public void insertHhbFlowForGuess(@Param("nickname") String nickname, @Param("num") String num,
+			@Param("type") String type);
 
 	/**
 	 * 记录哈哈币流水
 	 * 
 	 * @param userId
 	 */
-	public void insertHhbFlowByUserid(@Param("userId") String userId,
-			@Param("type") String type);
+	public void insertHhbFlowByUserid(@Param("userId") String userId, @Param("type") String type);
 
 	/**
 	 * 移除用户在30天以上的
@@ -793,5 +700,21 @@ public interface AcountMapper {
 	 * @return
 	 */
 	public List<UserInfoDO> getOnlineIn30DaysUser();
+
+	/**
+	 * 查询
+	 * 
+	 * @param param
+	 *            用户昵称
+	 * @return
+	 */
+	public String queryUserNotInGroup(@Param("nickname") String nickname);
+
+	/**
+	 * 更新加入群的时间
+	 * 
+	 * @param userId
+	 */
+	public void updateJoinTime(@Param("userId") String userId);
 
 }

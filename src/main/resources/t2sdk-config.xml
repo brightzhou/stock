@@ -5,9 +5,9 @@
 		           localServerName="mctest"   callBackTime="5000" enmCompress="true" />
     <parents>    
 		<parent  parentName="myserver" safeLevel="NONE">
-			<limit licenseFile="D:\apache-tomcat-6.0.16\webapps\stock\WEB-INF\classes\license.dat" encrypt="HSBlowfish" />
-			<members><!-- 222.73.95.204 -->
-				<member no="5" address="115.236.93.155" port="9011"
+			<limit licenseFile="D:\apache-tomcat-7.0.52\apache-tomcat-7.0.52\webapps\stock\WEB-INF\classes\license.dat" encrypt="HSBlowfish" />
+			<members><!-- 222.73.95.209:9016 -->
+				<member no="5" address="115.236.93.154" port="9011"
 				  charset="gbk" poolSize="1" />
 			</members>
 		</parent>

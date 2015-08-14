@@ -306,40 +306,38 @@
     </update>
     
     <select id="queryProduct" parameterType="string" resultMap="resultProduct">
-    	Select (Select Sum(r.Current_Income)
-	          From Stock_Finance_Record r
-	         Where r.Carry_Date >= Sysdate
-	           And Exists (Select 1
-	                  From Stock_Product p
-	                 Where p.Product_Code = '10'
-	                   And p.Status = 'Y')
-	           And r.User_Id = u.Id) Financeincome,
-	       (Select m.Profit_Loss_Radio
-	          From Stock_User_Operate_Maininfo m
-	         Where m.Is_Current = '1'
-	           And m.Nickname = u.Nickname
-	           And Exists (Select 1
-	                  From Stock_Product p
-	                 Where p.Product_Code = '11'
-	                   And p.Status = 'Y')) Stockincome,
-	       (Select Count(1)
-	          From Stock_Guess_Up_Down g
-	         Where g.User_Id = u.Id
-	           And g.Actual_Result = g.Guess_Status
-	           And g.GUESS_STATUS = 'rise') Guessincome,
-	       (Select wmsys.wm_concat(product_code) From Stock_Product t Where t.status='Y') code,
-	       u.OPEN_PRODUCT,
-		     (case
-	         when (select 1
-	                 from stock_user_operate_maininfo m
-	                where m.nickname = u.nickname
-	                  and m.is_current = '1') is null then
-	          '0'
-	         else
-	          '1'
-	       end) hasOperation
-	  From Stock_User u
-	 Where u.Nickname = #{nickname}
+		  Select (select sum(s.fund)
+		          from stock_fund_flow s
+		         where trim(s.transaction_type) = '160'
+		           and s.nickname = u.Nickname) Financeincome,
+		       (Select m.Profit_Loss_Radio
+		          From Stock_User_Operate_Maininfo m
+		         Where m.Is_Current = '1'
+		           And m.Nickname = u.Nickname
+		           And Exists (Select 1
+		                  From Stock_Product p
+		                 Where p.Product_Code = '11'
+		                   And p.Status = 'Y')) Stockincome,
+		       (Select Count(1)
+		          From Stock_Guess_Up_Down g
+		         Where g.User_Id = u.Id
+		           And g.Actual_Result = g.Guess_Status
+		           And g.GUESS_STATUS = 'rise') Guessincome,
+		       (Select wmsys.wm_concat(product_code)
+		          From Stock_Product t
+		         Where t.status = 'Y') code,
+		       u.OPEN_PRODUCT,
+		       (case
+		         when (select 1
+		                 from stock_user_operate_maininfo m
+		                where m.nickname = u.nickname
+		                  and m.is_current = '1') is null then
+		          '0'
+		         else
+		          '1'
+		       end) hasOperation
+		  From Stock_User u
+		 Where u.Nickname = #{nickname}
     </select>
     
     <update id="updateHhb" parameterType="string">

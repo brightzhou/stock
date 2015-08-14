@@ -1787,7 +1787,14 @@
    <update id="updateInGroupStatus" parameterType="com.zeekie.stock.entity.UserInfoDO">
    		update STOCK_USER set IN_GROUP ='0' where id = #{userId}
    </update>
+   
+   <select id="queryUserNotInGroup" parameterType="string" resultType="string">
+   		select id from stock_user u where u.IN_GROUP ='0' and u.nickname = #{nickname}
+   </select>
 	
+	<update id="updateJoinTime" parameterType="string">
+		update stock_user set LOGIN_TIME = sysdate where id = #{userId}
+	</update>
 </mapper>
 
 

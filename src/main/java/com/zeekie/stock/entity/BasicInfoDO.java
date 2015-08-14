@@ -16,6 +16,16 @@ public class BasicInfoDO {
 	/** 当前炒盘倍数 add 20150610 */
 	private Float assignRadio;
 
+	private String desc = "交易系统清算时间为0:00到8:00";
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
 	public Float getFee() {
 		return fee;
 	}

@@ -139,22 +139,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     function setResults(type,code){
-    	
-    	$.ajax({
-            url: 'api/stock/web/guessResult/update',
-            type: "POST",
-            data: {
-                "type": type,
-                "code": code
-            },
-            success: function(data) {
-            	if(data=='1'){
-					grid.load();
-            	}else{
-            		mini.alert('设置失败，请联系管理员');
-            	}
-            }
-        });
+    	var content = (type=='rise')?'涨':'跌';
+    	var st = '<font color=red size=4px>'+content+'</font>';
+    	mini.confirm("确定设置  "+st+" 吗,傻逼,请慎重?", "确定？",
+    	function(action){
+    		if(action=='ok'){
+		    	$.ajax({
+		            url: 'api/stock/web/guessResult/update',
+		            type: "POST",
+		            data: {
+		                "type": type,
+		                "code": code
+		            },
+		            success: function(data) {
+		            	if(data=='1'){
+							grid.load();
+		            	}else{
+		            		mini.alert('设置失败，请联系管理员');
+		            	}
+		            }
+		        });
+	    		}
+    		}		
+    	);
     }
 
     function joinDetailRise(e) {

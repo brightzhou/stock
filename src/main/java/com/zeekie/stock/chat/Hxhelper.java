@@ -21,8 +21,7 @@ public class Hxhelper {
 		datanode.put("username", userid);
 		datanode.put("password", Constants.code_hx_pwd);
 		// 注册
-		ObjectNode createNewIMUserSingleNode = EasemobIMUsers
-				.createNewIMUserSingle(datanode);
+		ObjectNode createNewIMUserSingleNode = EasemobIMUsers.createNewIMUserSingle(datanode);
 		// 加入群聊
 		EasemobChatGroups.join(userid);
 		if (null != createNewIMUserSingleNode) {
@@ -34,13 +33,15 @@ public class Hxhelper {
 
 	public static void deleteFromgroup(List<UserInfoDO> result) {
 		for (UserInfoDO user : result) {
-			EasemobChatGroups.deleteUserFromGroup("90968535114711484",
-					user.getUserId());
+			EasemobChatGroups.deleteUserFromGroup("90968535114711484", user.getUserId());
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void joinGroup(String userId) {
+		EasemobChatGroups.join(userId);
+	}
 
+	public static void main(String[] args) {
 		for (int i = 345; i <= 4943; i++) {
 			EasemobChatGroups.deleteUserFromGroup("90968535114711484", i + "");
 			log.debug(EasemobChatGroups.deleteUserFromGroup("90968535114711484", i + "").toString());
