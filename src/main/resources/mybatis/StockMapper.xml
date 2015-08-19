@@ -9,6 +9,8 @@
 		<result column="PROFIT_LOSS_CASH" property="profitAndLossCash" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="PROFIT_LOSS_RADIO" property="profitAndLossRadio" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 		<result column="PROGRESSBAR" property="progressBar" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="balance" property="balance" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
+		<result column="fee" property="fee" typeHandler="com.zeekie.stock.handler.TwoDecimalFloatTypeHander"/>
 	</resultMap>
 	
 	<resultMap type="com.zeekie.stock.entity.LoginDO" id="resultLogin">
@@ -194,7 +196,9 @@
 		       O.trade_fund ACTUAL_CASH,
 		       O.PROFIT_LOSS_CASH,
 		       O.PROFIT_LOSS_RADIO,
-		       (1 + O.PROFIT_LOSS_CASH / O.GUARANTEE_CASH) PROGRESSBAR
+		       (1 + O.PROFIT_LOSS_CASH / O.GUARANTEE_CASH) PROGRESSBAR,
+		       (select w.balance from stock_user_wallet w where o.nickname = w.nickname)balance,
+		       (select O.TRADE_FUND * R.FEE_RADIO from STOCK_FUND_ASSIGN_RADIO R where O.NICKNAME = R.NICKNAME)fee
 		  FROM STOCK_USER_OPERATE_MAININFO O
 		 WHERE O.NICKNAME = #{nickname} and o.IS_CURRENT = '1'
 	</select>

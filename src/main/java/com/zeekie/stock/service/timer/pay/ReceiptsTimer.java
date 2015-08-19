@@ -49,6 +49,10 @@ public class ReceiptsTimer {
 		try {
 			List<PayInfoDO> payInfo = queryPayInfo();
 			List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+			if(log.isDebugEnabled()){
+				log.debug("开始执行获取支付结果...");
+			}
+			
 			for (PayInfoDO item : payInfo) {
 				datas.put("xml", item.getXml());
 				datas.put("mac", item.getMac());

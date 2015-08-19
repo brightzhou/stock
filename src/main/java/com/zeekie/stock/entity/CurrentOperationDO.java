@@ -12,6 +12,26 @@ public class CurrentOperationDO {
 
 	private Float progressBar;
 
+	private Float balance;
+
+	private Float fee;
+
+	public Float getFee() {
+		return fee;
+	}
+
+	public void setFee(Float fee) {
+		this.fee = fee;
+	}
+
+	public Float getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Float balance) {
+		this.balance = balance;
+	}
+
 	/**
 	 * @return the currentAsset
 	 */

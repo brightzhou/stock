@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +15,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zeekie.stock.enums.PicEnum;
 
@@ -24,6 +25,8 @@ import com.zeekie.stock.enums.PicEnum;
  * @since 1.0
  */
 public class StringUtil {
+
+	private static final Logger log = LoggerFactory.getLogger(StringUtil.class);
 
 	public static boolean isEquals(String a, String b) {
 		if (a == null) {
@@ -105,9 +108,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String genOrgFilename() {
-		return "upload_result_"
-				+ DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss")
-				+ ".txt";
+		return "upload_result_" + DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss") + ".txt";
 	}
 
 	/**
@@ -120,8 +121,7 @@ public class StringUtil {
 		String year = Calendar.getInstance().get(Calendar.YEAR) + "";
 		String month = Calendar.getInstance().get(Calendar.MONTH) + 1 + "";
 		String day = Calendar.getInstance().get(Calendar.DATE) + "";
-		result = param.replaceAll("Y", year).replaceAll("M", month)
-				.replaceAll("D", day);
+		result = param.replaceAll("Y", year).replaceAll("M", month).replaceAll("D", day);
 		return result + "{";
 
 	}
@@ -208,7 +208,8 @@ public class StringUtil {
 	/**
 	 * 生成验证码
 	 * 
-	 * @param 4 几位
+	 * @param 4
+	 *            几位
 	 * @return
 	 */
 	public static String getVerifyCode() {
@@ -318,8 +319,7 @@ public class StringUtil {
 		return null;
 	}
 
-	private static JSONArray setArray(Calendar rightNow, int year, int month)
-			throws Exception {
+	private static JSONArray setArray(Calendar rightNow, int year, int month) throws Exception {
 		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM");
 		String yearMonth = year + "-" + month;
 		rightNow.setTime(simpleDate.parse(year + "/" + month));
@@ -328,8 +328,7 @@ public class StringUtil {
 		for (int i = 1; i <= days; i++) {
 			JSONObject jo = new JSONObject();
 			String week = dayForWeek(yearMonth + "-" + i);
-			if (StringUtils.equals("星期日", week)
-					|| StringUtils.equals("星期六", week)) {
+			if (StringUtils.equals("星期日", week) || StringUtils.equals("星期六", week)) {
 				continue;
 			}
 			String j = (i < 10) ? "0" + i : i + "";
@@ -443,7 +442,9 @@ public class StringUtil {
 	}
 
 	public static String convertStatus(String orginStatus) {
-
+		if (log.isDebugEnabled()) {
+			log.debug("查询小homes原始委托状态为:[{}]", orginStatus);
+		}
 		if (StringUtils.equals(orginStatus, "0")) {
 			return "1";
 		} else if (StringUtils.equals(orginStatus, "1")) {
@@ -471,6 +472,9 @@ public class StringUtil {
 	}
 
 	public static String dealStatus(String orginStatus) {
+		if (log.isDebugEnabled()) {
+			log.debug("查询小homes原始成交状态为:[{}]", orginStatus);
+		}
 		if (StringUtils.equals(orginStatus, "0")) {
 			return "7";
 		} else if (StringUtils.equals(orginStatus, "2")) {

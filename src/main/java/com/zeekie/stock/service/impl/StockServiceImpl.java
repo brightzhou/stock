@@ -381,16 +381,16 @@ public class StockServiceImpl implements TradeService {
 				operPwd = client.getOperatorPwd();
 				// 判断该账号是否已经结束但是在HOMES却还有资金
 				if (hasCapitalCurrentClientNo(operator, fundAccount)) {
-					if(log.isDebugEnabled()){
-						log.debug("获取小homes分配的操盘账号 [{}] 可用，开始看该资金账号下资金是否充足",operator);
+					if (log.isDebugEnabled()) {
+						log.debug("获取小homes分配的操盘账号 [{}] 可用，开始看该资金账号下资金是否充足", operator);
 					}
 					if (mainAccountCashIsEnough(nickname, moveFund, fundAccount)) {
 						haveOperator = true;
 						break;
 					}
-				}else{
-					if(log.isDebugEnabled()){
-						log.debug("小homes操盘账号[{}]存在资金或拥有操盘，不能使用",operator);
+				} else {
+					if (log.isDebugEnabled()) {
+						log.debug("小homes操盘账号[{}]存在资金或拥有操盘，不能使用", operator);
 					}
 				}
 			}
@@ -454,8 +454,8 @@ public class StockServiceImpl implements TradeService {
 				return (resp != null) ? (resp.getList().size() > 0) : false;
 			}
 		}
-		if(log.isDebugEnabled()){
-			log.debug("该账号[{}]不存在资金和持仓,可用使用",clientNo);
+		if (log.isDebugEnabled()) {
+			log.debug("该账号[{}]不存在资金和持仓,可用使用", clientNo);
 		}
 		return false;
 	}
@@ -495,6 +495,8 @@ public class StockServiceImpl implements TradeService {
 				currentOperateInfo.put("profitAndLossRadio",
 						StringUtil.keepTwoDecimalFloat(current.getProfitAndLossRadio() * 100) + "");// 盈亏比例
 				currentOperateInfo.put("progressBar", current.getProgressBar() + "");// 进度条
+				currentOperateInfo.put("fee", current.getFee()+"");
+				currentOperateInfo.put("balance", current.getBalance() + "");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

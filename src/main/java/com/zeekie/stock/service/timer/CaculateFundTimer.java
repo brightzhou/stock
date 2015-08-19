@@ -74,8 +74,7 @@ public class CaculateFundTimer {
 			String tradeAccouunt = trade.getOperatorNo();
 			if (StringUtils.startsWith(tradeAccouunt, "6")) {
 				cal1(trade);
-			} else if (StringUtils.equals("open", changeIsOpen)
-					&& !StringUtils.startsWith(tradeAccouunt, "6")) {
+			} else if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(tradeAccouunt, "6")) {
 				cal2(trade);
 			} else {
 				log.warn("没有任何通道可以处理");
@@ -85,48 +84,48 @@ public class CaculateFundTimer {
 	}
 
 	private void cal2(TradeDO trade) throws Exception {
+		String clientNo = trade.getOperatorNo();
+		String fundAccount = trade.getFundAccount();
+		if (log.isDebugEnabled()) {
+			log.debug("用户 [{}] 开始从小homes提取usermarket和fetfund，传递客户号= [{}],投资账号= [{}] ", trade.getNickname(), clientNo,
+					fundAccount);
+		}
 		AHomesEntity entity = new AHomesEntity();
-		entity.setClientNo(trade.getOperatorNo());
-		entity.setFundAccount(trade.getFundAccount());
+		entity.setClientNo(clientNo);
+		entity.setFundAccount(fundAccount);
 		CallhomesService service = new CallhomesService(entity);
 		if (service.call210FunResp()) {
-			HomesCapital capital = (HomesCapital) service
-					.getResponse(Constants.FN210);
+			HomesCapital capital = (HomesCapital) service.getResponse(Constants.FN210);
 			if (null != capital) {
-				storeCapitalChanges(capital.getUsermarket(),
-						capital.getFetfund(), trade.getNickname());
+				storeCapitalChanges(capital.getUsermarket(), capital.getFetfund(), trade.getNickname());
 			}
 		}
 
 	}
 
 	private void cal1(TradeDO trade) throws Exception {
-		StockCapitalChanges changes = new StockCapitalChanges(
-				trade.getFundAccount(), trade.getCombineId());
+		StockCapitalChanges changes = new StockCapitalChanges(trade.getFundAccount(), trade.getCombineId());
 		changes.callHomes(Fn_stock_current);
 		IDatasets dataSet = changes.getDataSet();
 		IDataset ds = dataSet.getDataset(0);
 		String currentCash = ds.getString("current_cash");// 现金资产
-		String marketValue = StringUtils.defaultIfBlank(
-				ds.getString("market_value"), "0");// 股票市值
+		String marketValue = StringUtils.defaultIfBlank(ds.getString("market_value"), "0");// 股票市值
 
 		if (StringUtils.isBlank(currentCash)) {
 			if (log.isDebugEnabled()) {
-				log.debug("visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
+				log.debug(
+						"visit homes return blank ,value[currentCash],reason homes is stop or homes exception happened");
 			}
 			return;
 		}
 
-		Float market = StringUtil.keepTwoDecimalFloat(Float
-				.parseFloat(marketValue));
-		Float money = StringUtil.keepTwoDecimalFloat(Float
-				.parseFloat(currentCash));
+		Float market = StringUtil.keepTwoDecimalFloat(Float.parseFloat(marketValue));
+		Float money = StringUtil.keepTwoDecimalFloat(Float.parseFloat(currentCash));
 
 		storeCapitalChanges(market, money, trade.getNickname());
 	}
 
-	private void storeCapitalChanges(Float market, Float money, String nickname)
-			throws Exception {
+	private void storeCapitalChanges(Float market, Float money, String nickname) throws Exception {
 		if (money == 0f && market == 0f) {
 			if (log.isDebugEnabled()) {
 				log.debug("nickname:" + nickname + "当前资产和股票资产为0，不更新盈亏金额");
@@ -134,8 +133,7 @@ public class CaculateFundTimer {
 			return;
 		} else {
 			if (log.isDebugEnabled()) {
-				log.debug("用户[" + nickname + "]开始更新盈亏：当前市值=" + market
-						+ ",当前资产=" + money);
+				log.debug("用户[" + nickname + "]开始更新盈亏：当前市值=" + market + ",当前资产=" + money);
 			}
 		}
 		// 1、先更新盈亏金额

@@ -12,6 +12,7 @@ import com.zeekie.stock.entity.GuessHistoryDO;
 import com.zeekie.stock.entity.GuessProductDO;
 import com.zeekie.stock.entity.ProductDO;
 import com.zeekie.stock.entity.StockCodeDO;
+import com.zeekie.stock.entity.WinerDO;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.service.homes.entity.EntrustEntity;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
@@ -305,5 +306,13 @@ public interface DealMapper {
 	 * @return
 	 */
 	public String queryGuessStatus();
+
+	/**
+	 * 查询哈哈币赢取的买家
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public List<WinerDO> queryWiner(@Param("code") String code);
 
 }

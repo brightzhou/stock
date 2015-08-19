@@ -92,6 +92,11 @@
 		<result column="PURCHASE_TIME" property="purchaseTime" jdbcType="VARCHAR"/>
 		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
 	</resultMap>
+	
+		<resultMap type="com.zeekie.stock.entity.WinerDO" id="resultWiner">
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+		<result column="profit" property="profit" jdbcType="VARCHAR"/>
+	</resultMap>
 
 	<insert id="insertEntrust" parameterType="com.zeekie.stock.service.homes.entity.EntrustEntity">
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -500,28 +505,17 @@
 		 WHERE C.BID_CODE = #{code}
     </update>
     
-    <update id="addHhb" parameterType="string">
+    <select id="queryWiner" parameterType="string" resultMap="resultWiner">
+		select u.nickname, (G.PURCHASE_NUM + G.PROFIT_NUM) profit
+		  from STOCK_GUESS_UP_DOWN g, stock_user u
+		 where u.id = g.USER_ID
+		   and G.BID_CODE = #{code}
+		   AND G.GUESS_STATUS = G.ACTUAL_RESULT
+    </select>
+    
+    <update id="addHhb" parameterType="com.zeekie.stock.entity.WinerDO">
 		UPDATE STOCK_USER_WALLET W
-		   SET W.HHB = W.HHB + (CASE
-		                 WHEN (SELECT G.PURCHASE_NUM + G.PROFIT_NUM
-		                         FROM STOCK_GUESS_UP_DOWN G
-		                        WHERE EXISTS (SELECT 1
-		                                 FROM STOCK_USER U
-		                                WHERE U.ID = G.USER_ID
-		                                  AND W.NICKNAME = U.NICKNAME)
-		                          AND G.GUESS_STATUS = G.ACTUAL_RESULT
-		                          AND G.BID_CODE = #{code}) IS NULL THEN
-		                  0
-		                 ELSE
-		                  (SELECT G.PURCHASE_NUM + G.PROFIT_NUM
-		                     FROM STOCK_GUESS_UP_DOWN G
-		                    WHERE EXISTS (SELECT 1
-		                             FROM STOCK_USER U
-		                            WHERE U.ID = G.USER_ID
-		                              AND W.NICKNAME = U.NICKNAME)
-		                      AND G.GUESS_STATUS = G.ACTUAL_RESULT
-		                      AND G.BID_CODE = #{code})
-		               END)
+		   SET W.HHB = W.HHB + to_number(#{profit}) where w.nickname = #{nickname}
     </update>
     
     <select id="queryHhb" parameterType="string" resultType="string">

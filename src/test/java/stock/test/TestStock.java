@@ -60,7 +60,7 @@ public class TestStock {
 		// getapkpath();
 		// getHistoryOperation();
 		// getFundFlow();
-		// endStock();
+		 endStock();
 		// enterSpreadPage();
 		// spread();
 		// int max = 9999;
@@ -110,6 +110,21 @@ public class TestStock {
 		// getCurrentFinance();
 	}
 
+	
+	public static void robRoute() {
+		
+		HandleHttpRequest req = new HandleHttpRequest();
+		Map<String, String> datas = new HashMap<String, String>();
+		datas.put("userId", "1");
+		datas.put("routeId", "1");
+		try {
+			String result = req.post("http://localhost:8080/apin-back-interface-driver/api/apin/user/rideRoute/rob", datas);
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void getDuplicateIdCard() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
@@ -422,7 +437,7 @@ public class TestStock {
 	public static void endStock() {
 		HandleHttpRequest req = new HandleHttpRequest();
 		Map<String, String> datas = new HashMap<String, String>();
-		datas.put("nickname", "test");
+		datas.put("nickname", "kumingren");
 		try {
 			String result = req.post("http://localhost:8080/stock/api/stock/trade/operation/end", datas);
 			System.out.println(result);

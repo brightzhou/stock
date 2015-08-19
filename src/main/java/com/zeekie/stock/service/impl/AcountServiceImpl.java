@@ -1,13 +1,9 @@
 package com.zeekie.stock.service.impl;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -16,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
@@ -53,8 +47,13 @@ import com.zeekie.stock.service.homes.StockRestrictBuyStock;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.lhomes.CallhomesService;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
+import com.zeekie.stock.service.lhomes.entity.HomsEntity103;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.StringUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import sitong.thinker.common.exception.ServiceInvokerException;
 
 @Service
 @Transactional
@@ -480,8 +479,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 				if (ja.isEmpty()) {
 					// 委托如果未空，查看是否持倉
-					if (!entrustService.queryCombostock(nickname).isEmpty()) {
-						return true;
+					// 委托状态没有在委托中的，那么这个时候要看看是否有持仓
+					JSONArray result = entrustService.queryCombostock(nickname);
+					for (int j = 0; j < result.size(); j++) {
+						JSONObject item = result.getJSONObject(j);
+						String cash = item.getString("currentAmount");
+						if (!StringUtils.equals("0", cash) && StringUtils.isNotBlank(cash)) {
+							return true;
+						}
 					}
 					return false;
 				} else {
@@ -494,6 +499,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						}
 						if (!StringUtils.equals(amentrustStatus, "5") && !StringUtils.equals(amentrustStatus, "7")
 								&& !StringUtils.equals(amentrustStatus, "9")) {
+							return true;
+						}
+					}
+					// 委托状态没有在委托中的，那么这个时候要看看是否有持仓
+					JSONArray result = entrustService.queryCombostock(nickname);
+					for (int j = 0; j < result.size(); j++) {
+						JSONObject item = result.getJSONObject(j);
+						String cash = item.getString("currentAmount");
+						if (!StringUtils.equals("0", cash) && StringUtils.isNotBlank(cash)) {
 							return true;
 						}
 					}

@@ -9,8 +9,8 @@ public class TestThread {
 
 	public static void main(String args[]) {
 
-		for (int i = 0; i <= 5; i++) {
-			new Thread(new TT()).start();
+		for (int i = 0; i <= 30; i++) {
+			new Thread(new TicketSouce()).start();
 		}
 
 		/*

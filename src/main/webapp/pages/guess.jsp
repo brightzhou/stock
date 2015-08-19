@@ -89,11 +89,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     mini.parse();
     var gridUrl = "api/stock/web/guessProduct/query";
     var grid = mini.get("datagrid1");
+    grid.setUrl(gridUrl);
     search();
     grid.setShowEmptyText(true);
 	grid.setEmptyText("查询结果为空!");
     function search(){
-        grid.setUrl(gridUrl);
         grid.load({
           "date": mini.get("date1").getFormValue()
         });
@@ -153,7 +153,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		            },
 		            success: function(data) {
 		            	if(data=='1'){
-							grid.load();
+		            		grid.load({
+		            	          "date": mini.get("date1").getFormValue()
+		            	    });
 		            	}else{
 		            		mini.alert('设置失败，请联系管理员');
 		            	}

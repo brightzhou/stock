@@ -343,18 +343,32 @@
 	</bean>
 
 	  <!--开始调度 -->
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" id="SchedulerOne">
+		<property name="schedulerName" value="SchedulerOne"/> 
 		<property name="triggers">
 			<list>
-			   <ref bean="moveFromGroupTrigger" />
 			<!--  	<ref bean="deductManageFeeTrigger" />
+			<ref bean="receiptJobTrigger"/> 
+			   	<ref bean="moveFromGroupTrigger" />
 				<ref bean="caculateFundTrigger"/>
-			<ref bean="deductManageFeeTrigger" />
+				<ref bean="deductManageFeeTrigger" />
 				<ref bean="receiptJobTrigger"/> 
 				<ref bean="deductManageFeeCurrentTrigger"/>
 				 <ref bean="entrustTrigger"/>
 				 <ref bean="financeTrigger"/>
 				-->
+			</list>
+		</property>
+	</bean>
+	
+		  <!--开始调度 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" id="SchedulerTwo">
+		<property name="schedulerName" value="SchedulerTwo"/> 
+		<property name="triggers">
+			<list>
+			<!--
+			   <ref bean="caculateFundTrigger"/>
+			   -->
 			</list>
 		</property>
 	</bean>
