@@ -252,4 +252,12 @@ public interface AcountService {
 	 * @return
 	 */
 	public List<UserInfoDO> queryUserInfosByids(String ids);
+	
+	/**
+	 * 获取哈哈币流水
+	 * @param userId
+	 * @param offset
+	 * @return
+	 */
+	public JSONArray getHhbFlow(String userId, String offset);
 }

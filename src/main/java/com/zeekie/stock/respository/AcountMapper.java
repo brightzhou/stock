@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import sitong.thinker.common.page.PageQuery;
 
 import com.zeekie.stock.entity.AccountDO;
-import com.zeekie.stock.entity.AddCashErrorDO;
 import com.zeekie.stock.entity.BankInfoDO;
 import com.zeekie.stock.entity.BasicInfoDO;
 import com.zeekie.stock.entity.BindBankDO;
@@ -22,7 +21,7 @@ import com.zeekie.stock.entity.DownLineUserDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundAccountDO;
 import com.zeekie.stock.entity.FundFlowDO;
-import com.zeekie.stock.entity.GuessHistoryDO;
+import com.zeekie.stock.entity.HhbFlowDO;
 import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.InsufficientBalanceRemindDO;
 import com.zeekie.stock.entity.ManagerDO;
@@ -50,7 +49,6 @@ import com.zeekie.stock.entity.form.TradeForm;
 import com.zeekie.stock.mybatis.MyBatisRepository;
 import com.zeekie.stock.web.ClientPage;
 import com.zeekie.stock.web.EveningUpPage;
-import com.zeekie.stock.web.GuessDetailPage;
 import com.zeekie.stock.web.MoveToRefereePage;
 import com.zeekie.stock.web.OperationInfoPage;
 import com.zeekie.stock.web.PayPage;
@@ -723,5 +721,8 @@ public interface AcountMapper {
 	 * @throws Exception
 	 */
 	public List<UserInfoDO> queryUserInfosByids(@Param("ids") String ids) throws Exception;
+	
+	public List<HhbFlowDO> getHhbFlow(@Param("userId") String userId, @Param("offset") String offset)
+			throws Exception;
 
 }

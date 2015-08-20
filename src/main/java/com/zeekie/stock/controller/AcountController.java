@@ -1,7 +1,13 @@
 package com.zeekie.stock.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +25,7 @@ import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.chat.jersey.apidemo.EasemobMessages;
+import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.service.AcountService;
 import com.zeekie.stock.util.ApiUtils;
 
@@ -208,4 +215,34 @@ public class AcountController {
 			@RequestParam("newServiceId") String newServiceId) {
 		EasemobMessages.sendCMDMsg(serviceid, newServiceId);
 	}
+	
+	@ResponseBody
+	@RequestMapping("hx/queryNicknameByids")
+	public String queryNicknameByids(@RequestParam("ids") String ids,@RequestParam("callbackparam") String callbackparam,HttpServletResponse response ) {
+	     List<UserInfoDO> list = operator.queryUserInfosByids(ids); 
+	     List<Map<String, String>>  resultList = new ArrayList<Map<String,String>>() ;
+	     Map<String, String>  info = null;
+	     if(list!=null){
+	    	 for (UserInfoDO userInfoDO : list) {
+	    		  info = new HashMap<String, String>();
+	    		  info.put("userId",userInfoDO.getUserId());
+	    		  info.put("nickname", userInfoDO.getNickname());
+				  resultList.add(info);
+			 }
+	     }
+	     return callbackparam + "("+JSONArray.fromObject(resultList).toString()+")" ;
+	     
+	     //return callbackparam + "({\"KK\":123})" ;
+	}
+	
+	@ResponseBody
+	@RequestMapping("hhb/flow")
+	public ApiResponse hhbFlow(@RequestParam("userId") String userId,@RequestParam("offset") String offset) {
+	      return ApiUtils.good(operator.getHhbFlow(userId, offset));
+	    
+	}
+	
+ 
+	
+	
 }
