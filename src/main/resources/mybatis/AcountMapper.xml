@@ -559,7 +559,7 @@
 			  From Stock_User_Acount_Assigned u, Stock_Manager_Acount a
 			 Where Flag = '0'
 			   And u.Fund_Account = a.Fund_Account
-			   And a.Status = '1'
+			   And a.Status = '1' and to_char(u.last_use_date, 'yyyy-MM-dd') !=to_char(sysdate, 'yyyy-MM-dd') 
 			 Order By last_use_date
 	</select>
 	

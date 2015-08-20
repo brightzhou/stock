@@ -672,6 +672,12 @@ public class EntrustServiceImpl extends BaseImpl implements EntrustService {
 	@Override
 	public String sign(String userId) {
 		try {
+			if (StringUtils.equals(Constants.CODE_SUCCESS, deal.querySignFlag(userId))) {
+				if (log.isDebugEnabled()) {
+					log.debug("[Zeekie] user=[{}] 已经签过了，不允许重复签到", userId);
+				}
+				return Constants.CODE_FAILURE;
+			}
 			deal.updateSignTable(userId);
 
 			deal.updateHhbbyId(userId);

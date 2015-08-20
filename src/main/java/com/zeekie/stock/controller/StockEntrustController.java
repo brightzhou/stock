@@ -351,7 +351,7 @@ public class StockEntrustController {
 	 * @param nickname
 	 * @return
 	 */
-	@ResponseBody
+/*	@ResponseBody
 	@RequestMapping("hhb/sell")
 	public String sell(@RequestParam("nickname") String nickname,
 			@RequestParam("num") String num, @RequestParam("cash") String cash) {
@@ -361,7 +361,7 @@ public class StockEntrustController {
 			log.error(e.getMessage(), e);
 		}
 		return Constants.CODE_FAILURE;
-	}
+	}*/
 
 	private boolean verifyPrice(String stockCode, Float value) {
 		String exchangeType = StringUtils.startsWith(stockCode, "6") ? Constants.HOMES_EXCHANGE_TYPE_SH

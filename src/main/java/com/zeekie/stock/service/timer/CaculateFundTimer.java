@@ -98,6 +98,8 @@ public class CaculateFundTimer {
 			HomesCapital capital = (HomesCapital) service.getResponse(Constants.FN210);
 			if (null != capital) {
 				storeCapitalChanges(capital.getUsermarket(), capital.getFetfund(), trade.getNickname());
+			}else{
+				log.error("用户 [{}] 开始从小homes提取usermarket和fetfund 获取结果为 空",trade.getNickname());
 			}
 		}
 
