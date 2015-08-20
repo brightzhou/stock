@@ -716,5 +716,12 @@ public interface AcountMapper {
 	 * @param userId
 	 */
 	public void updateJoinTime(@Param("userId") String userId);
+	
+	/**
+	 * 通过id查询昵称
+	 * @param ids
+	 * @throws Exception
+	 */
+	public List<UserInfoDO> queryUserInfosByids(@Param("ids") String ids) throws Exception;
 
 }

@@ -32,6 +32,7 @@ import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.RedpacketAndBalanceDO;
 import com.zeekie.stock.entity.StockRadioDO;
 import com.zeekie.stock.entity.UserDO;
+import com.zeekie.stock.entity.UserInfoDO;
 import com.zeekie.stock.entity.WithdrawPageDO;
 import com.zeekie.stock.enums.Fund;
 import com.zeekie.stock.respository.AcountMapper;
@@ -1053,5 +1054,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 		return Constants.CODE_FAILURE;
 	}
-
+    
+	@Override
+	public List<UserInfoDO> queryUserInfosByids(String ids){
+		List<UserInfoDO>  list = null ;
+		try {
+			list =  acounter.queryUserInfosByids(ids);
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return list;
+	}
 }
