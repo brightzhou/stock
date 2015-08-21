@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.Constants;
 import com.zeekie.stock.entity.AccountDO;
@@ -27,6 +32,7 @@ import com.zeekie.stock.entity.DictionariesDO;
 import com.zeekie.stock.entity.DownLineUserDO;
 import com.zeekie.stock.entity.EndStockCashDO;
 import com.zeekie.stock.entity.FundFlowDO;
+import com.zeekie.stock.entity.HhbFlowDO;
 import com.zeekie.stock.entity.IdentifyDO;
 import com.zeekie.stock.entity.RedPacketDO;
 import com.zeekie.stock.entity.RedpacketAndBalanceDO;
@@ -48,13 +54,8 @@ import com.zeekie.stock.service.homes.StockRestrictBuyStock;
 import com.zeekie.stock.service.homes.entity.EntrustQueryEntity;
 import com.zeekie.stock.service.lhomes.CallhomesService;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
-import com.zeekie.stock.service.lhomes.entity.HomsEntity103;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.StringUtil;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import sitong.thinker.common.exception.ServiceInvokerException;
 
 @Service
 @Transactional
@@ -1064,5 +1065,45 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			log.error(e.getMessage(), e);
 		}
 		return list;
+	}
+	
+	@Override
+	public JSONArray  getHhbFlow(String userId, String offset) {
+		JSONArray jo = new JSONArray();
+		try {
+			 //  1. 购买哈哈币 2. 卖出哈哈币  3.签到奖励  4. 猜涨跌游戏得奖  5. 参加猜涨跌游戏   6. 手机话费充值  7. 系统优化
+			 //1：买入 2：赎回 3：签到获取 4：竞猜
+            List<HhbFlowDO> flow = acounter.getHhbFlow(userId, offset);
+			if (null != flow) {
+				for (HhbFlowDO item : flow) {
+					Float fund = StringUtil.keepTwoDecimalFloat(item.getCash());
+					item.setCash(fund);  
+					if("1".equals(item.getType())){
+						item.setType("购买哈哈币");
+					}else if("2".equals(item.getType())){
+						item.setType("卖出哈哈币");
+					}else if("3".equals(item.getType())){
+						item.setType("签到奖励");
+					}else if("4".equals(item.getType())){
+						item.setType("猜涨跌游戏得奖");
+					}else if("5".equals(item.getType())){
+						item.setType("参加猜涨跌游戏");
+					}else if("6".equals(item.getType())){
+						item.setType("手机话费充值");
+					}else if("7".equals(item.getType())){
+						item.setType("系统优化");
+					}
+					
+					
+				}
+				if (log.isDebugEnabled()) {
+					log.debug("用户[" + userId + "]哈哈币获取流水，传递偏移量：[" + offset + "] 返回的结果：" + jo);
+				}
+				return jo.fromObject(flow);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return jo;
 	}
 }

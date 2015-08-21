@@ -376,6 +376,21 @@
 		<result column="id" property="userId" jdbcType="VARCHAR"/>
 	</resultMap>
 	
+	<resultMap type="com.zeekie.stock.entity.UserInfoDO" id="resultUserNicknameMap">
+		<result column="id" property="userId" jdbcType="VARCHAR"/>
+		<result column="username" property="nickname" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="com.zeekie.stock.entity.HhbFlowDO" id="resultHhbFlow">
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="Transaction_time" property="transactionTime" jdbcType="VARCHAR"/>
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="hhb" property="hhb" jdbcType="VARCHAR"/>
+		<result column="cash" property="cash" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<!-- user indentification -->
 	<insert id="insertIdentify" >
 		<selectKey order="BEFORE" resultType="LONG" keyProperty="id">
@@ -1795,6 +1810,23 @@
 	<update id="updateJoinTime" parameterType="string">
 		update stock_user set LOGIN_TIME = sysdate where id = #{userId}
 	</update>
+	
+	<select id="queryUserInfosByids" parameterType="string"  resultMap="resultUserNicknameMap">
+   	    select id,nickname from stock_user u where  u.id in (${ids})
+   </select>
+   
+   <select id="getHhbFlow" resultMap="resultHhbFlow" parameterType="string">
+		     Select s.id,s.hhb,s.cash,s.user_id,s.nickname,
+           To_Char(s.Transaction_Time, 'yyyy-mm-dd HH24:MI:ss') Transaction_Time,
+           s.type
+      From (Select Row_Number() Over(Order By t.Transaction_Time desc) As Num, t.*
+              From stock_flow_hhb t
+             Where t.user_id  =  #{userId} ) s
+     Where Num &gt; = #{offset} + 1
+		   And Num &lt; = #{offset} + 20
+   </select>
+   
+   
 </mapper>
 
 
