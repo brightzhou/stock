@@ -1,5 +1,7 @@
 package com.zeekie.stock.entity;
 
+import com.zeekie.stock.util.StringUtil;
+
 public class HhbFlowDO {
    
 	private Long id;
@@ -12,16 +14,16 @@ public class HhbFlowDO {
 	
 	private String userId;
 
-	private Float  cash;
+	private String  cash;
     
-	private Integer hhb;
+	private String hhb;
 	 
 	public HhbFlowDO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public HhbFlowDO(String nickname, String type, Integer hhb,
-			Float cash) {
+	public HhbFlowDO(String nickname, String type, String hhb,
+			String cash) {
 		super();
 		this.nickname = nickname;
 		this.type = type;
@@ -69,20 +71,30 @@ public class HhbFlowDO {
 		this.userId = userId;
 	}
 
-	public Float getCash() {
+	public String getCash() {
 		return cash;
 	}
 
 	public void setCash(Float cash) {
+		this.cash = String.valueOf(StringUtil.keepTwoDecimalFloat(cash));
+	}
+	
+	public void setStrCash(String cash) {
 		this.cash = cash;
 	}
 
-	public Integer getHhb() {
+	public String getHhb() {
 		return hhb;
 	}
 
-	public void setHhb(Integer hhb) {
+	public void setHhb(Float hhb) {
+		this.hhb = String.valueOf(StringUtil.keepTwoDecimalFloat(hhb));
+		 
+	}
+	
+	public void setStrHhb(String hhb) {
 		this.hhb = hhb;
+		 
 	}
 
 	
