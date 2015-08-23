@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 import sitong.thinker.common.exception.ServiceInvokerException;
 
 import com.zeekie.stock.entity.DownLineUserDO;
+import com.zeekie.stock.entity.UserInfoDO;
 
 public interface AcountService {
 
@@ -244,4 +245,11 @@ public interface AcountService {
 
 	public String advise(String id, String username, String servicename,
 			String grade);
+	
+	/**
+	 * 通过id查询昵称
+	 * @param ids
+	 * @return
+	 */
+	public List<UserInfoDO> queryUserInfosByids(String ids);
 }
