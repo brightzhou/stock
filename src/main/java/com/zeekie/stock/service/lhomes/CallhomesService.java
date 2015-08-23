@@ -154,9 +154,13 @@ public class CallhomesService {
 		if (isTrue(resp)) {
 			if (resp.getCurrmarket().compareTo(BigDecimal.ZERO) == 0
 					&& resp.getCurrfund().compareTo(BigDecimal.ZERO) == 0) {
+				if (log.isDebugEnabled()) {
+					log.debug("当前账户:[{}] ,没有资金可用,继续检查是否持仓", entity.getClientNo());
+				}
 				return true;
 			} else {
 				log.warn("账户:" + entity.getClientNo() + "在小Homs中还有可用资产，不可使用");
+				return false;
 			}
 		}
 		return false;

@@ -46,11 +46,12 @@ import com.zeekie.stock.service.lhomes.entity.AHomesEntity;
 import com.zeekie.stock.service.lhomes.entity.EntrustMoveFund;
 import com.zeekie.stock.service.lhomes.entity.Homes103Resp;
 import com.zeekie.stock.service.lhomes.entity.HomesPwd;
+import com.zeekie.stock.service.lhomes.entity.HomsEntity103;
 import com.zeekie.stock.service.syncTask.SyncHandler;
 import com.zeekie.stock.util.DateUtil;
 import com.zeekie.stock.util.StringUtil;
 
-import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 @Transactional
@@ -379,8 +380,8 @@ public class StockServiceImpl implements TradeService {
 				operator = client.getOperatorNo();
 				combineId = client.getCombineId();
 				operPwd = client.getOperatorPwd();
-				// 判断该账号是否已经结束但是在HOMES却还有资金
-				if (hasCapitalCurrentClientNo(operator, fundAccount)) {
+				// 判断该账号是否已经结束但是在HOMES却还有资金和持仓，没有就继续
+				if (hasnotCashAndCc(operator, fundAccount)) {
 					if (log.isDebugEnabled()) {
 						log.debug("获取小homes分配的操盘账号 [{}] 可用，开始看该资金账号下资金是否充足", operator);
 					}
@@ -438,26 +439,35 @@ public class StockServiceImpl implements TradeService {
 		return service.call311Fun();
 	}
 
-	private boolean hasCapitalCurrentClientNo(String clientNo, String fundAccount) {
+	private boolean hasnotCashAndCc(String clientNo, String fundAccount) {
 		AHomesEntity entity = new AHomesEntity();
 		entity.setClientNo(clientNo);
 		entity.setFundAccount(fundAccount);
 		CallhomesService service = new CallhomesService(entity);
 		if (service.call210Fun()) {
-			return true;
-		} else {
-			// 如果资金为空，查看是否持仓
+			// 资金为空，查看是否持仓
 			AHomesEntity entitys = new AHomesEntity(fundAccount, clientNo);
 			CallhomesService services = new CallhomesService(entitys);
 			if (services.call103Fun()) {
 				Homes103Resp resp = (Homes103Resp) services.getResponse(Constants.FN103);
-				return (resp != null) ? (resp.getList().size() > 0) : false;
+				List<HomsEntity103> result = resp.getList();
+				for (int j = 0; j < result.size(); j++) {
+					HomsEntity103 item = result.get(j);
+					String cash = item.getCurrentAmount();
+					if (!StringUtils.equals("0", cash) && StringUtils.isNotBlank(cash)) {
+						if(log.isDebugEnabled()){
+							log.debug("该账号  [{}] 拥有持仓，不可使用",clientNo);
+						}
+						return false;
+					}
+				}
+				return true;
+			}else{
+				return false;
 			}
+		} else {
+			return false;
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("该账号[{}]不存在资金和持仓,可用使用", clientNo);
-		}
-		return false;
 	}
 
 	/**
@@ -495,7 +505,7 @@ public class StockServiceImpl implements TradeService {
 				currentOperateInfo.put("profitAndLossRadio",
 						StringUtil.keepTwoDecimalFloat(current.getProfitAndLossRadio() * 100) + "");// 盈亏比例
 				currentOperateInfo.put("progressBar", current.getProgressBar() + "");// 进度条
-				currentOperateInfo.put("fee", current.getFee()+"");
+				currentOperateInfo.put("fee", current.getFee() + "");
 				currentOperateInfo.put("balance", current.getBalance() + "");
 			}
 		} catch (Exception e) {
