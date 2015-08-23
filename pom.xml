@@ -353,9 +353,6 @@
             <properties>
                 <env>dev</env>
             </properties>
-			<activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>            
         </profile>
 
         <profile>
@@ -363,6 +360,9 @@
             <properties>
                 <env>test</env>
             </properties>
+			<activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>            
         </profile>
         <profile>
             <id>production</id>

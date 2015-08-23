@@ -261,7 +261,24 @@
 
 
 	<!-- 定时任务B=更新盈亏金额 -->
-	<bean id="caculateFundJob"
+<!-- 	<bean id="caculateFundJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.zeekie.stock.service.timer.CaculateFundTimer" />
+		</property>
+		<property name="targetMethod" value="caculate" />
+		<property name="concurrent" value="false" />作业不并发调度
+	</bean>
+
+	<bean id="caculateFundTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="caculateFundJob" />
+		<property name="startDelay" value="10000" />调度工厂实例化后，经过0秒开始执行调度
+		<property name="repeatInterval" value="10000" />每10秒调度一次
+	</bean> -->
+	<!-- 定时任务B 结束 -->
+	
+			<!-- 定时任务B=更新盈亏金额--> 
+   <bean id="caculateFundJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
 			<bean class="com.zeekie.stock.service.timer.CaculateFundTimer" />
@@ -270,12 +287,11 @@
 		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
 	</bean>
 
-	<bean id="caculateFundTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+	<bean id="caculateFundTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="caculateFundJob" />
-		<property name="startDelay" value="10000" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
-		<property name="repeatInterval" value="10000" /><!-- 每10秒调度一次 -->
+		<!-- 每天8:00运行一次 -->
+		<property name="cronExpression" value="0/15 25-5 9-15 ? * MON-FRI" />
 	</bean>
-	<!-- 定时任务B 结束 -->
 
 
 	<!-- 定时任务C=获取支付结果-->
@@ -366,9 +382,7 @@
 		<property name="schedulerName" value="SchedulerTwo"/> 
 		<property name="triggers">
 			<list>
-			<!--
 			   <ref bean="caculateFundTrigger"/>
-			   -->
 			</list>
 		</property>
 	</bean>
