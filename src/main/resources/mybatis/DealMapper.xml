@@ -264,8 +264,15 @@
     </select>
    
    <select id="queryStopFlag" parameterType="string" resultType="string">
-   	select STOP_BUY from stock_user_operate_maininfo where nickname=#{nickname} and is_current='1' and rownum=1
+   	<!-- select STOP_BUY from stock_user_operate_maininfo where nickname=#{nickname} and is_current='1' and rownum=1 -->
+	   	select 1
+		  from stock_user_operate_maininfo s
+		 where s.warn_cash > profit_loss_cash
+		   and nickname = #{nickname}
+		   and is_current = '1'
+		   and rownum = 1
    </select>
+   
    
 	<select id="queryStockCode" parameterType="com.zeekie.stock.web.StockCodePage" resultMap="resultStockCode">
     	<include refid="com.zeekie.stock.service.PageMappper.PagePrefix" />

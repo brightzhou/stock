@@ -841,12 +841,20 @@
 	</select>
 	
 	<select id="queryUserLastCash" parameterType="string" resultMap="resultEndStockUserCash">
-		SELECT (M.GUARANTEE_CASH + M.PROFIT_LOSS_CASH) USERCASH,
-		      <!--  (M.TRADE_FUND  - m.guarantee_cash ) ASSIGNCASH, -->
+		SELECT (M.GUARANTEE_CASH + M.PROFIT_LOSS_CASH) USERCASH,   
 		       M.Actual_Cash ASSIGNCASH,
-		       (SELECT A.FUND_ACCOUNT FROM STOCK_USER_OPERATE_ACOUNT A WHERE A.ID = M.OPERATE_ACCOUNT_ID) FUND_ACCOUNT,
-		       m.stop_buy,
-		       (select a.TRADE_ACOUNT from STOCK_USER_OPERATE_ACOUNT a where a.id= m.OPERATE_ACCOUNT_ID )TRADE_ACOUNT
+		       (SELECT A.FUND_ACCOUNT
+		          FROM STOCK_USER_OPERATE_ACOUNT A
+		         WHERE A.ID = M.OPERATE_ACCOUNT_ID) FUND_ACCOUNT,
+		       (case
+		         when (warn_cash - profit_loss_cash) > 0 then
+		          1
+		         else
+		          0
+		       end) stop_buy,
+		       (select a.TRADE_ACOUNT
+		          from STOCK_USER_OPERATE_ACOUNT a
+		         where a.id = m.OPERATE_ACCOUNT_ID) TRADE_ACOUNT
 		  FROM STOCK_USER_OPERATE_MAININFO M
 		 WHERE M.IS_CURRENT = '1'
 		   AND M.NICKNAME = #{nickname}

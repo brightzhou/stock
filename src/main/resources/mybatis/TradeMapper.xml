@@ -539,16 +539,22 @@
     </select>
     
     <select id="queryStopDealResult" resultMap="resultStopDealResult">
-		SELECT M.NICKNAME,M.ID,
+		SELECT M.NICKNAME,
+		       M.ID,
 		       M.ACTUAL_CASH,
 		       M.WARN_CASH,
 		       (SELECT TRADE_ACOUNT
 		          FROM STOCK_USER_OPERATE_ACOUNT A
 		         WHERE A.ID = M.OPERATE_ACCOUNT_ID
 		           AND A.IS_CURRENT = '1') TRADE_ACOUNT,
-		       M.STOP_BUY
+		       (case
+		         when (warn_cash - profit_loss_cash) > 0 then
+		          1
+		         else
+		          0
+		       end) stop_buy
 		  FROM STOCK_USER_OPERATE_MAININFO M
-		 WHERE M.IS_CURRENT = '1' 
+		 WHERE M.IS_CURRENT = '1'
     </select>
     
     <update id="updateStopBuyFlag" parameterType="string">
