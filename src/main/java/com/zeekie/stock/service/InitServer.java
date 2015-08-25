@@ -201,7 +201,7 @@ public class InitServer implements InitializingBean {
 			try {
 				Constants.services = AmHttpServicesStub.createAmServices();
 				if (null == Constants.services) {
-				   throw new Exception("启动小homes出错");
+					throw new Exception("启动小homes出错");
 				}
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);

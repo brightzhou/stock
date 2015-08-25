@@ -119,12 +119,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	private SyncHandler synchandler;
 
 	@Override
-	public boolean indentify(String nickname, String truename, String idCard) throws RuntimeException {
+	public boolean indentify(String nickname, String truename, String idCard)
+			throws RuntimeException {
 		try {
 			if (log.isDebugEnabled()) {
 				log.debug("用户" + nickname + "开始认证...");
 			}
-			if (StringUtils.equals(Constants.CODE_SUCCESS, acounter.queryIdentifyFlag(nickname))) {
+			if (StringUtils.equals(Constants.CODE_SUCCESS,
+					acounter.queryIdentifyFlag(nickname))) {
 				if (log.isDebugEnabled()) {
 					log.debug("用户" + nickname + "已经认证,直接返回true");
 				}
@@ -132,7 +134,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			}
 
 			// 1、实名认证
-			acounter.insertIdentify(nickname, truename, StringUtils.upperCase(idCard));
+			acounter.insertIdentify(nickname, truename,
+					StringUtils.upperCase(idCard));
 
 			// 2、身份认证,平台给注册的人的钱
 			// String plat_money =
@@ -148,7 +151,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			String referee = acounter.queryReferee(nickname);
 			if (StringUtils.isNotBlank(referee)) {
 
-				RedpacketAndBalanceDO packet = acounter.getRefereeRedPacket(referee);
+				RedpacketAndBalanceDO packet = acounter
+						.getRefereeRedPacket(referee);
 
 				if (packet == null) {
 					if (log.isDebugEnabled()) {
@@ -172,7 +176,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				// 钱包余额不足以支付推荐人设置的红包
 				if (value < 0f) {
 					if (log.isDebugEnabled()) {
-						log.debug("推荐人" + referee + "所剩余额已经不足以支付红包，故用户" + nickname + "不设置该推荐人");
+						log.debug("推荐人" + referee + "所剩余额已经不足以支付红包，故用户"
+								+ nickname + "不设置该推荐人");
 					}
 					acounter.updateRefereeIsNull(nickname);
 					acounter.updateRefereeRadioIsNull(nickname);
@@ -190,24 +195,31 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					if (refereeRedPacket > 0f) {
 
 						// 3、1 减去推荐人指定的红包，记录流水
-						trade.deductGuaranteeCash(refereeRedPacket + "", referee);
+						trade.deductGuaranteeCash(refereeRedPacket + "",
+								referee);
 
 						type = Fund.REFEREE_PRAISE.getType();
-						trade.recordFundflow(referee, type, "-" + refereeRedPacket, Fund.getDesc(nickname, type));
+						trade.recordFundflow(referee, type, "-"
+								+ refereeRedPacket,
+								Fund.getDesc(nickname, type));
 
 						if (log.isDebugEnabled()) {
-							log.debug("用户[" + referee + "]指定了一个红包[" + refereeRedPacket + "" + "]，分给注册人[" + nickname
-									+ "],从钱包扣除该笔金额：" + refereeRedPacket + "");
+							log.debug("用户[" + referee + "]指定了一个红包["
+									+ refereeRedPacket + "" + "]，分给注册人["
+									+ nickname + "],从钱包扣除该笔金额："
+									+ refereeRedPacket + "");
 						}
 
 						// 3、2将推荐人的红包发给注册人，记录流水
-						acounter.moveRedPacketToReferee(nickname, refereeRedPacket + "");
+						acounter.moveRedPacketToReferee(nickname,
+								refereeRedPacket + "");
 						type = Fund.CLIENT_PRIASE.getType();
-						trade.recordFundflow(nickname, type, refereeRedPacket + "", Fund.getDesc(referee, type));
+						trade.recordFundflow(nickname, type, refereeRedPacket
+								+ "", Fund.getDesc(referee, type));
 
 						if (log.isDebugEnabled()) {
-							log.debug(
-									"用户[" + nickname + "]收到了推荐人[" + referee + "]的一个红包[" + refereeRedPacket + "" + "]");
+							log.debug("用户[" + nickname + "]收到了推荐人[" + referee
+									+ "]的一个红包[" + refereeRedPacket + "" + "]");
 						}
 					}
 
@@ -231,29 +243,34 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		return true;
 	}
 
-	private void caculatePacketAndIntegral(String nickname, String referee) throws Exception {
+	private void caculatePacketAndIntegral(String nickname, String referee)
+			throws Exception {
 		// 3、2 给推荐人算积分
 		acounter.recordIntegral(nickname);
-		String platRedPacketToreferee = acounter.getPlatRedPacketToReferee(referee);
+		String platRedPacketToreferee = acounter
+				.getPlatRedPacketToReferee(referee);
 		String type = "";
 		if (StringUtils.isNotBlank(platRedPacketToreferee)) {
 			acounter.moveRedPacketToReferee(referee, platRedPacketToreferee);
 
 			// 3、3 给推荐人分红包 5
 			type = Fund.REFEREE_PACKET.getType();
-			trade.recordFundflow(referee, type, platRedPacketToreferee, Fund.getDesc(nickname, type));
+			trade.recordFundflow(referee, type, platRedPacketToreferee,
+					Fund.getDesc(nickname, type));
 
 			if (log.isDebugEnabled()) {
-				log.debug("用户[" + nickname + "]拥有推荐人[" + referee + "]，平台给推荐人红包：" + platRedPacketToreferee + "元");
+				log.debug("用户[" + nickname + "]拥有推荐人[" + referee
+						+ "]，平台给推荐人红包：" + platRedPacketToreferee + "元");
 			}
 		}
 	}
 
 	@Override
-	public boolean bindCreditCard(String userId, String telephone, String bank, String number, String bankCode,
-			String code) {
+	public boolean bindCreditCard(String userId, String telephone, String bank,
+			String number, String bankCode, String code) {
 		try {
-			acounter.bindCreditCard(userId, telephone, bank, number, bankCode, code);
+			acounter.bindCreditCard(userId, telephone, bank, number, bankCode,
+					code);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return false;
@@ -262,7 +279,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public boolean setDepositPwd(String nickname, String telephone, String depositPwd) {
+	public boolean setDepositPwd(String nickname, String telephone,
+			String depositPwd) {
 		try {
 			acounter.setDepositPwd(nickname, telephone, depositPwd);
 		} catch (Exception e) {
@@ -279,11 +297,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			List<FundFlowDO> flow = acounter.getFundFlow(nickname, offset);
 			if (null != flow) {
 				for (FundFlowDO item : flow) {
-					Float fund = StringUtil.keepTwoDecimalFloat(Float.parseFloat(item.getFund()));
+					Float fund = StringUtil.keepTwoDecimalFloat(Float
+							.parseFloat(item.getFund()));
 					item.setFund(String.valueOf(fund));
 				}
 				if (log.isDebugEnabled()) {
-					log.debug("用户[" + nickname + "]获取资金流水，传递偏移量：[" + offset + "] 返回的结果：" + jo);
+					log.debug("用户[" + nickname + "]获取资金流水，传递偏移量：[" + offset
+							+ "] 返回的结果：" + jo);
 				}
 				return jo.fromObject(flow);
 			}
@@ -353,17 +373,23 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			CurrentAccountDO account = acounter.getCurrentAccount(nickname);
 			if (null != account) {
 				String balance = account.getBalance() + "";
-				map.put("balance", (account.getBalance() == null) ? "0.00" : balance);
+				map.put("balance", (account.getBalance() == null) ? "0.00"
+						: balance);
 				String guaranteeCash = account.getGuaranteeCash() + "";
-				map.put("guaranteeCash", (account.getGuaranteeCash() == null) ? "0.00" : guaranteeCash);
+				map.put("guaranteeCash",
+						(account.getGuaranteeCash() == null) ? "0.00"
+								: guaranteeCash);
 				String capital = account.getStockCapital() + "";
-				map.put("stockCapital", (account.getStockCapital() == null) ? "0.00" : capital);
+				map.put("stockCapital",
+						(account.getStockCapital() == null) ? "0.00" : capital);
 				String freezeCash = account.getFreezeCash() + "";
-				map.put("freezeCash", (account.getFreezeCash() == null) ? "0.00" : freezeCash);
+				map.put("freezeCash",
+						(account.getFreezeCash() == null) ? "0.00" : freezeCash);
 				String fee = account.getFee() + "";
 				map.put("fee", (null == account.getFee()) ? "" : fee);
 				String finance = account.getFinance() + "";
-				map.put("finance", (StringUtils.isBlank(finance)) ? "" : finance);
+				map.put("finance", (StringUtils.isBlank(finance)) ? ""
+						: finance);
 				map.put("isStock", account.getIsStock());
 				map.put("hhb", account.getHhb() + "");
 				map.put("sellStatus", Constants.GUESS_STATUS);
@@ -391,7 +417,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public boolean clientRecharge(String nickname, String fund, String payAccount) {
+	public boolean clientRecharge(String nickname, String fund,
+			String payAccount) {
 		try {
 			// 充值
 			// trade.recharge(nickname, fund);
@@ -407,7 +434,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public Map<String, String> withdraw(String nickname, String fund, String depositPwd, String openBank) {
+	public Map<String, String> withdraw(String nickname, String fund,
+			String depositPwd, String openBank) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("flag", "0");
 		String msg = "";
@@ -419,14 +447,16 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				return map;
 			} else {
 
-				if (!StringUtils.equals("1", acounter.queryDepositPwd(nickname))) {
+				if (!StringUtils
+						.equals("1", acounter.queryDepositPwd(nickname))) {
 					msg = "提现密码未设置";
 					map.put("msg", msg);
 					map.put("flag", "5");
 					return map;
 				}
 
-				if (!StringUtils.equals("1", acounter.checkDepositPwd(nickname, depositPwd))) {
+				if (!StringUtils.equals("1",
+						acounter.checkDepositPwd(nickname, depositPwd))) {
 					msg = "提现密码输入错误，请重新输入,或则联系管理员!";
 					map.put("msg", msg);
 					map.put("flag", "2");
@@ -434,7 +464,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				}
 
 				// 检查余额是否充足
-				if (!StringUtils.equals("1", acounter.checkBalance(nickname, fund))) {
+				if (!StringUtils.equals("1",
+						acounter.checkBalance(nickname, fund))) {
 					msg = "账户余额不足，无法提现！";
 					map.put("msg", msg);
 					map.put("flag", "3");
@@ -471,12 +502,14 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	public boolean hasEntrust(String nickname) {
 		boolean flag = false;
 		try {
-			CurrentOperateUserDO userDO = acounter.getCurrentOperateUser(nickname);
+			CurrentOperateUserDO userDO = acounter
+					.getCurrentOperateUser(nickname);
 			if (userDO == null) {
 				return false;
 			}
 
-			if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
+			if (StringUtils.equals("open", changeIsOpen)
+					&& !StringUtils.startsWith(userDO.getTradeAcount(), "6")) {
 				JSONArray ja = entrustService.queryEntrust(nickname);
 
 				if (ja.isEmpty()) {
@@ -486,7 +519,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					for (int j = 0; j < result.size(); j++) {
 						JSONObject item = result.getJSONObject(j);
 						String cash = item.getString("currentAmount");
-						if (!StringUtils.equals("0", cash) && StringUtils.isNotBlank(cash)) {
+						if (!StringUtils.equals("0", cash)
+								&& StringUtils.isNotBlank(cash)) {
 							return true;
 						}
 					}
@@ -494,12 +528,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				} else {
 					for (int i = 0; i < ja.size(); i++) {
 						JSONObject jo = ja.getJSONObject(i);
-						String amentrustStatus = jo.getString("amentrustStatus");
+						String amentrustStatus = jo
+								.getString("amentrustStatus");
 						if (log.isDebugEnabled()) {
-							log.debug("用户[" + nickname + "]结束操盘,操盘账号[" + userDO.getTradeAcount() + "]，查看当前的委托状态是："
+							log.debug("用户[" + nickname + "]结束操盘,操盘账号["
+									+ userDO.getTradeAcount() + "]，查看当前的委托状态是："
 									+ amentrustStatus);
 						}
-						if (!StringUtils.equals(amentrustStatus, "5") && !StringUtils.equals(amentrustStatus, "7")
+						if (!StringUtils.equals(amentrustStatus, "5")
+								&& !StringUtils.equals(amentrustStatus, "7")
 								&& !StringUtils.equals(amentrustStatus, "9")) {
 							return true;
 						}
@@ -509,7 +546,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 					for (int j = 0; j < result.size(); j++) {
 						JSONObject item = result.getJSONObject(j);
 						String cash = item.getString("currentAmount");
-						if (!StringUtils.equals("0", cash) && StringUtils.isNotBlank(cash)) {
+						if (!StringUtils.equals("0", cash)
+								&& StringUtils.isNotBlank(cash)) {
 							return true;
 						}
 					}
@@ -519,12 +557,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 			String fundAccount = userDO.getFundAccount();
 			String combineId = userDO.getCombieId();
-			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount, combineId);
+			StockEntrustQuery entrustQuery = new StockEntrustQuery(fundAccount,
+					combineId);
 			entrustQuery.callHomes(func_am_entrust_qry);
-			List<?> obj = returnObj(entrustQuery.getDataSet(), EntrustQueryEntity.class);
+			List<?> obj = returnObj(entrustQuery.getDataSet(),
+					EntrustQueryEntity.class);
 			EntrustQueryEntity entity = null;
 			if (!obj.isEmpty()) {
-				String statis[] = new String[] { "1", "4", "a", "A", "B", "C", "D" };
+				String statis[] = new String[] { "1", "4", "a", "A", "B", "C",
+						"D" };
 				for (Object each : obj) {
 					entity = (EntrustQueryEntity) each;
 					for (String str : statis) {
@@ -548,7 +589,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public Map<String, String> endStock(String nickname, String flag) throws RuntimeException {
+	public Map<String, String> endStock(String nickname, String flag)
+			throws RuntimeException {
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("flag", Constants.CODE_FAILURE);
 		String msg = "成功";
@@ -557,7 +599,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 				msg = "你还有委托的股票，不能结束操盘！";
 				result.put("flag", Constants.CODE_FAILURE);
 				result.put("msg", msg);
-			} else if (StringUtils.equals(Constants.CODE_SUCCESS, acounter.operationIsEnded(nickname))) {
+			} else if (StringUtils.equals(Constants.CODE_SUCCESS,
+					acounter.operationIsEnded(nickname))) {
 				// 1、判断是否已经结束操盘，即判断股票市值是否为0；
 				if (log.isDebugEnabled()) {
 					log.debug("1、用户" + nickname + "开始结束操盘");
@@ -589,11 +632,13 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 						log.debug("3、用户" + nickname + "产生利润，划到钱包：" + userCash);
 					}
 				}
-				String assginCash = StringUtil.keepThreeDot(cashDO.getAssginCash());
+				String assginCash = StringUtil.keepThreeDot(cashDO
+						.getAssginCash());
 
 				String fundAccount = cashDO.getFundAccount();
 				// 3、把我们的配资的钱划到我们的总资金
-				acounter.addTotalFund("0", assginCash, fundAccount, "从HOMES划回配资的钱", "recharge");
+				acounter.addTotalFund("0", assginCash, fundAccount,
+						"从HOMES划回配资的钱", "recharge");
 				if (log.isDebugEnabled()) {
 					log.debug("4、将资金【" + assginCash + "】划回到主单元");
 				}
@@ -643,7 +688,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 
 	private void relieve(String operateNo, String stopBuy) throws Exception {
 		if (StringUtils.equals(Constants.CODE_SUCCESS, stopBuy)) {
-			StockRestrictBuyStock buyStock = new StockRestrictBuyStock(operateNo, Constants.OPERATE_RIGHT_ZERO,
+			StockRestrictBuyStock buyStock = new StockRestrictBuyStock(
+					operateNo, Constants.OPERATE_RIGHT_ZERO,
 					Constants.OPERATE_TYPE);
 			buyStock.callHomes(changeInfoNo);
 
@@ -657,16 +703,19 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 	}
 
-	private void modifyHomesPwd(String nickname, String operatorAcount) throws Exception {
+	private void modifyHomesPwd(String nickname, String operatorAcount)
+			throws Exception {
 		String newOperatePwd = StringUtil.genRandomNum(6);
-		StockModifyPwd modify = new StockModifyPwd(operatorAcount, "", newOperatePwd);
+		StockModifyPwd modify = new StockModifyPwd(operatorAcount, "",
+				newOperatePwd);
 		modify.callHomes(Fn_changePwd);
 		if (!modify.visitSuccess(Fn_changePwd)) {
 			log.error("用户【" + nickname + "】结束操盘，修改密码为：" + newOperatePwd + " 失败");
 		}
 	}
 
-	private void recordFlow(String nickname, String flag, String userCash) throws Exception {
+	private void recordFlow(String nickname, String flag, String userCash)
+			throws Exception {
 		String type = StringUtils.equals(Constants.EVENING_UP, flag) ? Constants.TIPS_RETURN_GURANTEE_CASH
 				: Constants.TRANS_FROM_HOMES_TO_CLIENT;
 		String description = "";
@@ -679,8 +728,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		trade.recordFundflow(nickname, type, userCash, description);
 	}
 
-	private boolean modifyUserName(String fundAccount, String combineId) throws Exception {
-		StockModifyUserName user = new StockModifyUserName(fundAccount, combineId, "空闲用户");
+	private boolean modifyUserName(String fundAccount, String combineId)
+			throws Exception {
+		StockModifyUserName user = new StockModifyUserName(fundAccount,
+				combineId, "空闲用户");
 		user.callHomes(fn_change_assetName);
 		return user.visitSuccess(fn_change_assetName);
 	}
@@ -692,39 +743,49 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		String tradeAccount = client.getTradeAcount();
 		String currentCash = "";
 
-		if (StringUtils.equals("open", changeIsOpen) && !StringUtils.startsWith(tradeAccount, "6")) {
+		if (StringUtils.equals("open", changeIsOpen)
+				&& !StringUtils.startsWith(tradeAccount, "6")) {
 			JSONObject jo = entrustService.queryCombasset(nickname);
 			currentCash = jo.getString("assetValue");
 
 			if (log.isDebugEnabled()) {
-				log.debug("用户" + nickname + "进行资金划转，调用小HOMS获取assetValue=" + currentCash);
+				log.debug("用户" + nickname + "进行资金划转，调用小HOMS获取assetValue="
+						+ currentCash);
 			}
 			Float fvalue = Float.parseFloat(currentCash);
 			if (0 == fvalue) {
-				log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId + " 的资金[" + currentCash + "]不用划转！！！");
+				log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId
+						+ " 的资金[" + currentCash + "]不用划转！！！");
 				return true;
 			} else {
 				if (move(currentCash, combineId, fundAccount)) {
-					log.warn("littleHoms将用户【" + nickname + "】的操盘账号为：" + combineId + " 的资金[" + currentCash
+					log.warn("littleHoms将用户【" + nickname + "】的操盘账号为："
+							+ combineId + " 的资金[" + currentCash
 							+ "]划转到主单元成功！！！");
 				} else {
 					return false;
 				}
 			}
 		} else {
-			StockCapitalChanges changes = new StockCapitalChanges(fundAccount, combineId);
+			StockCapitalChanges changes = new StockCapitalChanges(fundAccount,
+					combineId);
 			if (log.isDebugEnabled()) {
 				log.debug("用户[" + nickname + "]开始访问homes做资金划转，修改用户未空闲用户，以便结束操盘");
 			}
 			changes.callHomes(Fn_stock_current);
-			currentCash = changes.getDataSet().getDataset(0).getString("current_cash");
-			if (StringUtils.isNotBlank(currentCash) || !StringUtils.equals("0", currentCash)) {
-				log.warn("用户【" + nickname + "】的操盘账号为：" + client.getTradeAcount() + " 的操盘仍然有有资金在HOMES中，需将资金划转到主单元！！！");
-				StockAssetMove assetMove = new StockAssetMove(fundAccount, combineId, client.getManagerCombineId(),
-						currentCash);
+			currentCash = changes.getDataSet().getDataset(0)
+					.getString("current_cash");
+			if (StringUtils.isNotBlank(currentCash)
+					|| !StringUtils.equals("0", currentCash)) {
+				log.warn("用户【" + nickname + "】的操盘账号为："
+						+ client.getTradeAcount()
+						+ " 的操盘仍然有有资金在HOMES中，需将资金划转到主单元！！！");
+				StockAssetMove assetMove = new StockAssetMove(fundAccount,
+						combineId, client.getManagerCombineId(), currentCash);
 				assetMove.callHomes(Fn_asset_move);
 				if (assetMove.visitSuccess(Fn_stock_current)) {
-					log.warn("将用户【" + nickname + "】的操盘账号为：" + client.getTradeAcount() + " 的资金[" + currentCash
+					log.warn("将用户【" + nickname + "】的操盘账号为："
+							+ client.getTradeAcount() + " 的资金[" + currentCash
 							+ "]划转到主单元成功！！！");
 				} else {
 					return false;
@@ -779,12 +840,16 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		try {
 			RedPacketDO packketDO = acounter.getRedPacket(nickname);
 			if (null != packketDO) {
-				map.put("assignRefereeRedPacket", packketDO.getAssignRefereeRedPacket());
+				map.put("assignRefereeRedPacket",
+						packketDO.getAssignRefereeRedPacket());
 				map.put("assignRegisterRedPacket",
-						StringUtils.defaultIfBlank(packketDO.getAssignRegisterRedPacket(), "0.0"));
-				map.put("assignRefereeDrawPercent",
-						StringUtil.FloatToPercentum(packketDO.getAssignRefereeDrawPercent()));
-				map.put("spreedPath", stock_spreed_page_path + packketDO.getUserId());
+						StringUtils.defaultIfBlank(
+								packketDO.getAssignRegisterRedPacket(), "0.0"));
+				map.put("assignRefereeDrawPercent", StringUtil
+						.FloatToPercentum(packketDO
+								.getAssignRefereeDrawPercent()));
+				map.put("spreedPath",
+						stock_spreed_page_path + packketDO.getUserId());
 				map.put("refereeId", packketDO.getUserId());
 			}
 		} catch (Exception e) {
@@ -849,7 +914,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			CashDO cashDO = acounter.selectCash(nickname);
 			if (cashDO.getResidueCash() >= 0) {
 				acounter.deductDebt(cashDO.getResidueCash(), nickname);
-				trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS, cashDO.getDebt() + "", "支付亏损");
+				trade.recordFundflow(nickname, Constants.PAY_OFF_LOSS,
+						cashDO.getDebt() + "", "支付亏损");
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -865,7 +931,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			DebtDO debtDO = acounter.getWallet(nickname);
 			if (null != debtDO) {
 				map.put("balance", StringUtil.keepThreeDot(debtDO.getBalance()));
-				map.put("guaranteeCash", StringUtil.keepThreeDot(debtDO.getGuaranteeCash()));
+				map.put("guaranteeCash",
+						StringUtil.keepThreeDot(debtDO.getGuaranteeCash()));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -900,8 +967,10 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public String modifyDepositPwd(String userId, String depositPwd, String telephone, String verifyCode) {
-		if (!validVerifyCode(telephone, verifyCode, Constants.CODE_VERIFYCODE_SOURCE_DEPOSIT_UPDATE)) {
+	public String modifyDepositPwd(String userId, String depositPwd,
+			String telephone, String verifyCode) {
+		if (!validVerifyCode(telephone, verifyCode,
+				Constants.CODE_VERIFYCODE_SOURCE_DEPOSIT_UPDATE)) {
 			return Constants.CODE_ERROR_VERIFYCODE;
 		} else {
 			try {
@@ -965,16 +1034,19 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			BasicInfoDO basicinfoDO = acounter.getBasicInfo(userId);
 			if ("1".equals(basicinfoDO.getHasOperation())) {
 				/** start 放入杠杆倍数 add 20150610 */
-				StockRadioDO stockRadioDO = acounter.getAssignRadioForCurrUserId(userId);
+				StockRadioDO stockRadioDO = acounter
+						.getAssignRadioForCurrUserId(userId);
 				if (stockRadioDO != null) {
 					basicinfoDO.setAssignRadio(stockRadioDO.getAssignRadio());
 				}
 				/** end 放入杠杆倍数 add 20150610 */
 			} else {
 				/** start 放入杠杆倍数 add 20150610 */
-				DictionariesDO dictionariesDO = trade.getDictionariesByDicWord("assignRadio");
+				DictionariesDO dictionariesDO = trade
+						.getDictionariesByDicWord("assignRadio");
 				if (dictionariesDO != null) {
-					basicinfoDO.setAssignRadio(Float.valueOf(dictionariesDO.getDicValue()));
+					basicinfoDO.setAssignRadio(Float.valueOf(dictionariesDO
+							.getDicValue()));
 				}
 				/** end 放入杠杆倍数 add 20150610 */
 			}
@@ -993,12 +1065,15 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 			DictionariesDO dictionariesDO = new DictionariesDO();
 			dictionariesDO.setStatus("1");
 			dictionariesDO.setDicType("3");
-			List<DictionariesDO> list = trade.queryDictionarieList(dictionariesDO);
+			List<DictionariesDO> list = trade
+					.queryDictionarieList(dictionariesDO);
 
 			if (list != null && list.size() == 2) {
 				for (DictionariesDO obj : list) {
 					if ("fundAcound".equals(obj.getDicWord())) {
-						map.put("surplusAssets", acounter.getSurplusAssetsByfundAcound(dictionariesDO.getDicValue()));
+						map.put("surplusAssets", acounter
+								.getSurplusAssetsByfundAcound(dictionariesDO
+										.getDicValue()));
 					}
 					if ("totalMoney".equals(obj.getDicWord())) {
 						map.put("totalMoney", obj.getDicValue());
@@ -1013,7 +1088,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public String getDuplicateIdCard(String idCard) throws ServiceInvokerException {
+	public String getDuplicateIdCard(String idCard)
+			throws ServiceInvokerException {
 		if (StringUtils.isNotBlank(acounter.queryDuplicateIdCard(idCard))) {
 			return Constants.CODE_SUCCESS;
 		}
@@ -1046,7 +1122,8 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 	}
 
 	@Override
-	public String advise(String id, String username, String servicename, String grade) {
+	public String advise(String id, String username, String servicename,
+			String grade) {
 		try {
 			acounter.updateAdvise(id, username, servicename, grade);
 			return Constants.CODE_SUCCESS;
@@ -1055,49 +1132,50 @@ public class AcountServiceImpl extends BaseImpl implements AcountService {
 		}
 		return Constants.CODE_FAILURE;
 	}
-    
+
 	@Override
-	public List<UserInfoDO> queryUserInfosByids(String ids){
-		List<UserInfoDO>  list = null ;
+	public List<UserInfoDO> queryUserInfosByids(String ids) {
+		List<UserInfoDO> list = null;
 		try {
-			list =  acounter.queryUserInfosByids(ids);
-		}catch (Exception e) {
+			list = acounter.queryUserInfosByids(ids);
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		return list;
 	}
-	
+
 	@Override
-	public JSONArray  getHhbFlow(String userId, String offset) {
+	public JSONArray getHhbFlow(String userId, String offset) {
 		JSONArray jo = new JSONArray();
 		try {
-			 //  1. 购买哈哈币 2. 卖出哈哈币  3.签到奖励  4. 猜涨跌游戏得奖  5. 参加猜涨跌游戏   6. 手机话费充值  7. 系统优化
-			 //1：买入 2：赎回 3：签到获取 4：竞猜
-            List<HhbFlowDO> flow = acounter.getHhbFlow(userId, offset);
+			// 1. 购买哈哈币 2. 卖出哈哈币 3.签到奖励 4. 猜涨跌游戏得奖 5. 参加猜涨跌游戏 6. 手机话费充值 7. 系统优化
+			// 1：买入 2：赎回 3：签到获取 4：竞猜
+			List<HhbFlowDO> flow = acounter.getHhbFlow(userId, offset);
 			if (null != flow) {
 				for (HhbFlowDO item : flow) {
-					Float fund = StringUtil.keepTwoDecimalFloat(item.getCash());
-					item.setCash(fund);  
-					if("1".equals(item.getType())){
+					if ("1".equals(item.getType())) {
 						item.setType("购买哈哈币");
-					}else if("2".equals(item.getType())){
+					} else if ("2".equals(item.getType())) {
+						item.setStrHhb("-" + item.getHhb());
 						item.setType("卖出哈哈币");
-					}else if("3".equals(item.getType())){
+					} else if ("3".equals(item.getType())) {
 						item.setType("签到奖励");
-					}else if("4".equals(item.getType())){
-						item.setType("猜涨跌游戏得奖");
-					}else if("5".equals(item.getType())){
+					} else if ("4".equals(item.getType())) {
+						item.setStrHhb("-" + item.getHhb());
 						item.setType("参加猜涨跌游戏");
-					}else if("6".equals(item.getType())){
+					} else if ("5".equals(item.getType())) {
+						item.setType("猜涨跌游戏得奖");
+					} else if ("6".equals(item.getType())) {
+						item.setStrHhb("-" + item.getHhb());
 						item.setType("手机话费充值");
-					}else if("7".equals(item.getType())){
+					} else if ("7".equals(item.getType())) {
 						item.setType("系统优化");
 					}
-					
-					
+
 				}
 				if (log.isDebugEnabled()) {
-					log.debug("用户[" + userId + "]哈哈币获取流水，传递偏移量：[" + offset + "] 返回的结果：" + jo);
+					log.debug("用户[" + userId + "]哈哈币获取流水，传递偏移量：[" + offset
+							+ "] 返回的结果：" + jo);
 				}
 				return jo.fromObject(flow);
 			}
